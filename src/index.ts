@@ -1,5 +1,2 @@
-function add(x: number, y: number): number{
-	return x + y;
-}
-
-export {add}
+export { gcd } from './functions/arithmetic/gcd';
+export { Fraction } from './classes/fractionClass';
