@@ -1,6 +1,6 @@
 {
   "name": "mathlify",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "bringing mathematics into the digital age",
   "source": "src/index.ts",
   "type": "module",
