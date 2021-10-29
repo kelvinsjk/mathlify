@@ -86,8 +86,6 @@ fractionClass('string methods', () => {
 	assert.is(`${nineSixteenth}`,'\\frac{9}{16}');
 	assert.is(`${oneHalf}`,'\\frac{1}{2}');
 	assert.is(`${negativeThreeQuarter}`,'- \\frac{3}{4}');
-	assert.is(negativeThreeQuarter.toString({ displayMode: true }),'\\displaystyle - \\frac{3}{4}');
-	assert.is(negativeThreeQuarter.toString({ displayMode: false }),'- \\frac{3}{4}');
 	assert.is(two.toFixed(),'2');
 	assert.is(twentyTwoOverSeven.toFixed(),'3');
 	assert.is(twentyTwoOverSeven.toFixed(2),'3.14');

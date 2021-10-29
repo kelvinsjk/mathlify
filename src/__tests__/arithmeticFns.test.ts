@@ -1,7 +1,7 @@
 import { test, suite } from 'uvu';
 import * as assert from 'uvu/assert';
 
-import { gcd } from '../index';
+import { gcd, getRandomInt } from '../index';
 
 const arithmeticFns = suite('arithmetic functions')
 
@@ -19,5 +19,11 @@ arithmeticFns('gcd', () => {
 	assert.is(gcd(5,0,0), 5);
 	assert.is(gcd(60,50,6), 2);
 });
+
+arithmeticFns('getRandomInt', () => {
+	assert.is(getRandomInt() <= 9, true);
+	assert.is(getRandomInt() >= -9, true);
+	assert.is(getRandomInt(1, 3, { avoid: [1, 2] }), 3);
+})
 
 arithmeticFns.run();

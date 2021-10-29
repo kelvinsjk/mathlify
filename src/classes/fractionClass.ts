@@ -53,7 +53,6 @@ export class Fraction {
 	}
 
 	/**
- * negative
  * @returns negative of this fraction
  */
 	negative(): Fraction {
@@ -218,22 +217,17 @@ export class Fraction {
 	}
 
 	/**
-	 * toString method
-	 * @param options defaults to `{displayMode: false}`
-	 * 
-	 * displayMode will add `\displaystyle` to front of string
+	 * `toString()` method
 	 * 
 	 * @returns the LaTeX string representation of the fraction
 	 */
-	toString(options?: Partial<FractionToStringOptions>): string {
-		options = { displayMode: false, ...options };
-		const displayText = options.displayMode ? '\\displaystyle ' : '';
+	toString(): string {
 		if (this.isInteger()) {
-			return this.num < 0 ? `${displayText}- ${Math.abs(this.num)}` : `${displayText}${this.num}`;
+			return this.num < 0 ? `- ${Math.abs(this.num)}` : `${this.num}`;
 		}
 		// fraction
 		const sign = this.num < 0 ? '- ' : '';
-		return `${displayText}${sign}\\frac{${Math.abs(this.num)}}{${this.den}}`;
+		return `${sign}\\frac{${Math.abs(this.num)}}{${this.den}}`;
 	}
 
 	/**
@@ -294,8 +288,4 @@ export class Fraction {
 		}
 		return [simplifiedArray, gcd];
 	}
-}
-
-interface FractionToStringOptions {
-	displayMode: boolean;
 }
