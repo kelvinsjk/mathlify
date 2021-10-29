@@ -1,12 +1,12 @@
 {
   "name": "mathlify",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "bringing mathematics into the digital age",
   "source": "src/index.ts",
   "main": "lib/index.cjs",
   "module": "lib/main.esm.js",
   "types": "lib/types.d.ts",
-	"type": "module",
+  "type": "module",
   "scripts": {
     "prepare": "npm run build",
     "prepublishOnly": "npm test && npm run lint",
