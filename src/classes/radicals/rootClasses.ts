@@ -1,15 +1,15 @@
-import {Fraction} from '../fractionClass';
-import {Term} from '../algebra/termClasses';
+import { Fraction } from '../fractionClass';
+import { Term } from '../algebra/termClasses';
 import toFraction from '../../utils/toFraction';
 
 /**
  * the NthRoot class extends the `xTerm` class
  * `${coeff: Fraction, n: positive integer, radicand: non-negative integer}`
  * representing $a \sqrt[n]{b}$ where $a$ is the coefficient and $b$ is the radicand.
- * 
+ *
  * Note that we do not support negative radicands at this point.
  * For odd `n`, you may want to consider 'hoisting' the negative sign to the coefficient)
- * 
+ *
  * It is recommended to use the `SquareRoot` class instead of `NthRoot` for square roots.
  */
 export class NthRoot extends Term {
@@ -30,17 +30,17 @@ export class NthRoot extends Term {
    * we will also simplify our radical such that the final surd $a\sqrt[n]{b}$ is such that b is n-th power free (e.g. square free),
    * up to prime powers less than 100. At n = 9 and above, 97^9 is no longer a safe integer so this simplification may fail.
    */
-  constructor(n: number, radicand: number | Fraction, coeff: number|Fraction = 1) {
+  constructor(n: number, radicand: number | Fraction, coeff: number | Fraction = 1) {
     if (!Number.isInteger(n) || n < 2) {
       throw new Error('n must be a integer at least 2');
     }
-    if (radicand.valueOf() < 0){
+    if (radicand.valueOf() < 0) {
       throw new Error('radicand must be non-negative');
     }
     // 'rationalize'
     coeff = toFraction(coeff);
     if (typeof radicand !== 'number') {
-      const c = Math.pow(radicand.den, n-1);
+      const c = Math.pow(radicand.den, n - 1);
       radicand = radicand.num * c;
       coeff = coeff.divide(c);
     }
@@ -52,10 +52,10 @@ export class NthRoot extends Term {
     this.n = n;
     this.radicand = radicand;
     // edge cases for typesetting
-    if (this.radicand === 0){
+    if (this.radicand === 0) {
       this.coeff = new Fraction(0);
       this.variable = '';
-    } else if (this.radicand === 1){
+    } else if (this.radicand === 1) {
       this.variable = '';
     }
   }
@@ -64,7 +64,7 @@ export class NthRoot extends Term {
 
   /**
    * radical multiplication: $a_1 \sqrt[n]{b_1} \times a_2 \sqrt[n]{b_2} = a_1 a_2 \sqrt[n]{b_1 b_2}$
-   * 
+   *
    * only valid if n is the same for both terms.
    */
   times(x: NthRoot): NthRoot {
@@ -85,7 +85,7 @@ export class NthRoot extends Term {
 
   /**
    * exponentiation
-   * 
+   *
    * @param n non-negative integer
    * @returns this NthRoot to the power of n
    */
@@ -100,7 +100,7 @@ export class NthRoot extends Term {
    * @returns the value of this NthRoot in the primitive number type
    */
   valueOf(): number {
-    return Math.pow(this.radicand, 1 /this.n) * this.coeff.valueOf();
+    return Math.pow(this.radicand, 1 / this.n) * this.coeff.valueOf();
   }
 
   //// Comparison methods
@@ -120,7 +120,7 @@ export class NthRoot extends Term {
 
   /**
    * if this NthRoot is a rational number, returns the rational number as a `Fraction` instance.
-   * 
+   *
    * Warning: throws if NthRoot is not a rational number.
    */
   toFraction(): Fraction {
@@ -136,10 +136,10 @@ export class NthRoot extends Term {
 }
 
 /**
- * the SquareRoot class 
+ * the SquareRoot class
  * `${coeff: Fraction, radicand: non-negative integer}`
  * representing $a \sqrt{b}$ where $a$ is the coefficient and $b$ is the radicand.
- * 
+ *
  * Note that we do not support negative radicands at this point.
  */
 export class SquareRoot extends NthRoot {
@@ -155,8 +155,8 @@ export class SquareRoot extends NthRoot {
    * we will also simplify our radical such that the final surd $a\sqrt{b}$ is such that b square free,
    * up to prime powers less than 100
    */
-  constructor(radicand: number | Fraction, coeff: number|Fraction = 1) {
-    if (radicand.valueOf() < 0){
+  constructor(radicand: number | Fraction, coeff: number | Fraction = 1) {
+    if (radicand.valueOf() < 0) {
       throw new Error('radicand must be non-negative');
     }
     // 'rationalize'
@@ -172,7 +172,7 @@ export class SquareRoot extends NthRoot {
     radicand = b;
     super(2, radicand, coeff);
     // edge cases for typesetting
-    if (this.radicand !== 0 && this.radicand !== 1){
+    if (this.radicand !== 0 && this.radicand !== 1) {
       this.variable = `\\sqrt{${this.radicand}}`;
     }
   }
@@ -181,7 +181,7 @@ export class SquareRoot extends NthRoot {
 
   /**
    * radical multiplication: $a_1 \sqrt[n]{b_1} \times a_2 \sqrt[n]{b_2} = a_1 a_2 \sqrt[n]{b_1 b_2}$
-   * 
+   *
    * only valid if n is the same for both terms.
    */
   times(x: SquareRoot): SquareRoot {
@@ -196,7 +196,7 @@ export class SquareRoot extends NthRoot {
 
   /**
    * exponentiation
-   * 
+   *
    * @param n non-negative integer
    * @returns this NthRoot to the power of n
    */
