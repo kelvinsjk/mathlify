@@ -5,3 +5,4 @@ export { Fraction } from './classes/fractionClass';
 export { Term, xTerm, pTerm } from './classes/algebra/termClasses';
 export { Expression, xExpression } from './classes/algebra/expressionClasses';
 export { Polynomial } from './classes/algebra/polynomialClass';
+export { NthRoot, SquareRoot } from './classes/radicals/rootClasses';
