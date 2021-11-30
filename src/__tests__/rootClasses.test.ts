@@ -33,13 +33,13 @@ rootClasses('toString', () => {
 });
 
 rootClasses('arithmetic', () => {
-  assert.is(`${cubeRootTwo.pow(4)}`, '2 \\sqrt[3]{2}');
+  assert.is(`${cubeRootTwo.pow(4)}`, '\\sqrt[3]{16}');
   assert.is(`${threeSqrtTwo.pow(3)}`, '54 \\sqrt{2}');
   assert.is(`${oneSixthRootThree.times(sqrtTwo).negative()}`, '- \\frac{1}{6} \\sqrt{6}');
   assert.is(sqrtTwo.divide(threeSqrtTwo).isRational(), true);
   assert.is(threeSqrtTwo.square().isEqualTo(18), true);
   assert.is(`${cubeRootTwo.times(new NthRoot(3, 3))}`, '\\sqrt[3]{6}');
-  assert.is(`${cubeRootTwo.divide(new NthRoot(3, 3))}`, '\\frac{1}{9} \\sqrt[3]{18}');
+  assert.is(`${cubeRootTwo.divide(new NthRoot(3, 3))}`, '\\sqrt[3]{\\frac{2}{3}}');
   assert.is(`${sqrtTwo.reciprocal()}`, '\\frac{1}{2} \\sqrt{2}');
 });
 
@@ -54,13 +54,13 @@ rootClasses('type conversions', () => {
 
 rootClasses('clone', () => {
   const sqrtTwoClone = sqrtTwo.clone();
-  sqrtTwoClone.radicand = 3;
-  assert.is(sqrtTwo.radicand, 2);
-  assert.is(sqrtTwoClone.radicand, 3);
+  sqrtTwoClone.radicand = new Fraction(3);
+  assert.is(sqrtTwo.radicand.isEqualTo(2), true);
+  assert.is(sqrtTwoClone.radicand.isEqualTo(3), true);
   const cubeRootTwoClone = cubeRootTwo.clone();
-  cubeRootTwoClone.radicand = 3;
-  assert.is(cubeRootTwo.radicand, 2);
-  assert.is(cubeRootTwoClone.radicand, 3);
+  cubeRootTwoClone.radicand = new Fraction(3);
+  assert.is(cubeRootTwo.radicand.isEqualTo(2), true);
+  assert.is(cubeRootTwoClone.radicand.isEqualTo(3), true);
 });
 
 rootClasses.run();
