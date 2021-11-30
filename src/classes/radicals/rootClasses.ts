@@ -9,7 +9,7 @@ import toFraction from '../../utils/toFraction';
  *
  * Note that we do not support negative radicands at this point.
  * For odd `n`, you may want to consider 'hoisting' the negative sign to the coefficient)
- * 
+ *
  * Simplification of perfect Nth-powers are only done if the radicand is made up of
  * prime factors less than 100.
  *
@@ -41,7 +41,7 @@ export class NthRoot extends Term {
     const [aNum, bNum] = extractPowers(radicand.num, n);
     const [aDen, bDen] = extractPowers(radicand.den, n);
     if (bNum === 1 && bDen === 1) {
-      coeff = coeff.times(aNum).divide(aDen)
+      coeff = coeff.times(aNum).divide(aDen);
       radicand = new Fraction(1, 1);
     }
     // create term
@@ -229,7 +229,7 @@ export class SquareRoot extends NthRoot {
 
 /**
  * takes an integer x, and returns [a, b] such that x = a^n b and b is n-power free (up to 100)
- * */ 
+ * */
 function extractPowers(x: number, n = 2, y = 1): [number, number] {
   //if (!Number.isInteger(n) || n < 2) {
   //  throw 'n must be an integer more than 2';
