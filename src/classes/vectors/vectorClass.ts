@@ -1,8 +1,8 @@
-import { Expression } from "../algebra/expressionClasses";
+import { Expression } from '../algebra/expressionClasses';
 import { Term } from '../algebra/termClasses';
-import { SquareRoot } from "../radicals/rootClasses";
+import { SquareRoot } from '../radicals/rootClasses';
 import { Fraction } from '../fractionClass';
-import toFraction from "../../utils/toFraction";
+import toFraction from '../../utils/toFraction';
 
 /**
  * Vector class representing a 3D vector coeff(x i + y j + z k)
@@ -11,60 +11,64 @@ export class Vector {
 	x: Fraction;
 	y: Fraction;
 	z: Fraction;
-	coeff: Fraction;   
+	coeff: Fraction;
 	/**
 	 * creates a new Vector instance
-	 * 
+	 *
 	 * @param options defaults to `{coeff: 1, simplify: false, stretchable: false}`
 	 *  if `simplify` is `true`, then we will factorize our expression such that
 	 *  x,y,z are integers with gcd 1.
 	 *  if `stretchable` is set to true, then we will `simplify` and then
 	 *  set `coeff` to be 1
-	 * 
+	 *
 	 */
-	constructor(x: number|Fraction, y?: number|Fraction, z?: number|Fraction,
-		options?: {coeff?: number|Fraction, simplify?: boolean, stretchable?: boolean}) {
-			x = toFraction(x);
-			y = y===undefined ? Fraction.ZERO : toFraction(y);
-			z = z===undefined ? Fraction.ZERO : toFraction(z);
-			let {coeff, simplify, stretchable} = {
-				coeff: Fraction.ONE,
-				simplify: false,
-				stretchable: false,
-				...options
-			}
-			coeff = toFraction(coeff);
-			if (stretchable||simplify) {
-				[[x, y, z], coeff] = Fraction.factorize(x,y,z);
-				coeff = stretchable ? Fraction.ONE : coeff;
-			}
-			this.x =     coeff.isEqualTo(0) ? Fraction.ZERO : x;
-			this.y =     coeff.isEqualTo(0) ? Fraction.ZERO : y;
-			this.z =     coeff.isEqualTo(0) ? Fraction.ZERO : z;
-			this.coeff = coeff.isEqualTo(0) ? Fraction.ONE : coeff;
+	constructor(
+		x: number | Fraction,
+		y?: number | Fraction,
+		z?: number | Fraction,
+		options?: { coeff?: number | Fraction; simplify?: boolean; stretchable?: boolean },
+	) {
+		x = toFraction(x);
+		y = y === undefined ? Fraction.ZERO : toFraction(y);
+		z = z === undefined ? Fraction.ZERO : toFraction(z);
+		let { coeff, simplify, stretchable } = {
+			coeff: Fraction.ONE,
+			simplify: false,
+			stretchable: false,
+			...options,
+		};
+		coeff = toFraction(coeff);
+		if (stretchable || simplify) {
+			[[x, y, z], coeff] = Fraction.factorize(x, y, z);
+			coeff = stretchable ? Fraction.ONE : coeff;
+		}
+		this.x = coeff.isEqualTo(0) ? Fraction.ZERO : x;
+		this.y = coeff.isEqualTo(0) ? Fraction.ZERO : y;
+		this.z = coeff.isEqualTo(0) ? Fraction.ZERO : z;
+		this.coeff = coeff.isEqualTo(0) ? Fraction.ONE : coeff;
 	}
 
 	/**
 	 * simplifies the current vector to k(a,b,c) by taking
 	 * out common factors so that gcd(a,b,c)=1
-	 * 
+	 *
 	 * @param options defaults to `{stretchable: false}`.
 	 * If set to true, will set coeff to 1
-	 * 
+	 *
 	 * WARING: this method mutates the current instance
-	 * 
+	 *
 	 * @returns a reference to this vector
 	 */
-	simplify(options = {stretchable: false}): this {
+	simplify(options = { stretchable: false }): this {
 		const stretchable = options.stretchable;
-		if (!this.isZero()){
-			let [[x,y,z], coeff] = Fraction.factorize(this.x,this.y,this.z);
+		if (!this.isZero()) {
+			let [[x, y, z], coeff] = Fraction.factorize(this.x, this.y, this.z);
 			this.x = x;
 			this.y = y;
 			this.z = z;
 			this.coeff = stretchable ? Fraction.ONE : coeff.times(this.coeff);
 		}
-		return this
+		return this;
 	}
 
 	/**
@@ -79,11 +83,11 @@ export class Vector {
 	 * @returns the dot product
 	 */
 	dot(v2: Vector): Fraction {
-		return this.coeff.times(v2.coeff).times(this.x.times(v2.x).plus(this.y.times(v2.y)).plus(this.z.times(v2.z)))
+		return this.coeff.times(v2.coeff).times(this.x.times(v2.x).plus(this.y.times(v2.y)).plus(this.z.times(v2.z)));
 	}
 
 	/**
-	 * @returns the magnitude squared of this vector 
+	 * @returns the magnitude squared of this vector
 	 */
 	magnitudeSquare(): Fraction {
 		return this.dot(this);
@@ -105,19 +109,14 @@ export class Vector {
 
 	/**
 	 * vector addition
-	 * 
+	 *
 	 * if the coeffs are the same, will retain the same coeff
-	 * 
+	 *
 	 * if the coeffs are different, will expand them in before performing addition
 	 */
-	plus(v2: Vector, options?: {simplify?: boolean, stretchable?: boolean}): Vector {
-		if (this.coeff.isEqualTo(v2.coeff)){
-			return new Vector(
-				this.x.plus(v2.x),
-				this.y.plus(v2.y),
-				this.z.plus(v2.z),
-				options
-			)
+	plus(v2: Vector, options?: { simplify?: boolean; stretchable?: boolean }): Vector {
+		if (this.coeff.isEqualTo(v2.coeff)) {
+			return new Vector(this.x.plus(v2.x), this.y.plus(v2.y), this.z.plus(v2.z), options);
 		} else {
 			return this.expand().plus(v2.expand(), options);
 		}
@@ -125,15 +124,15 @@ export class Vector {
 
 	/**
 	 * returns the negative of this vector
-	 * 
+	 *
 	 * @param options default to `{multiplyIntoCoeff: false}`
 	 * the coeff stays the same while the components are made negative
 	 * if false, the coeff is made negative instead
 	 */
-	negative(options = {multiplyIntoCoeff: false}): Vector {
-		return options.multiplyIntoCoeff ? 
-			new Vector(this.x, this.y, this.z, {coeff: this.coeff.negative()})
-			: new Vector(this.x.negative(), this.y.negative(), this.z.negative(), {coeff: this.coeff});
+	negative(options = { multiplyIntoCoeff: false }): Vector {
+		return options.multiplyIntoCoeff
+			? new Vector(this.x, this.y, this.z, { coeff: this.coeff.negative() })
+			: new Vector(this.x.negative(), this.y.negative(), this.z.negative(), { coeff: this.coeff });
 	}
 
 	/**
@@ -145,26 +144,26 @@ export class Vector {
 
 	/**
 	 * scalar multiplication
-	 * 
-	 * @param options defaults to `{multiplyIntoCoeff: true}`
+	 *
+	 * @param options defaults to `{multiplyIntoCoeff: false}`
 	 * the coeff stays the same while the components are multiplied
 	 * if false, the coeff is multiplied instead
 	 */
-	multiply(k: number|Fraction, options = { multiplyIntoCoeff: false }): Vector {
-		return options.multiplyIntoCoeff ?
-			new Vector(this.x, this.y, this.z, {coeff: this.coeff.times(k)})
-			: new Vector(this.x.times(k), this.y.times(k), this.z.times(k), {coeff: this.coeff});
+	multiply(k: number | Fraction, options = { multiplyIntoCoeff: false }): Vector {
+		return options.multiplyIntoCoeff
+			? new Vector(this.x, this.y, this.z, { coeff: this.coeff.times(k) })
+			: new Vector(this.x.times(k), this.y.times(k), this.z.times(k), { coeff: this.coeff });
 	}
 
-	/** 
-	 * @returns the cross product (this cross v2) 
+	/**
+	 * @returns the cross product (this cross v2)
 	 */
-	cross(v2: Vector, options?: {simplify?: boolean, stretchable?: boolean}): Vector {
+	cross(v2: Vector, options?: { simplify?: boolean; stretchable?: boolean }): Vector {
 		const coeff = this.coeff.times(v2.coeff);
 		const x = this.y.times(v2.z).minus(this.z.times(v2.y));
 		const y = this.z.times(v2.x).minus(this.x.times(v2.z));
 		const z = this.x.times(v2.y).minus(this.y.times(v2.x));
-		return new Vector(x,y,z, {coeff, ...options});
+		return new Vector(x, y, z, { coeff, ...options });
 	}
 
 	/**
@@ -185,11 +184,10 @@ export class Vector {
 	 * @returns latex string representing the vector in column vector form
 	 */
 	toString(): string {
-		if (this.isZero()){
-			return `\\begin{pmatrix}\n\t0 \\\\\n\t0 \\\\\n\t0\n\\end{pmatrix}`
+		if (this.isZero()) {
+			return `\\begin{pmatrix}\n\t0 \\\\\n\t0 \\\\\n\t0\n\\end{pmatrix}`;
 		}
-		const columnVector = 
-			`\\begin{pmatrix}\n\t${this.x} \\\\\n\t${this.y} \\\\\n\t${this.z}\n\\end{pmatrix}`;
+		const columnVector = `\\begin{pmatrix}\n\t${this.x} \\\\\n\t${this.y} \\\\\n\t${this.z}\n\\end{pmatrix}`;
 		const term = new Term(this.coeff, columnVector);
 		return `${term}`;
 	}
@@ -198,10 +196,14 @@ export class Vector {
 	 * @returns latex string representing the vector in ijk notation
 	 */
 	toIJKString(): string {
-		if (this.isZero()){
+		if (this.isZero()) {
 			return '\\mathbf{0}';
 		}
-		const expression = new Expression(new Term(this.x, '\\mathbf{i}'), new Term(this.y, '\\mathbf{j}'), new Term(this.z, '\\mathbf{k}'));
+		const expression = new Expression(
+			new Term(this.x, '\\mathbf{i}'),
+			new Term(this.y, '\\mathbf{j}'),
+			new Term(this.z, '\\mathbf{k}'),
+		);
 		const expressionString = this.coeff.isEqualTo(1) ? `${expression}` : `\\left( ${expression} \\right)`;
 		const term = new Term(this.coeff, expressionString);
 		return `${term}`;
@@ -209,7 +211,7 @@ export class Vector {
 
 	/**
 	 * @returns (kx, ky, kz) as a coordinate triple.
-	 * 
+	 *
 	 * @param name The name of the point which is attached to the front of the coordinates
 	 */
 	toCoordinates(name = ''): string {
@@ -226,41 +228,41 @@ export class Vector {
 
 	/**
 	 * @returns angle between two vectors as a string in degrees
-	 * 
+	 *
 	 * @param options default to {acute: false, sineMode: false}
 	 */
-	angle(v2: Vector, options?: {acute?: boolean, sineMode?: boolean}): string {
+	angle(v2: Vector, options?: { acute?: boolean; sineMode?: boolean }): string {
 		let cosSquare = this.dot(v2).square().divide(this.magnitudeSquare()).divide(v2.magnitudeSquare());
-		const {acute, sineMode} = {
+		const { acute, sineMode } = {
 			acute: false,
 			sineMode: false,
-			...options
-		}
-		if (cosSquare.isEqualTo(1)){
+			...options,
+		};
+		if (cosSquare.isEqualTo(1)) {
 			return sineMode ? '90^\\circ' : '0^\\circ';
-		//} else if (cosSquare.isEqualTo(new Fraction(3,4))) {
-		//	if (sineMode) {
-		//		return '60^\\circ'
-		//	} else {
-		//		return (acute || this.dot(v2).isGreaterThan(0)) ? '30^\\circ' : '150^\\circ';
-		//	}
-		} else if (cosSquare.isEqualTo(new Fraction(1,2))) {
-			return (sineMode || acute || this.dot(v2).isGreaterThan(0)) ? '45^\\circ' : '135^\\circ';
-		//} else if (cosSquare.isEqualTo(new Fraction(1,4))) {
-		//	if (sineMode) {
-		//		return '30^\\circ'
-		//	} else {
-		//		return (acute || this.dot(v2).isGreaterThan(0)) ? '60^\\circ' : '120^\\circ';
-		//	}
+			//} else if (cosSquare.isEqualTo(new Fraction(3,4))) {
+			//	if (sineMode) {
+			//		return '60^\\circ'
+			//	} else {
+			//		return (acute || this.dot(v2).isGreaterThan(0)) ? '30^\\circ' : '150^\\circ';
+			//	}
+		} else if (cosSquare.isEqualTo(new Fraction(1, 2))) {
+			return sineMode || acute || this.dot(v2).isGreaterThan(0) ? '45^\\circ' : '135^\\circ';
+			//} else if (cosSquare.isEqualTo(new Fraction(1,4))) {
+			//	if (sineMode) {
+			//		return '30^\\circ'
+			//	} else {
+			//		return (acute || this.dot(v2).isGreaterThan(0)) ? '60^\\circ' : '120^\\circ';
+			//	}
 		} else if (cosSquare.isEqualTo(0)) {
 			return sineMode ? '0^\\circ' : '90^\\circ';
 		} else {
-			const alpha = Math.acos(Math.sqrt(cosSquare.valueOf()))*180/Math.PI;
+			const alpha = (Math.acos(Math.sqrt(cosSquare.valueOf())) * 180) / Math.PI;
 			if (sineMode) {
-				const theta = 90-alpha;
+				const theta = 90 - alpha;
 				return `${theta.toFixed(1)}^\\circ`;
 			} else {
-				const theta = (acute || this.dot(v2).isGreaterThan(0)) ? alpha : 180-alpha;
+				const theta = acute || this.dot(v2).isGreaterThan(0) ? alpha : 180 - alpha;
 				return `${theta.toFixed(1)}^\\circ`;
 			}
 		}
@@ -270,7 +272,7 @@ export class Vector {
 	 * clones a new instance of this vector
 	 */
 	clone(): Vector {
-		return new Vector(this.x, this.y, this.z, {coeff: this.coeff});
+		return new Vector(this.x, this.y, this.z, { coeff: this.coeff });
 	}
 
 	////
@@ -288,10 +290,9 @@ export class Vector {
 	/**
 	 * the y-axis unit vector (0,1,0)
 	 */
-	static J = new Vector(0,1);
+	static J = new Vector(0, 1);
 	/**
 	 * the z-axis unit vector (0,0,1)
 	 */
-	static K = new Vector(0,0,1);
-
+	static K = new Vector(0, 0, 1);
 }
