@@ -38,34 +38,33 @@ export class Vector {
 				[[x, y, z], coeff] = Fraction.factorize(x,y,z);
 				coeff = stretchable ? Fraction.ONE : coeff;
 			}
-			this.x = x;
-			this.y = y;
-			this.z = z;
-			this.coeff = coeff;
+			this.x =     coeff.isEqualTo(0) ? Fraction.ZERO : x;
+			this.y =     coeff.isEqualTo(0) ? Fraction.ZERO : y;
+			this.z =     coeff.isEqualTo(0) ? Fraction.ZERO : z;
+			this.coeff = coeff.isEqualTo(0) ? Fraction.ONE : coeff;
 	}
 
 	/**
 	 * simplifies the current vector to k(a,b,c) by taking
 	 * out common factors so that gcd(a,b,c)=1
 	 * 
-	 * @param stretchable defaults to false. If set to true, will set
-	 * coeff to 1
+	 * @param options defaults to `{stretchable: false}`.
+	 * If set to true, will set coeff to 1
 	 * 
 	 * WARING: this method mutates the current instance
+	 * 
+	 * @returns a reference to this vector
 	 */
-	simplify(stretchable = false): void {
-		//if (this.isZero()){
-		//	this.x = Fraction.ZERO;
-		//	this.y = Fraction.ZERO;
-		//	this.z = Fraction.ZERO;
-		//	this.coeff = Fraction.ONE;
-		//} else {
-		const [[x,y,z], coeff] = Fraction.factorize(this.x,this.y,this.z);
-		this.x = x;
-		this.y = y;
-		this.z = z;
-		this.coeff = stretchable ? Fraction.ONE : coeff;
-		//}
+	simplify(options = {stretchable: false}): this {
+		const stretchable = options.stretchable;
+		if (!this.isZero()){
+			let [[x,y,z], coeff] = Fraction.factorize(this.x,this.y,this.z);
+			this.x = x;
+			this.y = y;
+			this.z = z;
+			this.coeff = stretchable ? Fraction.ONE : coeff.times(this.coeff);
+		}
+		return this
 	}
 
 	/**
@@ -127,13 +126,14 @@ export class Vector {
 	/**
 	 * returns the negative of this vector
 	 * 
-	 * @param keepCoeff if true (default), the coeff stays the same while the components are made negative
+	 * @param options default to `{multiplyIntoCoeff: false}`
+	 * the coeff stays the same while the components are made negative
 	 * if false, the coeff is made negative instead
 	 */
-	negative(keepCoeff = true): Vector {
-		return keepCoeff ? 
-			new Vector(this.x.negative(), this.y.negative(), this.z.negative(), {coeff: this.coeff})
-			: new Vector(this.x, this.y, this.z, {coeff: this.coeff.negative()});
+	negative(options = {multiplyIntoCoeff: false}): Vector {
+		return options.multiplyIntoCoeff ? 
+			new Vector(this.x, this.y, this.z, {coeff: this.coeff.negative()})
+			: new Vector(this.x.negative(), this.y.negative(), this.z.negative(), {coeff: this.coeff});
 	}
 
 	/**
@@ -146,13 +146,14 @@ export class Vector {
 	/**
 	 * scalar multiplication
 	 * 
-	 * @param keepCoeff if true (default), the coeff stays the same while the components are multiplied
+	 * @param options defaults to `{multiplyIntoCoeff: true}`
+	 * the coeff stays the same while the components are multiplied
 	 * if false, the coeff is multiplied instead
 	 */
-	multiply(k: number|Fraction, keepCoeff = true): Vector {
-		return keepCoeff ?
-			new Vector(this.x.times(k), this.y.times(k), this.z.times(k), {coeff: this.coeff}) 
-			: new Vector(this.x, this.y, this.z, {coeff: this.coeff.times(k)}); 
+	multiply(k: number|Fraction, options = { multiplyIntoCoeff: false }): Vector {
+		return options.multiplyIntoCoeff ?
+			new Vector(this.x, this.y, this.z, {coeff: this.coeff.times(k)})
+			: new Vector(this.x.times(k), this.y.times(k), this.z.times(k), {coeff: this.coeff});
 	}
 
 	/** 
@@ -184,11 +185,11 @@ export class Vector {
 	 * @returns latex string representing the vector in column vector form
 	 */
 	toString(): string {
-		const columnVector = `\\begin{pmatrix}
-			${this.x} \\\\
-			${this.y} \\\\
-			${this.z} \\\\
-		\\end{pmatrix}`;
+		if (this.isZero()){
+			return `\\begin{pmatrix}\n\t0 \\\\\n\t0 \\\\\n\t0\n\\end{pmatrix}`
+		}
+		const columnVector = 
+			`\\begin{pmatrix}\n\t${this.x} \\\\\n\t${this.y} \\\\\n\t${this.z}\n\\end{pmatrix}`;
 		const term = new Term(this.coeff, columnVector);
 		return `${term}`;
 	}
@@ -197,8 +198,11 @@ export class Vector {
 	 * @returns latex string representing the vector in ijk notation
 	 */
 	toIJKString(): string {
+		if (this.isZero()){
+			return '\\mathbf{0}';
+		}
 		const expression = new Expression(new Term(this.x, '\\mathbf{i}'), new Term(this.y, '\\mathbf{j}'), new Term(this.z, '\\mathbf{k}'));
-		const expressionString = this.coeff.isEqualTo(1) ? `${expression}` : `( ${expression} )`;
+		const expressionString = this.coeff.isEqualTo(1) ? `${expression}` : `\\left( ${expression} \\right)`;
 		const term = new Term(this.coeff, expressionString);
 		return `${term}`;
 	}
@@ -234,30 +238,26 @@ export class Vector {
 		}
 		if (cosSquare.isEqualTo(1)){
 			return sineMode ? '90^\\circ' : '0^\\circ';
-		} else if (cosSquare.isEqualTo(new Fraction(3,4))) {
-			if (sineMode) {
-				return '60^\\circ'
-			} else {
-				return (acute || this.dot(v2).isGreaterThan(0)) ? '30^\\circ' : '150^\\circ';
-			}
+		//} else if (cosSquare.isEqualTo(new Fraction(3,4))) {
+		//	if (sineMode) {
+		//		return '60^\\circ'
+		//	} else {
+		//		return (acute || this.dot(v2).isGreaterThan(0)) ? '30^\\circ' : '150^\\circ';
+		//	}
 		} else if (cosSquare.isEqualTo(new Fraction(1,2))) {
-			if (sineMode) {
-				return '45^\\circ'
-			} else {
-				return (acute || this.dot(v2).isGreaterThan(0)) ? '45^\\circ' : '135^\\circ';
-			}
-		} else if (cosSquare.isEqualTo(new Fraction(1,4))) {
-			if (sineMode) {
-				return '30^\\circ'
-			} else {
-				return (acute || this.dot(v2).isGreaterThan(0)) ? '60^\\circ' : '120^\\circ';
-			}
+			return (sineMode || acute || this.dot(v2).isGreaterThan(0)) ? '45^\\circ' : '135^\\circ';
+		//} else if (cosSquare.isEqualTo(new Fraction(1,4))) {
+		//	if (sineMode) {
+		//		return '30^\\circ'
+		//	} else {
+		//		return (acute || this.dot(v2).isGreaterThan(0)) ? '60^\\circ' : '120^\\circ';
+		//	}
 		} else if (cosSquare.isEqualTo(0)) {
 			return sineMode ? '0^\\circ' : '90^\\circ';
 		} else {
 			const alpha = Math.acos(Math.sqrt(cosSquare.valueOf()))*180/Math.PI;
 			if (sineMode) {
-				const theta = 180-alpha;
+				const theta = 90-alpha;
 				return `${theta.toFixed(1)}^\\circ`;
 			} else {
 				const theta = (acute || this.dot(v2).isGreaterThan(0)) ? alpha : 180-alpha;
