@@ -165,90 +165,104 @@ export class Plane {
 	}
 
 	/**
-	 * finds intersection point between two lines
-	 *
-	 * @returns the position vector of the point of intersection, or null if there are no/infinite number of solutions
+	 * finds intersection between this plane and another line/plane
 	 */
-	intersect(l2: Line): Vector | null {
-		if (this.isParallelTo(l2)) {
-			// parallel or co-incident lines
-			return null;
+	intersect(lineOrPlane: Line | Plane): Vector | Line | null | Plane {
+		return lineOrPlane instanceof Line ? this.intersectLine(lineOrPlane) : this.intersectPlane(lineOrPlane);
+	}
+
+	/**
+	 * finds the intersection between this plane and a line
+	 */
+	intersectLine(l: Line): Vector | null | Line {
+		if (this.isParallelTo(l)) {
+			// parallel or on
+			return this.contains(l) ? l.clone() : null;
 		}
-		// solve for lambda and mu from first two rows
-		const [a1, b1, c1, a2, b2, c2] = [
-			this.d.x,
-			l2.d.x.negative(),
-			l2.a.x.minus(this.a.x),
-			this.d.y,
-			l2.d.y.negative(),
-			l2.a.y.minus(this.a.y),
-		];
-		const det = determinant(a1, b1, a2, b2);
+		// intersecting
+		const lambda = this.rhs.minus(l.a.dot(this.n)).divide(l.d.dot(this.n));
+		return l.point(lambda);
+	}
+
+	/**
+	 * finds the intersection between this plane and a plane
+	 */
+	intersectPlane(p2: Plane): Line | null | Plane {
+		if (this.isParallelTo(p2)) {
+			// parallel or coincident
+			return this.isEqualTo(p2) ? p2.clone() : null;
+		}
+		// intersecting
+		const d = this.n.cross(p2.n).simplify({ stretchable: true });
+		// try z = 0
+		let det = determinant(this.n.x, this.n.y, p2.n.x, p2.n.y);
 		if (det.isEqualTo(0)) {
-			// either infinite solution or no solution
-			return null;
-		}
-		const lambda = determinant(c1, b1, c2, b2).divide(det);
-		const mu = determinant(a1, c1, a2, c2).divide(det);
-		// check if intersecting
-		if (this.point(lambda).isEqualTo(l2.point(mu))) {
-			// intersecting lines
-			return this.point(lambda);
+			// try y = 0
+			det = determinant(this.n.x, this.n.z, p2.n.x, p2.n.z);
+			if (det.isEqualTo(0)) {
+				// x = 0
+				det = determinant(this.n.y, this.n.z, p2.n.y, p2.n.z);
+				// theoretically non-zero since planes not parallel
+				const y = determinant(this.rhs, this.n.z, p2.rhs, p2.n.z).divide(det);
+				const z = determinant(this.n.y, this.rhs, p2.n.y, p2.rhs).divide(det);
+				return new Line(new Vector(0, y, z), d);
+			} else {
+				// y = 0
+				const x = determinant(this.rhs, this.n.z, p2.rhs, p2.n.z).divide(det);
+				const z = determinant(this.n.x, this.rhs, p2.n.x, p2.rhs).divide(det);
+				return new Line(new Vector(x, 0, z), d);
+			}
 		} else {
-			// skew lines
-			return null;
+			// z = 0
+			const y = determinant(this.n.x, this.rhs, p2.n.z, p2.rhs).divide(det);
+			const x = determinant(this.rhs, this.n.y, p2.rhs, p2.n.y).divide(det);
+			return new Line(new Vector(x, y, 0), d);
 		}
 	}
 
 	/**
-	 * finds the foot of perpendicular from point to this line
+	 * finds the foot of perpendicular from point to this plane
 	 */
 	footOfPerpendicular(point: Vector): Vector {
-		const AB = point.minus(this.a);
-		const ABDotD = AB.dot(this.d);
-		const lambda = ABDotD.divide(this.d.magnitudeSquare());
-		const AF = this.d.multiply(lambda);
-		return AF.plus(this.a).expand();
+		const AB = point.minus(this.point());
+		const ABDotN = AB.dot(this.n);
+		const lambda = ABDotN.divide(this.n.magnitudeSquare());
+		const FB = this.n.multiply(lambda);
+		return point.minus(FB).expand();
 	}
 
 	/**
-	 * finds the reflection of point about this line
+	 * finds the reflection of point about this plane
 	 */
-	reflection(point: Vector): Vector {
+	pointReflection(point: Vector): Vector {
 		const OF = this.footOfPerpendicular(point);
 		return OF.multiply(2).minus(point).expand();
 	}
 
 	/**
-	 * checks if two lines are skew
+	 * finds the reflection of line l about this plane
 	 */
-	isSkewTo(l2: Line): boolean {
-		return !this.isParallelTo(l2) && !this.isEqualTo(l2) && this.intersect(l2) === null;
+	lineReflection(l: Line): Line {
+		if (this.isParallelTo(l)) {
+			const OAPrime = this.pointReflection(l.a);
+			return new Line(OAPrime, l.d);
+		}
+		// line and plane intersect at one point
+		const OX = this.intersect(l) as Vector;
+		let OA = l.a;
+		// ensure OA doesn't lie on plane
+		if (this.contains(OA)) {
+			OA = l.point(1);
+		}
+		const OAPrime = this.pointReflection(OA);
+		return new Line(OX, OA, { twoPointsMode: true });
 	}
 
 	/**
-	 * finds the reflection of line l2 about this line
-	 *
-	 * WARNING: throws an error if skew lines encountered
+	 * reflects a point/line about this plane
 	 */
-	lineReflection(l2: Line): Line {
-		if (this.isParallelTo(l2)) {
-			const OAPrime = this.reflection(l2.a);
-			return new Line(OAPrime, this.d);
-		}
-		const OX = this.intersect(l2);
-		if (OX === null) {
-			// skew lines
-			throw new Error('Cannot find line reflection of skew lines');
-		} else {
-			// intersecting
-			let OA = l2.a;
-			if (this.contains(OA)) {
-				OA = l2.point(1);
-			}
-			const OAPrime = this.reflection(OA);
-			return new Line(OX, OAPrime.minus(OX));
-		}
+	reflect(pointOrLine: Line | Vector): Vector | Line {
+		return pointOrLine instanceof Line ? this.lineReflection(pointOrLine) : this.pointReflection(pointOrLine);
 	}
 
 	/**
@@ -271,6 +285,13 @@ export class Plane {
 	toCartesianString(): string {
 		const xyzExpression = new Expression(new Term(this.n.x, 'x'), new Term(this.n.y, 'y'), new Term(this.n.z, 'z'));
 		return `${xyzExpression} = ${this.rhs}`;
+	}
+
+	/**
+	 * clones a new instance of this line
+	 */
+	clone(): Plane {
+		return new Plane(this.n, { rhs: this.rhs });
 	}
 }
 

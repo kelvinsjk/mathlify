@@ -75,13 +75,13 @@ export class Line {
 	}
 
 	/**
-	 * finds angle between lines/line and vector
+	 * finds *acute* angle between lines/line and vector
 	 *
 	 * @returns angle between this line and given vector/line
 	 */
 	angle(v: Vector | Line): string {
 		v = v instanceof Line ? v.d : v;
-		return this.d.angle(v);
+		return this.d.angle(v, { acute: true });
 	}
 
 	/**
@@ -106,12 +106,14 @@ export class Line {
 	/**
 	 * finds intersection point between two lines
 	 *
-	 * @returns the position vector of the point of intersection, or null if there are no/infinite number of solutions
+	 * @returns the position vector of the point of intersection,
+	 * or null if there are no points of intersection,
+	 * or a line if the two lines are coincident.
+	 *
 	 */
-	intersect(l2: Line): Vector | null {
+	intersect(l2: Line): Vector | null | Line {
 		if (this.isParallelTo(l2)) {
-			// parallel or co-incident lines
-			return null;
+			return this.isEqualTo(l2) ? this.clone() : null;
 		}
 		// solve for lambda and mu from first two rows
 		const [a1, b1, c1, a2, b2, c2] = [
@@ -151,9 +153,16 @@ export class Line {
 	}
 
 	/**
+	 * finds the reflection of a point/line about this line
+	 */
+	reflect(v: Vector | Line): Vector | Line {
+		return v instanceof Line ? this.lineReflection(v) : this.pointReflection(v);
+	}
+
+	/**
 	 * finds the reflection of point about this line
 	 */
-	reflection(point: Vector): Vector {
+	pointReflection(point: Vector): Vector {
 		const OF = this.footOfPerpendicular(point);
 		return OF.multiply(2).minus(point).expand();
 	}
@@ -172,10 +181,10 @@ export class Line {
 	 */
 	lineReflection(l2: Line): Line {
 		if (this.isParallelTo(l2)) {
-			const OAPrime = this.reflection(l2.a);
+			const OAPrime = this.pointReflection(l2.a);
 			return new Line(OAPrime, this.d);
 		}
-		const OX = this.intersect(l2);
+		const OX = this.intersect(l2) as Vector | null;
 		if (OX === null) {
 			// skew lines
 			throw new Error('Cannot find line reflection of skew lines');
@@ -185,7 +194,7 @@ export class Line {
 			if (this.contains(OA)) {
 				OA = l2.point(1);
 			}
-			const OAPrime = this.reflection(OA);
+			const OAPrime = this.pointReflection(OA);
 			return new Line(OX, OAPrime.minus(OX));
 		}
 	}
@@ -201,7 +210,7 @@ export class Line {
 	 * @returns equation of the line r = a + lambda d in ijk form
 	 */
 	toIJKString(): string {
-		return `\\mathbf{r} = \\left ( ${this.a.toIJKString()} \\right) + ${
+		return `\\mathbf{r} = \\left( ${this.a.toIJKString()} \\right) + ${
 			this.lambda
 		} \\left( ${this.d.toIJKString()} \\right)`;
 	}
@@ -234,7 +243,7 @@ export class Line {
 				} else {
 					// x zero, y,z non-zero
 					const zString = toCartesianComponent('z', this.a.z, this.d.z);
-					return `${yString} = ${zString}, x = ${this.a.x}`;
+					return `x = ${this.a.x}, ${yString} = ${zString}`;
 				}
 			}
 		} else {
@@ -264,6 +273,13 @@ export class Line {
 			}
 		}
 	}
+
+	/**
+	 * clones and returns a new instance of this line
+	 */
+	clone(): Line {
+		return new Line(this.a, this.d, { lambda: this.lambda });
+	}
 }
 
 function toCartesianComponent(x: string, a: Fraction, d: Fraction): string {
@@ -272,8 +288,9 @@ function toCartesianComponent(x: string, a: Fraction, d: Fraction): string {
 	if (d.isEqualTo(1)) {
 		xString = `${xMinusA}`;
 	} else {
-		// d not 1
-		const xNum = d.den === 1 ? `${xMinusA}` : `${d.den} \\left( ${xMinusA} \\right)`;
+		// d should be 1 since direction vectors are simplified during instantiation
+		//// old code: const xNum = d.den === 1 ? `${xMinusA}` : `${d.den} \\left( ${xMinusA} \\right)`;
+		const xNum = `${xMinusA}`;
 		xString = `\\frac{${xNum}}{${d.num}}`;
 	}
 	return xString;
