@@ -1,9 +1,9 @@
 import { test, suite } from 'uvu';
 import * as assert from 'uvu/assert';
 
-import { gcd, getRandomInt } from '../index';
+import { gcd, getRandomInt, getRandomVec, Vector } from '../index';
 
-const arithmeticFns = suite('arithmetic functions');
+const arithmeticFns = suite('arithmetic and random functions');
 
 arithmeticFns('gcd', () => {
 	assert.throws(() => gcd(0, 0));
@@ -29,6 +29,15 @@ arithmeticFns('getRandomInt', () => {
 	// 99% chance of 100% coverage
 	assert.is(getRandomInt(1, 10, { avoid: [1, 2, 3, 4, 5, 6, 7, 8, 9] }), 10);
 	assert.is(getRandomInt(1, 10, { avoid: [1, 2, 3, 5, 6, 7, 8, 9, 10] }), 4);
+});
+
+arithmeticFns('getRandomVec', () => {
+	// 99% chance of 100% coverage
+	for (let i = 0; i < 35; i++) {
+		assert.is(getRandomVec({ min: 0, max: 1, nonzero: true }).isEqualTo(Vector.ZERO), false);
+	}
+	const simplifiedVec = getRandomVec({ simplify: true });
+	assert.is(gcd(simplifiedVec.x.num, simplifiedVec.y.num, simplifiedVec.z.num), 1);
 });
 
 arithmeticFns.run();

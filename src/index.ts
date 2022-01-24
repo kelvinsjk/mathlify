@@ -1,5 +1,5 @@
 export { gcd } from './functions/arithmetic/gcd';
-export { getRandomInt } from './functions/random/getRandomInt';
+export { getRandomInt, getRandomVec } from './functions/random/index';
 // classes
 export { Fraction } from './classes/fractionClass';
 export { Term, xTerm, pTerm, Expression, xExpression, Polynomial } from './classes/algebra/index';
