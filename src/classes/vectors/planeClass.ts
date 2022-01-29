@@ -36,11 +36,12 @@ export class Plane {
 		};
 		let n: Vector;
 		if (mode === 'rhs') {
-			this.rhs = toFraction(rhs);
-			n = v1.clone().simplify({ stretchable: true });
+			n = v1.clone().simplify();
+			this.rhs = toFraction(rhs).divide(n.coeff).times(v1.coeff);
+			n.simplify({ stretchable: true });
 		} else if (mode === 'aDotN') {
-			this.rhs = v1.dot(v2);
 			n = v1.clone().simplify({ stretchable: true });
+			this.rhs = n.dot(v2);
 		} else if (mode === 'ptDD') {
 			n = v2.cross(v3).simplify({ stretchable: true });
 			this.rhs = v1.dot(n);
@@ -94,10 +95,10 @@ export class Plane {
 			let k: Fraction;
 			if (this.n.x.isEqualTo(0)) {
 				if (this.n.y.isEqualTo(0)) {
-					k = p2.n.y.divide(this.n.y);
-				} else {
 					// theoretically z component should be non-zero
 					k = p2.n.z.divide(this.n.z);
+				} else {
+					k = p2.n.y.divide(this.n.y);
 				}
 			} else {
 				// division of x component allowed
@@ -214,7 +215,7 @@ export class Plane {
 			}
 		} else {
 			// z = 0
-			const y = determinant(this.n.x, this.rhs, p2.n.z, p2.rhs).divide(det);
+			const y = determinant(this.n.x, this.rhs, p2.n.x, p2.rhs).divide(det);
 			const x = determinant(this.rhs, this.n.y, p2.rhs, p2.n.y).divide(det);
 			return new Line(new Vector(x, y, 0), d);
 		}
@@ -255,7 +256,7 @@ export class Plane {
 			OA = l.point(1);
 		}
 		const OAPrime = this.pointReflection(OA);
-		return new Line(OX, OA, { twoPointsMode: true });
+		return new Line(OX, OAPrime, { twoPointsMode: true });
 	}
 
 	/**
