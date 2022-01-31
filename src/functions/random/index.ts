@@ -1,2 +1,4 @@
-export { getRandomInt } from './getRandomInt';
-export { getRandomVec } from './getRandomVec';
+import { getRandomInt } from './getRandomInt';
+import { getRandomVec } from './getRandomVec';
+
+export { getRandomInt, getRandomVec };

@@ -1,3 +1,5 @@
-export { Vector } from './vectorClass';
-export { Line } from './lineClass';
-export { Plane } from './planeClass';
+import { Vector } from './vectorClass';
+import { Line } from './lineClass';
+import { Plane } from './planeClass';
+
+export { Vector, Line, Plane };
