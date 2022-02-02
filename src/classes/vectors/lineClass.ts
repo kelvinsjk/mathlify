@@ -31,8 +31,7 @@ export class Line {
 			lambda: '\\lambda',
 			...options,
 		};
-		v2 = twoPointsMode ? v2.minus(v1) : v2;
-		v2.simplify({ stretchable: true });
+		v2 = twoPointsMode ? v2.minus(v1).simplify({ stretchable: true }) : v2;
 		if (v2.isZero()) {
 			throw new Error('Cannot create a line with zero vector as direction');
 		}
@@ -115,6 +114,23 @@ export class Line {
 		if (this.isParallelTo(l2)) {
 			return this.isEqualTo(l2) ? this.clone() : null;
 		}
+		const intersection = this.intersectParameters(l2);
+		if (intersection === null) {
+			return null;
+		} else {
+			const [lambda] = intersection;
+			return this.point(lambda);
+		}
+	}
+
+	/**
+	 * @returns [lambda, mu] that corresponds to the intersection of this line and l2
+	 * returns null if skew/parallel/coincident lines
+	 */
+	intersectParameters(l2: Line): null | [Fraction, Fraction] {
+		if (this.isParallelTo(l2)) {
+			return null;
+		}
 		// solve for lambda and mu from first two rows
 		const [a1, b1, c1, a2, b2, c2] = [
 			this.d.x,
@@ -134,7 +150,7 @@ export class Line {
 		// check if intersecting
 		if (this.point(lambda).isEqualTo(l2.point(mu))) {
 			// intersecting lines
-			return this.point(lambda);
+			return [lambda, mu];
 		} else {
 			// skew lines
 			return null;
@@ -217,12 +233,24 @@ export class Line {
 
 	/**
 	 * @returns (a+lambda d) combined together in a column vector
+	 *
+	 * @param component 0 (default) returns all 3 components, 1 returns x, 2 returns y, 3 returns z
 	 */
-	toCombinedString(): string {
+	toCombinedString(component = 0): string {
 		const x = new Polynomial([this.a.x, this.d.x], { ascending: true, variableAtom: this.lambda });
 		const y = new Polynomial([this.a.y, this.d.y], { ascending: true, variableAtom: this.lambda });
 		const z = new Polynomial([this.a.z, this.d.z], { ascending: true, variableAtom: this.lambda });
-		return `\\begin{pmatrix}\n\t${x} \\\\\n\t${y} \\\\\n\t${z}\n\\end{pmatrix}`;
+		if (component === 0) {
+			return `\\begin{pmatrix}\n\t${x} \\\\\n\t${y} \\\\\n\t${z}\n\\end{pmatrix}`;
+		} else if (component === 1) {
+			return `${x}`;
+		} else if (component === 2) {
+			return `${y}`;
+		} else if (component === 3) {
+			return `${z}`;
+		} else {
+			throw new Error(`Component ${component} not recognized: must be 0-3`);
+		}
 	}
 
 	/**

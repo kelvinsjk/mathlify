@@ -36,11 +36,10 @@ export class Plane {
 		};
 		let n: Vector;
 		if (mode === 'rhs') {
-			n = v1.clone().simplify();
-			this.rhs = toFraction(rhs).divide(n.coeff).times(v1.coeff);
-			n.simplify({ stretchable: true });
+			n = v1.clone();
+			this.rhs = toFraction(rhs);
 		} else if (mode === 'aDotN') {
-			n = v1.clone().simplify({ stretchable: true });
+			n = v1.clone();
 			this.rhs = n.dot(v2);
 		} else if (mode === 'ptDD') {
 			n = v2.cross(v3).simplify({ stretchable: true });

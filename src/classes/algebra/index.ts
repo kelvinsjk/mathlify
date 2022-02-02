@@ -1,3 +1,5 @@
-export { Term, xTerm, pTerm } from './termClasses';
-export { Expression, xExpression } from './expressionClasses';
-export { Polynomial } from './polynomialClass';
+import { Term, xTerm, pTerm } from './termClasses';
+import { Expression, xExpression } from './expressionClasses';
+import { Polynomial } from './polynomialClass';
+
+export { Term, xTerm, pTerm, Expression, xExpression, Polynomial };
