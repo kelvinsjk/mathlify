@@ -48,6 +48,10 @@ vectorLineClass('toString', () => {
 	const combinedString = '\\begin{pmatrix}\n\t1 + \\mu \\\\\n\t\\mu \\\\\n\t\\mu\n\\end{pmatrix}';
 	assert.is(`${l5}`, `\\mathbf{r} = ${aString2} + \\mu ${dString2}`);
 	assert.is(l5.toCombinedString(), combinedString);
+	assert.is(l5.toCombinedString(1), '1 + \\mu');
+	assert.is(l5.toCombinedString(2), '\\mu');
+	assert.is(l5.toCombinedString(3), '\\mu');
+	assert.throws(() => l5.toCombinedString(4));
 
 	const xEqual2YEqualZ = new Line(new Vector(2), new Vector(0, 1, 1));
 	const xEqual2YEqualMinus2 = new Line(new Vector(2, -2), new Vector(0, 0, 1));
@@ -84,6 +88,7 @@ vectorLineClass('intersection', () => {
 	assert.is(l7Intersection.isEqualTo(l7), true);
 	const l7Reflection = l7.reflect(l7) as Line;
 	assert.is(l7Reflection.isEqualTo(l7), true);
+	assert.is(l4.intersectParameters(l3), null);
 });
 
 vectorLineClass('angle', () => {
