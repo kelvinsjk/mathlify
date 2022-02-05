@@ -95,13 +95,13 @@ export class Plane {
 			if (this.n.x.isEqualTo(0)) {
 				if (this.n.y.isEqualTo(0)) {
 					// theoretically z component should be non-zero
-					k = p2.n.z.divide(this.n.z);
+					k = this.n.z.divide(p2.n.z);
 				} else {
-					k = p2.n.y.divide(this.n.y);
+					k = this.n.y.divide(p2.n.y);
 				}
 			} else {
 				// division of x component allowed
-				k = p2.n.x.divide(this.n.x);
+				k = this.n.x.divide(p2.n.x);
 			}
 			return this.rhs.isEqualTo(p2.rhs.times(k));
 		}
@@ -193,7 +193,15 @@ export class Plane {
 			return this.isEqualTo(p2) ? p2.clone() : null;
 		}
 		// intersecting
-		const d = this.n.cross(p2.n).simplify({ stretchable: true });
+		const d1 = this.n.cross(p2.n).simplify({ stretchable: true });
+		let d = d1.clone();
+		if (
+			d1.z.isLessThan(0) ||
+			(d1.z.isEqualTo(0) && d1.y.isLessThan(0)) ||
+			(d1.z.isEqualTo(0) && d1.y.isEqualTo(0) && d1.x.isLessThan(0))
+		) {
+			d = d1.negative();
+		}
 		// try z = 0
 		let det = determinant(this.n.x, this.n.y, p2.n.x, p2.n.y);
 		if (det.isEqualTo(0)) {

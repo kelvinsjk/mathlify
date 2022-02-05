@@ -6,6 +6,7 @@ const vectorPlaneClass = suite('vector plane class');
 
 const l1 = new Line(new Vector(1, 2, -1), new Vector(1, -2));
 const p1 = new Plane(new Vector(1, 2, -1), { rhs: 3 });
+const p1x = new Plane(new Vector(2, 4, -2), { rhs: 6 });
 const p2 = new Plane(new Vector(1, 2, -1), { mode: 'aDotN', v2: new Vector(3) });
 const p3 = new Plane(new Vector(1, 2, -1), { mode: 'ptDD', v2: new Vector(3), v3: new Vector(1, -2) });
 const p4 = new Plane(new Vector(1, 2, -1), { mode: 'ptPtD', v2: new Vector(3), v3: new Vector(1, -2) });
@@ -21,6 +22,7 @@ vectorPlaneClass('constructor and boolean checks', () => {
 	assert.is(p1.isParallelTo(p1Parallel), true);
 	assert.is(p1.isEqualTo(p1Parallel), false);
 	assert.is(p1.isEqualTo(p2), true);
+	assert.is(p1.isEqualTo(p1x), true);
 	assert.is(p1.isEqualTo(p3), false);
 	const yEqual2 = new Plane(Vector.J, { rhs: 2 });
 	const zEqual2 = new Plane(Vector.K, { rhs: 2 });
