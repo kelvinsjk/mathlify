@@ -1,7 +1,7 @@
 import { test, suite } from 'uvu';
 import * as assert from 'uvu/assert';
 
-import { gcd, getRandomInt, getRandomVec, Vector } from '../index';
+import { gcd, getRandomInt, getRandomVec, Vector, getRandomFrac, Fraction } from '../index';
 
 const arithmeticFns = suite('arithmetic and random functions');
 
@@ -29,6 +29,16 @@ arithmeticFns('getRandomInt', () => {
 	// 99% chance of 100% coverage
 	assert.is(getRandomInt(1, 10, { avoid: [1, 2, 3, 4, 5, 6, 7, 8, 9] }), 10);
 	assert.is(getRandomInt(1, 10, { avoid: [1, 2, 3, 5, 6, 7, 8, 9, 10] }), 4);
+});
+
+arithmeticFns('getRandomFrac', () => {
+	assert.throws(() => getRandomFrac({ numRange: [0, 0], avoid: [0] }));
+	assert.is(getRandomFrac().isAtMost(9), true);
+	assert.is(getRandomFrac().isAtLeast(-9), true);
+	// 99% chance of 100% coverage
+	for (let i = 0; i < 7; i++) {
+		assert.is(getRandomFrac({ numRange: [0, 1], denRange: [2, 2], avoid: [0] }).isEqualTo(new Fraction(1, 2)), true);
+	}
 });
 
 arithmeticFns('getRandomVec', () => {
