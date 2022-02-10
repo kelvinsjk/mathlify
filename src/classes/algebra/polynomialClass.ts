@@ -7,7 +7,7 @@ import toFraction from '../../utils/toFraction';
  * Polynomial class representing "ax^n + bx^n-1 + ... + k"
  */
 export class Polynomial extends xExpression {
-	/** array of coefficients in ascending order */
+	/** array of coefficients in ascending order, starting from constant term */
 	coefficients: Fraction[];
 	/** whether polynomial in ascending or descending order */
 	ascending: boolean;
@@ -31,22 +31,26 @@ export class Polynomial extends xExpression {
 		if (polyOptions.degree < 0 || polyOptions.degree < coefficients.length - 1) {
 			throw new RangeError('degree must be greater than coefficients.length-1');
 		}
+		// reverse coefficient array if descending order
 		if (!polyOptions.ascending) {
-			// reverse coefficient array if descending
 			coefficients.reverse();
 		}
+		// add extra zeros to start from constant term
 		if (polyOptions.degree > coefficients.length - 1) {
 			const extraCoeffLength = polyOptions.degree - coefficients.length + 1;
 			coefficients = [...createZeroArray(extraCoeffLength), ...coefficients];
 		}
-		let coeffs = coefficients.map((k) => toFraction(k)); // convert to Fraction type
+		// convert to Fraction type
+		let coeffs = coefficients.map((k) => toFraction(k));
+		// remove unnecessary terms (leading coefficients should be non-zero, unless it is a constant polynomial)
 		while (coeffs[coeffs.length - 1].isEqualTo(0) && coeffs.length > 1) {
-			// non-zero leading coefficient (unless constant term)
 			coeffs = coeffs.slice(0, coeffs.length - 1);
 		}
+		// generate pTerms
 		const polynomialTerms = coeffs.map((coeff, n) => {
 			return new pTerm(coeff, { variableAtom: polyOptions.variableAtom, n });
 		});
+		// descending order typesetting if necessary;
 		if (!polyOptions.ascending) {
 			polynomialTerms.reverse();
 		}
@@ -117,6 +121,26 @@ export class Polynomial extends xExpression {
 	 *  */
 	square(): Polynomial {
 		return this.pow(2);
+	}
+
+	/**
+	 * changes ascending/behavior of polynomial
+	 *
+	 * @param ascending sets ascending behavior. By default, this
+	 * option is set to toggle current ascending/descending behavior
+	 *
+	 * @returns a reference to this polynomial instance
+	 *
+	 * WARNING: mutates current instance
+	 */
+	changeAscending(ascending = !this.ascending): this {
+		if (this.ascending === ascending) {
+			return this;
+		}
+		this.xTerms.reverse();
+		this.terms.reverse();
+		this.ascending = ascending;
+		return this;
 	}
 
 	/** clones this polynomial */
