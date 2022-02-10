@@ -52,9 +52,12 @@ polynomialClass('clone', () => {
 });
 
 polynomialClass('reverse', () => {
-	const xPlus2 = new Polynomial([1, 2]);
+	const array = [1, 2];
+	assert.is(array[0], 1);
+	const xPlus2 = new Polynomial(array);
 	assert.is(`${xPlus2}`, 'x + 2');
 	assert.is(`${xPlus2.changeAscending()}`, '2 + x');
+	assert.is(array[0], 1);
 	assert.is(`${xPlus2}`, '2 + x');
 	assert.is(`${xPlus2.changeAscending(true)}`, '2 + x');
 });

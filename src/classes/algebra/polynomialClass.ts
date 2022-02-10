@@ -33,7 +33,7 @@ export class Polynomial extends xExpression {
 		}
 		// reverse coefficient array if descending order
 		if (!polyOptions.ascending) {
-			coefficients.reverse();
+			coefficients = [...coefficients].reverse();
 		}
 		// add extra zeros to start from constant term
 		if (polyOptions.degree > coefficients.length - 1) {
