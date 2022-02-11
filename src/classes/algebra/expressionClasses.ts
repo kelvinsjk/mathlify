@@ -51,10 +51,10 @@ export class Expression {
 	 * toJSON method that allows for quick reconstruction of class instance
 	 * by storing its constructor arguments
 	 */
-	toJSON(): {type: string, args: any[]} {
+	toJSON(): { type: string; args: any[] } {
 		return {
-			type: "expression",
-			args: this.terms
+			type: 'expression',
+			args: this.terms,
 		};
 	}
 

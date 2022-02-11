@@ -133,5 +133,4 @@ fractionClass('comparison and misc', () => {
 	assert.is(`${negativeThreeQuarter.abs()}`, '\\frac{3}{4}');
 });
 
-
 fractionClass.run();

@@ -234,10 +234,10 @@ export class Fraction {
 	 * toJSON method that allows for quick reconstruction of class instance
 	 * by storing its constructor arguments
 	 */
-	toJSON(): {type: string, args: [number, number]} {
+	toJSON(): { type: string; args: [number, number] } {
 		return {
-			type: "fraction",
-			args: [this.num, this.den]
+			type: 'fraction',
+			args: [this.num, this.den],
 		};
 	}
 

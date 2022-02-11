@@ -58,10 +58,10 @@ export class Term {
 	 * toJSON method that allows for quick reconstruction of class instance
 	 * by storing its constructor arguments
 	 */
-	toJSON(): {type: string, args: [Fraction, string]} {
+	toJSON(): { type: string; args: [Fraction, string] } {
 		return {
-			type: "term",
-			args: [this.coeff, this.variable]
+			type: 'term',
+			args: [this.coeff, this.variable],
 		};
 	}
 

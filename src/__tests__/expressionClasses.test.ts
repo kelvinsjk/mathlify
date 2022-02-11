@@ -65,7 +65,7 @@ expressionClasses('clone', () => {
 	assert.ok(negativeTwoX.clone());
 });
 
-expressionClasses('WorkingExpression', ()=>{
+expressionClasses('WorkingExpression', () => {
 	assert.is(`${zeroWorking}`, 'x - x');
 	assert.is(`${zeroWorking.clone()}`, 'x - x');
 	assert.is(`${zeroWorking.simplify()}`, '0');
@@ -73,6 +73,6 @@ expressionClasses('WorkingExpression', ()=>{
 	const working2 = new WorkingExpression();
 	assert.is(`${working1}`, 'x + 1 + \\frac{1}{2}');
 	assert.is(`${working2}`, '0');
-})
+});
 
 expressionClasses.run();

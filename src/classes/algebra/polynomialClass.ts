@@ -153,18 +153,18 @@ export class Polynomial extends xExpression {
 	}
 
 	/**
-		* toJSON method that allows for quick reconstruction of class instance
-	  * by storing its constructor arguments
-	  */
-	toJSON(): {type: string, args: [Fraction[], {ascending: boolean, degree: number, variableAtom: string}]} {
-		const coeffs = this.coefficients.map(e=>e.clone());
+	 * toJSON method that allows for quick reconstruction of class instance
+	 * by storing its constructor arguments
+	 */
+	toJSON(): { type: string; args: [Fraction[], { ascending: boolean; degree: number; variableAtom: string }] } {
+		const coeffs = this.coefficients.map((e) => e.clone());
 		if (!this.ascending) {
-			coeffs.reverse()
+			coeffs.reverse();
 		}
 		return {
-			type: "polynomial",
-			args: [coeffs, {ascending: this.ascending, degree: this.degree, variableAtom: this.variableAtom}],
-		}
+			type: 'polynomial',
+			args: [coeffs, { ascending: this.ascending, degree: this.degree, variableAtom: this.variableAtom }],
+		};
 	}
 }
 
