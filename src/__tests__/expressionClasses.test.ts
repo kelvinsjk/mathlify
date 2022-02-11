@@ -1,6 +1,6 @@
 import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
-import { Fraction, Term, xTerm, Expression, xExpression } from '../index';
+import { Fraction, Term, xTerm, Expression, xExpression, WorkingExpression } from '../index';
 
 const expressionClasses = suite('Expression classes');
 
@@ -17,6 +17,7 @@ const lnX = new xTerm(1, '\\ln x', (x: number | Fraction) => {
 });
 // expressions
 const zero = new Expression(x, negativeX);
+const zeroWorking = new WorkingExpression(x, negativeX);
 const x2PlusX = new Expression('x^2', x);
 const xPlusOne = x.subtract(negativeOne);
 const xMinusOne = x.add(negativeOne);
@@ -63,5 +64,15 @@ expressionClasses('clone', () => {
 	assert.is(`${newXPlusOne}`, 'x + 1');
 	assert.ok(negativeTwoX.clone());
 });
+
+expressionClasses('WorkingExpression', ()=>{
+	assert.is(`${zeroWorking}`, 'x - x');
+	assert.is(`${zeroWorking.clone()}`, 'x - x');
+	assert.is(`${zeroWorking.simplify()}`, '0');
+	const working1 = new WorkingExpression('x', 1, oneHalf);
+	const working2 = new WorkingExpression();
+	assert.is(`${working1}`, 'x + 1 + \\frac{1}{2}');
+	assert.is(`${working2}`, '0');
+})
 
 expressionClasses.run();

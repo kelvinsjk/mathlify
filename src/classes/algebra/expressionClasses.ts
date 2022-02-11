@@ -89,6 +89,68 @@ export class Expression {
 }
 
 /**
+ * Unsimplified Expression class where like terms are not combined.
+ * Good for showing working
+ */
+export class WorkingExpression {
+	/** array of terms making up the expression */
+	terms: Term[] = [];
+
+	/**
+	 * Creates a new Expression
+	 * @param args one or more `Term`s
+	 * `number` and `Fraction` types will be transformed into constant terms,
+	 *  while `string` type will be transformed into a term with coefficient 1
+	 */
+	constructor(...args: (Term | Fraction | number | string)[]) {
+		const terms = args.map((term) => {
+			if (typeof term === 'string') {
+				return new Term(1, term);
+			} else if (typeof term === 'number' || term instanceof Fraction) {
+				return new Term(term);
+			} else {
+				return term.clone();
+			}
+		});
+		this.terms = terms;
+	}
+
+	/**
+	 * `toString` method
+	 *
+	 * @returns the LaTeX string representation of the sum of all the terms
+	 */
+	toString(): string {
+		if (this.terms.length === 0) {
+			return '0';
+		}
+		let outputString = '';
+		this.terms.forEach((term, i) => {
+			if (i !== 0) {
+				outputString += term.coeff.isGreaterThan(0) ? ' + ' : ' ';
+			}
+			outputString += term.toString();
+		});
+		return outputString;
+	}
+
+	/**
+	 * performs scalar multiplication on each term of this
+	 */
+	simplify(): Expression {
+		return new Expression(...this.terms);
+	}
+
+	/**
+	 * clones the object, creating a new instance of this expression
+	 */
+	clone(): WorkingExpression {
+		const newTerms = this.terms.map((term) => term.clone());
+		return new WorkingExpression(...newTerms);
+	}
+}
+
+/**
  * Expression class representing the sum of `Terms`
  */
 export class xExpression extends Expression {
