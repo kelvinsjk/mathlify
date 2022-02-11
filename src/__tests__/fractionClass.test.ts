@@ -1,6 +1,6 @@
 import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
-import { Fraction } from '../index';
+import { Fraction, JSONParse } from '../index';
 
 const fractionClass = suite('Fraction class');
 
@@ -132,5 +132,6 @@ fractionClass('comparison and misc', () => {
 	assert.is(`${oneSixth.ceil()}`, '1');
 	assert.is(`${negativeThreeQuarter.abs()}`, '\\frac{3}{4}');
 });
+
 
 fractionClass.run();

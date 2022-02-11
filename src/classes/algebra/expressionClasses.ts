@@ -48,6 +48,17 @@ export class Expression {
 	}
 
 	/**
+	 * toJSON method that allows for quick reconstruction of class instance
+	 * by storing its constructor arguments
+	 */
+	toJSON(): {type: string, args: any[]} {
+		return {
+			type: "expression",
+			args: this.terms
+		};
+	}
+
+	/**
 	 * performs scalar multiplication on each term of this
 	 */
 	multiply(k: number | Fraction): Expression {
