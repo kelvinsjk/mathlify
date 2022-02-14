@@ -79,10 +79,15 @@ expressionClasses('BracketedTerm', () => {
 	const negativeXMinusY = new BracketedTerm(-1, xMinusY);
 	const xMinusYV2 = new BracketedTerm(1, xMinusY);
 	const threeX = new BracketedTerm(3, 'x');
+	const working1 = new BracketedTerm(2, new WorkingExpression('x', 1, oneHalf));
 	assert.is(`${negativeXMinusY}`, '- (x - y)');
 	assert.is(`${negativeXMinusY.simplify()}`, '- x + y');
 	assert.is(`${xMinusYV2}`, 'x - y');
 	assert.is(`${threeX}`, '3 (x)');
+	assert.is(`${threeX.simplifyInnerExpression()}`, '3 (x)');
+	assert.is(`${working1}`, '2 (x + 1 + \\frac{1}{2})');
+	assert.is(`${working1.simplifyInnerExpression()}`, '2 (x + \\frac{3}{2})');
+	assert.is(`${working1.simplify()}`, '2 x + 3');
 });
 
 expressionClasses.run();

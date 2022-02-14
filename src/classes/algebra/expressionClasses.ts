@@ -166,13 +166,16 @@ export class WorkingExpression {
  * representation of k(ax+...+by) where k is a Fraction and ax+...+by is an Expression
  */
 export class BracketedTerm extends Term {
-	innerExpression: Expression;
+	innerExpression: Expression | WorkingExpression;
 	/**
 	 * Creates a new BracketedTerm
 	 * representing k(ax+...+by)
 	 */
-	constructor(coeff: number | Fraction, innerExpression: Expression | Term | Fraction | number | string) {
-		if (!(innerExpression instanceof Expression)) {
+	constructor(
+		coeff: number | Fraction,
+		innerExpression: WorkingExpression | Expression | Term | Fraction | number | string,
+	) {
+		if (!(innerExpression instanceof Expression) && !(innerExpression instanceof WorkingExpression)) {
 			innerExpression = new Expression(innerExpression);
 		}
 		coeff = toFraction(coeff);
@@ -182,10 +185,26 @@ export class BracketedTerm extends Term {
 	}
 
 	/**
+	 * if innerExpression is a WorkingExpression, simplify it
+	 */
+	simplifyInnerExpression(): BracketedTerm {
+		if (this.innerExpression instanceof WorkingExpression) {
+			return new BracketedTerm(this.coeff, this.innerExpression.simplify());
+		}
+		return this.clone();
+	}
+
+	/**
 	 * multiplies k in, returning the expanded expression
 	 */
 	simplify(): Expression {
-		return this.innerExpression.multiply(this.coeff);
+		const innerExpression =
+			this.innerExpression instanceof WorkingExpression ? this.innerExpression.simplify() : this.innerExpression;
+		return innerExpression.multiply(this.coeff);
+	}
+
+	clone(): BracketedTerm {
+		return new BracketedTerm(this.coeff.clone(), this.innerExpression.clone());
 	}
 }
 
