@@ -1,6 +1,6 @@
 import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
-import { Fraction, Term, xTerm, Expression, xExpression, WorkingExpression } from '../index';
+import { Fraction, Term, xTerm, Expression, xExpression, WorkingExpression, BracketedTerm } from '../index';
 
 const expressionClasses = suite('Expression classes');
 
@@ -73,6 +73,16 @@ expressionClasses('WorkingExpression', () => {
 	const working2 = new WorkingExpression();
 	assert.is(`${working1}`, 'x + 1 + \\frac{1}{2}');
 	assert.is(`${working2}`, '0');
+});
+
+expressionClasses('BracketedTerm', () => {
+	const negativeXMinusY = new BracketedTerm(-1, xMinusY);
+	const xMinusYV2 = new BracketedTerm(1, xMinusY);
+	const threeX = new BracketedTerm(3, 'x');
+	assert.is(`${negativeXMinusY}`, '- (x - y)');
+	assert.is(`${negativeXMinusY.simplify()}`, '- x + y');
+	assert.is(`${xMinusYV2}`, 'x - y');
+	assert.is(`${threeX}`, '3 (x)');
 });
 
 expressionClasses.run();

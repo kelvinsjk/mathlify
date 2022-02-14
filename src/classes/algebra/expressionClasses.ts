@@ -1,5 +1,6 @@
 import { Term, xTerm } from './termClasses';
 import { Fraction } from '../fractionClass';
+import toFraction from '../../utils/toFraction';
 
 /**
  * Expression class representing the sum of `Terms`
@@ -108,7 +109,7 @@ export class WorkingExpression {
 	terms: Term[] = [];
 
 	/**
-	 * Creates a new Expression
+	 * Creates a new WorkingExpression
 	 * @param args one or more `Term`s
 	 * `number` and `Fraction` types will be transformed into constant terms,
 	 *  while `string` type will be transformed into a term with coefficient 1
@@ -158,6 +159,33 @@ export class WorkingExpression {
 	clone(): WorkingExpression {
 		const newTerms = this.terms.map((term) => term.clone());
 		return new WorkingExpression(...newTerms);
+	}
+}
+
+/**
+ * representation of k(ax+...+by) where k is a Fraction and ax+...+by is an Expression
+ */
+export class BracketedTerm extends Term {
+	innerExpression: Expression;
+	/**
+	 * Creates a new BracketedTerm
+	 * representing k(ax+...+by)
+	 */
+	constructor(coeff: number | Fraction, innerExpression: Expression | Term | Fraction | number | string) {
+		if (!(innerExpression instanceof Expression)) {
+			innerExpression = new Expression(innerExpression);
+		}
+		coeff = toFraction(coeff);
+		const variableString = coeff.isEqualTo(1) ? `${innerExpression}` : `(${innerExpression})`;
+		super(coeff, variableString);
+		this.innerExpression = innerExpression.clone();
+	}
+
+	/**
+	 * multiplies k in, returning the expanded expression
+	 */
+	simplify(): Expression {
+		return this.innerExpression.multiply(this.coeff);
 	}
 }
 
