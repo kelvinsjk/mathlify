@@ -42,6 +42,7 @@ polynomialClass('arithmetic', () => {
 
 polynomialClass('clone', () => {
 	const newX2Plus2xMinus3 = x2Plus2xMinus3.clone();
+	assert.is(`${newX2Plus2xMinus3}`, 'x^2 + 2 x - 3');
 	newX2Plus2xMinus3.ascending = true;
 	assert.ok(newX2Plus2xMinus3.ascending);
 	assert.not.ok(x2Plus2xMinus3.ascending);
