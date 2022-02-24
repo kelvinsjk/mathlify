@@ -146,7 +146,8 @@ export class Polynomial extends xExpression {
 	/** clones this polynomial */
 	clone(): Polynomial {
 		const coeffs = [...this.coefficients];
-		if (!this.ascending) { // coeffs in ascending by default
+		if (!this.ascending) {
+			// coeffs in ascending by default
 			coeffs.reverse();
 		}
 		return new Polynomial(coeffs, { ascending: this.ascending, degree: this.degree, variableAtom: this.variableAtom });
