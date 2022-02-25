@@ -73,6 +73,8 @@ expressionClasses('WorkingExpression', () => {
 	const working2 = new WorkingExpression();
 	assert.is(`${working1}`, 'x + 1 + \\frac{1}{2}');
 	assert.is(`${working2}`, '0');
+	const working3 = new WorkingExpression(0,'x',new Term(0,'x'));
+	assert.is(`${working3}`, '0 + x + 0');
 });
 
 expressionClasses('BracketedTerm', () => {

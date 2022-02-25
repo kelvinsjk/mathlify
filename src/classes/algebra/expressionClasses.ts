@@ -139,7 +139,7 @@ export class WorkingExpression {
 		let outputString = '';
 		this.terms.forEach((term, i) => {
 			if (i !== 0) {
-				outputString += term.coeff.isGreaterThan(0) ? ' + ' : ' ';
+				outputString += term.coeff.isAtLeast(0) ? ' + ' : ' ';
 			}
 			outputString += term.toString();
 		});
