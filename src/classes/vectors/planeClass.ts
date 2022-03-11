@@ -26,7 +26,15 @@ export class Plane {
 	 * `mode: ptPtD`: takes v1 and v2 as points on the plane and v3 as a direction vector parallel to the plane
 	 * `mode: ptPtPt`: takes v1, v2 and v3 as points on the plane and v3
 	 */
-	constructor(v1: Vector, options?: { mode?: 'rhs'|'aDotN'|'ptDD'|'ptPtD'|'ptPtPt'; rhs?: number | Fraction; v2?: Vector; v3?: Vector }) {
+	constructor(
+		v1: Vector,
+		options?: {
+			mode?: 'rhs' | 'aDotN' | 'ptDD' | 'ptPtD' | 'ptPtPt';
+			rhs?: number | Fraction;
+			v2?: Vector;
+			v3?: Vector;
+		},
+	) {
 		const { mode, rhs, v2, v3 } = {
 			mode: 'rhs',
 			rhs: 0,

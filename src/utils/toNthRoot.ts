@@ -7,7 +7,7 @@ import { NthRoot } from '../classes/radicals/rootClasses';
  */
 export default function toNthRoot(n: number, x: number | Fraction | NthRoot): NthRoot {
 	if (typeof x === 'number' || x instanceof Fraction) {
-		return new NthRoot(n,1, x);
+		return new NthRoot(n, 1, x);
 	}
 	return x.clone();
 }
