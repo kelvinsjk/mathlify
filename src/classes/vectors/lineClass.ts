@@ -211,7 +211,7 @@ export class Line {
 				OA = l2.point(1);
 			}
 			const OAPrime = this.pointReflection(OA);
-			return new Line(OX, OAPrime.minus(OX));
+			return new Line(OX, OAPrime, { twoPointsMode: true });
 		}
 	}
 

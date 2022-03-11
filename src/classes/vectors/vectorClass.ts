@@ -145,9 +145,10 @@ export class Vector {
 	/**
 	 * scalar multiplication
 	 *
-	 * @param options defaults to `{multiplyIntoCoeff: false}`
-	 * the coeff stays the same while the components are multiplied
+	 * by default, the coeff stays the same while the components are multiplied
 	 * if false, the coeff is multiplied instead
+	 *
+	 * @param options defaults to `{multiplyIntoCoeff: false}`
 	 */
 	multiply(k: number | Fraction, options = { multiplyIntoCoeff: false }): Vector {
 		return options.multiplyIntoCoeff

@@ -74,7 +74,7 @@ export class Polynomial extends xExpression {
 		if (!this.ascending) {
 			newCoeffs.reverse();
 		}
-		return new Polynomial(newCoeffs, { ascending: this.ascending, degree });
+		return new Polynomial(newCoeffs, { variableAtom: this.variableAtom, ascending: this.ascending, degree });
 	}
 
 	/** multiplies two polynomials */
