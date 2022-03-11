@@ -1,6 +1,8 @@
 import { Fraction } from '../fractionClass';
 import { Term } from '../algebra/termClasses';
 import toFraction from '../../utils/toFraction';
+import toNthRoot from '../../utils/toNthRoot';
+import toSquareRoot from '../../utils/toSquareRoot';
 
 /**
  * the NthRoot class extends the `xTerm` class
@@ -68,7 +70,8 @@ export class NthRoot extends Term {
 	 *
 	 * only valid if n is the same for both terms.
 	 */
-	times(x: NthRoot): NthRoot {
+	times(x: NthRoot|number|Fraction): NthRoot {
+		x = toNthRoot(this.n, x);
 		if (this.n !== x.n) {
 			throw new Error('n must be the same for both terms');
 		}
@@ -77,7 +80,8 @@ export class NthRoot extends Term {
 	/**
 	 * radical division: a_1 \sqrt[n]{b_1} / a_2 \sqrt[n]{b_2} = a_1 / a_2 * \sqrt[n]{b_1 / b_2}$
 	 */
-	divide(x: NthRoot): NthRoot {
+	divide(x: NthRoot|number|Fraction): NthRoot {
+		x = toNthRoot(this.n, x);
 		if (this.n !== x.n) {
 			throw new Error('n must be the same for both terms');
 		}
@@ -185,13 +189,15 @@ export class SquareRoot extends NthRoot {
 	 *
 	 * only valid if n is the same for both terms.
 	 */
-	times(x: SquareRoot): SquareRoot {
+	times(x: SquareRoot|number|Fraction): SquareRoot {
+		x = toSquareRoot(x);
 		return new SquareRoot(this.radicand.times(x.radicand), this.coeff.times(x.coeff));
 	}
 	/**
 	 * radical division: a_1 \sqrt[n]{b_1} / a_2 \sqrt[n]{b_2} = a_1 / a_2 * \sqrt[n]{b_1 / b_2}$
 	 */
-	divide(x: SquareRoot): SquareRoot {
+	divide(x: SquareRoot|number|Fraction): SquareRoot {
+		x = toSquareRoot(x);
 		return new SquareRoot(this.radicand.divide(x.radicand), this.coeff.divide(x.coeff));
 	}
 

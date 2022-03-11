@@ -41,6 +41,10 @@ rootClasses('arithmetic', () => {
 	assert.is(`${cubeRootTwo.times(new NthRoot(3, 3))}`, '\\sqrt[3]{6}');
 	assert.is(`${cubeRootTwo.divide(new NthRoot(3, 3))}`, '\\sqrt[3]{\\frac{2}{3}}');
 	assert.is(`${sqrtTwo.reciprocal()}`, '\\frac{1}{2} \\sqrt{2}');
+	assert.is(`${cubeRootTwo.times(2)}`, '2 \\sqrt[3]{2}');
+	assert.is(`${cubeRootTwo.divide(2)}`, '\\frac{1}{2} \\sqrt[3]{2}');
+	assert.is(`${threeSqrtTwo.times(3)}`, '9 \\sqrt{2}');
+	assert.is(`${threeSqrtTwo.divide(3)}`, '\\sqrt{2}');
 });
 
 rootClasses('type conversions', () => {
