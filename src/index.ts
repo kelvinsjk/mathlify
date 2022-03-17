@@ -1,6 +1,8 @@
 export { gcd } from './functions/arithmetic/gcd';
 export { getRandomInt, getRandomFrac, getRandomVec } from './functions/random/index';
 export { JSONParse } from './utils/JSONParse';
+import toFraction from './utils/toFraction';
+export { toFraction };
 // classes
 export { Fraction } from './classes/fractionClass';
 export {
