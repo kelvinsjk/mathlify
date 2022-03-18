@@ -147,7 +147,6 @@ export class Line {
 		}
 		const lambda = determinant(c1, b1, c2, b2).divide(det);
 		const mu = determinant(a1, c1, a2, c2).divide(det);
-		console.log(this.point(lambda), l2.point(mu));
 		// check if intersecting
 		if (this.point(lambda).isEqualTo(l2.point(mu))) {
 			// intersecting lines

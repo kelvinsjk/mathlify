@@ -65,7 +65,7 @@ export class Polynomial extends xExpression {
 	 *
 	 * fraction/numbers will be converted a "constant polynomial", while a string will be converted to a polynomial term with coefficient 1
 	 */
-	add(p2: number | Fraction | string | Polynomial): Polynomial {
+	plus(p2: number | Fraction | string | Polynomial): Polynomial {
 		p2 = toPolynomial(p2);
 		const degree = Math.max(this.degree, p2.degree);
 		const thisCoeffs = [...this.coefficients, ...createZeroArray(degree - this.degree)];
@@ -78,7 +78,7 @@ export class Polynomial extends xExpression {
 	}
 
 	/** multiplies two polynomials */
-	multiply(p2: number | Fraction | string | Polynomial): Polynomial {
+	times(p2: number | Fraction | string | Polynomial): Polynomial {
 		p2 = toPolynomial(p2);
 		const degree = this.degree + p2.degree;
 		const coeffs = createZeroArray(degree + 1);
@@ -93,10 +93,18 @@ export class Polynomial extends xExpression {
 		return new Polynomial(coeffs, { ascending: this.ascending, degree, variableAtom: this.variableAtom });
 	}
 
+	/**
+	 * divide by a *scalar*
+	 */
+	divide(p2: number | Fraction): Polynomial {
+		p2 = toFraction(p2);
+		return this.times(p2.reciprocal());
+	}
+
 	/** subtracts this by p2 */
-	subtract(p2: number | Fraction | string | Polynomial): Polynomial {
+	minus(p2: number | Fraction | string | Polynomial): Polynomial {
 		p2 = toPolynomial(p2);
-		return this.add(p2.multiply(-1));
+		return this.plus(p2.times(-1));
 	}
 
 	/**
@@ -109,7 +117,7 @@ export class Polynomial extends xExpression {
 		}
 		let newPoly = new Polynomial([1], { variableAtom: this.variableAtom });
 		for (let i = 0; i < n; i++) {
-			newPoly = newPoly.multiply(this);
+			newPoly = newPoly.times(this);
 		}
 		return newPoly;
 	}

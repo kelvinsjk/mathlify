@@ -30,12 +30,13 @@ polynomialClass('substitute', () => {
 });
 
 polynomialClass('arithmetic', () => {
-	assert.is(`${x2Plus2xMinus3.add(3)}`, 'x^2 + 2 x');
-	assert.is(`${x2Plus2xMinus3.add('x')}`, 'x^2 + 3 x - 3');
-	assert.is(`${x2Plus2xMinus3.add(oneHalf)}`, 'x^2 + 2 x - \\frac{5}{2}');
-	assert.is(`${x2Plus2xMinus3.multiply(2)}`, '2 x^2 + 4 x - 6');
-	assert.is(`${x4Plus2x3Minus3x2.subtract(x2Plus2xMinus3)}`, 'x^4 + 2 x^3 - 4 x^2 - 2 x + 3');
-	assert.is(`${x4Plus2x3Minus3x2.multiply(x2Plus2xMinus3)}`, 'x^6 + 4 x^5 - 2 x^4 - 12 x^3 + 9 x^2');
+	assert.is(`${x2Plus2xMinus3.plus(3)}`, 'x^2 + 2 x');
+	assert.is(`${x2Plus2xMinus3.plus('x')}`, 'x^2 + 3 x - 3');
+	assert.is(`${x2Plus2xMinus3.plus(oneHalf)}`, 'x^2 + 2 x - \\frac{5}{2}');
+	assert.is(`${x2Plus2xMinus3.times(2)}`, '2 x^2 + 4 x - 6');
+	assert.is(`${x2Plus2xMinus3.divide(2)}`, '\\frac{1}{2} x^2 + x - \\frac{3}{2}');
+	assert.is(`${x4Plus2x3Minus3x2.minus(x2Plus2xMinus3)}`, 'x^4 + 2 x^3 - 4 x^2 - 2 x + 3');
+	assert.is(`${x4Plus2x3Minus3x2.times(x2Plus2xMinus3)}`, 'x^6 + 4 x^5 - 2 x^4 - 12 x^3 + 9 x^2');
 	assert.is(`${halfYPlus1.square()}`, '\\frac{1}{4} y^2 + y + 1');
 	assert.throws(() => halfYPlus1.pow(-1));
 });
