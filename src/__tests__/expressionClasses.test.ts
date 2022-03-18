@@ -23,12 +23,12 @@ const xPlusOne = x.subtract(negativeOne);
 const xMinusOne = x.add(negativeOne);
 const xPlusTwo = x.subtract(-2);
 const xMinusY = x.subtract('y');
-const lnXPlusHalf = new xExpression(lnX, oneHalf);
-// xExpressions
 const negativeXMinusOne = negativeX.subtract(1);
 const negativeHalfX = negativeX.subtract(negativeX.multiply(oneHalf));
 const negativeTwoX = negativeX.subtract('x');
 const negativeXPlusOne = negativeX.add(1);
+// xExpressions
+const lnXPlusHalf = new xExpression(lnX, oneHalf);
 
 expressionClasses('toString', () => {
 	assert.is(`${zero}`, '0');
@@ -50,11 +50,11 @@ expressionClasses('substitute', () => {
 });
 
 expressionClasses('arithmetic', () => {
-	assert.is(`${negativeXMinusOne.multiply(-2)}`, '2 x + 2');
-	assert.is(`${xPlusOne.add(negativeOne)}`, 'x');
-	assert.is(`${xPlusOne.subtract(negativeOne)}`, 'x + 2');
-	assert.is(`${negativeXPlusOne.add(1)}`, '- x + 2');
-	assert.is(`${negativeXMinusOne.subtract('x')}`, '- 2 x - 1');
+	assert.is(`${negativeXMinusOne.times(-2)}`, '2 x + 2');
+	assert.is(`${xPlusOne.plus(negativeOne)}`, 'x');
+	assert.is(`${xPlusOne.minus(negativeOne)}`, 'x + 2');
+	assert.is(`${negativeXPlusOne.plus(1)}`, '- x + 2');
+	assert.is(`${negativeXMinusOne.minus('x')}`, '- 2 x - 1');
 });
 
 expressionClasses('clone', () => {

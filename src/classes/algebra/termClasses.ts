@@ -184,6 +184,10 @@ export class pTerm extends xTerm {
 	variableAtom: string;
 	/** degree of the polynomial term: must be a non-negative integer */
 	n: number;
+	/**
+	 *  function representing what happens to "x"
+	 */
+	fAtom: (x: number | Fraction) => Fraction | undefined;
 
 	/**
 	 * Creates a new polynomial term instance
@@ -194,7 +198,7 @@ export class pTerm extends xTerm {
 		const defaultOptions = {
 			variableAtom: 'x',
 			n: 1,
-			f: (x: number | Fraction) => toFraction(x),
+			fAtom: (x: number | Fraction) => toFraction(x),
 		};
 		const termOptions = { ...defaultOptions, ...options } as PolynomialTermOptions;
 		let variable: string;
@@ -204,15 +208,16 @@ export class pTerm extends xTerm {
 			f = (x: number | Fraction) => Fraction.ONE;
 		} else if (termOptions.n === 1) {
 			variable = termOptions.variableAtom;
-			f = termOptions.f;
+			f = termOptions.fAtom;
 		} else {
 			const powerString = termOptions.n > 9 ? `{${termOptions.n}}` : `${termOptions.n}`;
 			variable = `${termOptions.variableAtom}^${powerString}`;
 			f = (x: number | Fraction) => {
-				return termOptions.f(x)!.pow(termOptions.n);
+				return termOptions.fAtom(x)!.pow(termOptions.n);
 			};
 		}
 		super(coeff, variable, f);
+		this.fAtom = termOptions.fAtom;
 		this.variableAtom = termOptions.variableAtom;
 		this.n = termOptions.n;
 	}
@@ -221,7 +226,7 @@ export class pTerm extends xTerm {
 	 * Scalar multiplication
 	 */
 	multiply(k: number | Fraction): pTerm {
-		return new pTerm(this.coeff.times(k), { variableAtom: this.variableAtom, n: this.n, f: this.f });
+		return new pTerm(this.coeff.times(k), { variableAtom: this.variableAtom, n: this.n, fAtom: this.fAtom });
 	}
 
 	/**
@@ -233,12 +238,12 @@ export class pTerm extends xTerm {
 
 	/** Clones this `pTerm`, creating a new instance */
 	clone(): pTerm {
-		return new pTerm(this.coeff.clone(), { variableAtom: this.variableAtom, n: this.n, f: this.f });
+		return new pTerm(this.coeff.clone(), { variableAtom: this.variableAtom, n: this.n, fAtom: this.fAtom });
 	}
 }
 
 interface PolynomialTermOptions {
 	variableAtom: string;
 	n: number;
-	f: (x: number | Fraction) => Fraction | undefined;
+	fAtom: (x: number | Fraction) => Fraction | undefined;
 }

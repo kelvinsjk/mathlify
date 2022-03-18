@@ -235,6 +235,11 @@ export class SquareRoot extends NthRoot {
 	clone(): SquareRoot {
 		return new SquareRoot(this.radicand.clone(), this.coeff.clone());
 	}
+
+	/**
+	 * the number one in SquareRoot class
+	 */
+	static ONE = new SquareRoot(1);
 }
 
 /**

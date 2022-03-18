@@ -62,7 +62,7 @@ export class Expression {
 	/**
 	 * performs scalar multiplication on each term of this
 	 */
-	multiply(k: number | Fraction): Expression {
+	times(k: number | Fraction): Expression {
 		const terms = this.terms.map((term) => new Term(term.coeff.times(k), term.variable));
 		return new Expression(...terms);
 	}
@@ -73,7 +73,7 @@ export class Expression {
 	 *
 	 * @returns the sum
 	 */
-	add(newExpression: Term | Fraction | number | string | Expression): Expression {
+	plus(newExpression: Term | Fraction | number | string | Expression): Expression {
 		return newExpression instanceof Expression
 			? new Expression(...this.terms, ...newExpression.terms)
 			: new Expression(...this.terms, newExpression);
@@ -84,11 +84,11 @@ export class Expression {
 	 *
 	 * @returns the difference
 	 */
-	subtract(newExpression: Term | Fraction | number | string | Expression): Expression {
+	minus(newExpression: Term | Fraction | number | string | Expression): Expression {
 		if (!(newExpression instanceof Expression)) {
 			newExpression = new Expression(newExpression);
 		}
-		return this.add(newExpression.multiply(-1));
+		return this.plus(newExpression.times(-1));
 	}
 
 	/**
@@ -200,7 +200,7 @@ export class BracketedTerm extends Term {
 	simplify(): Expression {
 		const innerExpression =
 			this.innerExpression instanceof WorkingExpression ? this.innerExpression.simplify() : this.innerExpression;
-		return innerExpression.multiply(this.coeff);
+		return innerExpression.times(this.coeff);
 	}
 
 	clone(): BracketedTerm {
@@ -240,7 +240,7 @@ export class xExpression extends Expression {
 	/**
 	 * performs scalar multiplication on each term of this
 	 */
-	multiply(k: number | Fraction): xExpression {
+	times(k: number | Fraction): xExpression {
 		const terms = this.terms.map((term) => new xTerm(term.coeff.times(k), term.variable));
 		return new xExpression(...terms);
 	}
@@ -251,7 +251,7 @@ export class xExpression extends Expression {
 	 *
 	 * @returns the sum
 	 */
-	add(newExpression: xTerm | Fraction | number | string | xExpression): xExpression {
+	plus(newExpression: xTerm | Fraction | number | string | xExpression): xExpression {
 		return newExpression instanceof xExpression
 			? new xExpression(...this.xTerms, ...newExpression.xTerms)
 			: new xExpression(...this.xTerms, newExpression);
@@ -262,11 +262,11 @@ export class xExpression extends Expression {
 	 *
 	 * @returns the difference
 	 */
-	subtract(newExpression: xTerm | Fraction | number | string | xExpression): xExpression {
+	minus(newExpression: xTerm | Fraction | number | string | xExpression): xExpression {
 		if (!(newExpression instanceof xExpression)) {
 			newExpression = new xExpression(newExpression);
 		}
-		return this.add(newExpression.multiply(-1));
+		return this.plus(newExpression.times(-1));
 	}
 
 	/**

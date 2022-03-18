@@ -14,7 +14,7 @@ const p5 = new Plane(new Vector(1, 2, -1), { mode: 'ptPtPt', v2: new Vector(3), 
 
 vectorPlaneClass('constructor and boolean checks', () => {
 	assert.throws(() => new Plane(new Vector(0)));
-	assert.throws(() => new Plane(new Vector(0), { mode: 'ppd' }));
+	assert.throws(() => new Plane(new Vector(1), { mode: 'ptPtD' }));
 	assert.is(p3.contains(l1), true);
 	assert.is(p1.contains(new Vector(0, 0, -3)), true);
 	assert.is(p3.isParallelTo(l1), true);

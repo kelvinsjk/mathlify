@@ -11,6 +11,7 @@ const x2Plus2xMinus3V2 = new Polynomial([0, 1, 2, -3]);
 const halfYPlus1 = new Polynomial([oneHalf, 1], { variableAtom: 'y' });
 const x2Plus2x3Plus3x5 = new Polynomial([1, 2, 0, 3], { ascending: true, degree: 5 });
 const x4Plus2x3Minus3x2 = new Polynomial([1, 2, -3], { degree: 4 });
+const x2 = new Polynomial([1, 0, 0]);
 
 polynomialClass('toString', () => {
 	assert.throws(() => {
@@ -27,6 +28,8 @@ polynomialClass('toString', () => {
 
 polynomialClass('substitute', () => {
 	assert.ok(x2Plus2xMinus3.subXAs(1).isEqualTo(0));
+	assert.is(x2.subXAs(2).isEqualTo(4), true);
+	assert.ok(x2Plus2xMinus3.subXAs(2).isEqualTo(5));
 });
 
 polynomialClass('arithmetic', () => {

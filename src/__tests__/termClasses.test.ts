@@ -51,6 +51,8 @@ termClasses('scalar multiplication', () => {
 	assert.is(`${x.negative()}`, '- x');
 	assert.is(`${negativeX.negative()}`, 'x');
 	assert.is(`${negativeThreeQuarterX2.negative()}`, '\\frac{3}{4} x^2');
+	assert.is(`${negativeThreeQuarterX2.subXAs(1)}`, '- \\frac{3}{4}');
+	assert.is(`${negativeThreeQuarterX2.subXAs(2)}`, '- 3');
 });
 
 termClasses('clone', () => {

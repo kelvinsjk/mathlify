@@ -48,6 +48,7 @@ export class Polynomial extends xExpression {
 		}
 		// generate pTerms
 		const polynomialTerms = coeffs.map((coeff, n) => {
+			const a = new pTerm(coeff, { variableAtom: polyOptions.variableAtom, n });
 			return new pTerm(coeff, { variableAtom: polyOptions.variableAtom, n });
 		});
 		// descending order typesetting if necessary;
