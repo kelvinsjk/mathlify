@@ -25,7 +25,7 @@ export class Term {
 	constructor(coeff: Fraction | number, variable = '') {
 		coeff = toFraction(coeff);
 		this.coeff = coeff;
-		this.variable = coeff.isEqualTo(0) ? '' : variable;
+		this.variable = variable;
 	}
 
 	/**
