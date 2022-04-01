@@ -30,10 +30,14 @@ polynomialClass('substitute', () => {
 	assert.ok(x2Plus2xMinus3.subXAs(1).isEqualTo(0));
 	assert.is(x2.subXAs(2).isEqualTo(4), true);
 	assert.ok(x2Plus2xMinus3.subXAs(2).isEqualTo(5));
+	assert.is(`${x2Plus2xMinus3.replaceXWith('y')}`, 'y^2 + 2 y - 3');
+	assert.is(`${x2Plus2xMinus3.replaceXWith(new Polynomial([1, 1]))}`, 'x^2 + 4 x');
+	assert.is(`${onePlus2xPlus3x2.replaceXWith(new Polynomial([2, -1]))}`, '2 - 8 x + 12 x^2');
 });
 
 polynomialClass('arithmetic', () => {
 	assert.is(`${x2Plus2xMinus3.plus(3)}`, 'x^2 + 2 x');
+	assert.is(`${x2Plus2xMinus3.negative()}`, '- x^2 - 2 x + 3');
 	assert.is(`${x2Plus2xMinus3.plus('x')}`, 'x^2 + 3 x - 3');
 	assert.is(`${x2Plus2xMinus3.plus(oneHalf)}`, 'x^2 + 2 x - \\frac{5}{2}');
 	assert.is(`${x2Plus2xMinus3.times(2)}`, '2 x^2 + 4 x - 6');

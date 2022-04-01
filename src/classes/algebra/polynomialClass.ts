@@ -94,6 +94,11 @@ export class Polynomial extends xExpression {
 		return new Polynomial(coeffs, { ascending: this.ascending, degree, variableAtom: this.variableAtom });
 	}
 
+	/** negative of this polynomial */
+	negative(): Polynomial {
+		return this.times(-1);
+	}
+
 	/**
 	 * divide by a *scalar*
 	 */
@@ -121,6 +126,18 @@ export class Polynomial extends xExpression {
 			newPoly = newPoly.times(this);
 		}
 		return newPoly;
+	}
+
+	/**
+	 * replace x with a new polynomial
+	 * @param x if string, replaces the variableAtom
+	 */
+	replaceXWith(x: string | Polynomial): Polynomial {
+		x = typeof x === 'string' ? new Polynomial([1, 0], { variableAtom: x }) : x;
+		return this.coefficients.reduce(
+			(prev, coeff, i) => prev.plus((<Polynomial>x).pow(i).times(coeff)),
+			new Polynomial([0], { ascending: this.ascending, variableAtom: x.variableAtom }),
+		);
 	}
 
 	/**
