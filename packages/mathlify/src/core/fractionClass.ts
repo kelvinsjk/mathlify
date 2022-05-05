@@ -1,5 +1,5 @@
-import { gcd } from '../functions/arithmetic/gcd';
-import toFraction from '../utils/toFraction';
+import { gcd } from './utils/gcd';
+import { numberToFraction } from './utils/numberToFraction';
 
 /**
  * Fraction class `{num: numerator, den: denominator}`
@@ -38,7 +38,7 @@ export class Fraction {
 	 * @returns the sum of this fraction and `f2`
 	 */
 	plus(f2: number | Fraction): Fraction {
-		f2 = toFraction(f2);
+		f2 = numberToFraction(f2);
 		return new Fraction(this.num * f2.den + f2.num * this.den, this.den * f2.den);
 	}
 
@@ -48,7 +48,7 @@ export class Fraction {
 	 * @returns the product of this fraction and `f2`
 	 */
 	times(f2: number | Fraction): Fraction {
-		f2 = toFraction(f2);
+		f2 = numberToFraction(f2);
 		return new Fraction(this.num * f2.num, this.den * f2.den);
 	}
 
@@ -72,7 +72,7 @@ export class Fraction {
 	 * @returns this fraction minus `f2`
 	 */
 	minus(f2: number | Fraction): Fraction {
-		f2 = toFraction(f2);
+		f2 = numberToFraction(f2);
 		return this.plus(f2.negative());
 	}
 
@@ -90,7 +90,7 @@ export class Fraction {
 	 * @returns this fraction divided by `f2`
 	 */
 	divide(f2: number | Fraction): Fraction {
-		f2 = toFraction(f2);
+		f2 = numberToFraction(f2);
 		return this.times(f2.reciprocal());
 	}
 
@@ -120,7 +120,7 @@ export class Fraction {
 	 * checks if this fraction is equal to `f2`
 	 */
 	isEqualTo(f2: number | Fraction): boolean {
-		f2 = toFraction(f2);
+		f2 = numberToFraction(f2);
 		return this.num === f2.num && this.den == f2.den;
 	}
 
@@ -234,7 +234,7 @@ export class Fraction {
 	 * toJSON method that allows for quick reconstruction of class instance
 	 * by storing its constructor arguments
 	 */
-	toJSON(): { type: string; args: [number, number] } {
+	toJSON(): FractionJSON {
 		return {
 			type: 'fraction',
 			args: [this.num, this.den],
@@ -264,11 +264,11 @@ export class Fraction {
 		if (fractions.length === 0) {
 			throw new Error('Fraction ERROR: gcd function must have at least one argument');
 		} else if (fractions.length === 1) {
-			const fraction = toFraction(fractions[0]);
+			const fraction = numberToFraction(fractions[0]);
 			return fraction;
 		} else if (fractions.length === 2) {
-			const fraction1 = toFraction(fractions[0]);
-			const fraction2 = toFraction(fractions[1]);
+			const fraction1 = numberToFraction(fractions[0]);
+			const fraction2 = numberToFraction(fractions[1]);
 			const gcdNum = gcd(fraction1.num, fraction2.num);
 			const gcdDen = gcd(fraction1.den, fraction2.den);
 			const lcmDen = Math.abs(fraction1.den * fraction2.den) / gcdDen;
@@ -290,7 +290,7 @@ export class Fraction {
 	static factorize(...fractions: (number | Fraction)[]): [Fraction[], Fraction] {
 		let gcd = Fraction.gcd(...fractions);
 		let simplifiedArray = fractions.map((fraction) => {
-			fraction = toFraction(fraction);
+			fraction = numberToFraction(fraction);
 			return fraction.divide(gcd);
 		});
 		if (simplifiedArray.reduce((acc, current) => acc && current.valueOf() <= 0, true)) {
@@ -299,4 +299,9 @@ export class Fraction {
 		}
 		return [simplifiedArray, gcd];
 	}
+}
+
+export interface FractionJSON {
+	type: string;
+	args: [number, number];
 }

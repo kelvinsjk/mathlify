@@ -1,8 +1,4 @@
-import { Expression } from '../algebra/expressionClasses';
-import { Term } from '../algebra/termClasses';
-import { SquareRoot } from '../radicals/rootClasses';
-import { Fraction } from '../fractionClass';
-import toFraction from '../../utils/toFraction';
+import { Expression, Term, SquareRoot, Fraction, numberToFraction } from '../core';
 
 /**
  * Vector class representing a 3D vector coeff(x i + y j + z k)
@@ -28,16 +24,16 @@ export class Vector {
 		z?: number | Fraction,
 		options?: { coeff?: number | Fraction; simplify?: boolean; stretchable?: boolean },
 	) {
-		x = toFraction(x);
-		y = y === undefined ? Fraction.ZERO : toFraction(y);
-		z = z === undefined ? Fraction.ZERO : toFraction(z);
+		x = numberToFraction(x);
+		y = y === undefined ? Fraction.ZERO : numberToFraction(y);
+		z = z === undefined ? Fraction.ZERO : numberToFraction(z);
 		let { coeff, simplify, stretchable } = {
 			coeff: Fraction.ONE,
 			simplify: false,
 			stretchable: false,
 			...options,
 		};
-		coeff = toFraction(coeff);
+		coeff = numberToFraction(coeff);
 		if (stretchable || simplify) {
 			[[x, y, z], coeff] = Fraction.factorize(x, y, z);
 			coeff = stretchable ? Fraction.ONE : coeff;

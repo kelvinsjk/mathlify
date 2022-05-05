@@ -1,9 +1,6 @@
 import { Vector } from './vectorClass';
 import { Line } from './lineClass';
-import type { Fraction } from '../fractionClass';
-import { SquareRoot } from '../radicals/rootClasses';
-import { Term, Expression, Polynomial } from '../algebra/index';
-import toFraction from '../../utils/toFraction';
+import { type Fraction, SquareRoot, Term, Expression, numberToFraction } from '../core';
 
 /**
  * Plane class representing a 3D Plane represented in scalar product form
@@ -45,7 +42,7 @@ export class Plane {
 		let n: Vector;
 		if (mode === 'rhs') {
 			n = v1.clone();
-			this.rhs = toFraction(rhs);
+			this.rhs = numberToFraction(rhs);
 		} else if (mode === 'aDotN') {
 			n = v1.clone();
 			this.rhs = n.dot(v2);

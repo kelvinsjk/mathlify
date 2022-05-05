@@ -1,8 +1,5 @@
 import { Vector } from './vectorClass';
-import type { Fraction } from '../fractionClass';
-import type { SquareRoot } from '../radicals/rootClasses';
-import { Polynomial } from '../algebra/index';
-import toFraction from '../../utils/toFraction';
+import { type Fraction, type SquareRoot, Polynomial, numberToFraction } from '../core';
 
 /**
  * Line class representing a 3D Line represented in vector form
@@ -69,7 +66,7 @@ export class Line {
 	 * @returns the position vector of the resulting point on the line
 	 */
 	point(lambda: number | Fraction = 0): Vector {
-		lambda = toFraction(lambda);
+		lambda = numberToFraction(lambda);
 		return this.a.plus(this.d.multiply(lambda));
 	}
 
@@ -237,9 +234,9 @@ export class Line {
 	 * @param component 0 (default) returns all 3 components, 1 returns x, 2 returns y, 3 returns z
 	 */
 	toCombinedString(component = 0): string {
-		const x = new Polynomial([this.a.x, this.d.x], { ascending: true, variableAtom: this.lambda });
-		const y = new Polynomial([this.a.y, this.d.y], { ascending: true, variableAtom: this.lambda });
-		const z = new Polynomial([this.a.z, this.d.z], { ascending: true, variableAtom: this.lambda });
+		const x = new Polynomial([this.a.x, this.d.x], { ascending: true, unknown: this.lambda });
+		const y = new Polynomial([this.a.y, this.d.y], { ascending: true, unknown: this.lambda });
+		const z = new Polynomial([this.a.z, this.d.z], { ascending: true, unknown: this.lambda });
 		if (component === 0) {
 			return `\\begin{pmatrix}\n\t${x} \\\\\n\t${y} \\\\\n\t${z}\n\\end{pmatrix}`;
 		} else if (component === 1) {
@@ -311,7 +308,7 @@ export class Line {
 }
 
 function toCartesianComponent(x: string, a: Fraction, d: Fraction): string {
-	const xMinusA = new Polynomial([1, a.negative()], { variableAtom: x });
+	const xMinusA = new Polynomial([1, a.negative()], { unknown: x });
 	let xString: string;
 	if (d.isEqualTo(1)) {
 		xString = `${xMinusA}`;

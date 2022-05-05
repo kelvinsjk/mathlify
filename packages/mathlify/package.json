@@ -17,6 +17,7 @@
 		"lint": "eslint --ignore-path .gitignore",
 		"build": "parcel build",
 		"test": "uvu -r tsm src/__tests__",
+		"test:new": "uvu -r tsm src/__tests__/newTests",
 		"test:debug": "uvu -r tsm src/__tests__/demos",
 		"test:coverage": "c8 --include=src npm test"
 	},

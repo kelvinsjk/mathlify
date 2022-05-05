@@ -1,6 +1,6 @@
 import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
-import { Fraction, JSONParse } from '../index';
+import { Fraction } from '../index';
 
 const fractionClass = suite('Fraction class');
 

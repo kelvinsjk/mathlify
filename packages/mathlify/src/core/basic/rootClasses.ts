@@ -1,8 +1,8 @@
-import { Fraction } from '../fractionClass';
-import { Term } from '../algebra/termClasses';
-import toFraction from '../../utils/toFraction';
-import toNthRoot from '../../utils/toNthRoot';
-import toSquareRoot from '../../utils/toSquareRoot';
+import { Fraction, FractionJSON } from '../fractionClass';
+import { BasicTerm } from './basicTermClass';
+import { numberToFraction } from '../utils/numberToFraction';
+import { numberToNthRoot } from '../utils/numberToNthRoot';
+import { numberToSquareRoot } from '../utils/numberToSquareRoot';
 
 /**
  * the NthRoot class extends the `xTerm` class
@@ -17,7 +17,7 @@ import toSquareRoot from '../../utils/toSquareRoot';
  *
  * It is recommended to use the `SquareRoot` class instead of `NthRoot` for square roots.
  */
-export class NthRoot extends Term {
+export class NthRoot extends BasicTerm {
 	/** the n-th root */
 	n: number;
 	/** the non-negative integer inside the radical */
@@ -37,8 +37,8 @@ export class NthRoot extends Term {
 			throw new Error('radicand must be non-negative');
 		}
 		// 'rationalize'
-		coeff = toFraction(coeff);
-		radicand = toFraction(radicand);
+		coeff = numberToFraction(coeff);
+		radicand = numberToFraction(radicand);
 		// extract powers
 		const [aNum, bNum] = extractPowers(radicand.num, n);
 		const [aDen, bDen] = extractPowers(radicand.den, n);
@@ -71,7 +71,7 @@ export class NthRoot extends Term {
 	 * only valid if n is the same for both terms.
 	 */
 	times(x: NthRoot | number | Fraction): NthRoot {
-		x = toNthRoot(this.n, x);
+		x = numberToNthRoot(this.n, x);
 		if (this.n !== x.n) {
 			throw new Error('n must be the same for both terms');
 		}
@@ -81,7 +81,7 @@ export class NthRoot extends Term {
 	 * radical division: a_1 \sqrt[n]{b_1} / a_2 \sqrt[n]{b_2} = a_1 / a_2 * \sqrt[n]{b_1 / b_2}$
 	 */
 	divide(x: NthRoot | number | Fraction): NthRoot {
-		x = toNthRoot(this.n, x);
+		x = numberToNthRoot(this.n, x);
 		if (this.n !== x.n) {
 			throw new Error('n must be the same for both terms');
 		}
@@ -128,7 +128,7 @@ export class NthRoot extends Term {
 	 *
 	 * Warning: throws if NthRoot is not a rational number.
 	 */
-	toFraction(): Fraction {
+	numberToFraction(): Fraction {
 		if (!this.isRational()) {
 			throw new Error('NthRoot is not a rational number');
 		}
@@ -169,7 +169,7 @@ export class SquareRoot extends NthRoot {
 			throw new Error('radicand must be non-negative');
 		}
 		// 'rationalize'
-		coeff = toFraction(coeff);
+		coeff = numberToFraction(coeff);
 		if (typeof radicand !== 'number') {
 			const c = radicand.den;
 			radicand = radicand.num * c;
@@ -194,14 +194,14 @@ export class SquareRoot extends NthRoot {
 	 * only valid if n is the same for both terms.
 	 */
 	times(x: SquareRoot | number | Fraction): SquareRoot {
-		x = toSquareRoot(x);
+		x = numberToSquareRoot(x);
 		return new SquareRoot(this.radicand.times(x.radicand), this.coeff.times(x.coeff));
 	}
 	/**
 	 * radical division: a_1 \sqrt[n]{b_1} / a_2 \sqrt[n]{b_2} = a_1 / a_2 * \sqrt[n]{b_1 / b_2}$
 	 */
 	divide(x: SquareRoot | number | Fraction): SquareRoot {
-		x = toSquareRoot(x);
+		x = numberToSquareRoot(x);
 		return new SquareRoot(this.radicand.divide(x.radicand), this.coeff.divide(x.coeff));
 	}
 
@@ -244,6 +244,13 @@ export class SquareRoot extends NthRoot {
 	 * the number one in SquareRoot class
 	 */
 	static ONE = new SquareRoot(1);
+
+	toJSON(): SquareRootJSON {
+		return {
+			type: 'squareRoot',
+			args: [this.radicand.toJSON(), this.coeff.toJSON()],
+		};
+	}
 }
 
 /**
@@ -266,4 +273,9 @@ function extractPowers(x: number, n = 2, y = 1): [number, number] {
 		}
 	}
 	return [y, x];
+}
+
+export interface SquareRootJSON {
+	type: string;
+	args: [FractionJSON, FractionJSON];
 }

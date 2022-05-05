@@ -1,6 +1,5 @@
 import { getRandomInt } from './getRandomInt';
-import { Fraction } from '../../classes/fractionClass';
-import toFraction from '../../utils/toFraction';
+import { Fraction, numberToFraction } from '../core/index';
 
 /**
  * Generates a random Fraction
@@ -18,7 +17,7 @@ export function getRandomFrac(options?: {
 	const fractionOptions = {
 		numRange: options?.numRange ?? [-9, 9],
 		denRange: options?.denRange ?? [1, 9],
-		avoid: avoidArray.map((e) => toFraction(e)),
+		avoid: avoidArray.map((e) => numberToFraction(e)),
 	};
 	let num = getRandomInt(...fractionOptions.numRange);
 	let den = getRandomInt(...fractionOptions.denRange);

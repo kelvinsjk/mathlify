@@ -1,12 +1,12 @@
-import { pTerm } from './termClasses';
-import { xExpression } from './expressionClasses';
+import { Expression } from './expressionClass';
+import { Unknown } from '../basic/unknownClass';
 import { Fraction } from '../fractionClass';
-import toFraction from '../../utils/toFraction';
+import { numberToFraction } from '../utils/numberToFraction';
 
 /**
  * Polynomial class representing "ax^n + bx^n-1 + ... + k"
  */
-export class Polynomial extends xExpression {
+export class Polynomial extends Expression {
 	/** array of coefficients in ascending order, starting from constant term */
 	coefficients: Fraction[];
 	/** whether polynomial in ascending or descending order */
@@ -14,52 +14,51 @@ export class Polynomial extends xExpression {
 	/** degree of the polynomial */
 	degree: number;
 	/** variable name (e.g. "x") */
-	variableAtom: string;
+	unknown: string;
 
 	/**
 	 * Creates a new Polynomial instance
-	 * @param coefficients array of coefficients
-	 * @param options defaults to `{ascending: false, degree: coeffs.length-1, variableAtom: 'x'}`
+	 * @param coeffs array of coefficients
+	 * @param options defaults to `{ascending: false, degree: coeffs.length-1, unknown: 'x'}`
 	 */
-	constructor(coefficients: (number | Fraction)[], options?: Partial<PolynomialOptions>) {
-		const polyOptions: PolynomialOptions = {
+	constructor(coeffs: (number | Fraction)[], options?: { ascending?: boolean; degree?: number; unknown?: string }) {
+		const { unknown, ascending, degree } = {
 			ascending: false,
-			degree: coefficients.length - 1,
-			variableAtom: 'x',
+			degree: coeffs.length - 1,
+			unknown: 'x',
 			...options,
 		};
-		if (polyOptions.degree < 0 || polyOptions.degree < coefficients.length - 1) {
+		if (degree < 0 || degree < coeffs.length - 1) {
 			throw new RangeError('degree must be greater than coefficients.length-1');
 		}
 		// reverse coefficient array if descending order
-		if (!polyOptions.ascending) {
-			coefficients = [...coefficients].reverse();
+		if (!ascending) {
+			coeffs = [...coeffs].reverse();
 		}
 		// add extra zeros to start from constant term
-		if (polyOptions.degree > coefficients.length - 1) {
-			const extraCoeffLength = polyOptions.degree - coefficients.length + 1;
-			coefficients = [...createZeroArray(extraCoeffLength), ...coefficients];
+		if (degree > coeffs.length - 1) {
+			const extraCoeffLength = degree - coeffs.length + 1;
+			coeffs = [...createZeroArray(extraCoeffLength), ...coeffs];
 		}
 		// convert to Fraction type
-		let coeffs = coefficients.map((k) => toFraction(k));
+		let coeffsFrac = coeffs.map(numberToFraction);
 		// remove unnecessary terms (leading coefficients should be non-zero, unless it is a constant polynomial)
-		while (coeffs[coeffs.length - 1].isEqualTo(0) && coeffs.length > 1) {
-			coeffs = coeffs.slice(0, coeffs.length - 1);
+		while (coeffsFrac[coeffsFrac.length - 1].isEqualTo(0) && coeffsFrac.length > 1) {
+			coeffsFrac = coeffsFrac.slice(0, coeffs.length - 1);
 		}
-		// generate pTerms
-		const polynomialTerms = coeffs.map((coeff, n) => {
-			const a = new pTerm(coeff, { variableAtom: polyOptions.variableAtom, n });
-			return new pTerm(coeff, { variableAtom: polyOptions.variableAtom, n });
+		// generate unknown terms
+		const polynomialTerms = coeffsFrac.map((coeff, n) => {
+			return new Unknown(coeff, { unknown, n });
 		});
 		// descending order typesetting if necessary;
-		if (!polyOptions.ascending) {
+		if (!ascending) {
 			polynomialTerms.reverse();
 		}
 		super(...polynomialTerms);
-		this.coefficients = coeffs;
+		this.coefficients = coeffsFrac;
 		this.degree = coeffs.length - 1;
-		this.variableAtom = polyOptions.variableAtom;
-		this.ascending = polyOptions.ascending;
+		this.unknown = unknown;
+		this.ascending = ascending;
 	}
 
 	/** add two polynomials
@@ -75,7 +74,7 @@ export class Polynomial extends xExpression {
 		if (!this.ascending) {
 			newCoeffs.reverse();
 		}
-		return new Polynomial(newCoeffs, { variableAtom: this.variableAtom, ascending: this.ascending, degree });
+		return new Polynomial(newCoeffs, { unknown: this.unknown, ascending: this.ascending, degree });
 	}
 
 	/** multiplies two polynomials */
@@ -91,7 +90,7 @@ export class Polynomial extends xExpression {
 		if (!this.ascending) {
 			coeffs.reverse();
 		}
-		return new Polynomial(coeffs, { ascending: this.ascending, degree, variableAtom: this.variableAtom });
+		return new Polynomial(coeffs, { ascending: this.ascending, degree, unknown: this.unknown });
 	}
 
 	/** negative of this polynomial */
@@ -103,7 +102,7 @@ export class Polynomial extends xExpression {
 	 * divide by a *scalar*
 	 */
 	divide(p2: number | Fraction): Polynomial {
-		p2 = toFraction(p2);
+		p2 = numberToFraction(p2);
 		return this.times(p2.reciprocal());
 	}
 
@@ -121,7 +120,7 @@ export class Polynomial extends xExpression {
 		if (!(Number.isInteger(n) && n >= 0)) {
 			throw new RangeError(`only non-negative integers allowed for n (${n} received)`);
 		}
-		let newPoly = new Polynomial([1], { variableAtom: this.variableAtom });
+		let newPoly = new Polynomial([1], { unknown: this.unknown });
 		for (let i = 0; i < n; i++) {
 			newPoly = newPoly.times(this);
 		}
@@ -130,13 +129,13 @@ export class Polynomial extends xExpression {
 
 	/**
 	 * replace x with a new polynomial
-	 * @param x if string, replaces the variableAtom
+	 * @param x if string, replaces the unknown
 	 */
 	replaceXWith(x: string | Polynomial): Polynomial {
-		x = typeof x === 'string' ? new Polynomial([1, 0], { variableAtom: x }) : x;
+		x = typeof x === 'string' ? new Polynomial([1, 0], { unknown: x }) : x;
 		return this.coefficients.reduce(
 			(prev, coeff, i) => prev.plus((<Polynomial>x).pow(i).times(coeff)),
-			new Polynomial([0], { ascending: this.ascending, variableAtom: x.variableAtom }),
+			new Polynomial([0], { ascending: this.ascending, unknown: x.unknown }),
 		);
 	}
 
@@ -163,7 +162,6 @@ export class Polynomial extends xExpression {
 		if (this.ascending === ascending) {
 			return this;
 		}
-		this.xTerms.reverse();
 		this.terms.reverse();
 		this.ascending = ascending;
 		return this;
@@ -176,32 +174,26 @@ export class Polynomial extends xExpression {
 			// coeffs in ascending by default
 			coeffs.reverse();
 		}
-		return new Polynomial(coeffs, { ascending: this.ascending, degree: this.degree, variableAtom: this.variableAtom });
+		return new Polynomial(coeffs, { ascending: this.ascending, degree: this.degree, unknown: this.unknown });
 	}
 
 	/**
 	 * toJSON method that allows for quick reconstruction of class instance
 	 * by storing its constructor arguments
 	 */
-	toJSON(): { type: string; args: [Fraction[], { ascending: boolean; degree: number; variableAtom: string }] } {
+	toJSON(): { type: string; args: [Fraction[], { ascending: boolean; degree: number; unknown: string }] } {
 		const coeffs = this.coefficients.map((e) => e.clone());
 		if (!this.ascending) {
 			coeffs.reverse();
 		}
 		return {
 			type: 'polynomial',
-			args: [coeffs, { ascending: this.ascending, degree: this.degree, variableAtom: this.variableAtom }],
+			args: [coeffs, { ascending: this.ascending, degree: this.degree, unknown: this.unknown }],
 		};
 	}
 }
 
-interface PolynomialOptions {
-	ascending: boolean;
-	degree: number;
-	variableAtom: string;
-}
-
-function createZeroArray(n: number): Fraction[] {
+export function createZeroArray(n: number): Fraction[] {
 	let zeroArray: Fraction[] = [];
 	for (let i = 0; i < n; i++) {
 		zeroArray.push(Fraction.ZERO);
@@ -214,7 +206,7 @@ function toPolynomial(p2: number | Fraction | string | Polynomial): Polynomial {
 		return new Polynomial([p2]);
 	}
 	if (typeof p2 === 'string') {
-		return new Polynomial([1, 0], { variableAtom: p2 });
+		return new Polynomial([1, 0], { unknown: p2 });
 	}
 	return p2;
 }

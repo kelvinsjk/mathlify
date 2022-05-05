@@ -8,7 +8,7 @@ const oneHalf = new Fraction(1, 2);
 const onePlus2xPlus3x2 = new Polynomial([1, 2, 3], { ascending: true });
 const x2Plus2xMinus3 = new Polynomial([1, 2, -3]);
 const x2Plus2xMinus3V2 = new Polynomial([0, 1, 2, -3]);
-const halfYPlus1 = new Polynomial([oneHalf, 1], { variableAtom: 'y' });
+const halfYPlus1 = new Polynomial([oneHalf, 1], { unknown: 'y' });
 const x2Plus2x3Plus3x5 = new Polynomial([1, 2, 0, 3], { ascending: true, degree: 5 });
 const x4Plus2x3Minus3x2 = new Polynomial([1, 2, -3], { degree: 4 });
 const x2 = new Polynomial([1, 0, 0]);
@@ -27,9 +27,9 @@ polynomialClass('toString', () => {
 });
 
 polynomialClass('substitute', () => {
-	assert.ok(x2Plus2xMinus3.subXAs(1).isEqualTo(0));
-	assert.is(x2.subXAs(2).isEqualTo(4), true);
-	assert.ok(x2Plus2xMinus3.subXAs(2).isEqualTo(5));
+	assert.ok(x2Plus2xMinus3.subIn(1).isEqualTo(0));
+	assert.is(x2.subIn(2).isEqualTo(4), true);
+	assert.ok(x2Plus2xMinus3.subIn(2).isEqualTo(5));
 	assert.is(`${x2Plus2xMinus3.replaceXWith('y')}`, 'y^2 + 2 y - 3');
 	assert.is(`${x2Plus2xMinus3.replaceXWith(new Polynomial([1, 1]))}`, 'x^2 + 4 x');
 	assert.is(`${onePlus2xPlus3x2.replaceXWith(new Polynomial([2, -1]))}`, '2 - 8 x + 12 x^2');
@@ -55,9 +55,9 @@ polynomialClass('clone', () => {
 	assert.ok(newX2Plus2xMinus3.ascending);
 	assert.not.ok(x2Plus2xMinus3.ascending);
 	const newOnePlus2xPlus3x2 = onePlus2xPlus3x2.clone();
-	newOnePlus2xPlus3x2.variableAtom = 'y';
-	assert.is(onePlus2xPlus3x2.variableAtom, 'x');
-	assert.is(newOnePlus2xPlus3x2.variableAtom, 'y');
+	newOnePlus2xPlus3x2.unknown = 'y';
+	assert.is(onePlus2xPlus3x2.unknown, 'x');
+	assert.is(newOnePlus2xPlus3x2.unknown, 'y');
 });
 
 polynomialClass('reverse', () => {

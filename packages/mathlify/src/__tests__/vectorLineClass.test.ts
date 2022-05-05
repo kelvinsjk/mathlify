@@ -1,6 +1,6 @@
 import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
-import { Fraction, Vector, Line } from '../index';
+import { Vector, Line } from '../index';
 
 const vectorLineClass = suite('vector line class');
 
