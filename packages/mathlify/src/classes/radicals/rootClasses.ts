@@ -42,9 +42,9 @@ export class NthRoot extends Term {
 		// extract powers
 		const [aNum, bNum] = extractPowers(radicand.num, n);
 		const [aDen, bDen] = extractPowers(radicand.den, n);
-		if (bNum === 1 && bDen === 1) {
+		if (bNum === 1 || bDen === 1) {
 			coeff = coeff.times(aNum).divide(aDen);
-			radicand = new Fraction(1, 1);
+			radicand = new Fraction(bNum, bDen);
 		}
 		// create term
 		super(coeff, `\\sqrt[${n}]{${radicand}}`);
@@ -133,6 +133,10 @@ export class NthRoot extends Term {
 			throw new Error('NthRoot is not a rational number');
 		}
 		return this.coeff.clone();
+	}
+
+	toPrecision(precision: number): string {
+		return this.valueOf().toPrecision(precision);
 	}
 
 	clone(): NthRoot {

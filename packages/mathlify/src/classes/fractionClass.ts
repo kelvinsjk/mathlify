@@ -101,7 +101,7 @@ export class Fraction {
 	 */
 	pow(n: number): Fraction {
 		if (!Number.isInteger(n)) {
-			throw new RangeError('only non-negative n are allowed for fraction.pow(n)');
+			throw new RangeError('only integral n are allowed for fraction.pow(n)');
 		}
 		const modN = Math.abs(n);
 		const thisPowerModN = new Fraction(Math.pow(this.num, modN), Math.pow(this.den, modN));

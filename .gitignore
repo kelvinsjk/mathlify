@@ -1,8 +1,14 @@
 # Dependency directories
 node_modules/
-/lib
 /docs
-/coverage
 /svelte
-src/__tests__/demos
-.parcel-cache/
+.parcel-cache
+# mathlify package
+./packages/mathlify/lib
+./packages/mathlify/.parcel-cache/
+./packages/mathlify/coverage
+./packages/mathlify/src/__tests__/demos
+# mathlify-plus
+packages/mathlify-plus/
+# math-pro
+sites/math-pro/
