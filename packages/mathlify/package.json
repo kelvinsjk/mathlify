@@ -1,6 +1,6 @@
 {
 	"name": "mathlify",
-	"version": "0.0.26",
+	"version": "0.1.0",
 	"description": "bringing mathematics into the digital age",
 	"source": "src/index.ts",
 	"type": "module",
@@ -8,10 +8,10 @@
 	"types": "lib/types.d.ts",
 	"scripts": {
 		"dev": "parcel watch",
-		"prepare": "npm run build",
-		"prepublishOnly": "npm test && npm run lint",
-		"preversion": "npm run lint",
-		"version": "npm run format && git add -A src",
+		"prepare": "pnpm run build",
+		"prepublishOnly": "pnpm test && npm run lint",
+		"preversion": "pnpm run lint",
+		"version": "pnpm run format && git add -A src",
 		"postversion": "git push && git push --tags",
 		"format": "prettier --write \"src/**/*.ts\"",
 		"lint": "eslint --ignore-path .gitignore",

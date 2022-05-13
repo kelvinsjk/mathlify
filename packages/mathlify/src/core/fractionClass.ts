@@ -211,9 +211,10 @@ export class Fraction {
 	}
 	/**
 	 * invokes the JavaScript `Number.prototype.toPrecision()` method
+	 * before passing it back as a number (to avoid exponential notation)
 	 */
-	toPrecision(precision?: number): string {
-		return this.valueOf().toPrecision(precision);
+	toPrecision(precision?: number): number {
+		return Number(this.valueOf().toPrecision(precision));
 	}
 
 	/**

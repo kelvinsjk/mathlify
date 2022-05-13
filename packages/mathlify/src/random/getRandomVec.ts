@@ -142,6 +142,41 @@ export function getRandomPerps(options?: { min?: number; max?: number; simplify?
 }
 
 /**
+ * get a random vectors that is perpendicular given vector
+ *
+ * options default to `{ min: -5, max: 5, simplify: true}`
+ *
+ * warning: max should be positive or loop logic may fail
+ */
+export function getRandomPerp(v: Vector, options?: { min?: number; max?: number; simplify?: boolean }): Vector {
+	const { min, max, simplify } = {
+		min: -5,
+		max: 5,
+		simplify: true,
+		...options,
+	};
+	if (!v.z.isEqualTo(0)) {
+		const x = getRandomInt(min, max, { avoid: [0] });
+		const y = getRandomInt(min, max);
+		const dot = v.x.times(x).plus(v.y.times(y));
+		return new Vector(x, y, dot.negative().divide(v.z), { stretchable: simplify });
+	} else if (!v.y.isEqualTo(0)) {
+		const x = getRandomInt(min, max, { avoid: [0] });
+		const z = getRandomInt(min, max);
+		const dot = v.x.times(x).plus(v.z.times(z));
+		return new Vector(x, dot.negative().divide(v.y), z, { stretchable: simplify });
+	} else {
+		if (v.x.isEqualTo(0)) {
+			throw new Error('cannot get perpendicular to zero vector');
+		}
+		const y = getRandomInt(min, max, { avoid: [0] });
+		const z = getRandomInt(min, max);
+		const dot = v.y.times(y).plus(v.z.times(z));
+		return new Vector(dot.negative().divide(v.x), y, z, { stretchable: simplify });
+	}
+}
+
+/**
  * options for `getRandomInt`
  *
  * of the form `{ avoid: [] }`;

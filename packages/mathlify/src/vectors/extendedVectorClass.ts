@@ -208,11 +208,8 @@ export class xVector {
 }
 
 function toExpression(x: number | Fraction | string | Unknown | Term | Expression): Expression {
-	if (typeof x === 'number' || x instanceof Fraction) {
+	if (typeof x === 'number' || x instanceof Fraction || x instanceof Unknown || typeof x === 'string') {
 		return new Expression(new Term(x));
-	}
-	if (typeof x === 'string' || x instanceof Unknown) {
-		return new Expression(new Term(typeof x === 'string' ? 1 : x.coeff, x));
 	}
 	return x instanceof Term ? new Expression(x) : x.clone();
 }

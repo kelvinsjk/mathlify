@@ -13,8 +13,30 @@ export {
 	numberToSquareRoot,
 } from './core';
 
-export { Vector, Line, Plane, xVector, uVector, uxVector } from './vectors';
+export { Vector, Line, Plane, xVector, uVector, uxVector, uVectorExpression, uxVectorExpression } from './vectors';
 
-export { getRandomInt, getRandomVec, getNiceVec, getRandomPerps, getRandomFrac, shuffle, heads } from './random';
+export {
+	getRandomInt,
+	getRandomVec,
+	getNiceVec,
+	getRandomPerps,
+	getRandomPerp,
+	getRandomFrac,
+	shuffle,
+	heads,
+} from './random';
 
 export { JSONParse } from './misc';
+
+export {
+	expToPoly,
+	simplifyPoly,
+	factorizeQuadratic,
+	factorizeCubic,
+	solveQuadratic,
+	solveQuadraticSurd,
+	solveLinear,
+	shiftPoly,
+} from './polynomialMethods';
+
+export { cramers, cramersFrac } from './numerical';

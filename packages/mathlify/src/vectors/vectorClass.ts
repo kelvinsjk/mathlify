@@ -1,4 +1,5 @@
 import { Expression, Term, SquareRoot, Fraction, numberToFraction } from '../core';
+import { FractionJSON } from '../core/fractionClass';
 
 /**
  * Vector class representing a 3D vector coeff(x i + y j + z k)
@@ -151,6 +152,11 @@ export class Vector {
 			? new Vector(this.x, this.y, this.z, { coeff: this.coeff.times(k) })
 			: new Vector(this.x.times(k), this.y.times(k), this.z.times(k), { coeff: this.coeff });
 	}
+	divide(k: number | Fraction, options = { multiplyIntoCoeff: false }): Vector {
+		return options.multiplyIntoCoeff
+			? new Vector(this.x, this.y, this.z, { coeff: this.coeff.divide(k) })
+			: new Vector(this.x.divide(k), this.y.divide(k), this.z.divide(k), { coeff: this.coeff });
+	}
 
 	/**
 	 * @returns the cross product (this cross v2)
@@ -272,6 +278,13 @@ export class Vector {
 		return new Vector(this.x, this.y, this.z, { coeff: this.coeff });
 	}
 
+	toJSON(): VectorJSON {
+		return {
+			type: 'vector',
+			args: [this.x.toJSON(), this.y.toJSON(), this.z.toJSON(), { coeff: this.coeff.toJSON() }],
+		};
+	}
+
 	////
 	// static properties
 	////
@@ -292,4 +305,9 @@ export class Vector {
 	 * the z-axis unit vector (0,0,1)
 	 */
 	static K = new Vector(0, 0, 1);
+}
+
+export interface VectorJSON {
+	type: 'vector';
+	args: [FractionJSON, FractionJSON, FractionJSON, { coeff: FractionJSON }];
 }
