@@ -9,7 +9,7 @@
 	"scripts": {
 		"dev": "parcel watch",
 		"prepare": "pnpm run build",
-		"prepublishOnly": "pnpm test && npm run lint",
+		"prepublishOnly": "pnpm run test && pnpm run lint",
 		"preversion": "pnpm run lint",
 		"version": "pnpm run format && git add -A src",
 		"postversion": "git push && git push --tags",

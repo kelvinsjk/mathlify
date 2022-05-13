@@ -41,8 +41,7 @@
 	"dependencies": {
 		"daisyui": "^2.14.2",
 		"mathlifier": "^1.0.3",
-		"mathlify": "workspace:^0.0.26",
-		"mathlify-plus": "workspace:^0.0.1"
+		"mathlify": "workspace:^0.1.0"
 	},
 	"type": "module"
 }
