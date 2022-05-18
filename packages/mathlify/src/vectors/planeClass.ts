@@ -18,7 +18,7 @@ export class Plane {
 	 *
 	 * @param options default to {mode: 'rhs', rhs: 0, v2: (1,0,0), v3: (0,1,0) }
 	 * `mode: rhs`: takes v1 as n and rhs to form the plane
-	 * `mode: aDotN`: takes v1 as n and v2 as a point on the plane
+	 * `mode: ptN`: takes v1 as n and v2 as a point on the plane
 	 * `mode: ptDD`: takes v1 as a point on the plane and v2 and v3 as direction vectors parallel to the plane
 	 * `mode: ptPtD`: takes v1 and v2 as points on the plane and v3 as a direction vector parallel to the plane
 	 * `mode: ptPtPt`: takes v1, v2 and v3 as points on the plane and v3
@@ -26,7 +26,7 @@ export class Plane {
 	constructor(
 		v1: Vector,
 		options?: {
-			mode?: 'rhs' | 'aDotN' | 'ptDD' | 'ptPtD' | 'ptPtPt';
+			mode?: 'rhs' | 'ptN' | 'ptDD' | 'ptPtD' | 'ptPtPt';
 			rhs?: number | Fraction;
 			v2?: Vector;
 			v3?: Vector;
@@ -43,7 +43,7 @@ export class Plane {
 		if (mode === 'rhs') {
 			n = v1.clone();
 			this.rhs = numberToFraction(rhs);
-		} else if (mode === 'aDotN') {
+		} else if (mode === 'ptN') {
 			n = v1.clone();
 			this.rhs = n.dot(v2);
 		} else if (mode === 'ptDD') {

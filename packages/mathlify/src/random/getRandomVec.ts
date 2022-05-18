@@ -1,5 +1,5 @@
 import { getRandomInt } from './getRandomInt';
-import { Vector } from '../vectors/index';
+import { Vector, Line } from '../vectors/index';
 import { shuffle } from './shuffle';
 import { heads } from './coinFlip';
 import { factorPairs } from '../misc/index';
@@ -8,17 +8,19 @@ import { factorPairs } from '../misc/index';
  * Generates a random 3D Vector with
  * integer coordinates between `min` and `max` (inclusive)
  *
- * @param options defaults  to `{min: -5, max: 5, simplify: false, nonzero: true}`
+ * @param options defaults  to `{min: -5, max: 5, simplify: false, nonzero: true, avoid: [], avoidParallel: false}`
  * setting nonzero to true will ensure a non-zero Vector
  * setting simplify to true will return a 'simplified' Vector (such that gcd(x,y,z)=1)
  *
  */
 export function getRandomVec(options?: randomVecOptions): Vector {
-	const { nonzero, min, max, simplify } = {
+	const { nonzero, min, max, simplify, avoid, avoidParallel } = {
 		nonzero: true,
 		simplify: false,
 		min: -5,
 		max: 5,
+		avoid: [],
+		avoidParallel: false,
 		...options,
 	};
 	const x = getRandomInt(min, max);
@@ -27,7 +29,26 @@ export function getRandomVec(options?: randomVecOptions): Vector {
 	if (nonzero && x === 0 && y === 0 && z === 0) {
 		return getRandomVec(options);
 	}
+	const vec = new Vector(x, y, z, { stretchable: simplify });
+	if (avoidParallel) {
+		if (avoid.some((v) => v.isParallelTo(vec))) {
+			return getRandomVec(options);
+		}
+	} else {
+		if (avoid.some((v) => v.isEqualTo(vec))) {
+			return getRandomVec(options);
+		}
+	}
 	return new Vector(x, y, z, { stretchable: simplify });
+}
+
+/**
+ * options default to {min: -5, max: 5, lambda: '\\lambda'}
+ */
+export function getRandomLine(options?: { min?: number; max?: number; lambda?: string }) {
+	const a = getRandomVec({ ...options, nonzero: false });
+	const d = getRandomVec({ ...options, simplify: true });
+	return new Line(a, d, options);
 }
 
 /**
@@ -142,7 +163,7 @@ export function getRandomPerps(options?: { min?: number; max?: number; simplify?
 }
 
 /**
- * get a random vectors that is perpendicular given vector
+ * get a random vector that is perpendicular to given vector
  *
  * options default to `{ min: -5, max: 5, simplify: true}`
  *
@@ -190,4 +211,8 @@ interface randomVecOptions {
 	min?: number;
 	/** max */
 	max?: number;
+	/** vectors to avoid */
+	avoid?: Vector[];
+	/** avoidParallel */
+	avoidParallel?: boolean;
 }

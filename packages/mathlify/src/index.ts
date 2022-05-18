@@ -21,6 +21,7 @@ export {
 	getNiceVec,
 	getRandomPerps,
 	getRandomPerp,
+	getRandomLine,
 	getRandomFrac,
 	shuffle,
 	heads,
