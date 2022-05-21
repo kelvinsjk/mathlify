@@ -91,11 +91,11 @@ vectorLineClass('intersection', () => {
 	assert.is(l4.intersectParameters(l3), null);
 });
 
-vectorLineClass('angle', () => {
+vectorLineClass('angleTo', () => {
 	const iPlusJMinusK = new Line(Vector.I, new Vector(1, 1, -1));
 	const zAxis = new Line(Vector.ZERO, Vector.K);
-	assert.is(iPlusJMinusK.angle(zAxis), '54.7^\\circ');
-	assert.is(iPlusJMinusK.angle(Vector.K), '54.7^\\circ');
+	assert.is(iPlusJMinusK.angleTo(zAxis), '54.7^\\circ');
+	assert.is(iPlusJMinusK.angleTo(Vector.K), '54.7^\\circ');
 });
 
 vectorLineClass('distance', () => {

@@ -102,23 +102,23 @@ vectorClass('arithmetic', () => {
 	);
 });
 
-vectorClass('angle', () => {
+vectorClass('angleTo', () => {
 	const iPlusJ = new Vector(1, 1);
 	const iPlusJMinusK = new Vector(1, 1, -1);
 	const minusI = new Vector(-1);
 	const minusIPlusJ = new Vector(-1, 1);
-	assert.is(Vector.K.angle(Vector.K), '0^\\circ');
-	assert.is(iPlusJMinusK.angle(iPlusJ), '35.3^\\circ');
-	assert.is(iPlusJ.angle(Vector.I), '45^\\circ');
-	assert.is(Vector.J.angle(Vector.I), '90^\\circ');
-	assert.is(iPlusJMinusK.angle(minusI), '125.3^\\circ');
-	assert.is(minusIPlusJ.angle(Vector.I), '135^\\circ');
-	assert.is(minusIPlusJ.angle(Vector.I, { acute: true }), '45^\\circ');
-	assert.is(Vector.K.angle(Vector.K, { sineMode: true }), '90^\\circ');
-	assert.is(iPlusJMinusK.angle(iPlusJ, { sineMode: true }), '54.7^\\circ');
-	assert.is(iPlusJ.angle(Vector.I, { sineMode: true }), '45^\\circ');
-	assert.is(Vector.J.angle(Vector.I, { sineMode: true }), '0^\\circ');
-	assert.is(iPlusJMinusK.angle(minusI, { sineMode: true }), '35.3^\\circ');
+	assert.is(Vector.K.angleTo(Vector.K), '0^\\circ');
+	assert.is(iPlusJMinusK.angleTo(iPlusJ), '35.3^\\circ');
+	assert.is(iPlusJ.angleTo(Vector.I), '45^\\circ');
+	assert.is(Vector.J.angleTo(Vector.I), '90^\\circ');
+	assert.is(iPlusJMinusK.angleTo(minusI), '125.3^\\circ');
+	assert.is(minusIPlusJ.angleTo(Vector.I), '135^\\circ');
+	assert.is(minusIPlusJ.angleTo(Vector.I, { acute: true }), '45^\\circ');
+	assert.is(Vector.K.angleTo(Vector.K, { sineMode: true }), '90^\\circ');
+	assert.is(iPlusJMinusK.angleTo(iPlusJ, { sineMode: true }), '54.7^\\circ');
+	assert.is(iPlusJ.angleTo(Vector.I, { sineMode: true }), '45^\\circ');
+	assert.is(Vector.J.angleTo(Vector.I, { sineMode: true }), '0^\\circ');
+	assert.is(iPlusJMinusK.angleTo(minusI, { sineMode: true }), '35.3^\\circ');
 	assert.is(Vector.I.isPerpendicularTo(Vector.J), true);
 	assert.is(Vector.I.isParallelTo(minusI), true);
 });

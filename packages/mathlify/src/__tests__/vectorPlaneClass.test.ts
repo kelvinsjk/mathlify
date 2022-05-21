@@ -67,10 +67,10 @@ vectorPlaneClass('intersection', () => {
 	assert.is(lIntersect2.isEqualTo(new Line(new Vector(0, 2), new Vector(1))), true);
 });
 
-vectorPlaneClass('angle', () => {
-	assert.is(p1.angle(p5), '73.2^\\circ');
-	assert.is(p1.angle(l1), '33.2^\\circ');
-	assert.is(p1.angle(new Vector(1, -2)), '33.2^\\circ');
+vectorPlaneClass('angleTo', () => {
+	assert.is(p1.angleTo(p5), '73.2^\\circ');
+	assert.is(p1.angleTo(l1), '33.2^\\circ');
+	assert.is(p1.angleTo(new Vector(1, -2)), '33.2^\\circ');
 });
 
 vectorPlaneClass('distance', () => {

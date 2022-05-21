@@ -75,9 +75,9 @@ export class Line {
 	 *
 	 * @returns angle between this line and given vector/line
 	 */
-	angle(v: Vector | Line): string {
+	angleTo(v: Vector | Line): string {
 		v = v instanceof Line ? v.d : v;
-		return this.d.angle(v, { acute: true });
+		return this.d.angleTo(v, { acute: true });
 	}
 
 	/**
@@ -216,16 +216,20 @@ export class Line {
 	 * @returns equation of the line r = a + lambda d in column vector form
 	 */
 	toString(): string {
-		return `\\mathbf{r} = ${this.a} + ${this.lambda} ${this.d}`;
+		return this.a.isZero()
+			? `\\mathbf{r} = ${this.lambda} ${this.d}`
+			: `\\mathbf{r} = ${this.a} + ${this.lambda} ${this.d}`;
 	}
 
 	/**
 	 * @returns equation of the line r = a + lambda d in ijk form
 	 */
 	toIJKString(): string {
-		return `\\mathbf{r} = \\left( ${this.a.toIJKString()} \\right) + ${
-			this.lambda
-		} \\left( ${this.d.toIJKString()} \\right)`;
+		return this.a.isZero()
+			? `\\mathbf{r} = ${this.lambda} \\left( ${this.d.toIJKString()} \\right)`
+			: `\\mathbf{r} = \\left( ${this.a.toIJKString()} \\right) + ${
+					this.lambda
+			  } \\left( ${this.d.toIJKString()} \\right)`;
 	}
 
 	/**

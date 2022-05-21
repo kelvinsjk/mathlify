@@ -3,24 +3,26 @@ import { Vector, Line } from '../vectors/index';
 import { shuffle } from './shuffle';
 import { heads } from './coinFlip';
 import { factorPairs } from '../misc/index';
+import { Fraction } from '../core';
 
 /**
  * Generates a random 3D Vector with
  * integer coordinates between `min` and `max` (inclusive)
  *
- * @param options defaults  to `{min: -5, max: 5, simplify: false, nonzero: true, avoid: [], avoidParallel: false}`
+ * @param options defaults  to `{min: -5, max: 5, simplify: false, nonzero: true, avoid: [], avoidParallel: false, avoidPerp: false, avoidLine: }`
  * setting nonzero to true will ensure a non-zero Vector
  * setting simplify to true will return a 'simplified' Vector (such that gcd(x,y,z)=1)
  *
  */
 export function getRandomVec(options?: randomVecOptions): Vector {
-	const { nonzero, min, max, simplify, avoid, avoidParallel } = {
+	const { nonzero, min, max, simplify, avoid, avoidParallel, avoidPerp, avoidLine } = {
 		nonzero: true,
 		simplify: false,
 		min: -5,
 		max: 5,
 		avoid: [],
 		avoidParallel: false,
+		avoidPerp: false,
 		...options,
 	};
 	const x = getRandomInt(min, max);
@@ -30,8 +32,20 @@ export function getRandomVec(options?: randomVecOptions): Vector {
 		return getRandomVec(options);
 	}
 	const vec = new Vector(x, y, z, { stretchable: simplify });
-	if (avoidParallel) {
+	// check things to avoid
+	if (avoidLine !== undefined && avoidLine.contains(vec)) {
+		return getRandomVec(options);
+	}
+	if (avoidParallel && avoidPerp) {
+		if (avoid.some((v) => v.isParallelTo(vec) || v.isPerpendicularTo(vec))) {
+			return getRandomVec(options);
+		}
+	} else if (avoidParallel) {
 		if (avoid.some((v) => v.isParallelTo(vec))) {
+			return getRandomVec(options);
+		}
+	} else if (avoidPerp) {
+		if (avoid.some((v) => v.isPerpendicularTo(vec))) {
 			return getRandomVec(options);
 		}
 	} else {
@@ -62,6 +76,7 @@ export function getRandomLine(options?: { min?: number; max?: number; lambda?: s
  * (2,6,9 | 11)
  * (0,5,12 | 13)
  *
+ * @param options defaults to {multiplesAllowed: false, max: 13}, magnitudes from 3,5,7,9,11,13 supported
  */
 export function getNiceVec(options?: { multiplesAllowed?: boolean; max?: number }): Vector {
 	const { multiplesAllowed, max } = {
@@ -165,27 +180,47 @@ export function getRandomPerps(options?: { min?: number; max?: number; simplify?
 /**
  * get a random vector that is perpendicular to given vector
  *
- * options default to `{ min: -5, max: 5, simplify: true}`
+ * options default to `{ min: -5, max: 5, simplify: true, avoid: []}`
+ *
+ * @param options avoid is an array of vectors that the return value cannot be parallel to
  *
  * warning: max should be positive or loop logic may fail
  */
-export function getRandomPerp(v: Vector, options?: { min?: number; max?: number; simplify?: boolean }): Vector {
-	const { min, max, simplify } = {
+export function getRandomPerp(
+	v: Vector,
+	options?: { min?: number; max?: number; simplify?: boolean; avoid?: Vector[] },
+): Vector {
+	const { min, max, simplify, avoid } = {
 		min: -5,
 		max: 5,
 		simplify: true,
+		avoid: [],
 		...options,
 	};
 	if (!v.z.isEqualTo(0)) {
 		const x = getRandomInt(min, max, { avoid: [0] });
 		const y = getRandomInt(min, max);
 		const dot = v.x.times(x).plus(v.y.times(y));
-		return new Vector(x, y, dot.negative().divide(v.z), { stretchable: simplify });
+		const vec = new Vector(x, y, dot.negative().divide(v.z), { stretchable: simplify });
+		if (maxComponent(vec).isGreaterThan(max)) {
+			return getRandomPerp(v, options);
+		}
+		if (avoid.length > 0 && avoid.some((e) => e.isParallelTo(vec))) {
+			return getRandomPerp(v, options);
+		}
+		return vec;
 	} else if (!v.y.isEqualTo(0)) {
 		const x = getRandomInt(min, max, { avoid: [0] });
 		const z = getRandomInt(min, max);
 		const dot = v.x.times(x).plus(v.z.times(z));
-		return new Vector(x, dot.negative().divide(v.y), z, { stretchable: simplify });
+		const vec = new Vector(x, dot.negative().divide(v.y), z, { stretchable: simplify });
+		if (maxComponent(vec).isGreaterThan(max)) {
+			return getRandomPerp(v, options);
+		}
+		if (avoid.length > 0 && avoid.some((e) => e.isParallelTo(vec))) {
+			return getRandomPerp(v, options);
+		}
+		return vec;
 	} else {
 		if (v.x.isEqualTo(0)) {
 			throw new Error('cannot get perpendicular to zero vector');
@@ -193,7 +228,14 @@ export function getRandomPerp(v: Vector, options?: { min?: number; max?: number;
 		const y = getRandomInt(min, max, { avoid: [0] });
 		const z = getRandomInt(min, max);
 		const dot = v.y.times(y).plus(v.z.times(z));
-		return new Vector(dot.negative().divide(v.x), y, z, { stretchable: simplify });
+		const vec = new Vector(dot.negative().divide(v.x), y, z, { stretchable: simplify });
+		if (maxComponent(vec).isGreaterThan(max)) {
+			return getRandomPerp(v, options);
+		}
+		if (avoid.length > 0 && avoid.some((e) => e.isParallelTo(vec))) {
+			return getRandomPerp(v, options);
+		}
+		return vec;
 	}
 }
 
@@ -215,4 +257,18 @@ interface randomVecOptions {
 	avoid?: Vector[];
 	/** avoidParallel */
 	avoidParallel?: boolean;
+	/** avoidPerp */
+	avoidPerp?: boolean;
+	/** avoidPerp */
+	avoidLine?: Line;
+}
+
+function maxComponent(v: Vector): Fraction {
+	return v.x.abs().isAtLeast(v.y.abs())
+		? v.x.abs().isAtLeast(v.z.abs())
+			? v.x.abs()
+			: v.z.abs()
+		: v.y.abs().isAtLeast(v.z.abs())
+		? v.y.abs()
+		: v.z.abs();
 }

@@ -161,6 +161,14 @@ export class xVector {
 		return `${term}`;
 	}
 
+	toCartesianString(): string {
+		const xTerm = this.x.times('x');
+		const yTerm = this.y.times('y');
+		const zTerm = this.z.times('z');
+		const cartesianExpression = xTerm.plus(yTerm).plus(zTerm);
+		return `${cartesianExpression}`;
+	}
+
 	/**
 	 * @returns (kx, ky, kz) as a coordinate triple.
 	 *

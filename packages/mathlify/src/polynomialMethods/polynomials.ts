@@ -142,3 +142,25 @@ export function shiftPoly(poly: Polynomial, a: number | Fraction): Polynomial {
 		return prev.plus(xPlusA.pow(i).times(curr));
 	}, zero);
 }
+
+/**
+ * completes the square
+ *
+ */
+export function completeSquare(poly: Polynomial): string {
+	if (poly.degree !== 2) {
+		throw new Error(`${poly} is not a quadratic polynomial`);
+	}
+	const [c, b, a] = poly.coefficients;
+	const bOver2A = b.divide(a.times(2));
+	const perfectSquare = new Polynomial([1, bOver2A], { unknown: poly.unknown });
+	const bracketed = bOver2A.isEqualTo(0) ? `${perfectSquare}^2` : `\\left( ${perfectSquare} \\right)^2`;
+	const turningPt = c.minus(b.square().divide(4).divide(a));
+	const start = a.isEqualTo(1) ? `${bracketed}` : a.isEqualTo(-1) ? `- ${bracketed}` : `${a} ${bracketed}`;
+	if (turningPt.isEqualTo(0)) {
+		return start;
+	} else {
+		const sign = turningPt.isGreaterThan(0) ? ` + ` : ``;
+		return `${start}${sign}${turningPt}`;
+	}
+}

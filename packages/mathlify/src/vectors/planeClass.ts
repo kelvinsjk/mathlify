@@ -136,12 +136,12 @@ export class Plane {
 	/**
 	 * finds angle between this plane and vector/line/plane
 	 */
-	angle(v: Vector | Line | Plane): string {
+	angleTo(v: Vector | Line | Plane): string {
 		if (v instanceof Plane) {
-			return this.n.angle(v.n, { acute: true });
+			return this.n.angleTo(v.n, { acute: true });
 		} else {
 			v = v instanceof Line ? v.d : v;
-			return this.n.angle(v, { acute: true, sineMode: true });
+			return this.n.angleTo(v, { acute: true, sineMode: true });
 		}
 	}
 
@@ -177,6 +177,16 @@ export class Plane {
 	}
 
 	/**
+	 * finds lambda of line such that line intersects plane
+	 */
+	intersectLineParam(l: Line): Fraction {
+		if (this.isParallelTo(l)) {
+			throw new Error('line parallel to plane');
+		}
+		return this.rhs.minus(l.a.dot(this.n)).divide(l.d.dot(this.n));
+	}
+
+	/**
 	 * finds the intersection between this plane and a line
 	 */
 	intersectLine(l: Line): Vector | null | Line {
@@ -185,7 +195,7 @@ export class Plane {
 			return this.contains(l) ? l.clone() : null;
 		}
 		// intersecting
-		const lambda = this.rhs.minus(l.a.dot(this.n)).divide(l.d.dot(this.n));
+		const lambda = this.intersectLineParam(l);
 		return l.point(lambda);
 	}
 

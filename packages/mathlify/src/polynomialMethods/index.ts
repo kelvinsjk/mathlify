@@ -7,4 +7,5 @@ export {
 	solveQuadraticSurd,
 	solveLinear,
 	shiftPoly,
+	completeSquare,
 } from './polynomials';

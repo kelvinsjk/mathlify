@@ -38,6 +38,7 @@ export {
 	solveQuadraticSurd,
 	solveLinear,
 	shiftPoly,
+	completeSquare,
 } from './polynomialMethods';
 
-export { cramers, cramersFrac } from './numerical';
+export { cramers, cramersFrac, determinantFrac } from './numerical';

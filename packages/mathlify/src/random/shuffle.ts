@@ -1,3 +1,8 @@
+/**
+ * shuffles the array
+ *
+ * WARNING: mutates current array
+ */
 export function shuffle<Type>(array: Array<Type>): Array<Type> {
 	let currentIndex = array.length,
 		randomIndex;

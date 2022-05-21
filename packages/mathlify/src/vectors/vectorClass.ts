@@ -69,6 +69,19 @@ export class Vector {
 	}
 
 	/**
+	 * returns the unit vector parallel to this vector
+	 *
+	 * WARNING: only works if magnitude is integer
+	 */
+	hat(): Vector {
+		const mag = this.magnitude();
+		if (!mag.isRational() || mag.isEqualTo(0)) {
+			throw new Error(`only integer magnitude supported: ${mag}`);
+		}
+		return this.divide(mag.coeff);
+	}
+
+	/**
 	 * Expands the coeff, taking this k(x,y,z) and
 	 * returning (kx, ky, kz)
 	 */
@@ -152,6 +165,14 @@ export class Vector {
 			? new Vector(this.x, this.y, this.z, { coeff: this.coeff.times(k) })
 			: new Vector(this.x.times(k), this.y.times(k), this.z.times(k), { coeff: this.coeff });
 	}
+	/**
+	 * scalar division
+	 *
+	 * by default, the coeff stays the same while the components are multiplied
+	 * if false, the coeff is multiplied instead
+	 *
+	 * @param options defaults to `{multiplyIntoCoeff: false}`
+	 */
 	divide(k: number | Fraction, options = { multiplyIntoCoeff: false }): Vector {
 		return options.multiplyIntoCoeff
 			? new Vector(this.x, this.y, this.z, { coeff: this.coeff.divide(k) })
@@ -234,7 +255,7 @@ export class Vector {
 	 *
 	 * @param options default to {acute: false, sineMode: false}
 	 */
-	angle(v2: Vector, options?: { acute?: boolean; sineMode?: boolean }): string {
+	angleTo(v2: Vector, options?: { acute?: boolean; sineMode?: boolean }): string {
 		let cosSquare = this.dot(v2).square().divide(this.magnitudeSquare()).divide(v2.magnitudeSquare());
 		const { acute, sineMode } = {
 			acute: false,

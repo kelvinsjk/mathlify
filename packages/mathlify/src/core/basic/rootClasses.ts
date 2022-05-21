@@ -135,8 +135,11 @@ export class NthRoot extends BasicTerm {
 		return this.coeff.clone();
 	}
 
-	toPrecision(precision: number): number {
-		return Number(this.valueOf().toPrecision(precision));
+	toPrecision(precision: number): string {
+		return `${Number(this.valueOf().toPrecision(precision))}`;
+	}
+	toFixed(digits: number): string {
+		return this.valueOf().toFixed(digits);
 	}
 
 	clone(): NthRoot {
