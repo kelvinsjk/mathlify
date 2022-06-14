@@ -240,7 +240,7 @@ export class Vector {
 	 */
 	toCoordinates(name = ''): string {
 		const v = this.expand();
-		return `${name}\\left( ${v.x}, ${v.y}, ${v.z} \\right)`;
+		return `${name}${name === '' ? '' : ' '}\\left( ${v.x}, ${v.y}, ${v.z} \\right)`;
 	}
 
 	/**
@@ -326,6 +326,19 @@ export class Vector {
 	 * the z-axis unit vector (0,0,1)
 	 */
 	static K = new Vector(0, 0, 1);
+	/**
+	 * ratio theorem
+	 */
+	static Ratio(v1: Vector, v2: Vector, options?: { lambda?: number | Fraction; mu?: number | Fraction }) {
+		let { lambda, mu } = {
+			lambda: 1,
+			mu: 1,
+			...options,
+		};
+		lambda = numberToFraction(lambda);
+		mu = numberToFraction(mu);
+		return v2.multiply(lambda).plus(v1.multiply(mu)).divide(lambda.plus(mu));
+	}
 }
 
 export interface VectorJSON {

@@ -99,4 +99,10 @@ vectorPlaneClass('clone', () => {
 	assert.is(p1Clone.rhs.isEqualTo(4), false);
 });
 
+vectorPlaneClass('throw', () => {
+	assert.throws(() => {
+		p3.intersectLineParam(l1);
+	});
+});
+
 vectorPlaneClass.run();

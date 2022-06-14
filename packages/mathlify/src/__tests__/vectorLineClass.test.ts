@@ -65,6 +65,10 @@ vectorLineClass('toString', () => {
 	assert.is(xMinusTwoOver3EqualZ.toCartesianString(), '\\frac{x - 2}{3} = z, y = 0');
 	const xMinusTwoOver3EqualYPlusOneOverMinus1 = new Line(new Vector(2, -1, 0), new Vector(3, -1, 0));
 	assert.is(xMinusTwoOver3EqualYPlusOneOverMinus1.toCartesianString(), '\\frac{x - 2}{3} = \\frac{y + 1}{-1}, z = 0');
+
+	const l6 = new Line(Vector.ZERO, l1.d);
+	assert.is(`${l6}`, `\\mathbf{r} = \\lambda \\begin{pmatrix}\n\t1 \\\\\n\t3 \\\\\n\t- 2\n\\end{pmatrix}`);
+	assert.is(`${l6.toIJKString()}`, `\\mathbf{r} = \\lambda ${dString1}`);
 });
 
 vectorLineClass('intersection', () => {

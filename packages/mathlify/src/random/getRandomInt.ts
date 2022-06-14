@@ -6,16 +6,20 @@
  * @param options `{avoid: []}` array of numbers to be avoided
  *
  */
-export function getRandomInt(min: number = -9, max: number = 9, options?: randomIntOptions): number {
+export function getRandomInt(min: number = -9, max: number = 9, options?: { avoid?: number[] }): number {
 	min = Math.ceil(min); // in case min is non-integer
 	max = Math.floor(max); // in case max is non-integer
 	[min, max] = [Math.min(min, max), Math.max(min, max)];
 	let randomInt = Math.floor(Math.random() * (max - min + 1)) + min;
-	if (options !== undefined && options.avoid.length !== 0) {
-		let avoidArray = options.avoid.filter((num) => num >= min && num <= max);
+	const { avoid } = {
+		avoid: [],
+		...options,
+	};
+	if (avoid.length !== 0) {
+		let avoidArray = avoid.filter((num) => num >= min && num <= max);
 		avoidArray = avoidArray.filter((num, i) => avoidArray.indexOf(num) === i);
 		if (avoidArray.length >= max - min + 1) {
-			throw new Error(`no integer exists between ${min} and ${max} that avoids ${options.avoid}`);
+			throw new Error(`no integer exists between ${min} and ${max} that avoids ${avoid}`);
 		}
 		while (avoidArray.includes(randomInt)) {
 			randomInt = Math.floor(Math.random() * (max - min + 1)) + min;
@@ -25,11 +29,32 @@ export function getRandomInt(min: number = -9, max: number = 9, options?: random
 }
 
 /**
- * options for `getRandomInt`
+ * Generates a random integer between `min` and `max` (inclusive)
  *
- * of the form `{ avoid: [] }`;
+ * @param n number of integers to be generated
+ * @param min defaults to -9
+ * @param max defaults to 9
+ * @param options `{avoid: [], repeated: false}`
+ *
  */
-interface randomIntOptions {
-	/** array of numbers to be avoided */
-	avoid: number[];
+export function getRandomInts(
+	n: number,
+	min: number = -9,
+	max: number = 9,
+	options?: { avoid?: number[]; repeated?: boolean },
+): number[] {
+	const { avoid, repeated } = {
+		avoid: [],
+		repeated: false,
+		...options,
+	};
+	const ints: number[] = [];
+	while (ints.length < n) {
+		const randomInt = getRandomInt(min, max, { avoid });
+		ints.push(randomInt);
+		if (!repeated) {
+			avoid.push(randomInt);
+		}
+	}
+	return ints;
 }

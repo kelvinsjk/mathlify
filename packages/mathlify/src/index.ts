@@ -17,6 +17,7 @@ export { Vector, Line, Plane, xVector, uVector, uxVector, uVectorExpression, uxV
 
 export {
 	getRandomInt,
+	getRandomInts,
 	getRandomVec,
 	getNiceVec,
 	getRandomPerps,
@@ -25,9 +26,10 @@ export {
 	getRandomFrac,
 	shuffle,
 	heads,
+	getRandomAngle,
 } from './random';
 
-export { JSONParse } from './misc';
+export { JSONParse, factorPairs } from './misc';
 
 export {
 	expToPoly,
@@ -36,9 +38,14 @@ export {
 	factorizeCubic,
 	solveQuadratic,
 	solveQuadraticSurd,
+	solveQuadraticComplex,
 	solveLinear,
 	shiftPoly,
 	completeSquare,
+	longDivide,
 } from './polynomialMethods';
 
 export { cramers, cramersFrac, determinantFrac } from './numerical';
+
+export { Complex, ComplexExp, xComplex, expToCartesian, complexToQuadratic, subComplexIntoPoly } from './complex';
+export { Angle, sin, cos, tan } from './trigo';

@@ -44,7 +44,7 @@ export class Polynomial extends Expression {
 		let coeffsFrac = coeffs.map(numberToFraction);
 		// remove unnecessary terms (leading coefficients should be non-zero, unless it is a constant polynomial)
 		while (coeffsFrac[coeffsFrac.length - 1].isEqualTo(0) && coeffsFrac.length > 1) {
-			coeffsFrac = coeffsFrac.slice(0, coeffs.length - 1);
+			coeffsFrac.pop();
 		}
 		// generate unknown terms
 		const polynomialTerms = coeffsFrac.map((coeff, n) => {
@@ -56,7 +56,7 @@ export class Polynomial extends Expression {
 		}
 		super(...polynomialTerms);
 		this.coefficients = coeffsFrac;
-		this.degree = coeffs.length - 1;
+		this.degree = coeffsFrac.length - 1;
 		this.unknown = unknown;
 		this.ascending = ascending;
 	}

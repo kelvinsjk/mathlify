@@ -221,6 +221,10 @@ export class SquareRoot extends NthRoot {
 		return new SquareRoot(this.radicand.pow(n), this.coeff.pow(n));
 	}
 
+	abs(): SquareRoot {
+		return new SquareRoot(this.radicand, this.coeff.abs());
+	}
+
 	square(): Fraction {
 		return this.coeff.pow(2).times(this.radicand);
 	}

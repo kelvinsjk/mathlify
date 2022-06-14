@@ -1,6 +1,6 @@
 import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
-import { Fraction, Vector } from '../index';
+import { Fraction, Vector, JSONParse } from '../index';
 
 const vectorClass = suite('vector class');
 
@@ -65,7 +65,7 @@ vectorClass('toString', () => {
 	assert.is(zero.toIJKString(), '\\mathbf{0}');
 
 	const twoIMinusFourK = new Vector(2, 0, -4);
-	assert.is(twoIMinusFourK.toCoordinates('A'), 'A\\left( 2, 0, - 4 \\right)');
+	assert.is(twoIMinusFourK.toCoordinates('A'), 'A \\left( 2, 0, - 4 \\right)');
 });
 
 vectorClass('arithmetic', () => {
@@ -130,6 +130,25 @@ vectorClass('clone', () => {
 	fiveI.simplify();
 	assert.equal([fiveI.coeff.valueOf(), fiveI.x.valueOf()], [5, 1]);
 	assert.equal([fiveIClone.coeff.valueOf(), fiveIClone.x.valueOf()], [1, 5]);
+});
+
+vectorClass('JSON', () => {
+	const iMinusHalfK = new Vector(1, 0, new Fraction(-1, 2));
+	const vJSON = JSON.stringify(iMinusHalfK);
+	const iMinusHalfKReconstructed = JSONParse(vJSON) as Vector;
+	assert.is(iMinusHalfK.isEqualTo(iMinusHalfKReconstructed), true);
+});
+
+vectorClass('hat', () => {
+	const v1 = new Vector(1, -2, 2);
+	const v1Hat = v1.hat();
+	assert.throws(() => {
+		new Vector(1, 2, 3).hat();
+	});
+	assert.throws(() => {
+		Vector.ZERO.hat();
+	});
+	assert.is(`${v1Hat.magnitude()}`, '1');
 });
 
 vectorClass.run();

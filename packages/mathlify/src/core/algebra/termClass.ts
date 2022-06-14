@@ -98,7 +98,7 @@ export class Term extends BasicTerm {
 			return new Term(this.coeff.times(x), ...this.basicUnits);
 		}
 		if (typeof x === 'string') {
-			x = new Unknown(1, { unknown: x });
+			x = x === 'i' ? new Imaginary() : new Unknown(1, { unknown: x });
 		}
 		if (x instanceof Unknown || x instanceof SquareRoot || x instanceof Imaginary) {
 			return new Term(this.coeff, ...this.basicUnits, x);

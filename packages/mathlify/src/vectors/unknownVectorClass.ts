@@ -173,7 +173,7 @@ export class uxVector {
 	dot(v: uVector | string | uxVector): Term {
 		v = typeof v === 'string' ? new uxVector(v) : v;
 		if (this.vector === v.vector) {
-			return new Term(1, `\\left| \\mathbf{${this.vector}} \\right|^2`).times(this.coeff).times(v.coeff);
+			return new Term(1, `\\left| ${this.vector} \\right|^2`).times(this.coeff).times(v.coeff);
 		}
 		const [v1, v2] = [this.vector, v.vector].sort();
 		return new Term(1, `\\mathbf{${v1}} \\cdot \\mathbf{${v2}}`).times(this.coeff).times(v.coeff);
@@ -292,7 +292,7 @@ export class uxVectorExpression {
 	 */
 	toString(): string {
 		if (this.vectors.length === 0) {
-			return '0';
+			return '\\mathbf{0}';
 		}
 		let outputString = '';
 		this.vectors.forEach((vector, i) => {
