@@ -1,0 +1,1 @@
+export { solveGpSN } from './solveGpSN';

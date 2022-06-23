@@ -45,7 +45,8 @@ export {
 	longDivide,
 } from './polynomialMethods';
 
-export { cramers, cramersFrac, determinantFrac } from './numerical';
+export { cramers, cramersFrac, determinantFrac, bisection } from './numerical';
 
 export { Complex, ComplexExp, xComplex, expToCartesian, complexToQuadratic, subComplexIntoPoly } from './complex';
 export { Angle, sin, cos, tan } from './trigo';
+export { AP, GP, solveGpSN } from './sequences';

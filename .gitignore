@@ -3,6 +3,8 @@ node_modules/
 /docs
 /svelte
 .parcel-cache
+/coverage/*
+/lib/*
 # mathlify package
 ./packages/mathlify/lib
 ./packages/mathlify/.parcel-cache/
