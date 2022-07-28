@@ -79,7 +79,12 @@ export function solveQuadratic(poly: Polynomial): [Fraction, Fraction] | [number
 	if (poly.degree !== 2) {
 		throw new Error(`${poly} is not a quadratic polynomial`);
 	}
-	const [c, b, a] = poly.coefficients;
+	let [c, b, a] = poly.coefficients;
+	if (a.isLessThan(0)) {
+		a = a.negative();
+		b = b.negative();
+		c = c.negative();
+	}
 	const discriminant = b.square().minus(a.times(c).times(4));
 	if (discriminant.valueOf() < 0) {
 		return [NaN, NaN];
