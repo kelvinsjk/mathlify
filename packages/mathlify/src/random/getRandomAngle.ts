@@ -6,6 +6,8 @@ import { heads } from './coinFlip';
  * generates k in k pi, such that k pi is a special angle
  * @param options defaults to `{ allowReal: false, allowImag: false }` where we allow angles 0,pi for the first option
  * and \pm pi/2 for the second option
+ *
+ * @param options.avoid Fraction[] to avoid
  */
 export function getRandomAngle(options?: { allowReal?: boolean; allowImag?: boolean; avoid?: Fraction[] }): Fraction {
 	// 2: 1/2, 3: k/3, 4: k/4, 5: k/6, 6: 0, pi

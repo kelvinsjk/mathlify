@@ -3,7 +3,7 @@
  */
 export function factorPairs(n: number): [number, number][] {
 	if (n <= 0 || !Number.isInteger(n)) {
-		throw new Error(`Only valid for positive integers ${n}`);
+		throw new Error(`factorPairs function only valid for positive integers. ${n} received`);
 	}
 	let result: [number, number][] = [[1, n]];
 	for (let i = 2; i <= Math.floor(Math.sqrt(n)); i++) {
