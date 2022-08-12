@@ -18,7 +18,7 @@ export class AP {
 	/**
 	 * nth term, u_n = a + (n-1)d
 	 */
-	uN(n: number): Fraction {
+	u(n: number): Fraction {
 		if (!Number.isInteger(n) || n < 1) {
 			throw new Error(`Only valid for positive integers n ${n}`);
 		}
@@ -35,7 +35,7 @@ export class AP {
 	/**
 	 * sum of n terms, S_n = n/2 * (2a + (n-1)d)
 	 */
-	sN(n: number): Fraction {
+	S(n: number): Fraction {
 		if (!Number.isInteger(n) || n < 1) {
 			throw new Error(`Only valid for positive integers n ${n}`);
 		}

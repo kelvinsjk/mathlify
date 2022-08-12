@@ -18,7 +18,7 @@ export class GP {
 	/**
 	 * nth term, u_n = a r^(n-1)
 	 */
-	uN(n: number): Fraction {
+	u(n: number): Fraction {
 		if (!Number.isInteger(n) || n < 1) {
 			throw new Error(`Only valid for positive integers n ${n}`);
 		}
@@ -28,7 +28,7 @@ export class GP {
 	/**
 	 * sum of n terms, S_n = a (1 - r^n)/(1-r)
 	 */
-	sN(n: number): Fraction {
+	S(n: number): Fraction {
 		if (!Number.isInteger(n) || n < 1) {
 			throw new Error(`Only valid for positive integers n ${n}`);
 		}
@@ -41,10 +41,41 @@ export class GP {
 	/**
 	 * sum to infinity, S_infty = a / (1-r)
 	 */
-	sInfty(): Fraction {
+	SInfty(): Fraction {
 		if (this.r.abs().isAtLeast(1)) {
 			throw new Error(`GP does not converge for  |r| >= 1, ${this.r}`);
 		}
 		return this.a.divide(Fraction.ONE.minus(this.r));
+	}
+
+	/**
+	 * u_n formula to be used for floats
+	 */
+	static u(a: number, r: number, n: number): number {
+		if (!Number.isInteger(n) || n < 1) {
+			throw new Error(`GP error: n must be positive integer, ${n} received.`);
+		}
+		return a * Math.pow(r, n - 1);
+	}
+	/**
+	 * S_n formula to be used for floats
+	 */
+	static S(a: number, r: number, n: number): number {
+		if (!Number.isInteger(n) || n < 1) {
+			throw new Error(`GP error: n must be positive integer, ${n} received.`);
+		}
+		if (r === 1) {
+			throw new Error(`GP Sum error: r must not be 1.`);
+		}
+		return (a * (Math.pow(r, n) - 1)) / (r - 1);
+	}
+	/**
+	 * S_infty formula to be used for floats
+	 */
+	static SInfty(a: number, r: number): number {
+		if (Math.abs(r) >= 1) {
+			throw new Error(`GP S_Infty error: |r| must not be less than 1.`);
+		}
+		return a / (1 - r);
 	}
 }

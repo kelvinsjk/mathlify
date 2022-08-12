@@ -27,9 +27,10 @@ export {
 	shuffle,
 	heads,
 	getRandomAngle,
+	sample,
 } from './random';
 
-export { JSONParse, factorPairs } from './misc';
+export { JSONParse, factorPairs, unsimplifiedExp } from './misc';
 
 export {
 	expToPoly,
@@ -49,4 +50,6 @@ export { cramers, cramersFrac, determinantFrac, bisection } from './numerical';
 
 export { Complex, ComplexExp, xComplex, expToCartesian, complexToQuadratic, subComplexIntoPoly } from './complex';
 export { Angle, sin, cos, tan } from './trigo';
-export { AP, GP, solveGpSN } from './sequences';
+export { AP, GP, solveGpSN, solveGpSNNumber } from './sequences';
+
+export { PowerFn, SinFn, CosFn, Parametric, quotientRule } from './calculus';

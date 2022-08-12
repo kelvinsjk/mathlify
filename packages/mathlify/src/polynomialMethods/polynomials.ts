@@ -6,7 +6,7 @@ import { Polynomial, Fraction, SquareRoot, numberToFraction, Expression, Term } 
  * and gcd(...coeffs) = 1
  */
 export function simplifyPoly(poly: Polynomial): Polynomial {
-	let [coeffs] = Fraction.factorize(...poly.coefficients);
+	let [coeffs] = Fraction.factorize(...poly.coeffs);
 	if (coeffs[0].valueOf() < 0) {
 		coeffs = coeffs.map((c) => c.negative());
 	}
@@ -44,8 +44,8 @@ export function factorizeCubic(poly: Polynomial, root: number | Fraction): [Poly
 	const factor1 = new Polynomial([root.den, -root.num], { unknown: poly.unknown });
 	// ax^3 + bx^2 + cx + d = (ex+f)(Ax^2+Bx+C);
 	// comparing coefficients
-	const [d, c, b, a] = poly.coefficients;
-	const [f, e] = factor1.coefficients;
+	const [d, c, b, a] = poly.coeffs;
+	const [f, e] = factor1.coeffs;
 	// a = Ae
 	const A = a.divide(e);
 	// b = Af + Be
@@ -79,7 +79,7 @@ export function solveQuadratic(poly: Polynomial): [Fraction, Fraction] | [number
 	if (poly.degree !== 2) {
 		throw new Error(`${poly} is not a quadratic polynomial`);
 	}
-	let [c, b, a] = poly.coefficients;
+	let [c, b, a] = poly.coeffs;
 	if (a.isLessThan(0)) {
 		a = a.negative();
 		b = b.negative();
@@ -113,7 +113,7 @@ export function solveQuadraticSurd(poly: Polynomial): [Expression, Expression] {
 	if (poly.degree !== 2) {
 		throw new Error(`${poly} is not a quadratic polynomial`);
 	}
-	const [c, b, a] = poly.coefficients;
+	const [c, b, a] = poly.coeffs;
 	const discriminant = b.square().minus(a.times(c).times(4));
 	if (discriminant.valueOf() < 0) {
 		throw new Error(`complex roots found: ${poly}`);
@@ -129,7 +129,7 @@ export function solveQuadraticSurd(poly: Polynomial): [Expression, Expression] {
  * solves a linear equation
  */
 export function solveLinear(poly: Polynomial): Fraction {
-	return poly.coefficients[0].negative().divide(poly.coefficients[1]);
+	return poly.coeffs[0].negative().divide(poly.coeffs[1]);
 }
 
 /**
@@ -140,7 +140,7 @@ export function shiftPoly(poly: Polynomial, a: number | Fraction): Polynomial {
 		? new Polynomial([a, 1], { unknown: poly.unknown, ascending: true })
 		: new Polynomial([1, a], { unknown: poly.unknown });
 	const zero = new Polynomial([0], { unknown: poly.unknown, ascending: poly.ascending });
-	return poly.coefficients.reduce((prev, curr, i) => {
+	return poly.coeffs.reduce((prev, curr, i) => {
 		if (i === 0) {
 			return prev.plus(curr);
 		}
@@ -156,7 +156,7 @@ export function completeSquare(poly: Polynomial): string {
 	if (poly.degree !== 2) {
 		throw new Error(`${poly} is not a quadratic polynomial`);
 	}
-	const [c, b, a] = poly.coefficients;
+	const [c, b, a] = poly.coeffs;
 	const bOver2A = b.divide(a.times(2));
 	const perfectSquare = new Polynomial([1, bOver2A], { unknown: poly.unknown });
 	const bracketed = bOver2A.isEqualTo(0) ? `${perfectSquare}^2` : `\\left( ${perfectSquare} \\right)^2`;

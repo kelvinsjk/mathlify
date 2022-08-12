@@ -90,6 +90,10 @@ export class Expression {
 		return this.terms.reduce((sum, term) => sum.plus(term.subIn(x)), new Fraction(0));
 	}
 
+	subInNumber(x: number): number {
+		return this.terms.reduce((sum, term) => sum + term.subInNumber(x), 0);
+	}
+
 	/**
 	 * adds the two expressions,
 	 * similar to concatenating the terms in the two expressions, combining like terms

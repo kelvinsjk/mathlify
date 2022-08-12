@@ -93,6 +93,15 @@ export class Unknown extends BasicTerm {
 		return this.coeff.times(x.pow(this.n.num));
 	}
 
+	/**
+	 * substitutes the unknown in
+	 *
+	 * only supports fraction and only when n is an integer at the moment
+	 */
+	subInNumber(x: number): number {
+		return this.coeff.valueOf() * Math.pow(x, this.n.valueOf());
+	}
+
 	/** Clones this `pTerm`, creating a new instance */
 	clone(): Unknown {
 		return new Unknown(this.coeff.clone(), { unknown: this.unknown, n: this.n });

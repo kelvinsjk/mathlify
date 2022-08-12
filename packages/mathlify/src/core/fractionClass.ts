@@ -21,10 +21,10 @@ export class Fraction {
 	 */
 	constructor(num: number, den: number = 1) {
 		if (!Number.isInteger(den) || !Number.isInteger(num)) {
-			throw new RangeError('parameters must be integers');
+			throw new RangeError('Fraction error: parameters must be integers');
 		}
 		if (den === 0) {
-			throw new RangeError('denominator must be non-zero');
+			throw new RangeError('Fraction error: denominator must be non-zero');
 		}
 		const divisor = gcd(num, den);
 		const sign = Math.sign(num) * Math.sign(den); // signs hoisted to top

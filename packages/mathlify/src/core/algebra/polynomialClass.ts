@@ -8,7 +8,7 @@ import { numberToFraction } from '../utils/numberToFraction';
  */
 export class Polynomial extends Expression {
 	/** array of coefficients in ascending order, starting from constant term */
-	coefficients: Fraction[];
+	coeffs: Fraction[];
 	/** whether polynomial in ascending or descending order */
 	ascending: boolean;
 	/** degree of the polynomial */
@@ -55,7 +55,7 @@ export class Polynomial extends Expression {
 			polynomialTerms.reverse();
 		}
 		super(...polynomialTerms);
-		this.coefficients = coeffsFrac;
+		this.coeffs = coeffsFrac;
 		this.degree = coeffsFrac.length - 1;
 		this.unknown = unknown;
 		this.ascending = ascending;
@@ -68,8 +68,8 @@ export class Polynomial extends Expression {
 	plus(p2: number | Fraction | string | Polynomial): Polynomial {
 		p2 = toPolynomial(p2);
 		const degree = Math.max(this.degree, p2.degree);
-		const thisCoeffs = [...this.coefficients, ...createZeroArray(degree - this.degree)];
-		const p2Coeffs = [...p2.coefficients, ...createZeroArray(degree - p2.degree)];
+		const thisCoeffs = [...this.coeffs, ...createZeroArray(degree - this.degree)];
+		const p2Coeffs = [...p2.coeffs, ...createZeroArray(degree - p2.degree)];
 		const newCoeffs = thisCoeffs.map((thisCoeff, i) => thisCoeff.plus(p2Coeffs[i]));
 		if (!this.ascending) {
 			newCoeffs.reverse();
@@ -82,9 +82,9 @@ export class Polynomial extends Expression {
 		p2 = toPolynomial(p2);
 		const degree = this.degree + p2.degree;
 		const coeffs = createZeroArray(degree + 1);
-		for (let i = 0; i < this.coefficients.length; i++) {
-			for (let j = 0; j < p2.coefficients.length; j++) {
-				coeffs[i + j] = coeffs[i + j].plus(this.coefficients[i].times(p2.coefficients[j]));
+		for (let i = 0; i < this.coeffs.length; i++) {
+			for (let j = 0; j < p2.coeffs.length; j++) {
+				coeffs[i + j] = coeffs[i + j].plus(this.coeffs[i].times(p2.coeffs[j]));
 			}
 		}
 		if (!this.ascending) {
@@ -133,7 +133,7 @@ export class Polynomial extends Expression {
 	 */
 	replaceXWith(x: string | Polynomial): Polynomial {
 		x = typeof x === 'string' ? new Polynomial([1, 0], { unknown: x }) : x;
-		return this.coefficients.reduce(
+		return this.coeffs.reduce(
 			(prev, coeff, i) => prev.plus((<Polynomial>x).pow(i).times(coeff)),
 			new Polynomial([0], { ascending: this.ascending, unknown: x.unknown }),
 		);
@@ -167,9 +167,35 @@ export class Polynomial extends Expression {
 		return this;
 	}
 
+	/** differentiates this polynomial */
+	derivative(): Polynomial {
+		if (this.degree === 0) {
+			return new Polynomial([0]);
+		}
+		const newCoeffs = this.coeffs.map((coeff, i) => coeff.times(i)).slice(1);
+		const newPoly = new Polynomial(newCoeffs, { ascending: true, unknown: this.unknown });
+		return this.ascending ? newPoly : newPoly.changeAscending();
+	}
+
+	/** checks if two polynomials are equal: i.e., coefficient array is the same and same unknown */
+	isEqualTo(poly2: Polynomial): boolean {
+		if (this.unknown === poly2.unknown) {
+			if (this.coeffs.length === poly2.coeffs.length) {
+				let valid = true;
+				this.coeffs.forEach((coeff, i) => {
+					if (!coeff.isEqualTo(poly2.coeffs[i])) {
+						valid = false;
+					}
+				});
+				return valid;
+			}
+		}
+		return false;
+	}
+
 	/** clones this polynomial */
 	clone(): Polynomial {
-		const coeffs = [...this.coefficients];
+		const coeffs = [...this.coeffs];
 		if (!this.ascending) {
 			// coeffs in ascending by default
 			coeffs.reverse();
@@ -182,7 +208,7 @@ export class Polynomial extends Expression {
 	 * by storing its constructor arguments
 	 */
 	toJSON(): { type: string; args: [Fraction[], { ascending: boolean; degree: number; unknown: string }] } {
-		const coeffs = this.coefficients.map((e) => e.clone());
+		const coeffs = this.coeffs.map((e) => e.clone());
 		if (!this.ascending) {
 			coeffs.reverse();
 		}

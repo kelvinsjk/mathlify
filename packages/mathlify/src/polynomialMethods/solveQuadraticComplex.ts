@@ -6,7 +6,7 @@ export function solveQuadraticComplex(poly: Polynomial): [Complex, Complex] | [x
 	if (poly.degree !== 2) {
 		throw new Error(`${poly} is not a quadratic polynomial`);
 	}
-	let [c, b, a] = poly.coefficients;
+	let [c, b, a] = poly.coeffs;
 	if (a.isLessThan(0)) {
 		a = a.negative();
 		b = b.negative();

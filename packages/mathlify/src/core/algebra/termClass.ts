@@ -150,6 +150,17 @@ export class Term extends BasicTerm {
 		return frac;
 	}
 
+	subInNumber(x: number): number {
+		let frac = this.coeff.valueOf();
+		for (const unit of this.basicUnits) {
+			if (!(unit instanceof Unknown)) {
+				throw new Error(`subIn only valid for Unknowns at the moment ${unit}`);
+			}
+			frac = frac * unit.subInNumber(x);
+		}
+		return frac;
+	}
+
 	square(): Term {
 		return this.pow(2);
 	}

@@ -1,1 +1,1 @@
-export { solveGpSN } from './solveGpSN';
+export { solveGpSN, solveGpSNNumber } from './solveGpSN';

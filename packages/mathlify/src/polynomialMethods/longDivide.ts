@@ -13,8 +13,8 @@ export function longDivide(poly: Polynomial, divisor: Polynomial, carryOver?: Po
 	if (poly.degree < divisor.degree) {
 		return [carryOver, poly];
 	}
-	const a = poly.coefficients[poly.coefficients.length - 1];
-	const b = divisor.coefficients[divisor.coefficients.length - 1];
+	const a = poly.coeffs[poly.coeffs.length - 1];
+	const b = divisor.coeffs[divisor.coeffs.length - 1];
 	const ax = new Polynomial([a], { degree: poly.degree, unknown: poly.unknown });
 	return longDivide(
 		poly.minus(
