@@ -4,7 +4,36 @@ import type { Fraction } from '../core';
 /**
  * apply Cramer's rule to 2x2 [[a b], [d e]] = [[c], [f]]
  * or to 3x3 [[a b c], [e f g], [i j k] = [[d], [h], [l]]]
+ * or to 4x4
  */
+export function cramers(...args: [number, number, number, number, number, number]): [number, number];
+export function cramers(
+	...args: [number, number, number, number, number, number, number, number, number, number, number, number]
+): [number, number, number];
+export function cramers(
+	...args: [
+		number,
+		number,
+		number,
+		number,
+		number,
+		number,
+		number,
+		number,
+		number,
+		number,
+		number,
+		number,
+		number,
+		number,
+		number,
+		number,
+		number,
+		number,
+		number,
+		number,
+	]
+): [number, number, number, number];
 export function cramers(...args: number[]): number[] {
 	if (args.length === 6) {
 		const detA = determinant(...args.slice(0, 2), ...args.slice(3, 5));
