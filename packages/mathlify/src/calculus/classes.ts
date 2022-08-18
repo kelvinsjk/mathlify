@@ -43,8 +43,8 @@ export class PowerFn {
 	 */
 	derivative(): { string: string; power: PowerFn; fPrime: Polynomial | CosFn | SinFn } {
 		const power = new PowerFn(this.n.minus(1), { fx: this.fx, coeff: this.coeff.times(this.n) });
-		const fPrime = this.fx.derivative();
-		const fPrimeTwo = this.fx.derivative();
+		const fPrime = this.fx.differentiate();
+		const fPrimeTwo = this.fx.differentiate();
 		const coeff =
 			fPrime instanceof Polynomial ? this.coeff.times(this.n) : this.coeff.times(this.n).times(fPrime.coeff);
 		if (!(fPrimeTwo instanceof Polynomial)) {

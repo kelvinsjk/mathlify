@@ -9,6 +9,7 @@ export {
 	Expression,
 	Polynomial,
 	gcd,
+	factorize,
 	numberToFraction,
 	numberToSquareRoot,
 } from './core';
@@ -52,4 +53,5 @@ export { Complex, ComplexExp, xComplex, expToCartesian, complexToQuadratic, subC
 export { Angle, sin, cos, tan } from './trigo';
 export { AP, GP, solveGpSN, solveGpSNNumber } from './sequences';
 
+export { Rational, solveRational } from './algebra';
 export { PowerFn, SinFn, CosFn, Parametric, quotientRule } from './calculus';

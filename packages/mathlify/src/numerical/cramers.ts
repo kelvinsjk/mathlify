@@ -43,8 +43,9 @@ export function cramers(...args: number[]): number[] {
 }
 
 /**
- * apply Cramer's rule to 2x2 [[a b], [d e]] = [[c], [f]]
- * or to 3x3 [[a b c], [e f g], [i j k] = [[d], [h], [l]]]
+ * apply Cramer's rule to 2x2 [[a b], [d e]] = [[c], [f]],
+ * to 3x3 [[a b c], [e f g], [i j k] = [[d], [h], [l]]]
+ * or 4x4
  */
 export function cramersFrac(...args: (Fraction | number)[]): Fraction[] {
 	if (args.length === 6) {

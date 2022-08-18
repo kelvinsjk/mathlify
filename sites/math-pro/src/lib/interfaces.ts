@@ -55,3 +55,10 @@ export interface Question {
 		[key in string]: boolean | Fraction | SquareRoot | Vector | string | Term | Expression | number;
 	}): [AnswerObject, AnswerObject, QuestionVariables];
 }
+
+export interface VarsPrimitive {
+	[key: string]: string | number | boolean;
+}
+export interface StringObject {
+	[key: string]: string;
+}

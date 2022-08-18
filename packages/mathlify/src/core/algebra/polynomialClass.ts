@@ -167,14 +167,36 @@ export class Polynomial extends Expression {
 		return this;
 	}
 
-	/** differentiates this polynomial */
-	derivative(): Polynomial {
+	/** derivative of the polynomial */
+	differentiate(): Polynomial {
 		if (this.degree === 0) {
 			return new Polynomial([0]);
 		}
 		const newCoeffs = this.coeffs.map((coeff, i) => coeff.times(i)).slice(1);
 		const newPoly = new Polynomial(newCoeffs, { ascending: true, unknown: this.unknown });
 		return this.ascending ? newPoly : newPoly.changeAscending();
+	}
+
+	/** integral of the polynomial
+	 * @param options `{c, x1, y1}` where we can put in the integration constant c (defaults to 0),
+	 * or a point on the curve (x1, y1).
+	 */
+
+	integrate(options?: { c?: number | Fraction; x1?: number | Fraction; y1?: number | Fraction }): Polynomial {
+		if (this.degree === 0) {
+			return new Polynomial([0]);
+		}
+		const newCoeffs = [0, ...this.coeffs.map((coeff, i) => coeff.divide(i + 1))];
+		const newPoly = new Polynomial(newCoeffs, { ascending: true, unknown: this.unknown });
+		const { x1, y1 } = {
+			...options,
+		};
+		let c = options?.c ?? 0;
+		if (x1 !== undefined && y1 !== undefined) {
+			c = newPoly.subIn(x1).negative().plus(y1);
+		}
+		const polyWithC = newPoly.plus(c);
+		return this.ascending ? polyWithC : polyWithC.changeAscending();
 	}
 
 	/** checks if two polynomials are equal: i.e., coefficient array is the same and same unknown */

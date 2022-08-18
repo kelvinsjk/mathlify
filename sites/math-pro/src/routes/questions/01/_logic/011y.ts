@@ -3,18 +3,14 @@ import {
 	getRandomInt,
 	Polynomial,
 	Fraction,
-	AP,
-	GP,
 	solveQuadratic,
-	solveGpSN,
-	bisection,
-	solveLinear,
 	sample,
 	heads,
-	cramers,
 	Rational,
 	solveRational,
 	getRandomFrac,
+	factorize,
+	solveQuadraticSurd,
 } from 'mathlify';
 import { math, display } from 'mathlifier';
 
@@ -71,7 +67,7 @@ function qn5(variables?: {
 		set of value of ${math(`t`)} which will enable him to complete the distance
 		within the required time interval.`;
 	const partIII = `Assuming he completes the ${math(`${distance} \\textrm{ km}`)}
-		run in exactly ${time1} using both traininig programme, find the difference in
+		run in exactly ${time1} using both training programme, find the difference in
 		his lap times for his ${math(`${laps}\\textrm{th}`)} laps, giving your answer
 		to the nearest second.`;
 
@@ -147,6 +143,7 @@ function qn6(variables?: {
 		root1: getRandomInt(-3, 3),
 		a: getRandomInt(1, 5),
 		b: getRandomInt(-5, 5),
+		lessThan: heads(),
 		...variables,
 	};
 	const root3 = variables?.root3 ?? getRandomInt(-5, 5, { avoid: [root1] });
@@ -159,9 +156,10 @@ function qn6(variables?: {
 	const rational = new Rational(rationalNum, rationalDen);
 	const lhs = rational.plus(rhs);
 	const sign = lessThan ? '<' : '>';
+	const rhsString = b === 0 ? `${rhs}` : `(${rhs})`;
 
 	// typeset qn
-	const partI = `Express ${math(`\\displaystyle ${lhs} - (${rhs})`)}
+	const partI = `Express ${math(`\\displaystyle ${lhs} - ${rhsString}`)}
 		as a single simplified fraction.
 	`;
 	const partII = `Hence without using a calculator,
@@ -189,332 +187,155 @@ function qn6(variables?: {
 	return [question, answer];
 }
 
-function qn7(variables?: {
+function qn8(variables?: {
 	a?: number;
-	k?: number;
-	n?: number;
-	multiple?: number;
+	b?: number;
+	c?: number;
+	d?: number;
+	lessThan?: boolean;
 }): [AnswerObject, AnswerObject] {
-	// generate variables
-	const { a, n } = {
-		a: getRandomInt(1, 9),
-		n: getRandomInt(4, 10) * 2 - 1,
+	// set up variables
+	const { a, b, c, d, lessThan } = {
+		...generate(),
 		...variables,
 	};
-	const k = variables?.k ?? getRandomInt(n + 1, 99); // S_n = ka
-	const rN = new Polynomial([1], { degree: n, unknown: 'r' });
-	const poly = rN.plus(new Polynomial([-k, k - 1], { unknown: 'r' }));
-	if (poly.subInNumber(1.01) > 0) {
-		return qn7();
-	}
-	const r = bisection((x: number) => poly.subInNumber(x), 1.01, 100);
-	if (r < 1.05) {
-		return qn7();
-	}
-	const d = new Fraction(2 * k * a, n).minus(2 * a).divide(n - 1);
-	const multiples = [50, 100, 200];
-	let multiple = variables?.multiple ?? sample(multiples);
-	while (a * Math.pow(r, 100) <= multiple * (a + (100 - 1) * d.valueOf())) {
-		multiple = multiple % 2 === 0 ? multiple / 2 : multiple - 1;
-	}
-	// construct qn
+	// set up question
+	const quadratic = new Polynomial([a, b, c]);
+	const linear = new Polynomial([-c, d], { ascending: true });
+	const sign = lessThan ? '<' : '>';
 
-	// typeset qn
-	const body = `An arithmetic progression has first term ${math(`${a}.`)}
-		The sum of the first ${math(`${n}`)} terms of the progression is
-		${math(`${k * a}.`)}
+	// typeset
+	const partI = `Find the exact roots of the equation
+		${display(`|${quadratic}| = ${linear}`)}
 	`;
-	const partI = `Find the common difference.`;
-	const uplevel = `A geometric progression has first term ${math(`${a}`)}
-		and common ratio ${math(`r.`)} The sum of the first
-		${math(`${n}`)} terms of the progression is ${math(`${k * a}.`)}`;
-	const partII = `Show that ${math(`${poly}=0.`)}
+	const partII = `On the same axes, sketch the curves with equations
+		${math(`y=|${quadratic}|`)}
+		and ${math(`y=${linear}.`)}
 		<div class="top-margin">
-			Show that the common ratio cannot be ${math(`1`)}
-			even though ${math(`r=1`)} is a root of this equation. Find the possible values of the common ratio.
-		</div>`;
-	const partIII = `It is given that the common ratio of the geometric progression is positive, and that the
-		${math(`n\\textrm{th}`)} term of this geometric progression is more than
-		${math(`${multiple}`)} times the ${math(`n\\textrm{th}`)} term of the arithmetic progression.
-		<div class="top-margin">
-			Write down an inequality, and hence find the smallest possible value of ${math('n.')}
-		</div>`;
-
-	// solution working
-	const linear = new Polynomial([n - 1, new Fraction(k * a * 2, n).negative().plus(2 * a)]);
-	const dSolve = solveLinear(linear);
-	const r2 = bisection((x: number) => poly.subInNumber(x), -100, 0);
-	const nSolve = Math.ceil(
-		bisection(
-			(x: number) => a * Math.pow(r, x - 1) - multiple * (a + (x - 1) * d.valueOf()),
-			1.9,
-			100,
-		),
-	);
-
-	// answer
-	const ansI = math(`d = ${dSolve}.`);
-	const ansII = `If ${math(`r=1,`)} the geometric progression will be a constant sequence
-		${math(`${a},${a},\\ldots`)} with the sum of ${math(`${n}`)} terms 
-		${math(`${n} \\times ${a} = ${n * a} \\neq ${k * a}.`)} Hence the common ratio cannot be ${math(
-		`1`,
-	)} even
-		though ${math(`r=1`)} is a root of the equation.
-		<div class="top-margin">
-			${math(`r=${r2.toPrecision(3)}`)} or ${math(`r=${r.toPrecision(3)}.`)}
+			Hence solve the inequality
+			${display(`|${quadratic}| ${sign} ${linear}.`)}
 		</div>
 		`;
-	const ansIII = `${math(
-		`${a}(${r.toPrecision(3)})^{n-1} > ${multiple}\\Big( ${a} + ${d}(n-1) \\Big).`,
-	)}
-			<br>Smallest possible ${math(`n=${nSolve}.`)}
-	`;
+
+	// answer working
+	const [x1, x4] = solveQuadraticSurd(quadratic.minus(linear));
+	const [x2, x3] = solveQuadraticSurd(quadratic.plus(linear));
+	const inequality1 = lessThan ? `${math(`${x1} < x < ${x2} `)}` : `${math(`x < ${x1},`)}`;
+	const inequality2 = lessThan ? `${math(`${x3} < x < ${x4}.`)}` : `${math(`${x2} < x < ${x3}`)}`;
+	const inequality3 = `${math(`x > ${x4}.`)}`;
+
+	// typeset answer
+	const ansI = `${math(`{x=${x1}, ${x4}, ${x2}}`, {
+		wrap: true,
+	})}
+		or ${math(`${x3}.`)}`;
+	const ansII = lessThan
+		? `${inequality1} or ${inequality2}`
+		: `<div style="overflow-x: auto;">${inequality1}${inequality2} or ${inequality3}</div>`;
 
 	const question: AnswerObject = {
-		body,
 		parts: [
-			{ body: partI, marks: 2 },
-			{ body: partII, marks: 4, uplevel },
-			{ body: partIII, marks: 3 },
+			{ body: partI, marks: 4 },
+			{ body: partII, marks: 4 },
 		],
 		partLabelType: 'roman',
 	};
 	const answer: AnswerObject = {
-		parts: [{ body: ansI }, { body: ansII }, { body: ansIII }],
-		partLabelType: 'roman',
+		parts: [{ body: ansI }, { body: ansII }],
 	};
 
 	return [question, answer];
 }
 
-function qn8(variables?: {
-	monthly?: number;
-	a1?: number;
-	a2?: number;
-	multiple1?: number;
-	multiple2?: number;
-	n?: number;
-}): [AnswerObject, AnswerObject] {
-	const monthlys = [50, 100, 200, 500];
-	// generate variables
-	const { monthly, a1, a2, multiple1, multiple2, n } = {
-		monthly: sample(monthlys),
-		a1: getRandomInt(1, 9),
-		a2: getRandomInt(2, 4) * 5,
-		multiple1: getRandomInt(2, 5) * 10,
-		multiple2: getRandomInt(26, 30),
-		n: getRandomInt(4, 6) * 12,
-		...variables,
-	};
-
-	// construct qn
-
-	// typeset qn
-	const body = `Caleb invests his money with Company C, which allows him to invest ${math(
-		`\\$${monthly}`,
-	)}
-		into a savings account on the first day of every month. At the end of each month, the total in the
-		account is increased by ${math(`a\\%.`)}	
-	`;
-	const partI = `It is given that ${math(`a=0.${a1}.`)}`;
-	const partIA = `Caleb invests ${math(`\\$${monthly}`)} on 1 January 2021. Write down how much this
-		${math(`\\$${monthly}`)} is worth at the end of 31 December 2021.`;
-	const partIB = `Caleb invests ${math(
-		`\\$${monthly}`,
-	)} on the first day of each of the 12 months of 
-		2021. Find the total amount in the account at the end of 31 December 2021.`;
-	const partIC = `Caleb continues to invest ${math(
-		`\\$${monthly}`,
-	)} on the first day of each month. Find
-		the month in which the total in the acount will first exceed ${math(
-			`\\$${monthly * multiple1}.`,
-		)} Explain
-		whether this occurs on the first or last day of the month.`;
-	const uplevel = `Deliah invests her money with Company D, which allows her to invest ${math(
-		`\\$${monthly}`,
-	)}
-		on the first day of each month. Each ${math(
-			`\\$${monthly}`,
-		)} invested earns a fixed bonus of ${math(`\\$b`)}
-		at the end of every month for which it has been in the account. The accumulated bonuses do not earn any further bonus.`;
-	const partIIA = `Find, in terms of ${math(`b,`)} how much ${math(
-		`\\$${monthly}`,
-	)} invested on 1 January 2021 will be worth
-		at the end of 31 December 2021.`;
-	const partIIB = `Deliah invests ${math(
-		`\\$${monthly}`,
-	)} on the first day of each of the 24 months in 2021 and 2022. Find the value of ${math(`b`)} such
-		that the total value of all the investments including bonuses, is worth
-		${math(`\\$${monthly * multiple2}`)} at the end of 31 December 2022.`;
-	const uplevel2 = `It is given instead that
-	<strong>${math(`a=${a2 / 10}`)}</strong> for Company C.`;
-	const partIII = `Find the value of ${math(`b`)} for Company D such that investing with both
-		Company C and Company D will result in the same 
-		total value at the end of the ${math(`${n}\\textrm{th}`)} month.`;
-
-	// solution working
-	// part i
-	const r = new Fraction(1000 + a1, 1000);
-	const gp = new GP(r.times(monthly), r);
-	const nSolve = solveGpSN(gp, monthly * multiple1);
-	const months = [
-		'January',
-		'February',
-		'March',
-		'April',
-		'May',
-		'June',
-		'July',
-		'August',
-		'September',
-		'October',
-		'November',
-		'December',
-	];
-	const month = months[(nSolve - 1) % 12];
-	const year = 2021 + Math.floor((nSolve - 1) / 12);
-	const start = gp.S(nSolve).divide(r).valueOf() > monthly * multiple1 ? 'First' : 'Last';
-	// part ii
-	const ap = new AP(1, 1);
-	const sum = ap.S(24);
-	const linear = new Polynomial([sum, 24 * monthly - multiple2 * monthly]);
-	const bSolve = solveLinear(linear);
-	// part iii
-	const r2 = new Fraction(1000 + a2, 1000);
-	const gp2 = new GP(r2.times(monthly), r2);
-	const linear2 = new Polynomial([
-		ap.S(n),
-		gp2
-			.S(n)
-			.minus(monthly * n)
-			.negative(),
-	]);
-	const bSolve2 = solveLinear(linear2);
-
-	// answer
-	const ansIA = math(`\\$${gp.u(12).toFixed(2)}.`);
-	const ansIB = math(`\\$${gp.S(12).toFixed(2)}.`);
-	const ansIC = math(`n=${nSolve}.`) + `<br>${start} day of ${month} ${year}.`;
-	const ansIIA = math(`\\$(${monthly}+12b)`);
-	const ansIIB = math(`b=${bSolve}.`);
-	const ansIII = math(`b=${bSolve2.toFixed(2)}.`);
-
-	const question: AnswerObject = {
-		body,
-		parts: [
-			{
-				body: partI,
-				parts: [
-					{ body: partIA, marks: 1 },
-					{ body: partIB, marks: 3 },
-					{ body: partIC, marks: 5 },
-				],
-				partLabelType: 'alpha',
-			},
-			{
-				parts: [
-					{ body: partIIA, marks: 1, uplevel },
-					{ body: partIIB, marks: 3 },
-				],
-				partLabelType: 'alpha',
-			},
-			{ body: partIII, marks: 3, uplevel: uplevel2 },
-		],
-		partLabelType: 'roman',
-	};
-	const answer: AnswerObject = {
-		parts: [
-			{
-				parts: [
-					{ body: ansIA, marks: 1 },
-					{ body: ansIB, marks: 3 },
-					{ body: ansIC, marks: 5 },
-				],
-			},
-			{
-				parts: [
-					{ body: ansIIA, marks: 1 },
-					{ body: ansIIB, marks: 3 },
-				],
-			},
-			{ body: ansIII, marks: 3 },
-		],
-		partLabelType: 'roman',
-	};
-
-	return [question, answer];
-}
-
+// | base^x - c | < k
 function qn9(variables?: {
 	base?: number;
-	exponent?: number;
-	terms?: number;
-	n2?: number;
-	sum?: number;
+	c?: number;
+	k?: number;
+	lessThan?: boolean;
+	equality?: boolean;
 }): [AnswerObject, AnswerObject] {
-	// generate variables
-	const bases = [2, 3, getRandomInt(5, 9)];
-	const { base, terms, n2 } = {
-		base: sample(bases),
-		terms: getRandomInt(2, 4),
-		n2: getRandomInt(7, 15),
+	// set up Variables
+	const { base, lessThan, equality } = {
+		base: getRandomInt(2, 4), // 4 represent 'e'
+		lessThan: heads(),
+		equality: heads(),
 		...variables,
 	};
-	const defaultExponent = base === 2 ? getRandomInt(3, 6) : base === 3 ? getRandomInt(2, 4) : 2;
-	const exponent = variables?.exponent ?? defaultExponent;
-	const rand = getRandomInt(1, 9);
-	const defaultSum = terms === 4 ? rand * 2 : terms === 3 ? rand * 3 : rand;
-	const sum = variables?.sum ?? defaultSum;
-
-	// construct qn
-	const n = Math.pow(base, exponent);
-	const negative = terms === 4 ? 'negative' : 'non-zero';
-	const termNos = ['two', 'three', 'four'];
-	const termNo = termNos[terms - 2];
-
-	// typeset qn
-	const partA = `An arithmetic series has first term ${math(`a`)}
-		and common difference ${math(`2a,`)} where
-		${math(`a \\neq 0.`)} A geometric series has first term ${math(`a`)}
-		and common ratio ${math(`${base}.`)} The ${math(`k\\textrm{th}`)}
-		term of the geometric series is equal to the sum of the first ${math(`${n}`)} terms
-		of the arithmetic series. Find the value of ${math(`k.`)}`;
-	const partB = `The first term of an arithmetic series is ${negative}. The sum of the first
-		${termNo} terms of the series is ${math(`${sum}`)} and the product of the first
-		${termNo} terms of the series is ${math(`0.`)} Find the ${math(`${n2}\\textrm{th}`)}
-		term of the series.`;
-
-	// solution working
-	// part i
-	const k = exponent * 2 + 1;
-	// part ii
-	let uN: number;
-	if (terms === 4) {
-		const [a, d] = cramers(4, 6, sum, 1, 1, 0);
-		uN = a + (n2 - 1) * d;
-	} else if (terms === 3) {
-		const [a, d] = cramers(3, 3, sum, 1, 2, 0);
-		uN = a + (n2 - 1) * d;
+	let cDefault: number, kDefault: number;
+	if (base === 2) {
+		kDefault = getRandomInt(1, 5);
+		const cs = [3, 6, 5, 12, 10];
+		cDefault = cs[kDefault - 1];
+		if (kDefault === 5) {
+			kDefault = 6;
+		}
+	} else if (base === 3) {
+		kDefault = 3;
+		cDefault = 6;
 	} else {
-		const [a, d] = cramers(2, 1, sum, 1, 1, 0);
-		uN = a + (n2 - 1) * d;
+		kDefault = getRandomInt(1, 9);
+		cDefault = getRandomInt(kDefault + 1, 10);
 	}
+	const { c, k } = {
+		c: cDefault,
+		k: kDefault,
+		...variables,
+	};
 
-	// answer
-	const ansA = math(`k=${k}.`);
-	const ansB = math(`u_{${n2}} = ${uN}.`);
+	// set up qn
+	const baseString = base === 2 ? '2' : base === 3 ? '3' : '\\mathrm{e}';
+	const y = `\\left| ${baseString}^x - ${c} \\right|`;
+	const sign = equality ? (lessThan ? '\\leq ' : '\\geq ') : lessThan ? '<' : '>';
+
+	// typeset
+	const partI = `Sketch the graph of
+		${math(`y=${y},`)} giving the exact values of any points
+		where the curve meets the axes.
+	`;
+	const partII = `Without using a calculator, and showing all your
+		working, find the exact interval, or intervals, for which
+		${math(`${y} ${sign} ${k}.`)}
+		Give your answer in its simplest form.
+	`;
+
+	// answer working
+	const yIntercept = `${math(`\\left( 0, ${Math.abs(1 - c)} \\right).`)}`;
+	const xIntercept =
+		base === 4
+			? `${math(`\\left( \\ln ${c} , 0 \\right)`)}`
+			: `${math(`\\left( \\frac{\\ln ${c}}{\\ln ${base}}, 0 \\right)`)}`;
+	// part ii
+	let x1: string | number, x2: string | number;
+	if (base === 2) {
+		const x1s = [1, 2, 1, 3, 2];
+		const x2s = [2, 3, 3, 4, 4];
+		const index = k === 6 ? 4 : k - 1;
+		[x1, x2] = [x1s[index], x2s[index]];
+	} else if (base === 3) {
+		x1 = 1;
+		x2 = 2;
+	} else {
+		x1 = lnTypeset(c - k);
+		x2 = lnTypeset(c + k);
+	}
+	const sign2 = equality ? '\\leq ' : '<'; // sign2 only valid for more than
+
+	// typeset answer
+	const ansI = `${xIntercept}, ${yIntercept}`;
+	const ansII = lessThan
+		? `${math(`${x1} ${sign} x ${sign} ${x2}.`)}`
+		: `${math(`x ${sign2} ${x1}`)} or ${math(`x ${sign} ${x2}.`)}`;
 
 	const question: AnswerObject = {
 		parts: [
-			{ body: partA, marks: 3 },
-			{ body: partB, marks: 4 },
+			{ body: partI, marks: 3 },
+			{ body: partII, marks: 3 },
 		],
+		partLabelType: 'roman',
 	};
 	const answer: AnswerObject = {
-		parts: [
-			{ body: ansA, marks: 3 },
-			{ body: ansB, marks: 4 },
-		],
+		parts: [{ body: ansI }, { body: ansII }],
 	};
 
 	return [question, answer];
@@ -523,7 +344,57 @@ function qn9(variables?: {
 export const qnLogics = {
 	qn5,
 	qn6,
-	qn7,
 	qn8,
 	qn9,
 };
+
+export function generate(): {
+	a: number;
+	b: number;
+	c: number;
+	d: number;
+	lessThan: boolean;
+} {
+	let a = getRandomInt(1, 2, { avoid: [0] });
+	let b = getRandomInt(1, 9, { avoid: [0] });
+	let c = getRandomInt(-9, a === 1 ? -1 : -2, { avoid: [0] });
+	({
+		factors: [a, b, c],
+	} = factorize(a, b, c));
+	const [x1Frac] = solveQuadratic(new Polynomial([a, b, c]));
+	const x1 = x1Frac.valueOf();
+	const xMin = -b / 2 / a;
+	const left = Math.ceil(x1 + 0.01);
+	const right = Math.floor(xMin - 0.01);
+	let x2 = getRandomInt(left, right, { avoid: [0] });
+	let y2 = a * x2 * x2 + b * x2 + c;
+	if (c === y2) {
+		if (right - left > 0) {
+			x2 = getRandomInt(left, right, { avoid: [0, x2] });
+		}
+		y2 = a * x2 * x2 + b * x2 + c;
+	}
+	if (c === y2) {
+		return generate();
+	}
+	let d = (c - y2) / x2;
+	if (heads()) {
+		b = -b;
+		d = -d;
+	}
+	return { a, b, c, d, lessThan: heads() };
+}
+
+function lnTypeset(x: number): string {
+	if (x === 1) {
+		return `0`;
+	} else if (x === 4) {
+		return `2 \\ln 2`;
+	} else if (x === 8) {
+		return `3 \\ln 2`;
+	} else if (x === 9) {
+		return `2 \\ln 3`;
+	} else {
+		return `\\ln ${x}`;
+	}
+}

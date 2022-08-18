@@ -18,8 +18,8 @@ export class Parametric {
 	 * @return `{num, den, string}`
 	 */
 	dydx(): string {
-		const dydt = this.y instanceof PowerFn ? this.y.derivative().string : `${this.y.derivative()}`;
-		const dxdt = this.x instanceof PowerFn ? this.x.derivative().string : `${this.x.derivative()}`;
+		const dydt = this.y instanceof PowerFn ? this.y.derivative().string : `${this.y.differentiate()}`;
+		const dxdt = this.x instanceof PowerFn ? this.x.derivative().string : `${this.x.differentiate()}`;
 		return `\\frac{${dydt}}{${dxdt}}`;
 	}
 }

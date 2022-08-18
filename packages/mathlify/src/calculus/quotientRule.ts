@@ -5,7 +5,7 @@ import { Polynomial } from '../core';
  * @returns {num, den, string} for numerator, denominator and string representation
  */
 export function quotientRule(f: Polynomial, g: Polynomial): { num: Polynomial; den: Polynomial; string: string } {
-	const num = f.derivative().times(g).minus(f.times(g.derivative()));
+	const num = f.differentiate().times(g).minus(f.times(g.differentiate()));
 	const den = g.square();
 	const string = `\\frac{${num}}{\\left(${g}\\right)^2}`;
 	return { num, den, string };
