@@ -55,3 +55,5 @@ export { AP, GP, solveGpSN, solveGpSNNumber } from './sequences';
 
 export { Rational, solveRational } from './algebra';
 export { PowerFn, SinFn, CosFn, Parametric, quotientRule } from './calculus';
+
+export { binomPdf, binomCdf, binomCdfRange, normCdf, invNorm, zTest, Normal } from './stats';
