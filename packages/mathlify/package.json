@@ -1,6 +1,6 @@
 {
 	"name": "mathlify",
-	"version": "0.1.7",
+	"version": "0.1.8",
 	"description": "bringing mathematics into the digital age",
 	"source": "src/index.ts",
 	"type": "module",
@@ -53,7 +53,6 @@
 		"uvu": "^0.5.2"
 	},
 	"dependencies": {
-		"math-erfinv": "^1.0.0",
-		"simple-statistics": "^7.7.6"
+		"math-erfinv": "^1.0.0"
 	}
 }
