@@ -1,15 +1,14 @@
-import { binomialDistribution } from 'simple-statistics';
+import { nCr } from './nCr';
 
 /**
  * binomPdf(n,p,x)
  *
  * @returns P(X=x)
  *
- * uses  the implementation by [simple-statistics package](https://simplestatistics.org/)
  */
 function binomPdf(n: number, p: number, x: number): number {
 	if (Number.isInteger(n) && n > 0 && p >= 0 && p <= 1 && Number.isInteger(x) && x >= 0 && x <= n) {
-		return binomialDistribution(n, p)[x] ?? 0;
+		return nCr(n, x) * Math.pow(p, x) * Math.pow(1 - p, n - x);
 	}
 	throw new Error(`unexpected behavior for binomPDF ${n},${p},${x}}`);
 }
@@ -19,13 +18,18 @@ function binomPdf(n: number, p: number, x: number): number {
  *
  * @returns P(X \leq x)
  *
- * uses  the implementation by [simple-statistics package](https://simplestatistics.org/)
  */
 function binomCdf(n: number, p: number, x: number): number {
+	const epsilon = 1e-10;
 	x = Math.floor(x);
-	return binomialDistribution(n, p)
-		.slice(0, x + 1)
-		.reduce((x, y) => x + y);
+	let sum = 0;
+	let i = 0;
+	while (i <= x && sum < 1 - epsilon) {
+		// second condition stops loop early to prevent possible overflow problems in nCr
+		sum += binomPdf(n, p, i);
+		i++;
+	}
+	return sum >= 1 - epsilon ? 1 : sum;
 }
 
 /**
@@ -33,17 +37,12 @@ function binomCdf(n: number, p: number, x: number): number {
  *
  * @returns P(x1 \\leq X \leq x2)
  *
- * uses  the implementation by [simple-statistics package](https://simplestatistics.org/)
  */
 function binomCdfRange(n: number, p: number, lower: number, upper: number): number {
 	lower = Math.ceil(lower);
 	upper = Math.floor(upper);
-	const p2 = binomialDistribution(n, p)
-		.slice(0, upper + 1)
-		.reduce((x, y) => x + y);
-	const p1 = binomialDistribution(n, p)
-		.slice(0, lower)
-		.reduce((x, y) => x + y);
+	const p2 = binomCdf(n, p, upper);
+	const p1 = binomCdf(n, p, lower - 1);
 	return p2 - p1;
 }
 

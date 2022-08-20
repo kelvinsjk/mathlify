@@ -1,4 +1,4 @@
-import { errorFunction, zScore } from 'simple-statistics';
+import { errorFunction } from './simple-statistics/errorFunction';
 import inverseErrorFunction from 'math-erfinv';
 
 /**
@@ -8,13 +8,13 @@ import inverseErrorFunction from 'math-erfinv';
  *
  * @returns P(lower < X < upper)
  *
- * uses  the implementation by [simple-statistics package](https://simplestatistics.org/)
+ * uses the implementation of the error function by [simple-statistics package](https://simplestatistics.org/)
  */
-function normCdf(mu: number, sigma: number, limits: Limits): number {
+export function normCdf(mu: number, sigma: number, limits: Limits): number {
 	const defaultLimits = { lower: -Number.MAX_VALUE, upper: Number.MAX_VALUE };
 	const { lower, upper } = { ...defaultLimits, ...limits };
-	const z1 = zScore(lower, mu, sigma);
-	const z2 = zScore(upper, mu, sigma);
+	const z1 = z(lower, mu, sigma);
+	const z2 = z(upper, mu, sigma);
 	return (errorFunction(z2 / Math.SQRT2) - errorFunction(z1 / Math.SQRT2)) / 2;
 }
 
@@ -29,7 +29,7 @@ function normCdf(mu: number, sigma: number, limits: Limits): number {
  *
  * uses the implementation of the inverse error function from [math-erfinv](https://github.com/math-io/erfinv)
  */
-function invNorm(p: number, mu = 0, sigma = 1, mode = 'left'): number {
+export function invNorm(p: number, mu = 0, sigma = 1, mode = 'left'): number {
 	if (mode === 'right' || mode === 'r') {
 		p = 1 - p;
 	} else if (mode === 'center' || mode === 'c') {
@@ -48,7 +48,7 @@ function invNorm(p: number, mu = 0, sigma = 1, mode = 'left'): number {
  *
  * uses  the implementation by [simple-statistics package](https://simplestatistics.org/)
  */
-function zTest(mu: number, sigma: number, xBar: number, n: number, tail = 'left'): number {
+export function zTest(mu: number, sigma: number, xBar: number, n: number, tail = 'left'): number {
 	if (tail === 'left' || tail === 'l') {
 		return normCdf(mu, sigma / Math.sqrt(n), { upper: xBar });
 	} else if (tail === 'right' || tail === 'r') {
@@ -65,4 +65,6 @@ interface Limits {
 	upper?: number;
 }
 
-export { normCdf, invNorm, zTest };
+function z(x: number, mu: number, sigma: number): number {
+	return (x - mu) / sigma;
+}
