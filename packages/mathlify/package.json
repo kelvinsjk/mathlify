@@ -1,6 +1,6 @@
 {
 	"name": "mathlify",
-	"version": "0.1.8",
+	"version": "0.1.9",
 	"description": "bringing mathematics into the digital age",
 	"source": "src/index.ts",
 	"type": "module",
@@ -13,6 +13,7 @@
 		"preversion": "pnpm run lint",
 		"version": "pnpm run format && git add -A src",
 		"postversion": "git push && git push --tags",
+		"postpublish": "git add -A src",
 		"format": "prettier --write \"src/**/*.ts\"",
 		"lint": "eslint --ignore-path .gitignore",
 		"build": "parcel build",

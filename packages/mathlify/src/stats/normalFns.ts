@@ -29,7 +29,12 @@ export function normCdf(mu: number, sigma: number, limits: Limits): number {
  *
  * uses the implementation of the inverse error function from [math-erfinv](https://github.com/math-io/erfinv)
  */
-export function invNorm(p: number, mu = 0, sigma = 1, mode = 'left'): number {
+export function invNorm(
+	p: number,
+	mu = 0,
+	sigma = 1,
+	mode: 'left' | 'right' | 'center' | 'r' | 'c' | 'l' = 'left',
+): number {
 	if (mode === 'right' || mode === 'r') {
 		p = 1 - p;
 	} else if (mode === 'center' || mode === 'c') {
