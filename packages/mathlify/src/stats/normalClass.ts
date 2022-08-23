@@ -107,7 +107,7 @@ export class Normal {
 	 *
 	 * @return x such that P(X < x) = p
 	 */
-	invNorm(p: number, mode = 'left'): number {
+	invNorm(p: number, mode: 'center' | 'left' | 'right' | 'l' | 'c' | 'r' = 'left'): number {
 		return invNorm(p, this.mean, Math.sqrt(this.variance), mode);
 	}
 

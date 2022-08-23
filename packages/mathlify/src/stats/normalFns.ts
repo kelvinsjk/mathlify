@@ -1,5 +1,5 @@
 import { errorFunction } from './simple-statistics/errorFunction';
-import inverseErrorFunction from 'math-erfinv';
+import { erfinv } from './math-erfinv/math-erfinv';
 
 /**
  * normCdf(mu, sigma, limits)
@@ -41,7 +41,7 @@ export function invNorm(
 		p = p + (1 - p) / 2;
 	}
 	//const z = (2 * p - 1 > 0.5) ? probit(p) : Math.SQRT2 * inverseErrorFunction(2 * p - 1);
-	const z = inverseErrorFunction(2 * p - 1) * Math.SQRT2;
+	const z = erfinv(2 * p - 1) * Math.SQRT2;
 	return z * sigma + mu;
 }
 
