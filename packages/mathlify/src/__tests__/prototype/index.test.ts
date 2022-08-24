@@ -23,9 +23,7 @@ const longDivision = suite('Long Division');
 longDivision('long division', () => {
 	const x = new Polynomial([1, 0]);
 	const x2Plus1 = new Polynomial([1, 0, 1]);
-	const [q, r] = longDivide(x2Plus1, x);
-	console.log(q);
-	console.log(r);
+	const { quotient: q, remainder: r } = longDivide(x2Plus1, x);
 	assert.is(true, true);
 });
 
