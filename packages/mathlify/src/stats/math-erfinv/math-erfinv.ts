@@ -1,23 +1,6 @@
-/**
- * NOTE: the original math-erfinv code is from [math-io/math-erfinv]{}.
- * The code has been modified in the following ways:
- * - Typescript definitions and let/const vs var
- * - Modifying the sqrt,ln,positive infinity and negative infinity implementations by relying on the Javascript version
- * - My own custom implementation of the "evalrational" function
- *
- * This implementation follows the original, but has been modified for JavaScript.
- */
+type MathFunction = (x: number) => number;
 
-/**
- * (C) Copyright John Maddock 2006.
- * Use, modification and distribution are subject to the
- * Boost Software License, Version 1.0. (See accompanying file
- * LICENSE or copy at http://www.boost.org/LICENSE_1_0.txt)
- */
-
-type MathFuncion = (x: number) => number;
-
-function evalrational(P: number[], Q: number[]): MathFuncion {
+function evalRational(P: number[], Q: number[]): MathFunction {
 	return (x: number) => {
 		const num = P.reduce((prev, p, i) => {
 			return prev + p * Math.pow(x, i);
@@ -36,8 +19,34 @@ function ln(x: number): number {
 	return Math.log(x);
 }
 
-const PINF = Number.POSITIVE_INFINITY;
-const NINF = Number.NEGATIVE_INFINITY;
+const pInf = Number.POSITIVE_INFINITY;
+const nInf = Number.NEGATIVE_INFINITY;
+
+/**
+ * NOTE: the code below is modified starting from the code in [math-io/math-erfinv]{https://github.com/math-io/erfinv}.
+ * The code has been modified in the following ways:
+ * - Typescript definitions and let/const vs var
+ * - Modifying the sqrt,ln,positive infinity and negative infinity implementations by relying on the Javascript version
+ * - My own custom implementation of the "evalrational" function above
+ *
+ * This implementation follows the original, but has been modified for JavaScript.
+ */
+
+/**
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2016 The Compute.io Authors.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ */
 
 /**
  * NOTE: the original C++ code and copyright notice is from the [Boost library]{http://www.boost.org/doc/libs/1_48_0/boost/math/special_functions/detail/erf_inv.hpp}.
@@ -154,11 +163,11 @@ const Q5 = [
 // FUNCTIONS //
 
 // Compile functions for evaluating rational functions...
-const rationalFcnR2 = evalrational(P2, Q2);
-const rationalFcnR1 = evalrational(P1, Q1);
-const rationalFcnR3 = evalrational(P3, Q3);
-const rationalFcnR4 = evalrational(P4, Q4);
-const rationalFcnR5 = evalrational(P5, Q5);
+const rationalFcnR2 = evalRational(P2, Q2);
+const rationalFcnR1 = evalRational(P1, Q1);
+const rationalFcnR3 = evalRational(P3, Q3);
+const rationalFcnR4 = evalRational(P4, Q4);
+const rationalFcnR5 = evalRational(P5, Q5);
 
 // ERFINV //
 
@@ -183,11 +192,11 @@ export function erfinv(x: number): number {
 	}
 	// Special case: 1
 	if (x === 1) {
-		return PINF;
+		return pInf;
 	}
 	// Special case: -1
 	if (x === -1) {
-		return NINF;
+		return nInf;
 	}
 	// Special case: +-0
 	if (x === 0) {
