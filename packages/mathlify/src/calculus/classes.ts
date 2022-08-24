@@ -108,9 +108,15 @@ export class SinFn {
 	}
 
 	/** differentiates this expression */
-	derivative(): CosFn {
+	differentiate(): CosFn {
 		//TODO: chain rule version
 		return new CosFn({ fx: this.fx, coeff: this.coeff });
+	}
+
+	/** differentiates this expression */
+	integraate(): CosFn {
+		//TODO: chain rule version
+		return new CosFn({ fx: this.fx, coeff: this.coeff.negative() });
 	}
 
 	/**
@@ -155,9 +161,15 @@ export class CosFn {
 	}
 
 	/** differentiates this expression */
-	derivative(): SinFn {
+	differentiate(): SinFn {
 		//TODO: chain rule version
 		return new SinFn({ fx: this.fx, coeff: this.coeff.negative() });
+	}
+
+	/** integrates this expression */
+	integrate(): SinFn {
+		//TODO: chain rule version
+		return new SinFn({ fx: this.fx, coeff: this.coeff });
 	}
 
 	/**

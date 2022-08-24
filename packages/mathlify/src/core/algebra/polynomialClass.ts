@@ -181,7 +181,6 @@ export class Polynomial extends Expression {
 	 * @param options `{c, x1, y1}` where we can put in the integration constant c (defaults to 0),
 	 * or a point on the curve (x1, y1).
 	 */
-
 	integrate(options?: { c?: number | Fraction; x1?: number | Fraction; y1?: number | Fraction }): Polynomial {
 		if (this.degree === 0) {
 			return new Polynomial([0]);

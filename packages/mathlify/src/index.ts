@@ -45,6 +45,7 @@ export {
 	shiftPoly,
 	completeSquare,
 	longDivide,
+	linear,
 } from './polynomialMethods';
 
 export { cramers, cramersFrac, determinantFrac, bisection } from './numerical';

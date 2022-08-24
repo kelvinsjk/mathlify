@@ -5,13 +5,17 @@ import { Polynomial } from '../core';
  *
  * @returns [q(x), r(x)]: quotient q(x) and remainder r(x)
  */
-export function longDivide(poly: Polynomial, divisor: Polynomial, carryOver?: Polynomial): [Polynomial, Polynomial] {
+export function longDivide(
+	poly: Polynomial,
+	divisor: Polynomial,
+	carryOver?: Polynomial,
+): { quotient: Polynomial; remainder: Polynomial } {
 	carryOver = carryOver || new Polynomial([0], { ascending: poly.ascending, unknown: poly.unknown });
 	if (divisor.degree === 0) {
 		throw new Error(`Divisor ${divisor} must have degree > 0`);
 	}
 	if (poly.degree < divisor.degree) {
-		return [carryOver, poly];
+		return { quotient: poly, remainder: carryOver };
 	}
 	const a = poly.coeffs[poly.coeffs.length - 1];
 	const b = divisor.coeffs[divisor.coeffs.length - 1];
