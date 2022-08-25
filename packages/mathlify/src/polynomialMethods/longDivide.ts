@@ -15,7 +15,7 @@ export function longDivide(
 		throw new Error(`Divisor ${divisor} must have degree > 0`);
 	}
 	if (poly.degree < divisor.degree) {
-		return { quotient: poly, remainder: carryOver };
+		return { quotient: carryOver, remainder: poly };
 	}
 	const a = poly.coeffs[poly.coeffs.length - 1];
 	const b = divisor.coeffs[divisor.coeffs.length - 1];
