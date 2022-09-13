@@ -113,7 +113,10 @@ export function solveQuadraticSurd(poly: Polynomial): [Expression, Expression] {
 	if (poly.degree !== 2) {
 		throw new Error(`${poly} is not a quadratic polynomial`);
 	}
-	const [c, b, a] = poly.coeffs;
+	let [c, b, a] = poly.coeffs;
+	if (a.isLessThan(0)) {
+		[c, b, a] = [c.negative(), b.negative(), a.negative()];
+	}
 	const discriminant = b.square().minus(a.times(c).times(4));
 	if (discriminant.valueOf() < 0) {
 		throw new Error(`complex roots found: ${poly}`);

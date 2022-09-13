@@ -18,10 +18,16 @@ export class Polynomial extends Expression {
 
 	/**
 	 * Creates a new Polynomial instance
-	 * @param coeffs array of coefficients
+	 * @param coeffs array of coefficients. if a number/fraction is provided, will create the polynomial "kx".
 	 * @param options defaults to `{ascending: false, degree: coeffs.length-1, unknown: 'x'}`
 	 */
-	constructor(coeffs: (number | Fraction)[], options?: { ascending?: boolean; degree?: number; unknown?: string }) {
+	constructor(
+		coeffs: (number | Fraction)[] | (number | Fraction),
+		options?: { ascending?: boolean; degree?: number; unknown?: string },
+	) {
+		if (!Array.isArray(coeffs)) {
+			coeffs = options?.ascending ? [0, coeffs] : [coeffs, 0];
+		}
 		const { unknown, ascending, degree } = {
 			ascending: false,
 			degree: coeffs.length - 1,

@@ -31,11 +31,11 @@ export class Rational {
 						`different unknowns detected for numerator and denominator. Will use numerator's ${num.unknown}`,
 					);
 				}
-				unknown = num.unknown;
-			} else {
-				if (den instanceof Polynomial) {
-					unknown = den.unknown;
-				}
+			}
+			unknown = num.unknown;
+		} else {
+			if (den instanceof Polynomial) {
+				unknown = den.unknown;
 			}
 		}
 		// change to Polynomials
@@ -132,6 +132,15 @@ export class Rational {
 			rational2 = new Rational(rational2);
 		}
 		return this.times(rational2.reciprocal());
+	}
+
+	/** subs in a fraction/integer */
+	subIn(x: number | Fraction): Fraction {
+		return this.num.subIn(x).divide(this.den.subIn(x));
+	}
+
+	replaceXWith(x: string | Polynomial): Rational {
+		return new Rational(this.num.replaceXWith(x), this.den.replaceXWith(x));
 	}
 
 	/**

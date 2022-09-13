@@ -54,7 +54,7 @@ export { Complex, ComplexExp, xComplex, expToCartesian, complexToQuadratic, subC
 export { Angle, sin, cos, tan } from './trigo';
 export { AP, GP, solveGpSN, solveGpSNNumber } from './sequences';
 
-export { Rational, solveRational } from './algebra';
+export { Rational, solveRational, partialFractions, xPolynomial } from './algebra';
 export { PowerFn, SinFn, CosFn, Parametric, quotientRule } from './calculus';
 
 export { binomPdf, binomCdf, binomCdfRange, normCdf, invNorm, zTest, Normal } from './stats';

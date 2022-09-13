@@ -16,6 +16,8 @@ import {
 	cramersFrac,
 	longDivide,
 	Polynomial,
+	xPolynomial,
+	Expression,
 } from '../../index';
 
 const longDivision = suite('Long Division');
@@ -25,6 +27,14 @@ longDivision('long division', () => {
 	const x2Plus1 = new Polynomial([1, 0, 1]);
 	const { quotient: q, remainder: r } = longDivide(x2Plus1, x);
 	assert.is(true, true);
+});
+
+longDivision('xPoly', () => {
+	const sN = new xPolynomial(['A', 'B', 0], { unknown: 'n' });
+	const sNMinus1 = sN.replaceXWith(new Polynomial([1, -1]));
+	console.log(`${sN}`);
+	console.log(`${sNMinus1}`);
+	console.log(`${sN.minus(sNMinus1)}`);
 });
 
 longDivision.run();
