@@ -26,7 +26,7 @@ termClasses('scalar multiplication', () => {
 
 termClasses('clone', () => {
 	const newX = x.clone();
-	newX.variable = 'y';
+	newX.variableString = 'y';
 	assert.is(`${x}`, 'x');
 	assert.is(`${newX}`, 'y');
 });

@@ -10,7 +10,7 @@ export function longDivide(
 	divisor: Polynomial,
 	carryOver?: Polynomial,
 ): { quotient: Polynomial; remainder: Polynomial } {
-	carryOver = carryOver || new Polynomial([0], { ascending: poly.ascending, unknown: poly.unknown });
+	carryOver = carryOver || new Polynomial([0], { ascending: poly.ascending, variable: poly.variable });
 	if (divisor.degree === 0) {
 		throw new Error(`Divisor ${divisor} must have degree > 0`);
 	}
@@ -19,7 +19,7 @@ export function longDivide(
 	}
 	const a = poly.coeffs[poly.coeffs.length - 1];
 	const b = divisor.coeffs[divisor.coeffs.length - 1];
-	const ax = new Polynomial([a], { degree: poly.degree, unknown: poly.unknown });
+	const ax = new Polynomial([a], { degree: poly.degree, variable: poly.variable });
 	return longDivide(
 		poly.minus(
 			divisor
@@ -28,6 +28,6 @@ export function longDivide(
 				.times(new Polynomial([1], { degree: poly.degree - divisor.degree })),
 		),
 		divisor,
-		carryOver.plus(new Polynomial([a.divide(b)], { degree: poly.degree - divisor.degree, unknown: poly.unknown })),
+		carryOver.plus(new Polynomial([a.divide(b)], { degree: poly.degree - divisor.degree, variable: poly.variable })),
 	);
 }

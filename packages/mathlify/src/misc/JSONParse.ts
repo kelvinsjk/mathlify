@@ -1,9 +1,9 @@
-import { Fraction, Term, Expression, Unknown, SquareRoot, Imaginary, Polynomial } from '../core/index';
+import { Fraction, Term, Expression, VariableExponent, SquareRoot, Imaginary, Polynomial } from '../core/index';
 import { Vector } from '../vectors/index';
 //import { Polynomial } from '../classes/algebra/index';
 
 /**
- * parse JSON, returning a Mathlify class instance (Fraction/Term/Expression/Polynomial)
+ * parse JSON, returning a Mathlify class instance (Fraction/Term/Expression/Vector)
  *
  * for primitive types, return itself:
  */
@@ -46,7 +46,7 @@ const classes = {
 	term: Term,
 	expression: Expression,
 	vector: Vector,
-	unknown: Unknown,
+	variable: VariableExponent,
 	imaginary: Imaginary,
 	squareRoot: SquareRoot,
 	polynomial: Polynomial,

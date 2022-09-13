@@ -238,9 +238,9 @@ export class Line {
 	 * @param component 0 (default) returns all 3 components, 1 returns x, 2 returns y, 3 returns z
 	 */
 	toCombinedString(component = 0): string {
-		const x = new Polynomial([this.a.x, this.d.x], { ascending: true, unknown: this.lambda });
-		const y = new Polynomial([this.a.y, this.d.y], { ascending: true, unknown: this.lambda });
-		const z = new Polynomial([this.a.z, this.d.z], { ascending: true, unknown: this.lambda });
+		const x = new Polynomial([this.a.x, this.d.x], { ascending: true, variable: this.lambda });
+		const y = new Polynomial([this.a.y, this.d.y], { ascending: true, variable: this.lambda });
+		const z = new Polynomial([this.a.z, this.d.z], { ascending: true, variable: this.lambda });
 		if (component === 0) {
 			return `\\begin{pmatrix}\n\t${x} \\\\\n\t${y} \\\\\n\t${z}\n\\end{pmatrix}`;
 		} else if (component === 1) {
@@ -312,7 +312,7 @@ export class Line {
 }
 
 function toCartesianComponent(x: string, a: Fraction, d: Fraction): string {
-	const xMinusA = new Polynomial([1, a.negative()], { unknown: x });
+	const xMinusA = new Polynomial([1, a.negative()], { variable: x });
 	let xString: string;
 	if (d.isEqualTo(1)) {
 		xString = `${xMinusA}`;

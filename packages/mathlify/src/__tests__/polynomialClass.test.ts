@@ -8,7 +8,7 @@ const oneHalf = new Fraction(1, 2);
 const onePlus2xPlus3x2 = new Polynomial([1, 2, 3], { ascending: true });
 const x2Plus2xMinus3 = new Polynomial([1, 2, -3]);
 const x2Plus2xMinus3V2 = new Polynomial([0, 1, 2, -3]);
-const halfYPlus1 = new Polynomial([oneHalf, 1], { unknown: 'y' });
+const halfYPlus1 = new Polynomial([oneHalf, 1], { variable: 'y' });
 const x2Plus2x3Plus3x5 = new Polynomial([1, 2, 0, 3], { ascending: true, degree: 5 });
 const x4Plus2x3Minus3x2 = new Polynomial([1, 2, -3], { degree: 4 });
 const x2 = new Polynomial([1, 0, 0]);
@@ -55,9 +55,9 @@ polynomialClass('clone', () => {
 	assert.ok(newX2Plus2xMinus3.ascending);
 	assert.not.ok(x2Plus2xMinus3.ascending);
 	const newOnePlus2xPlus3x2 = onePlus2xPlus3x2.clone();
-	newOnePlus2xPlus3x2.unknown = 'y';
-	assert.is(onePlus2xPlus3x2.unknown, 'x');
-	assert.is(newOnePlus2xPlus3x2.unknown, 'y');
+	newOnePlus2xPlus3x2.variable = 'y';
+	assert.is(onePlus2xPlus3x2.variable, 'x');
+	assert.is(newOnePlus2xPlus3x2.variable, 'y');
 });
 
 polynomialClass('reverse', () => {

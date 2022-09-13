@@ -29,7 +29,7 @@ export class AP {
 	 * nth term as a polynomial: u_n = nd + a-d
 	 */
 	uNPoly(): Polynomial {
-		return new Polynomial([this.d, this.a.minus(this.d)], { unknown: 'n' });
+		return new Polynomial([this.d, this.a.minus(this.d)], { variable: 'n' });
 	}
 
 	/**
@@ -51,6 +51,6 @@ export class AP {
 	 * sum of n terms as a polynomial: S_n = n/2 * (2a + (n-1)d)
 	 */
 	sNPoly(): Polynomial {
-		return new Polynomial([this.d.divide(2), this.a.minus(this.d.divide(2)), 0], { unknown: 'n' });
+		return new Polynomial([this.d.divide(2), this.a.minus(this.d.divide(2)), 0], { variable: 'n' });
 	}
 }

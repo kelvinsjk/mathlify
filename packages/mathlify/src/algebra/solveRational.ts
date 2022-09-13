@@ -23,7 +23,7 @@ export function solveRational(
 	let combinedAnswer: string;
 	// set up inequality
 	let rational = lhs.minus(rhs);
-	const x = rational.num.unknown;
+	const x = rational.num.variable;
 	const equality = options?.equality ?? false;
 	let lessThan = options?.lessThan ?? true;
 	if (

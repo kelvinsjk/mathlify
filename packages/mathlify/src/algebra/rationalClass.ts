@@ -26,24 +26,24 @@ export class Rational {
 		let unknown = 'x';
 		if (num instanceof Polynomial) {
 			if (den instanceof Polynomial) {
-				if (num.unknown !== den.unknown) {
+				if (num.variable !== den.variable) {
 					console.warn(
-						`different unknowns detected for numerator and denominator. Will use numerator's ${num.unknown}`,
+						`different unknowns detected for numerator and denominator. Will use numerator's ${num.variable}`,
 					);
 				}
 			}
-			unknown = num.unknown;
+			unknown = num.variable;
 		} else {
 			if (den instanceof Polynomial) {
-				unknown = den.unknown;
+				unknown = den.variable;
 			}
 		}
 		// change to Polynomials
 		if (typeof num === 'number' || num instanceof Fraction) {
-			num = new Polynomial([num], { unknown });
+			num = new Polynomial([num], { variable: unknown });
 		}
 		if (typeof den === 'number' || den instanceof Fraction) {
-			den = new Polynomial([den], { unknown });
+			den = new Polynomial([den], { variable: unknown });
 		}
 		const poles = assignPoles(den, options?.poles);
 		// check for common factors
@@ -51,8 +51,8 @@ export class Rational {
 		poles.forEach((x) => {
 			const numerator = num as Polynomial;
 			if (numerator.subIn(x).isEqualTo(0)) {
-				({ quotient: num } = longDivide(<Polynomial>num, new Polynomial([1, x.negative()], { unknown })));
-				({ quotient: den } = longDivide(<Polynomial>den, new Polynomial([1, x.negative()], { unknown })));
+				({ quotient: num } = longDivide(<Polynomial>num, new Polynomial([1, x.negative()], { variable: unknown })));
+				({ quotient: den } = longDivide(<Polynomial>den, new Polynomial([1, x.negative()], { variable: unknown })));
 				newPoles = newPoles.filter((y) => !y.isEqualTo(x));
 			}
 		});
@@ -64,17 +64,17 @@ export class Rational {
 	/** Addition */
 	plus(rational2: number | Fraction | Polynomial | Rational): Rational {
 		if (typeof rational2 === 'number' || rational2 instanceof Fraction) {
-			rational2 = new Polynomial([rational2], { unknown: this.num.unknown });
+			rational2 = new Polynomial([rational2], { variable: this.num.variable });
 		}
 		if (rational2 instanceof Polynomial) {
 			return new Rational(this.num.plus(rational2.times(this.den)), this.den, { poles: this.poles });
 		}
-		let commonDivisor = new Polynomial([1], { unknown: this.num.unknown });
+		let commonDivisor = new Polynomial([1], { variable: this.num.variable });
 		let sharesCommonDivisor = false;
 		const f = rational2.den;
 		this.poles.forEach((x) => {
 			if (f.subIn(x).isEqualTo(0)) {
-				commonDivisor = commonDivisor.times(new Polynomial([1, x.negative()], { unknown: this.num.unknown }));
+				commonDivisor = commonDivisor.times(new Polynomial([1, x.negative()], { variable: this.num.variable }));
 				sharesCommonDivisor = true;
 			}
 		});
@@ -101,7 +101,7 @@ export class Rational {
 	/** subtraction */
 	minus(rational2: number | Fraction | Polynomial | Rational): Rational {
 		if (typeof rational2 === 'number' || rational2 instanceof Fraction) {
-			rational2 = new Polynomial([rational2], { unknown: this.num.unknown });
+			rational2 = new Polynomial([rational2], { variable: this.num.variable });
 		}
 		return this.plus(rational2.negative());
 	}
@@ -109,7 +109,7 @@ export class Rational {
 	/** multiplication */
 	times(rational2: number | Fraction | Polynomial | Rational): Rational {
 		if (typeof rational2 === 'number' || rational2 instanceof Fraction) {
-			rational2 = new Polynomial([rational2], { unknown: this.num.unknown });
+			rational2 = new Polynomial([rational2], { variable: this.num.variable });
 		}
 		if (rational2 instanceof Polynomial) {
 			rational2 = new Rational(rational2);
@@ -126,7 +126,7 @@ export class Rational {
 	/** division */
 	divide(rational2: number | Fraction | Polynomial | Rational): Rational {
 		if (typeof rational2 === 'number' || rational2 instanceof Fraction) {
-			rational2 = new Polynomial([rational2], { unknown: this.num.unknown });
+			rational2 = new Polynomial([rational2], { variable: this.num.variable });
 		}
 		if (rational2 instanceof Polynomial) {
 			rational2 = new Rational(rational2);

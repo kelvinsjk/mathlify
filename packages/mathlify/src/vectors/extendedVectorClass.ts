@@ -1,4 +1,4 @@
-import { Fraction, Unknown, Term, Expression, numberToFraction } from '../core/index';
+import { Fraction, VariableExponent, Term, Expression, numberToFraction } from '../core/index';
 import { Vector } from './vectorClass';
 
 /**
@@ -21,9 +21,9 @@ export class xVector {
 	 *
 	 */
 	constructor(
-		x: number | Fraction | string | Unknown | Term | Expression,
-		y?: number | Fraction | string | Unknown | Term | Expression,
-		z?: number | Fraction | string | Unknown | Term | Expression,
+		x: number | Fraction | string | VariableExponent | Term | Expression,
+		y?: number | Fraction | string | VariableExponent | Term | Expression,
+		z?: number | Fraction | string | VariableExponent | Term | Expression,
 		options?: { coeff?: number | Fraction },
 	) {
 		x = toExpression(x);
@@ -215,8 +215,8 @@ export class xVector {
 	static K = new xVector(0, 0, 1);
 }
 
-function toExpression(x: number | Fraction | string | Unknown | Term | Expression): Expression {
-	if (typeof x === 'number' || x instanceof Fraction || x instanceof Unknown || typeof x === 'string') {
+function toExpression(x: number | Fraction | string | VariableExponent | Term | Expression): Expression {
+	if (typeof x === 'number' || x instanceof Fraction || x instanceof VariableExponent || typeof x === 'string') {
 		return new Expression(new Term(x));
 	}
 	return x instanceof Term ? new Expression(x) : x.clone();

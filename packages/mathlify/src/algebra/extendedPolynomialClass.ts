@@ -1,4 +1,4 @@
-import { Fraction, Unknown, Expression, numberToFraction, type Term, Polynomial } from '../core';
+import { Fraction, VariableExponent, Expression, numberToFraction, type Term, Polynomial } from '../core';
 
 /**
  * Polynomial class representing "ax^n + bx^n-1 + ... + k"
@@ -11,24 +11,24 @@ export class xPolynomial extends Expression {
 	/** degree of the polynomial */
 	degree: number;
 	/** variable name (e.g. "x") */
-	unknown: string;
+	variable: string;
 
 	/**
 	 * Creates a new Polynomial instance
 	 * @param coeffs array of coefficients. if a number/fraction is provided, will create the polynomial "kx".
-	 * @param options defaults to `{ascending: false, degree: coeffs.length-1, unknown: 'x'}`
+	 * @param options defaults to `{ascending: false, degree: coeffs.length-1, variable: 'x'}`
 	 */
 	constructor(
-		coeffs: (number | Fraction | string | Expression | Unknown)[] | (number | Fraction),
-		options?: { ascending?: boolean; degree?: number; unknown?: string },
+		coeffs: (number | Fraction | string | Expression | VariableExponent)[] | (number | Fraction),
+		options?: { ascending?: boolean; degree?: number; variable?: string },
 	) {
 		if (!Array.isArray(coeffs)) {
 			coeffs = options?.ascending ? [0, coeffs] : [coeffs, 0];
 		}
-		const { unknown, ascending, degree } = {
+		const { variable, ascending, degree } = {
 			ascending: false,
 			degree: coeffs.length - 1,
-			unknown: 'x',
+			variable: 'x',
 			...options,
 		};
 		if (degree < 0 || degree < coeffs.length - 1) {
@@ -51,7 +51,7 @@ export class xPolynomial extends Expression {
 		}
 		// generate unknown terms
 		const polynomialTerms = coeffsFrac.map((coeff, n) => {
-			return coeff.times(new Unknown(unknown).pow(n));
+			return coeff.times(new VariableExponent(variable).pow(n));
 		});
 		// descending order typesetting if necessary;
 		if (!ascending) {
@@ -65,7 +65,7 @@ export class xPolynomial extends Expression {
 		super(...terms);
 		this.coeffs = coeffsFrac;
 		this.degree = coeffsFrac.length - 1;
-		this.unknown = unknown;
+		this.variable = variable;
 		this.ascending = ascending;
 	}
 
@@ -86,7 +86,7 @@ export class xPolynomial extends Expression {
 		if (!this.ascending) {
 			newCoeffs.reverse();
 		}
-		return new xPolynomial(newCoeffs, { unknown: this.unknown, ascending: this.ascending });
+		return new xPolynomial(newCoeffs, { variable: this.variable, ascending: this.ascending });
 	}
 
 	/** multiplies two polynomials */
@@ -102,7 +102,7 @@ export class xPolynomial extends Expression {
 		if (!this.ascending) {
 			coeffs.reverse();
 		}
-		return new xPolynomial(coeffs, { ascending: this.ascending, degree, unknown: this.unknown });
+		return new xPolynomial(coeffs, { ascending: this.ascending, degree, variable: this.variable });
 	}
 
 	/** negative of this polynomial */
@@ -132,7 +132,7 @@ export class xPolynomial extends Expression {
 		if (!(Number.isInteger(n) && n >= 0)) {
 			throw new RangeError(`only non-negative integers allowed for n (${n} received)`);
 		}
-		let newPoly = new xPolynomial([1], { unknown: this.unknown, ascending: this.ascending });
+		let newPoly = new xPolynomial([1], { variable: this.variable, ascending: this.ascending });
 		for (let i = 0; i < n; i++) {
 			newPoly = newPoly.times(this);
 		}
@@ -144,8 +144,8 @@ export class xPolynomial extends Expression {
 	 * @param x if string, replaces the unknown
 	 */
 	replaceXWith(x: string | Polynomial): xPolynomial {
-		const xPoly = typeof x === 'string' ? new xPolynomial([1, 0], { unknown: x }) : toXPolynomial(x);
-		let poly = new xPolynomial([0], { ascending: this.ascending, unknown: this.unknown });
+		const xPoly = typeof x === 'string' ? new xPolynomial([1, 0], { variable: x }) : toXPolynomial(x);
+		let poly = new xPolynomial([0], { ascending: this.ascending, variable: this.variable });
 		this.coeffs.forEach((coeff, i) => {
 			poly = poly.plus(xPoly.pow(i).times(coeff));
 		});
@@ -186,7 +186,7 @@ export class xPolynomial extends Expression {
 			return new xPolynomial([0]);
 		}
 		const newCoeffs = this.coeffs.map((coeff, i) => coeff.times(i)).slice(1);
-		const newPoly = new xPolynomial(newCoeffs, { ascending: true, unknown: this.unknown });
+		const newPoly = new xPolynomial(newCoeffs, { ascending: true, variable: this.variable });
 		return this.ascending ? newPoly : newPoly.changeAscending();
 	}
 
@@ -199,7 +199,7 @@ export class xPolynomial extends Expression {
 	//		return new xPolynomial([0]);
 	//	}
 	//	const newCoeffs = [0, ...this.coeffs.map((coeff, i) => coeff.divide(i + 1))];
-	//	const newPoly = new Polynomial(newCoeffs, { ascending: true, unknown: this.unknown });
+	//	const newPoly = new Polynomial(newCoeffs, { ascending: true, variable: this.variable });
 	//	const { x1, y1 } = {
 	//		...options,
 	//	};
@@ -213,7 +213,7 @@ export class xPolynomial extends Expression {
 
 	/** checks if two polynomials are equal: i.e., coefficient array is the same and same unknown */
 	isEqualTo(poly2: xPolynomial): boolean {
-		if (this.unknown === poly2.unknown) {
+		if (this.variable === poly2.variable) {
 			if (this.coeffs.length === poly2.coeffs.length) {
 				let valid = true;
 				this.coeffs.forEach((coeff, i) => {
@@ -234,7 +234,7 @@ export class xPolynomial extends Expression {
 			// coeffs in ascending by default
 			coeffs.reverse();
 		}
-		return new xPolynomial(coeffs, { ascending: this.ascending, degree: this.degree, unknown: this.unknown });
+		return new xPolynomial(coeffs, { ascending: this.ascending, degree: this.degree, variable: this.variable });
 	}
 
 	//	/**
@@ -266,13 +266,13 @@ function toXPolynomial(p2: number | Fraction | string | Polynomial | xPolynomial
 		return p2;
 	}
 	if (p2 instanceof Polynomial) {
-		const newXPoly = new xPolynomial(p2.coeffs, { ascending: true, unknown: p2.unknown });
+		const newXPoly = new xPolynomial(p2.coeffs, { ascending: true, variable: p2.variable });
 		return p2.ascending ? newXPoly : newXPoly.changeAscending();
 	}
 	return new xPolynomial([p2]);
 }
 
-function toExpression(x: number | Fraction | string | Expression | Unknown) {
+function toExpression(x: number | Fraction | string | Expression | VariableExponent) {
 	if (x instanceof Expression) {
 		return x;
 	}

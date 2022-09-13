@@ -5,7 +5,7 @@ import { numberToNthRoot } from '../utils/numberToNthRoot';
 import { numberToSquareRoot } from '../utils/numberToSquareRoot';
 
 /**
- * the NthRoot class extends the `xTerm` class
+ * the NthRoot class
  * `${coeff: Fraction, n: positive integer, radicand: non-negative fraction}`
  * representing $a \sqrt[n]{b}$ where $a$ is the coefficient and $b$ is the radicand.
  *
@@ -53,13 +53,13 @@ export class NthRoot extends BasicTerm {
 		// edge cases for typesetting
 		if (this.radicand.valueOf() === 0) {
 			this.coeff = new Fraction(0);
-			this.variable = '';
+			this.variableString = '';
 		} else if (this.radicand.valueOf() === 1) {
-			this.variable = '';
+			this.variableString = '';
 		}
 		if (this.coeff.isEqualTo(0)) {
 			this.radicand = Fraction.ZERO;
-			this.variable = '';
+			this.variableString = '';
 		}
 	}
 
@@ -185,7 +185,7 @@ export class SquareRoot extends NthRoot {
 		super(2, radicand, coeff);
 		// edge cases for typesetting
 		if (radicand !== 0 && radicand !== 1) {
-			this.variable = `\\sqrt{${this.radicand}}`;
+			this.variableString = `\\sqrt{${this.radicand}}`;
 		}
 	}
 

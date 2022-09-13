@@ -7,7 +7,7 @@ import {
 	gcd,
 	xVector,
 	uVector,
-	Unknown,
+	VariableExponent,
 	Term,
 	expToPoly,
 	solveQuadratic,
@@ -136,8 +136,12 @@ function qn09(variables?: {
 function qn10(variables?: { a?: Vector; b?: Vector }): [xVector, SquareRoot] {
 	let { a, b } = { a: new Vector(2, 3, 6), b: new Vector(1, -2, 2) };
 	// construction
-	const unknown = 'p';
-	const pA = new xVector(new Unknown(a.x, { unknown }), new Unknown(a.y, { unknown }), new Unknown(a.z, { unknown }));
+	const variable = 'p';
+	const pA = new xVector(
+		new VariableExponent(a.x, { variable }),
+		new VariableExponent(a.y, { variable }),
+		new VariableExponent(a.z, { variable }),
+	);
 	const p = b.magnitude().divide(a.magnitude());
 
 	return [pA, p];
@@ -198,8 +202,8 @@ function qn15(variables?: {
 	// question
 	const f1 = new Fraction(l1, l1 + m1);
 	const f2 = new Fraction(l2, l2 + m2);
-	const f1A = new uxVector('a', new Unknown(f1, { unknown: '\\lambda' }));
-	const f2B = new uxVector('b', new Unknown(f2, { unknown: '\\mu' }));
+	const f1A = new uxVector('a', new VariableExponent(f1, { variable: '\\lambda' }));
+	const f2B = new uxVector('b', new VariableExponent(f2, { variable: '\\mu' }));
 	const bcVec = `\\mathbf{r} = ${f1A} + (1-\\lambda) \\mathbf{b}`;
 	const adVec = `\\mathbf{r} = (1-\\mu) \\mathbf{a} + ${f2B}`;
 
@@ -224,7 +228,7 @@ function qn16(variables?: { u?: Vector }): [xVector, xVector] {
 
 	// answer
 	const vector = v.plus(u).cross(v.negative().plus(u));
-	const v2 = new xVector('a', 0, new Unknown(-1, { unknown: 'a' }));
+	const v2 = new xVector('a', 0, new VariableExponent(-1, { variable: 'a' }));
 	const vector2 = v2.plus(u).cross(v2.negative().plus(u));
 	// typeset
 	return [vector, vector2];

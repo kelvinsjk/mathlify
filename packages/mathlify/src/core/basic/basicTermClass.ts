@@ -3,6 +3,8 @@ import { numberToFraction } from '../utils/numberToFraction';
 
 /**
  * Basic Term class `{coeff: Fraction, variable: string }`
+ * handles edge cases in typesetting:
+ * 0x = 0, 1x = x, -1x = -x, \pm 1 = \pm 1
  */
 export class BasicTerm {
 	/** Coefficient of the term */
@@ -12,7 +14,7 @@ export class BasicTerm {
 	 *
 	 * An empty string here will represent the "constant term"
 	 */
-	variable: string;
+	variableString: string;
 
 	/**
 	 * Creates a new term instance
@@ -23,7 +25,7 @@ export class BasicTerm {
 	constructor(coeff: Fraction | number, variable = '') {
 		coeff = numberToFraction(coeff);
 		this.coeff = coeff;
-		this.variable = variable;
+		this.variableString = variable;
 	}
 
 	/**
@@ -36,17 +38,17 @@ export class BasicTerm {
 			return '0';
 		}
 		if (this.coeff.isEqualTo(1)) {
-			return this.variable === '' ? '1' : `${this.variable}`;
+			return this.variableString === '' ? '1' : `${this.variableString}`;
 		}
 		if (this.coeff.isEqualTo(-1)) {
-			return this.variable === '' ? '- 1' : `- ${this.variable}`;
+			return this.variableString === '' ? '- 1' : `- ${this.variableString}`;
 		}
 		// non 0/1/-1 coefficient
-		if (this.variable === '') {
+		if (this.variableString === '') {
 			// constant term
 			return `${this.coeff}`;
 		}
 		// variable term and non 0/1/-1 coefficient
-		return `${this.coeff} ${this.variable}`;
+		return `${this.coeff} ${this.variableString}`;
 	}
 }

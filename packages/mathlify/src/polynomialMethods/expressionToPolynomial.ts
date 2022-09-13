@@ -1,4 +1,4 @@
-import { Unknown, Expression, Polynomial } from '../core/index';
+import { VariableExponent, Expression, Polynomial } from '../core/index';
 import { createZeroArray } from '../core/algebra/polynomialClass';
 
 /**
@@ -14,7 +14,7 @@ export function expToPoly(exp: Expression, options?: { n?: number; ascending?: b
 		...options,
 	};
 	const coeffs = createZeroArray(n + 1);
-	let unknown: string | undefined = undefined;
+	let variable: string | undefined = undefined;
 	exp.terms.forEach((term) => {
 		// constant term
 		if (term.basicUnits.length === 0) {
@@ -26,15 +26,15 @@ export function expToPoly(exp: Expression, options?: { n?: number; ascending?: b
 			throw new Error(`cannot convert term with more than one basic unit ${term}`);
 		}
 		const unit = term.basicUnits[0];
-		if (!(unit instanceof Unknown)) {
+		if (!(unit instanceof VariableExponent)) {
 			throw new Error(`cannot convert term with non-unknown basic unit ${term}`);
 		}
 		// checks if more than one unknown
-		if (unknown === undefined) {
-			unknown = unit.unknown;
+		if (variable === undefined) {
+			variable = unit.variable;
 		} else {
-			if (unknown !== unit.unknown) {
-				throw new Error(`cannot convert term with multiple unknowns ${unit}, ${unknown}`);
+			if (variable !== unit.variable) {
+				throw new Error(`cannot convert term with multiple unknowns ${unit}, ${variable}`);
 			}
 		}
 		// checks validity of degree
@@ -47,5 +47,5 @@ export function expToPoly(exp: Expression, options?: { n?: number; ascending?: b
 	if (!ascending) {
 		coeffs.reverse();
 	}
-	return new Polynomial(coeffs, { ascending, degree: n, unknown: unknown ?? 'x' });
+	return new Polynomial(coeffs, { ascending, degree: n, variable: variable ?? 'x' });
 }

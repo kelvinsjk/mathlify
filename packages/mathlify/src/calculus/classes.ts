@@ -27,9 +27,9 @@ export class PowerFn {
 			...options,
 		};
 		if (typeof fx === 'string') {
-			fx = new Polynomial([1, 0], { unknown: fx });
+			fx = new Polynomial([1, 0], { variable: fx });
 		} else if (fx instanceof Unknown) {
-			fx = new Polynomial([fx.coeff, 0], { unknown: fx.unknown });
+			fx = new Polynomial([fx.coeff, 0], { variable: fx.variable });
 		}
 		this.fx = fx;
 		this.coeff = numberToFraction(coeff);
@@ -99,9 +99,9 @@ export class SinFn {
 			...options,
 		};
 		if (typeof fx === 'string') {
-			fx = new Polynomial([1, 0], { unknown: fx });
+			fx = new Polynomial([1, 0], { variable: fx });
 		} else if (fx instanceof Unknown) {
-			fx = new Polynomial([fx.coeff, 0], { unknown: fx.unknown });
+			fx = new Polynomial([fx.coeff, 0], { variable: fx.variable });
 		}
 		this.fx = fx;
 		this.coeff = numberToFraction(coeff);
@@ -152,9 +152,9 @@ export class CosFn {
 			...options,
 		};
 		if (typeof fx === 'string') {
-			fx = new Polynomial([1, 0], { unknown: fx });
+			fx = new Polynomial([1, 0], { variable: fx });
 		} else if (fx instanceof Unknown) {
-			fx = new Polynomial([fx.coeff, 0], { unknown: fx.unknown });
+			fx = new Polynomial([fx.coeff, 0], { variable: fx.variable });
 		}
 		this.fx = fx;
 		this.coeff = numberToFraction(coeff);

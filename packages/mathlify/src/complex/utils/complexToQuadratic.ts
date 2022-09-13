@@ -6,5 +6,5 @@ export function complexToQuadratic(z: Complex, options?: { unknown?: string }): 
 		unknown: 'z',
 		...options,
 	};
-	return new Polynomial([1, z.real.times(-2), z.rSquared()], { unknown });
+	return new Polynomial([1, z.real.times(-2), z.rSquared()], { variable: unknown });
 }

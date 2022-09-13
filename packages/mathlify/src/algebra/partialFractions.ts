@@ -24,7 +24,7 @@ export function partialFractions(
 			throw new Error(`only linear or quadratic denominators are supported. ${denominators} received.`);
 		}
 	}
-	unknown = denominators[0].unknown;
+	unknown = denominators[0].variable;
 	// make numerators Array
 	const { numerators: numeratorsProvided } = {
 		numerators: 1,
@@ -54,9 +54,9 @@ export function partialFractions(
 
 function toPolynomial(x: number | Fraction | Polynomial, unknown = 'x') {
 	if (typeof x === 'number') {
-		x = new Polynomial([x], { unknown });
+		x = new Polynomial([x], { variable: unknown });
 	} else if (x instanceof Fraction) {
-		x = new Polynomial([x.den, -x.num], { unknown });
+		x = new Polynomial([x.den, -x.num], { variable: unknown });
 	}
 	return x;
 }

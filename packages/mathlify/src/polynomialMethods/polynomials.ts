@@ -13,7 +13,7 @@ export function simplifyPoly(poly: Polynomial): Polynomial {
 	if (!poly.ascending) {
 		coeffs.reverse();
 	}
-	return new Polynomial(coeffs, { ascending: poly.ascending, unknown: poly.unknown });
+	return new Polynomial(coeffs, { ascending: poly.ascending, variable: poly.variable });
 }
 
 /**
@@ -26,8 +26,8 @@ export function factorizeQuadratic(poly: Polynomial): [Polynomial, Polynomial, [
 	if (typeof root1 === 'number' || typeof root2 === 'number') {
 		throw new Error('irrational roots');
 	}
-	const factor1 = new Polynomial([root1.den, -root1.num], { unknown: poly.unknown });
-	const factor2 = new Polynomial([root2.den, -root2.num], { unknown: poly.unknown });
+	const factor1 = new Polynomial([root1.den, -root1.num], { variable: poly.variable });
+	const factor2 = new Polynomial([root2.den, -root2.num], { variable: poly.variable });
 	return [factor1, factor2, [root1, root2]];
 }
 
@@ -41,7 +41,7 @@ export function factorizeCubic(poly: Polynomial, root: number | Fraction): [Poly
 		throw new Error(`root provided is not correct`);
 	}
 	root = numberToFraction(root);
-	const factor1 = new Polynomial([root.den, -root.num], { unknown: poly.unknown });
+	const factor1 = new Polynomial([root.den, -root.num], { variable: poly.variable });
 	// ax^3 + bx^2 + cx + d = (ex+f)(Ax^2+Bx+C);
 	// comparing coefficients
 	const [d, c, b, a] = poly.coeffs;
@@ -56,7 +56,7 @@ export function factorizeCubic(poly: Polynomial, root: number | Fraction): [Poly
 	if (!c.isEqualTo(B.times(f).plus(C.times(e)))) {
 		throw new Error(`Error encountered in comparing coefficients: check code`);
 	}
-	const quadratic = new Polynomial([A, B, C], { unknown: poly.unknown });
+	const quadratic = new Polynomial([A, B, C], { variable: poly.variable });
 	const [root2, root3] = solveQuadratic(quadratic);
 	// see if can factorize further
 	if (root2 instanceof Fraction && root3 instanceof Fraction) {
@@ -123,8 +123,11 @@ export function solveQuadraticSurd(poly: Polynomial): [Expression, Expression] {
 	}
 	const sqrt = new SquareRoot(discriminant);
 	const surd = sqrt.divide(a.times(2));
-	const root2 = new Expression(b.negative().divide(a.times(2)), new Term(surd.coeff, `${surd.variable}`));
-	const root1 = new Expression(b.negative().divide(a.times(2)), new Term(surd.coeff.negative(), `${surd.variable}`));
+	const root2 = new Expression(b.negative().divide(a.times(2)), new Term(surd.coeff, `${surd.variableString}`));
+	const root1 = new Expression(
+		b.negative().divide(a.times(2)),
+		new Term(surd.coeff.negative(), `${surd.variableString}`),
+	);
 	return [root1, root2];
 }
 
@@ -140,9 +143,9 @@ export function solveLinear(poly: Polynomial): Fraction {
  */
 export function shiftPoly(poly: Polynomial, a: number | Fraction): Polynomial {
 	const xPlusA = poly.ascending
-		? new Polynomial([a, 1], { unknown: poly.unknown, ascending: true })
-		: new Polynomial([1, a], { unknown: poly.unknown });
-	const zero = new Polynomial([0], { unknown: poly.unknown, ascending: poly.ascending });
+		? new Polynomial([a, 1], { variable: poly.variable, ascending: true })
+		: new Polynomial([1, a], { variable: poly.variable });
+	const zero = new Polynomial([0], { variable: poly.variable, ascending: poly.ascending });
 	return poly.coeffs.reduce((prev, curr, i) => {
 		if (i === 0) {
 			return prev.plus(curr);
@@ -161,7 +164,7 @@ export function completeSquare(poly: Polynomial): string {
 	}
 	const [c, b, a] = poly.coeffs;
 	const bOver2A = b.divide(a.times(2));
-	const perfectSquare = new Polynomial([1, bOver2A], { unknown: poly.unknown });
+	const perfectSquare = new Polynomial([1, bOver2A], { variable: poly.variable });
 	const bracketed = bOver2A.isEqualTo(0) ? `${perfectSquare}^2` : `\\left( ${perfectSquare} \\right)^2`;
 	const turningPt = c.minus(b.square().divide(4).divide(a));
 	const start = a.isEqualTo(1) ? `${bracketed}` : a.isEqualTo(-1) ? `- ${bracketed}` : `${a} ${bracketed}`;
