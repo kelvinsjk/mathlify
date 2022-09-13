@@ -1,4 +1,4 @@
-import { Fraction, Imaginary, Expression, numberToFraction, SquareRoot, Term, Unknown } from '../core';
+import { Fraction, Imaginary, Expression, numberToFraction, SquareRoot, Term, VariableExponent } from '../core';
 import { Complex } from './complexClass';
 
 /**
@@ -15,8 +15,8 @@ export class xComplex extends Expression {
 	 * Creates a new Complex instance
 	 */
 	constructor(
-		real: number | Fraction | string | Imaginary | Unknown | SquareRoot | Term | Expression,
-		imag: number | Fraction | string | Imaginary | Unknown | SquareRoot | Term | Expression = 0,
+		real: number | Fraction | string | Imaginary | VariableExponent | SquareRoot | Term | Expression,
+		imag: number | Fraction | string | Imaginary | VariableExponent | SquareRoot | Term | Expression = 0,
 	) {
 		real = real instanceof Expression ? real.clone() : new Expression(real);
 		imag = imag instanceof Expression ? imag.clone() : new Expression(imag);
