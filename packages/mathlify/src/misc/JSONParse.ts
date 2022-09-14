@@ -1,4 +1,4 @@
-import { Fraction, Term, Expression, VariableExponent, SquareRoot, Imaginary, Polynomial } from '../core/index';
+import { Fraction, Term, Expression, VariableTerm, SquareRoot, Imaginary, Polynomial } from '../core/index';
 import { Vector } from '../vectors/index';
 //import { Polynomial } from '../classes/algebra/index';
 
@@ -46,7 +46,7 @@ const classes = {
 	term: Term,
 	expression: Expression,
 	vector: Vector,
-	variable: VariableExponent,
+	variable: VariableTerm,
 	imaginary: Imaginary,
 	squareRoot: SquareRoot,
 	polynomial: Polynomial,

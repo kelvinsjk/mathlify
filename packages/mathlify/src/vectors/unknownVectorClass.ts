@@ -1,4 +1,4 @@
-import { Fraction, VariableExponent, BasicTerm, Term, Expression } from '../core/index';
+import { Fraction, VariableTerm, BasicTerm, Term, Expression } from '../core/index';
 
 /**
  * An unknown vector represented by k a
@@ -144,13 +144,13 @@ export class uxVector {
 	 * @param coeff the k in k a
 	 * @param vector the a in k a
 	 */
-	constructor(vector: string, coeff: Fraction | number | string | VariableExponent | Term = 1) {
+	constructor(vector: string, coeff: Fraction | number | string | VariableTerm | Term = 1) {
 		// bold face if not already
 		vector = vector.slice(0, 7) === '\\mathbf' ? vector : `\\mathbf{${vector}}`;
 		if (coeff instanceof Term) {
 			this.coeff = coeff.clone();
 		} else {
-			this.coeff = coeff instanceof VariableExponent ? new Term(1, coeff) : new Term(coeff);
+			this.coeff = coeff instanceof VariableTerm ? new Term(1, coeff) : new Term(coeff);
 		}
 		this.vector = vector;
 	}

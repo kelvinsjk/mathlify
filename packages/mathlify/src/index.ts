@@ -2,7 +2,7 @@ export {
 	Fraction,
 	SquareRoot,
 	NthRoot,
-	VariableExponent,
+	VariableTerm,
 	Imaginary,
 	BasicTerm,
 	Term,

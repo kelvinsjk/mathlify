@@ -1,4 +1,4 @@
-import { Fraction, Polynomial, VariableExponent, numberToFraction, BasicTerm } from '../core/index';
+import { Fraction, Polynomial, VariableTerm, numberToFraction, BasicTerm } from '../core/index';
 
 /**
  * function representing k ( f(x) )^n
@@ -17,7 +17,7 @@ export class PowerFn {
 	constructor(
 		n: number | Fraction,
 		options?: {
-			fx?: string | VariableExponent | Polynomial | CosFn | SinFn;
+			fx?: string | VariableTerm | Polynomial | CosFn | SinFn;
 			coeff?: number | Fraction;
 		},
 	) {
@@ -28,7 +28,7 @@ export class PowerFn {
 		};
 		if (typeof fx === 'string') {
 			fx = new Polynomial([1, 0], { variable: fx });
-		} else if (fx instanceof VariableExponent) {
+		} else if (fx instanceof VariableTerm) {
 			fx = new Polynomial([fx.coeff, 0], { variable: fx.variable });
 		}
 		this.fx = fx;
@@ -92,7 +92,7 @@ export class SinFn {
 	 * Creates a new SinFn class
 	 * @param options defaults to `{ fx: "x", coeff: 1 }`
 	 */
-	constructor(options?: { fx?: string | VariableExponent | Polynomial; coeff?: number | Fraction }) {
+	constructor(options?: { fx?: string | VariableTerm | Polynomial; coeff?: number | Fraction }) {
 		let { fx, coeff } = {
 			fx: 'x',
 			coeff: 1,
@@ -100,7 +100,7 @@ export class SinFn {
 		};
 		if (typeof fx === 'string') {
 			fx = new Polynomial([1, 0], { variable: fx });
-		} else if (fx instanceof VariableExponent) {
+		} else if (fx instanceof VariableTerm) {
 			fx = new Polynomial([fx.coeff, 0], { variable: fx.variable });
 		}
 		this.fx = fx;
@@ -145,7 +145,7 @@ export class CosFn {
 	 * Creates a new CosFn class
 	 * @param options defaults to `{ fx: "x", coeff: 1 }`
 	 */
-	constructor(options?: { fx?: string | VariableExponent | Polynomial; coeff?: number | Fraction }) {
+	constructor(options?: { fx?: string | VariableTerm | Polynomial; coeff?: number | Fraction }) {
 		let { fx, coeff } = {
 			fx: 'x',
 			coeff: 1,
@@ -153,7 +153,7 @@ export class CosFn {
 		};
 		if (typeof fx === 'string') {
 			fx = new Polynomial([1, 0], { variable: fx });
-		} else if (fx instanceof VariableExponent) {
+		} else if (fx instanceof VariableTerm) {
 			fx = new Polynomial([fx.coeff, 0], { variable: fx.variable });
 		}
 		this.fx = fx;

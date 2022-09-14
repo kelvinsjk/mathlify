@@ -5,7 +5,7 @@ import { BasicTerm } from './basicTermClass';
 /**
  * `Unknown` class representing "k x^n"
  */
-export class VariableExponent extends BasicTerm {
+export class VariableTerm extends BasicTerm {
 	/** variable string (before taking powers) */
 	variable: string;
 	/** degree of the polynomial term: must be a non-negative integer */
@@ -46,37 +46,37 @@ export class VariableExponent extends BasicTerm {
 	/**
 	 * Multiplication
 	 */
-	times(k: number | Fraction | VariableExponent): VariableExponent {
-		if (k instanceof VariableExponent) {
+	times(k: number | Fraction | VariableTerm): VariableTerm {
+		if (k instanceof VariableTerm) {
 			if (k.variable !== this.variable) {
 				throw new Error('Cannot multiply two power terms with different unknowns');
 			}
-			return new VariableExponent(this.coeff.times(k.coeff), { variable: this.variable, n: this.n.plus(k.n) });
+			return new VariableTerm(this.coeff.times(k.coeff), { variable: this.variable, n: this.n.plus(k.n) });
 		}
-		return new VariableExponent(this.coeff.times(k), { variable: this.variable, n: this.n });
+		return new VariableTerm(this.coeff.times(k), { variable: this.variable, n: this.n });
 	}
 	/**
 	 * Division
 	 */
-	divide(k: number | Fraction | VariableExponent): VariableExponent {
-		if (k instanceof VariableExponent) {
+	divide(k: number | Fraction | VariableTerm): VariableTerm {
+		if (k instanceof VariableTerm) {
 			if (k.variable !== this.variable) {
 				throw new Error('Cannot multiply two power terms with different unknowns');
 			}
-			return new VariableExponent(this.coeff.divide(k.coeff), { variable: this.variable, n: this.n.minus(k.n) });
+			return new VariableTerm(this.coeff.divide(k.coeff), { variable: this.variable, n: this.n.minus(k.n) });
 		}
-		return new VariableExponent(this.coeff.divide(k), { variable: this.variable, n: this.n });
+		return new VariableTerm(this.coeff.divide(k), { variable: this.variable, n: this.n });
 	}
 
 	/**
 	 * @returns the negative of this `Term`. Equivalent to `term.multiply(-1)`.
 	 */
-	negative(): VariableExponent {
+	negative(): VariableTerm {
 		return this.times(-1);
 	}
 
-	pow(n: number): VariableExponent {
-		return new VariableExponent(this.coeff.pow(n), { variable: this.variable, n: this.n.times(n) });
+	pow(n: number): VariableTerm {
+		return new VariableTerm(this.coeff.pow(n), { variable: this.variable, n: this.n.times(n) });
 	}
 
 	/**
@@ -100,11 +100,11 @@ export class VariableExponent extends BasicTerm {
 	}
 
 	/** clones and creates a new instance */
-	clone(): VariableExponent {
-		return new VariableExponent(this.coeff.clone(), { variable: this.variable, n: this.n });
+	clone(): VariableTerm {
+		return new VariableTerm(this.coeff.clone(), { variable: this.variable, n: this.n });
 	}
 
-	toJSON(): VariableExponentJSON {
+	toJSON(): VariableTermJSON {
 		return {
 			type: 'variable',
 			args: [this.coeff.toJSON(), { variable: this.variable, n: this.n.toJSON() }],
@@ -112,7 +112,7 @@ export class VariableExponent extends BasicTerm {
 	}
 }
 
-export interface VariableExponentJSON {
-	type: string;
+export interface VariableTermJSON {
+	type: 'variable';
 	args: [FractionJSON, { variable: string; n: FractionJSON }];
 }

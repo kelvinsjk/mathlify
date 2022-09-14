@@ -1,11 +1,11 @@
 import { Fraction, FractionJSON } from '../fractionClass';
 import {
 	SquareRoot,
-	VariableExponent,
+	VariableTerm,
 	BasicTerm,
 	Imaginary,
 	SquareRootJSON,
-	VariableExponentJSON,
+	VariableTermJSON,
 	ImaginaryJSON,
 } from '../basic';
 import { numberToFraction } from '../utils/numberToFraction';
@@ -17,12 +17,12 @@ import { Expression } from './expressionClass';
  */
 
 export class Term extends BasicTerm {
-	/** array of basic units (sqrt, variableExponents, imaginary unit) */
-	basicUnits: (SquareRoot | VariableExponent | Imaginary)[];
+	/** array of basic units (sqrt, variableTerms, imaginary unit) */
+	basicUnits: (SquareRoot | VariableTerm | Imaginary)[];
 
-	constructor(...basicUnits: (number | Fraction | string | SquareRoot | VariableExponent | Imaginary)[]) {
+	constructor(...basicUnits: (number | Fraction | string | SquareRoot | VariableTerm | Imaginary)[]) {
 		let coeff = new Fraction(1);
-		let simplifiedBasicUnits: (SquareRoot | VariableExponent)[] = [];
+		let simplifiedBasicUnits: (SquareRoot | VariableTerm)[] = [];
 		const variables: string[] = [];
 		const variablePositions: { [key: string]: number } = {};
 		let surd: SquareRoot | undefined = undefined;
@@ -34,7 +34,7 @@ export class Term extends BasicTerm {
 					coeff = coeff.times(unit);
 				}
 				if (typeof unit === 'string') {
-					unit = unit === 'i' ? new Imaginary() : new VariableExponent(1, { variable: unit });
+					unit = unit === 'i' ? new Imaginary() : new VariableTerm(1, { variable: unit });
 				}
 				if (unit instanceof SquareRoot) {
 					coeff = coeff.times(unit.coeff);
@@ -61,16 +61,16 @@ export class Term extends BasicTerm {
 						imaginary = undefined;
 					}
 				}
-				if (unit instanceof VariableExponent) {
+				if (unit instanceof VariableTerm) {
 					coeff = coeff.times(unit.coeff);
 					if (variables.includes(unit.variable)) {
-						simplifiedBasicUnits[variablePositions[unit.variable]] = new VariableExponent(1, {
+						simplifiedBasicUnits[variablePositions[unit.variable]] = new VariableTerm(1, {
 							variable: unit.variable,
 							n: unit.n,
-						}).times(<VariableExponent>simplifiedBasicUnits[variablePositions[unit.variable]]);
+						}).times(<VariableTerm>simplifiedBasicUnits[variablePositions[unit.variable]]);
 					} else {
 						variables.push(unit.variable);
-						simplifiedBasicUnits.push(new VariableExponent(1, { variable: unit.variable, n: unit.n }));
+						simplifiedBasicUnits.push(new VariableTerm(1, { variable: unit.variable, n: unit.n }));
 						variablePositions[unit.variable] = simplifiedBasicUnits.length - 1;
 					}
 				}
@@ -98,7 +98,7 @@ export class Term extends BasicTerm {
 	/**
 	 * Multiplication
 	 */
-	times(x: number | Fraction | string | VariableExponent | SquareRoot | Imaginary | Term): Term {
+	times(x: number | Fraction | string | VariableTerm | SquareRoot | Imaginary | Term): Term {
 		if (typeof x === 'number') {
 			x = numberToFraction(x);
 		}
@@ -106,9 +106,9 @@ export class Term extends BasicTerm {
 			return new Term(this.coeff.times(x), ...this.basicUnits);
 		}
 		if (typeof x === 'string') {
-			x = x === 'i' ? new Imaginary() : new VariableExponent(1, { variable: x });
+			x = x === 'i' ? new Imaginary() : new VariableTerm(1, { variable: x });
 		}
-		if (x instanceof VariableExponent || x instanceof SquareRoot || x instanceof Imaginary) {
+		if (x instanceof VariableTerm || x instanceof SquareRoot || x instanceof Imaginary) {
 			return new Term(this.coeff, ...this.basicUnits, x);
 		}
 		return new Term(this.coeff.times(x.coeff), ...this.basicUnits, ...x.basicUnits);
@@ -118,14 +118,14 @@ export class Term extends BasicTerm {
 		return new Term(this.coeff.negative(), ...this.basicUnits);
 	}
 
-	plus(x: number | Fraction | string | VariableExponent | SquareRoot | Imaginary | Term): Term | Expression {
+	plus(x: number | Fraction | string | VariableTerm | SquareRoot | Imaginary | Term): Term | Expression {
 		if (x instanceof Term && x.variableString === this.variableString) {
 			return new Term(this.coeff.plus(x.coeff), ...this.basicUnits);
 		}
 		return new Expression(this, x);
 	}
 
-	minus(x: number | Fraction | string | VariableExponent | SquareRoot | Imaginary | Term): Term | Expression {
+	minus(x: number | Fraction | string | VariableTerm | SquareRoot | Imaginary | Term): Term | Expression {
 		if (typeof x === 'number') {
 			x = new Fraction(x);
 		}
@@ -136,7 +136,7 @@ export class Term extends BasicTerm {
 	}
 
 	pow(n: number): Term {
-		const basicUnits = <(SquareRoot | VariableExponent)[]>this.basicUnits.filter((t) => !(t instanceof Imaginary));
+		const basicUnits = <(SquareRoot | VariableTerm)[]>this.basicUnits.filter((t) => !(t instanceof Imaginary));
 		const imag = this.basicUnits.find((t) => t instanceof Imaginary);
 		const imagPow = imag === undefined ? undefined : imag.pow(n);
 		if (imagPow === undefined) {
@@ -150,7 +150,7 @@ export class Term extends BasicTerm {
 	subIn(x: number | Fraction): Fraction {
 		let frac = this.coeff.clone();
 		for (const unit of this.basicUnits) {
-			if (!(unit instanceof VariableExponent)) {
+			if (!(unit instanceof VariableTerm)) {
 				throw new Error(`subIn only valid for Unknowns at the moment ${unit}`);
 			}
 			frac = frac.times(unit.subIn(x));
@@ -161,7 +161,7 @@ export class Term extends BasicTerm {
 	subInNumber(x: number): number {
 		let frac = this.coeff.valueOf();
 		for (const unit of this.basicUnits) {
-			if (!(unit instanceof VariableExponent)) {
+			if (!(unit instanceof VariableTerm)) {
 				throw new Error(`subIn only valid for Unknowns at the moment ${unit}`);
 			}
 			frac = frac * unit.subInNumber(x);
@@ -181,7 +181,7 @@ export class Term extends BasicTerm {
 	 * toJSON method that allows for quick reconstruction of class instance
 	 * by storing its constructor arguments
 	 */
-	toJSON(): { type: string; args: [FractionJSON, ...(SquareRootJSON | VariableExponentJSON | ImaginaryJSON)[]] } {
+	toJSON(): { type: string; args: [FractionJSON, ...(SquareRootJSON | VariableTermJSON | ImaginaryJSON)[]] } {
 		return {
 			type: 'term',
 			args: [this.coeff.toJSON(), ...this.basicUnits.map((x) => x.toJSON())],

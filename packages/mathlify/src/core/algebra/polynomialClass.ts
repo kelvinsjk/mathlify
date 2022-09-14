@@ -1,5 +1,5 @@
 import { Expression } from './expressionClass';
-import { VariableExponent } from '../basic/variableExponentClass';
+import { VariableTerm } from '../basic/variableTermClass';
 import { Fraction } from '../fractionClass';
 import { numberToFraction } from '../utils/numberToFraction';
 
@@ -54,7 +54,7 @@ export class Polynomial extends Expression {
 		}
 		// generate variable terms
 		const polynomialTerms = coeffsFrac.map((coeff, n) => {
-			return new VariableExponent(coeff, { variable, n });
+			return new VariableTerm(coeff, { variable, n });
 		});
 		// descending order typesetting if necessary;
 		if (!ascending) {

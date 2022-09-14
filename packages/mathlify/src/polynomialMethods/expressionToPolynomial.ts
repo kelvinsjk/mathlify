@@ -1,4 +1,4 @@
-import { VariableExponent, Expression, Polynomial } from '../core/index';
+import { VariableTerm, Expression, Polynomial } from '../core/index';
 import { createZeroArray } from '../core/algebra/polynomialClass';
 
 /**
@@ -26,7 +26,7 @@ export function expToPoly(exp: Expression, options?: { n?: number; ascending?: b
 			throw new Error(`cannot convert term with more than one basic unit ${term}`);
 		}
 		const unit = term.basicUnits[0];
-		if (!(unit instanceof VariableExponent)) {
+		if (!(unit instanceof VariableTerm)) {
 			throw new Error(`cannot convert term with non-unknown basic unit ${term}`);
 		}
 		// checks if more than one unknown

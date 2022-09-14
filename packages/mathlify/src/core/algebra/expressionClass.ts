@@ -1,6 +1,6 @@
 import { Term } from './termClass';
 import { Fraction } from '../fractionClass';
-import { VariableExponent, SquareRoot, Imaginary } from '../basic';
+import { VariableTerm, SquareRoot, Imaginary } from '../basic';
 
 /**
  * Expression class representing the sum of `Terms`
@@ -15,7 +15,7 @@ export class Expression {
 	 * `number` and `Fraction` types will be transformed into constant terms,
 	 *  while `string` type will be transformed into a term with coefficient 1
 	 */
-	constructor(...args: (Term | VariableExponent | Fraction | number | string | SquareRoot | Imaginary)[]) {
+	constructor(...args: (Term | VariableTerm | Fraction | number | string | SquareRoot | Imaginary)[]) {
 		const terms = args.map((term) => {
 			if (term instanceof Term) {
 				return term.clone();
@@ -59,7 +59,7 @@ export class Expression {
 	/**
 	 * performs scalar multiplication on each term of this
 	 */
-	times(k: number | Fraction | string | VariableExponent | SquareRoot | Imaginary | Term | Expression): Expression {
+	times(k: number | Fraction | string | VariableTerm | SquareRoot | Imaginary | Term | Expression): Expression {
 		if (!(k instanceof Expression)) {
 			const terms = this.terms.map((term) => term.times(k));
 			return new Expression(...terms);
@@ -101,7 +101,7 @@ export class Expression {
 	 * @returns the sum
 	 */
 	plus(
-		newExpression: number | Fraction | string | VariableExponent | SquareRoot | Imaginary | Term | Expression,
+		newExpression: number | Fraction | string | VariableTerm | SquareRoot | Imaginary | Term | Expression,
 	): Expression {
 		return newExpression instanceof Expression
 			? new Expression(...this.terms, ...newExpression.terms)
@@ -114,7 +114,7 @@ export class Expression {
 	 * @returns the difference
 	 */
 	minus(
-		newExpression: number | Fraction | string | VariableExponent | SquareRoot | Imaginary | Term | Expression,
+		newExpression: number | Fraction | string | VariableTerm | SquareRoot | Imaginary | Term | Expression,
 	): Expression {
 		if (!(newExpression instanceof Expression)) {
 			newExpression = new Expression(newExpression);

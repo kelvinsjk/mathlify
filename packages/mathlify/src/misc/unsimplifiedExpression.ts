@@ -1,10 +1,10 @@
-import { Term, Fraction, VariableExponent, SquareRoot, Imaginary } from '../core';
+import { Term, Fraction, VariableTerm, SquareRoot, Imaginary } from '../core';
 
 /**
  * returns an unsimplified expression string
  */
 export function unsimplifiedExp(
-	...args: (Term | VariableExponent | Fraction | number | string | SquareRoot | Imaginary)[]
+	...args: (Term | VariableTerm | Fraction | number | string | SquareRoot | Imaginary)[]
 ): string {
 	if (args.length === 0) {
 		return '0';

@@ -7,7 +7,7 @@ import {
 	gcd,
 	xVector,
 	uVector,
-	VariableExponent,
+	VariableTerm,
 	Term,
 	expToPoly,
 	solveQuadratic,
@@ -138,9 +138,9 @@ function qn10(variables?: { a?: Vector; b?: Vector }): [xVector, SquareRoot] {
 	// construction
 	const variable = 'p';
 	const pA = new xVector(
-		new VariableExponent(a.x, { variable }),
-		new VariableExponent(a.y, { variable }),
-		new VariableExponent(a.z, { variable }),
+		new VariableTerm(a.x, { variable }),
+		new VariableTerm(a.y, { variable }),
+		new VariableTerm(a.z, { variable }),
 	);
 	const p = b.magnitude().divide(a.magnitude());
 
@@ -202,8 +202,8 @@ function qn15(variables?: {
 	// question
 	const f1 = new Fraction(l1, l1 + m1);
 	const f2 = new Fraction(l2, l2 + m2);
-	const f1A = new uxVector('a', new VariableExponent(f1, { variable: '\\lambda' }));
-	const f2B = new uxVector('b', new VariableExponent(f2, { variable: '\\mu' }));
+	const f1A = new uxVector('a', new VariableTerm(f1, { variable: '\\lambda' }));
+	const f2B = new uxVector('b', new VariableTerm(f2, { variable: '\\mu' }));
 	const bcVec = `\\mathbf{r} = ${f1A} + (1-\\lambda) \\mathbf{b}`;
 	const adVec = `\\mathbf{r} = (1-\\mu) \\mathbf{a} + ${f2B}`;
 
@@ -228,7 +228,7 @@ function qn16(variables?: { u?: Vector }): [xVector, xVector] {
 
 	// answer
 	const vector = v.plus(u).cross(v.negative().plus(u));
-	const v2 = new xVector('a', 0, new VariableExponent(-1, { variable: 'a' }));
+	const v2 = new xVector('a', 0, new VariableTerm(-1, { variable: 'a' }));
 	const vector2 = v2.plus(u).cross(v2.negative().plus(u));
 	// typeset
 	return [vector, vector2];
