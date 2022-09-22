@@ -1,3 +1,3 @@
-export { PowerFn, SinFn, CosFn } from './classes';
+export { PowerFn, SinFn, CosFn, LnFn, RationalFn } from './classes';
 export { Parametric } from './parametricClass';
-export { quotientRule } from './quotientRule';
+export { rationalToPowerFn } from './rationalToPower';
