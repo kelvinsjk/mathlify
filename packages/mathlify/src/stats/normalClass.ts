@@ -5,7 +5,10 @@ export class Normal {
 	 * class representing normally distributed random variable X ~ N(mu, sigma^2)
 	 */
 	mean: number;
+	sd: number;
 	variance: number;
+	sdMode: boolean;
+	name: string;
 
 	////
 	// constructor
@@ -15,58 +18,88 @@ export class Normal {
 	 *
 	 * @param mean population mean mu
 	 * @param variance population variance sigma^2
+	 * @param options default to {name: 'X', sdMode: false} where sdMode indicate sd instead of
+	 * variance is provided
 	 *
 	 */
-	constructor(mean: number, variance = 1) {
+	constructor(mean: number, variance = 1, options?: { name?: string; sdMode?: boolean }) {
+		const { name, sdMode } = {
+			name: 'X',
+			sdMode: false,
+			...options,
+		};
 		this.mean = mean;
 		if (variance < 0) {
 			throw new RangeError('variance must be non-negative');
 		}
-		this.variance = variance;
+		this.variance = sdMode ? variance * variance : variance;
+		this.sd = sdMode ? variance : Math.sqrt(variance);
+		this.sdMode = sdMode;
+		this.name = name;
 	}
 
 	/**
 	 * adds two independently distributed normal r.v.
 	 *
 	 */
-	plus(Y: number | Normal): Normal {
+	plus(Y: number | Normal, options?: { name?: string }): Normal {
 		if (typeof Y === 'number') {
 			Y = new Normal(Y, 0);
 		}
-		return new Normal(this.mean + Y.mean, this.variance + Y.variance);
+		const { name } = {
+			name: `${this.name}+${Y.name}`,
+			...options,
+		};
+		return new Normal(this.mean + Y.mean, this.variance + Y.variance, { name });
 	}
 	/**
 	 * multiplies by a scalar, nX ~ (n mu, n^2 sigma^2)
 	 *
 	 */
-	times(n: number): Normal {
-		return new Normal(this.mean * n, this.variance * n * n);
+	times(n: number, options?: { name?: string }): Normal {
+		const { name } = {
+			name: `${n}${this.name}`,
+			...options,
+		};
+		return new Normal(this.mean * n, this.variance * n * n, { name });
 	}
 	/**
 	 * divides by a scalar, 1/n X ~ (mu/n, sigma^2/n^2)
 	 *
 	 */
-	divide(n: number): Normal {
+	divide(n: number, options?: { name?: string }): Normal {
 		if (n === 0) {
 			throw new RangeError('cannot divide by 0');
 		}
-		return this.times(1 / n);
+		const { name } = {
+			name: `\\frac{1}{${n}} ${this.name}`,
+			...options,
+		};
+		return this.times(1 / n, { name });
 	}
 	/**
 	 * subtracts independently distributed normal r.v., this - Y
 	 *
 	 */
-	minus(Y: number | Normal): Normal {
+	minus(Y: number | Normal, options?: { name?: string }): Normal {
 		if (typeof Y === 'number') {
 			Y = new Normal(Y, 0);
 		}
-		return this.plus(Y.times(-1));
+		const { name } = {
+			name: `${this.name}-${Y.name}`,
+			...options,
+		};
+		return this.plus(Y.times(-1), { name });
 	}
 	/**
 	 * sum X1 + ... + Xn ~ N(n mu, n sigma^2)
 	 */
-	sum(n: number): Normal {
-		return new Normal(this.mean * n, this.variance * n);
+	sum(n: number, options?: { name?: string }): Normal {
+		const { name } = {
+			name: `${this.name}_1 + \\cdots + ${this.name}_{${n}}`,
+			...options,
+		};
+		return new Normal(this.mean * n, this.variance * n, { name });
 	}
 	/**
 	 * sample mean XBar ~ N (mu, sigma^2 / n)
@@ -116,7 +149,14 @@ export class Normal {
 	 *
 	 * @param name symbol representing the r.v. (default `X`)
 	 */
-	toString(name = 'X'): string {
-		return `${name} \\sim N( ${this.mean}, ${this.variance} )`;
+	toString(): string {
+		const mean = `${this.mean}`.length > 5 ? this.mean.toPrecision(5) : this.mean;
+		let variance: string | number;
+		if (this.sdMode) {
+			variance = `${this.sd}^2`;
+		} else {
+			variance = `${this.variance}`.length > 5 ? this.variance.toPrecision(5) : this.variance;
+		}
+		return `${this.name} \\sim N( ${mean},${variance} )`;
 	}
 }
