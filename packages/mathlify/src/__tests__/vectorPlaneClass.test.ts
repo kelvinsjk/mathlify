@@ -5,12 +5,12 @@ import { Fraction, Vector, Line, Plane, SquareRoot } from '../index';
 const vectorPlaneClass = suite('vector plane class');
 
 const l1 = new Line(new Vector(1, 2, -1), new Vector(1, -2));
-const p1 = new Plane(new Vector(1, 2, -1), { rhs: 3 });
-const p1x = new Plane(new Vector(2, 4, -2), { rhs: 6 });
-const p2 = new Plane(new Vector(1, 2, -1), { mode: 'ptN', v2: new Vector(3) });
-const p3 = new Plane(new Vector(1, 2, -1), { mode: 'ptDD', v2: new Vector(3), v3: new Vector(1, -2) });
-const p4 = new Plane(new Vector(1, 2, -1), { mode: 'ptPtD', v2: new Vector(3), v3: new Vector(1, -2) });
-const p5 = new Plane(new Vector(1, 2, -1), { mode: 'ptPtPt', v2: new Vector(3), v3: new Vector(1, -2) });
+const p1 = new Plane(new Vector(1, 2, -1), 3);
+const p1x = new Plane(new Vector(2, 4, -2), 6);
+const p2 = new Plane(new Vector(1, 2, -1), new Vector(3));
+const p3 = new Plane(new Vector(1, 2, -1), new Vector(3), new Vector(1, -2), { points: 1 });
+const p4 = new Plane(new Vector(1, 2, -1), new Vector(3), new Vector(1, -2), { points: 2 });
+const p5 = new Plane(new Vector(1, 2, -1), new Vector(3), new Vector(1, -2), { points: 3 });
 
 vectorPlaneClass('constructor and boolean checks', () => {
 	assert.throws(() => new Plane(new Vector(0)));
@@ -19,14 +19,14 @@ vectorPlaneClass('constructor and boolean checks', () => {
 	assert.is(p3.contains(l1), true);
 	assert.is(p1.contains(new Vector(0, 0, -3)), true);
 	assert.is(p3.isParallelTo(l1), true);
-	const p1Parallel = new Plane(new Vector(-2, -4, 2), { rhs: 6 });
+	const p1Parallel = new Plane(new Vector(-2, -4, 2), 6);
 	assert.is(p1.isParallelTo(p1Parallel), true);
 	assert.is(p1.isEqualTo(p1Parallel), false);
 	assert.is(p1.isEqualTo(p2), true);
 	assert.is(p1.isEqualTo(p1x), true);
 	assert.is(p1.isEqualTo(p3), false);
-	const yEqual2 = new Plane(Vector.J, { rhs: 2 });
-	const zEqual2 = new Plane(Vector.K, { rhs: 2 });
+	const yEqual2 = new Plane(Vector.J, 2);
+	const zEqual2 = new Plane(Vector.K, 2);
 	assert.is(yEqual2.point().isEqualTo(new Vector(0, 2)), true);
 	assert.is(zEqual2.point().isEqualTo(new Vector(0, 0, 2)), true);
 	assert.is(yEqual2.isEqualTo(yEqual2), true);
@@ -55,14 +55,14 @@ vectorPlaneClass('intersection', () => {
 	assert.is(lineIntersect.isEqualTo(new Line(new Vector(3), new Vector(1, 0, 1))), true);
 	const p1Clone = p1.intersect(p2) as Plane;
 	assert.is(p1Clone.isEqualTo(p1), true);
-	const p1Parallel = new Plane(new Vector(1, 2, -1), { rhs: 4 });
+	const p1Parallel = new Plane(new Vector(1, 2, -1), 4);
 	assert.is(p1Parallel.intersect(p1), null);
 
 	const p3 = new Plane(new Vector(1, 2, 0));
 	const lIntersect = p1.intersect(p3) as Line;
 	assert.is(lIntersect.isEqualTo(new Line(new Vector(0, 0, -3), new Vector(2, -1, 0))), true);
 	const p5 = new Plane(Vector.K);
-	const p6 = new Plane(Vector.J, { rhs: 2 });
+	const p6 = new Plane(Vector.J, 2);
 	const lIntersect2 = p5.intersect(p6) as Line;
 	assert.is(lIntersect2.isEqualTo(new Line(new Vector(0, 2), new Vector(1))), true);
 });
@@ -77,7 +77,7 @@ vectorPlaneClass('distance', () => {
 	assert.is(p1.distanceTo(new Vector(4, 2, -1)).isEqualTo(new SquareRoot(6)), true);
 	assert.is(p1.distanceTo(new Line(new Vector(4, 2, -1), new Vector(-2, 1))).isEqualTo(new SquareRoot(6)), true);
 	assert.is(p1.distanceTo(new Line(new Vector(4, 2, -1), new Vector(-2, 1, 1))).isEqualTo(0), true);
-	assert.is(p1.distanceTo(new Plane(new Vector(-2, -4, 2), { rhs: -18 })).isEqualTo(new SquareRoot(6)), true);
+	assert.is(p1.distanceTo(new Plane(new Vector(-2, -4, 2), -18)).isEqualTo(new SquareRoot(6)), true);
 	assert.is(p1.distanceTo(new Plane(new Vector(-2, -4))).isEqualTo(0), true);
 });
 

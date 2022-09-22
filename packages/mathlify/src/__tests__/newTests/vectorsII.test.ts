@@ -8,7 +8,7 @@ import {
 	gcd,
 	xVector,
 	uVector,
-	Unknown,
+	VariableTerm,
 	Term,
 	expToPoly,
 	solveQuadratic,
@@ -93,7 +93,7 @@ function qn07(variables?: { a?: Vector; b?: Vector; n?: Vector; lambda?: Fractio
 	const d = b.minus(a);
 	const l = new Line(a, d);
 	const x = l.point(lambda);
-	const p = new Plane(n, { rhs: x.dot(n) });
+	const p = new Plane(n, x.dot(n));
 
 	// solution working
 	const xSolve = p.intersectLine(l) as Vector;
@@ -123,14 +123,14 @@ function qn08(variables?: {
 	};
 
 	// set up
-	const p1 = new Plane(n1, { rhs: rhs1 });
-	const p2 = new Plane(n2, { rhs: rhs2 });
+	const p1 = new Plane(n1, rhs1);
+	const p2 = new Plane(n2, rhs2);
 	const n3Unknown = new xVector(n3.x, '\\lambda', n3.z);
 	const lambdaPlane = n3.y.isInteger() ? `${n3.y}` : `${n3.y.valueOf()}`;
 	const muPlane = rhs3.isInteger() ? `${rhs3}` : `${rhs3.valueOf()}`;
 
 	// solution working
-	const p3Solve = new Plane(n3, { rhs: rhs3 });
+	const p3Solve = new Plane(n3, rhs3);
 	const lSolve = p1.intersectPlane(p2) as Line;
 	const xSolve = p3Solve.intersectLine(lSolve) as Vector;
 	const lambdaEqn = n3Unknown.dot(lSolve.d);
@@ -138,7 +138,7 @@ function qn08(variables?: {
 	const lambdaSolve = solveLinear(lambdaPoly);
 	const n3Solve = new Vector(n3.x, lambdaSolve, n3.z);
 	const muSolve = lSolve.a.dot(n3Solve);
-	const newP = new Plane(b, { mode: 'ptPtD', v2: lSolve.a, v3: lSolve.d });
+	const newP = new Plane(b, lSolve.a, lSolve.d, { points: 2 });
 
 	// answer
 	return [xSolve, lSolve, lambdaSolve, muSolve, newP];
@@ -162,11 +162,11 @@ function qn14(variables?: {
 
 	// set up qn/answers
 	const n = nQ.cross(dPrime).simplify({ stretchable: true });
-	const p = new Plane(n, { rhs });
+	const p = new Plane(n, rhs);
 	const l = new Line(a, d);
 
 	// solution working
-	const q = new Plane(a, { mode: 'ptDD', v2: d, v3: n });
+	const q = new Plane(a, d, n, { points: 1 });
 	const m = p.intersectPlane(q) as Line;
 	m.lambda = '\\mu';
 	const exp1 = new Term(m.d.x, '\\mu').plus(m.a.minus(a).x).square() as Expression;
@@ -223,8 +223,8 @@ function qn16(variables?: {
 	const rhs = a1.dot(nSolve);
 	const rhs1 = rhs.plus(nSolve.magnitude().coeff.times(distance));
 	const rhs2 = rhs.minus(nSolve.magnitude().coeff.times(distance));
-	const p1 = new Plane(nSolve, { rhs: rhs1 });
-	const p2 = new Plane(nSolve, { rhs: rhs2 });
+	const p1 = new Plane(nSolve, rhs1);
+	const p2 = new Plane(nSolve, rhs2);
 	const nUnknown = dp2Unknown.cross(dp1);
 	const dot = nUnknown.dot(n);
 	const poly = expToPoly(dot);

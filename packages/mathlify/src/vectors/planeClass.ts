@@ -22,7 +22,7 @@ export class Plane {
 	 *
 	 * mode 5: pt1, pt2, pt3, {points: 3}
 	 */
-	constructor(n: Vector, rhs: number | Fraction);
+	constructor(n: Vector, rhs?: number | Fraction);
 	constructor(n: Vector, a: Vector);
 	constructor(pt: Vector, d1: Vector, d2: Vector, options?: { points: 1 });
 	constructor(pt1: Vector, pt2: Vector, d1: Vector, options?: { points: 2 });
@@ -36,7 +36,7 @@ export class Plane {
 	//		v3?: Vector;
 	//	},
 	//) {
-	constructor(v1: Vector, v2: number | Fraction | Vector, v3?: Vector, options?: { points: 1 | 2 | 3 }) {
+	constructor(v1: Vector, v2: number | Fraction | Vector = 0, v3?: Vector, options?: { points: 1 | 2 | 3 }) {
 		let n: Vector;
 		if (v3 === undefined) {
 			n = v1.clone();
