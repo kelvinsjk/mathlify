@@ -6,34 +6,9 @@ import type { Fraction } from '../core';
  * or to 3x3 [[a b c], [e f g], [i j k] = [[d], [h], [l]]]
  * or to 4x4
  */
-export function cramers(...args: [number, number, number, number, number, number]): [number, number];
-export function cramers(
-	...args: [number, number, number, number, number, number, number, number, number, number, number, number]
-): [number, number, number];
-export function cramers(
-	...args: [
-		number,
-		number,
-		number,
-		number,
-		number,
-		number,
-		number,
-		number,
-		number,
-		number,
-		number,
-		number,
-		number,
-		number,
-		number,
-		number,
-		number,
-		number,
-		number,
-		number,
-	]
-): [number, number, number, number];
+export function cramers(...args: NumberArray2x2): [number, number];
+export function cramers(...args: NumberArray3x3): [number, number, number];
+export function cramers(...args: NumberArray4x4): [number, number, number, number];
 export function cramers(...args: number[]): number[] {
 	if (args.length === 6) {
 		const detA = determinant(...args.slice(0, 2), ...args.slice(3, 5));
@@ -76,6 +51,9 @@ export function cramers(...args: number[]): number[] {
  * to 3x3 [[a b c], [e f g], [i j k] = [[d], [h], [l]]]
  * or 4x4
  */
+export function cramersFrac(...args: FractionArray2x2): [Fraction, Fraction];
+export function cramersFrac(...args: FractionArray3x3): [Fraction, Fraction, Fraction];
+export function cramersFrac(...args: FractionArray4x4): [Fraction, Fraction, Fraction, Fraction];
 export function cramersFrac(...args: (Fraction | number)[]): Fraction[] {
 	if (args.length === 6) {
 		const detA = determinantFrac(...args.slice(0, 2), ...args.slice(3, 5));
@@ -119,7 +97,7 @@ export function cramersFrac(...args: (Fraction | number)[]): Fraction[] {
  * apply Cramer's rule to 4x4
  *
  */
-function cramersFrac4x4(...args: (Fraction | number)[]): Fraction[] {
+function cramersFrac4x4(...args: (Fraction | number)[]): [Fraction, Fraction, Fraction, Fraction] {
 	if (args.length !== 20) {
 		throw new Error('only 4x4 equations are supported');
 	}
@@ -190,3 +168,103 @@ function cramersFrac4x4(...args: (Fraction | number)[]): Fraction[] {
 	);
 	return [detA.divide(det), detB.divide(det), detC.divide(det), detD.divide(det)];
 }
+
+/*
+	augmented matrix for 2x2 equations of size 6
+*/
+export type NumberArray2x2 = [number, number, number, number, number, number];
+/*
+	augmented matrix for 2x2 equations of size 6
+*/
+export type FractionArray2x2 = [
+	Fraction | number,
+	Fraction | number,
+	Fraction | number,
+	Fraction | number,
+	Fraction | number,
+	Fraction | number,
+];
+/*
+	augmented matrix for 3x3 equations of size 12
+*/
+export type NumberArray3x3 = [
+	number,
+	number,
+	number,
+	number,
+	number,
+	number,
+	number,
+	number,
+	number,
+	number,
+	number,
+	number,
+];
+/*
+	augmented matrix for 3x3 equations of size 12
+*/
+export type FractionArray3x3 = [
+	Fraction | number,
+	Fraction | number,
+	Fraction | number,
+	Fraction | number,
+	Fraction | number,
+	Fraction | number,
+	Fraction | number,
+	Fraction | number,
+	Fraction | number,
+	Fraction | number,
+	Fraction | number,
+	Fraction | number,
+];
+/*
+	augmented matrix for 4x4 equations of size 20
+*/
+export type NumberArray4x4 = [
+	number,
+	number,
+	number,
+	number,
+	number,
+	number,
+	number,
+	number,
+	number,
+	number,
+	number,
+	number,
+	number,
+	number,
+	number,
+	number,
+	number,
+	number,
+	number,
+	number,
+];
+/*
+	augmented matrix for 4x4 equations of size 20
+*/
+export type FractionArray4x4 = [
+	Fraction | number,
+	Fraction | number,
+	Fraction | number,
+	Fraction | number,
+	Fraction | number,
+	Fraction | number,
+	Fraction | number,
+	Fraction | number,
+	Fraction | number,
+	Fraction | number,
+	Fraction | number,
+	Fraction | number,
+	Fraction | number,
+	Fraction | number,
+	Fraction | number,
+	Fraction | number,
+	Fraction | number,
+	Fraction | number,
+	Fraction | number,
+	Fraction | number,
+];
