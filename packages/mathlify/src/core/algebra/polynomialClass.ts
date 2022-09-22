@@ -22,16 +22,22 @@ export class Polynomial extends Expression {
 	 * @param options defaults to `{ascending: false, degree: coeffs.length-1, variable: 'x'}`
 	 */
 	constructor(
-		coeffs: (number | Fraction)[] | (number | Fraction),
+		coeffs: (number | Fraction)[] | (number | Fraction) | string,
 		options?: { ascending?: boolean; degree?: number; variable?: string },
 	) {
+		let variableDefault = 'x';
 		if (!Array.isArray(coeffs)) {
-			coeffs = options?.ascending ? [0, coeffs] : [coeffs, 0];
+			if (typeof coeffs === 'string') {
+				variableDefault = coeffs;
+				coeffs = options?.ascending ? [0, 1] : [1, 0];
+			} else {
+				coeffs = options?.ascending ? [0, coeffs] : [coeffs, 0];
+			}
 		}
 		const { variable, ascending, degree } = {
 			ascending: false,
 			degree: coeffs.length - 1,
-			variable: 'x',
+			variable: variableDefault,
 			...options,
 		};
 		if (degree < 0 || degree < coeffs.length - 1) {
@@ -126,7 +132,7 @@ export class Polynomial extends Expression {
 		if (!(Number.isInteger(n) && n >= 0)) {
 			throw new RangeError(`only non-negative integers allowed for n (${n} received)`);
 		}
-		let newPoly = new Polynomial([1], { variable: this.variable });
+		let newPoly = new Polynomial([1], { variable: this.variable, ascending: this.ascending });
 		for (let i = 0; i < n; i++) {
 			newPoly = newPoly.times(this);
 		}
@@ -146,12 +152,25 @@ export class Polynomial extends Expression {
 	}
 
 	/**
+	 * replace x with x+k
+	 */
+	shift(k: number | Fraction): Polynomial {
+		return this.replaceXWith(new Polynomial([1, k], { ascending: this.ascending, variable: this.variable }));
+	}
+
+	/**
 	 * square
 	 *
 	 * @returns the square of this polynomial
 	 *  */
 	square(): Polynomial {
 		return this.pow(2);
+	}
+
+	// returns a polynomial with positive leading coefficient and gcd(...coeffs) = 1
+	simplify(): Polynomial {
+		const [newCoeffs] = Fraction.factorize(...this.coeffs);
+		return new Polynomial(newCoeffs, { ascending: true, variable: this.variable }).changeAscending(this.ascending);
 	}
 
 	/**
@@ -202,6 +221,14 @@ export class Polynomial extends Expression {
 		}
 		const polyWithC = newPoly.plus(c);
 		return this.ascending ? polyWithC : polyWithC.changeAscending();
+	}
+
+	/**
+	 * @returns an ascending polynomial only up until degree n
+	 */
+	concatenate(n: number): Polynomial {
+		const coeffs = this.coeffs.slice(0, n + 1);
+		return new Polynomial(coeffs, { ascending: this.ascending, variable: this.variable });
 	}
 
 	/** checks if two polynomials are equal: i.e., coefficient array is the same and same variable */

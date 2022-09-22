@@ -143,7 +143,7 @@ export class xPolynomial extends Expression {
 	 * replace x with a new polynomial
 	 * @param x if string, replaces the unknown
 	 */
-	replaceXWith(x: string | Polynomial): xPolynomial {
+	replaceXWith(x: string | Polynomial | xPolynomial): xPolynomial {
 		const xPoly = typeof x === 'string' ? new xPolynomial([1, 0], { variable: x }) : toXPolynomial(x);
 		let poly = new xPolynomial([0], { ascending: this.ascending, variable: this.variable });
 		this.coeffs.forEach((coeff, i) => {
@@ -159,6 +159,14 @@ export class xPolynomial extends Expression {
 	 *  */
 	square(): xPolynomial {
 		return this.pow(2);
+	}
+
+	/**
+	 * @returns an ascending polynomial only up until degree n
+	 */
+	concatenate(n: number): xPolynomial {
+		const coeffs = this.coeffs.slice(0, n + 1);
+		return new xPolynomial(coeffs, { ascending: this.ascending, variable: this.variable });
 	}
 
 	/**
