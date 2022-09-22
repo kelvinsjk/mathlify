@@ -12,51 +12,53 @@ export class Plane {
 	n: Vector;
 	rhs: Fraction;
 	/**
-	 * creates a new Plane instance
+	 * mode 1: normal vector, rhs
 	 *
-	 * by default, v1 is taken as the normal n
+	 * mode 2: normal vector, pt
 	 *
-	 * @param options default to {mode: 'rhs', rhs: 0, v2: (1,0,0), v3: (0,1,0) }
-	 * `mode: rhs`: takes v1 as n and rhs to form the plane
-	 * `mode: ptN`: takes v1 as n and v2 as a point on the plane
-	 * `mode: ptDD`: takes v1 as a point on the plane and v2 and v3 as direction vectors parallel to the plane
-	 * `mode: ptPtD`: takes v1 and v2 as points on the plane and v3 as a direction vector parallel to the plane
-	 * `mode: ptPtPt`: takes v1, v2 and v3 as points on the plane and v3
+	 * mode 3: pt, d1, d2, {points: 1}
+	 *
+	 * mode 4: pt1, pt2, d, {points: 2}
+	 *
+	 * mode 5: pt1, pt2, pt3, {points: 3}
 	 */
-	constructor(
-		v1: Vector,
-		options?: {
-			mode?: 'rhs' | 'ptN' | 'ptDD' | 'ptPtD' | 'ptPtPt';
-			rhs?: number | Fraction;
-			v2?: Vector;
-			v3?: Vector;
-		},
-	) {
-		const { mode, rhs, v2, v3 } = {
-			mode: 'rhs',
-			rhs: 0,
-			v2: Vector.I,
-			v3: Vector.J,
-			...options,
-		};
+	constructor(n: Vector, rhs: number | Fraction);
+	constructor(n: Vector, a: Vector);
+	constructor(pt: Vector, d1: Vector, d2: Vector, options?: { points: 1 });
+	constructor(pt1: Vector, pt2: Vector, d1: Vector, options?: { points: 2 });
+	constructor(pt1: Vector, pt2: Vector, pt3: Vector, options?: { points: 3 });
+	//constructor(
+	//	v1: Vector,
+	//	options?: {
+	//		mode?: 'rhs' | 'ptN' | 'ptDD' | 'ptPtD' | 'ptPtPt';
+	//		rhs?: number | Fraction;
+	//		v2?: Vector;
+	//		v3?: Vector;
+	//	},
+	//) {
+	constructor(v1: Vector, v2: number | Fraction | Vector, v3?: Vector, options?: { points: 1 | 2 | 3 }) {
 		let n: Vector;
-		if (mode === 'rhs') {
+		if (v3 === undefined) {
 			n = v1.clone();
-			this.rhs = numberToFraction(rhs);
-		} else if (mode === 'ptN') {
-			n = v1.clone();
-			this.rhs = n.dot(v2);
-		} else if (mode === 'ptDD') {
-			n = v2.cross(v3).simplify({ stretchable: true });
-			this.rhs = v1.dot(n);
-		} else if (mode === 'ptPtD') {
-			n = v3.cross(v2.minus(v1)).simplify({ stretchable: true });
-			this.rhs = v1.dot(n);
-		} else if (mode === 'ptPtPt') {
-			n = v2.minus(v1).cross(v3.minus(v1)).simplify({ stretchable: true });
-			this.rhs = v1.dot(n);
+			this.rhs = v2 instanceof Vector ? n.dot(v2) : numberToFraction(v2);
+		} else if (options) {
+			if (!(v2 instanceof Vector)) {
+				throw new Error(`Expected second argument ${v2} to be a vector`);
+			}
+			if (options.points === 1) {
+				n = v2.cross(v3).simplify({ stretchable: true });
+				this.rhs = v1.dot(n);
+			} else if (options.points === 2) {
+				n = v3.cross(v2.minus(v1)).simplify({ stretchable: true });
+				this.rhs = v1.dot(n);
+			} else if (options.points === 3) {
+				n = v2.minus(v1).cross(v3.minus(v1)).simplify({ stretchable: true });
+				this.rhs = v1.dot(n);
+			} else {
+				throw new Error(`Unexpected options object: options.points should be 1/2/3: ${options}`);
+			}
 		} else {
-			throw new Error(`mode \`${mode}\` is not valid`);
+			throw new Error(`unexpected plane inputs ${v1} ${v2} ${v3} ${options}`);
 		}
 		if (n.isEqualTo(Vector.ZERO)) {
 			throw new Error('normal vector cannot be zero');
@@ -314,7 +316,7 @@ export class Plane {
 	 * clones a new instance of this line
 	 */
 	clone(): Plane {
-		return new Plane(this.n, { rhs: this.rhs });
+		return new Plane(this.n, this.rhs);
 	}
 }
 

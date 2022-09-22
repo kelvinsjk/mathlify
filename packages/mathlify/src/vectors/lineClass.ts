@@ -169,13 +169,13 @@ export class Line {
 	 * finds the reflection of a point/line about this line
 	 */
 	reflect(v: Vector | Line): Vector | Line {
-		return v instanceof Line ? this.lineReflection(v) : this.pointReflection(v);
+		return v instanceof Line ? this.reflectLine(v) : this.reflectPoint(v);
 	}
 
 	/**
 	 * finds the reflection of point about this line
 	 */
-	pointReflection(point: Vector): Vector {
+	reflectPoint(point: Vector): Vector {
 		const OF = this.footOfPerpendicular(point);
 		return OF.multiply(2).minus(point).expand();
 	}
@@ -192,9 +192,9 @@ export class Line {
 	 *
 	 * WARNING: throws an error if skew lines encountered
 	 */
-	lineReflection(l2: Line): Line {
+	reflectLine(l2: Line): Line {
 		if (this.isParallelTo(l2)) {
-			const OAPrime = this.pointReflection(l2.a);
+			const OAPrime = this.reflectPoint(l2.a);
 			return new Line(OAPrime, this.d);
 		}
 		const OX = this.intersect(l2) as Vector | null;
@@ -207,7 +207,7 @@ export class Line {
 			if (this.contains(OA)) {
 				OA = l2.point(1);
 			}
-			const OAPrime = this.pointReflection(OA);
+			const OAPrime = this.reflectPoint(OA);
 			return new Line(OX, OAPrime, { twoPointsMode: true });
 		}
 	}
