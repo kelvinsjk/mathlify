@@ -104,9 +104,15 @@ export class ComplexExp extends Term {
 	/**
 	 * returns the standard form r e^(i theta)
 	 */
-	static FORM = `r \\mathrm{e}^{\\mathrm{i}\\theta}`;
+	static FORM(r = 'r', theta = '\\theta'): string {
+		return theta === '\\theta' ? `${r} \\mathrm{e}^{\\mathrm{i}${theta}}` : `${r} \\mathrm{e}^{${theta}\\mathrm{i}}`;
+	}
 	/**
 	 * returns the standard form r e^(i theta)
 	 */
-	static POLAR_FORM = `r (\\cos \\theta + \\mathrm{i} \\sin \\theta)`;
+	static POLAR_FORM(r = 'r', theta = '\\theta'): string {
+		return r === ''
+			? `\\cos ${theta} + \\mathrm{i} \\sin ${theta}`
+			: `${r} (\\cos ${theta} + \\mathrm{i} \\sin ${theta})`;
+	}
 }
