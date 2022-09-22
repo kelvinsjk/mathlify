@@ -96,7 +96,7 @@ export class VariableTerm extends BasicTerm {
 	 * substitutes the unknown in and returns a number type
 	 */
 	subInNumber(x: number): number {
-		return this.subIn(x).valueOf();
+		return this.coeff.valueOf() * Math.pow(x, this.n.valueOf());
 	}
 
 	/** clones and creates a new instance */
