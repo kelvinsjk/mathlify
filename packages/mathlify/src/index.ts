@@ -31,7 +31,7 @@ export {
 	sample,
 } from './random';
 
-export { JSONParse, factorPairs, unsimplifiedExp } from './misc';
+export { JSONParse, factorPairs, UnsimplifiedExpression, BracketedTerm } from './misc';
 
 export {
 	expToPoly,
@@ -55,6 +55,28 @@ export { Angle, sin, cos, tan } from './trigo';
 export { AP, GP, solveGpSN, solveGpSNNumber } from './sequences';
 
 export { Rational, solveRational, partialFractions, xPolynomial } from './algebra';
-export { PowerFn, SinFn, CosFn, Parametric, quotientRule } from './calculus';
+export { PowerFn, SinFn, CosFn, LnFn, RationalFn, Parametric, rationalToPowerFn } from './calculus';
+export { Maclaurin, xMaclaurin } from './maclaurin';
 
-export { binomPdf, binomCdf, binomCdfRange, normCdf, invNorm, zTest, Normal } from './stats';
+export {
+	binomPdf,
+	binomCdf,
+	binomCdfRange,
+	normCdf,
+	invNorm,
+	zTest,
+	factorial,
+	Normal,
+	nCr,
+	NCR,
+	Regression,
+} from './stats';
+
+export type {
+	NumberArray2x2,
+	FractionArray2x2,
+	NumberArray3x3,
+	FractionArray3x3,
+	NumberArray4x4,
+	FractionArray4x4,
+} from './numerical';
