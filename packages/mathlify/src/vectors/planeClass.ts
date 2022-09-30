@@ -24,9 +24,9 @@ export class Plane {
 	 */
 	constructor(n: Vector, rhs?: number | Fraction);
 	constructor(n: Vector, a: Vector);
-	constructor(pt: Vector, d1: Vector, d2: Vector, options?: { points: 1 });
-	constructor(pt1: Vector, pt2: Vector, d1: Vector, options?: { points: 2 });
-	constructor(pt1: Vector, pt2: Vector, pt3: Vector, options?: { points: 3 });
+	constructor(pt: Vector, d1: Vector, d2: Vector, options: { points: 1 });
+	constructor(pt1: Vector, pt2: Vector, d1: Vector, options: { points: 2 });
+	constructor(pt1: Vector, pt2: Vector, pt3: Vector, options: { points: 3 });
 	//constructor(
 	//	v1: Vector,
 	//	options?: {
