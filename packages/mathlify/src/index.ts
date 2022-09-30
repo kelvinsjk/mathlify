@@ -55,7 +55,17 @@ export { Angle, sin, cos, tan } from './trigo';
 export { AP, GP, solveGpSN, solveGpSNNumber } from './sequences';
 
 export { Rational, solveRational, partialFractions, xPolynomial } from './algebra';
-export { PowerFn, SinFn, CosFn, LnFn, RationalFn, Parametric, rationalToPowerFn } from './calculus';
+export {
+	PowerFn,
+	SinFn,
+	CosFn,
+	LnFn,
+	RationalFn,
+	Parametric,
+	rationalToPowerFn,
+	simpsons,
+	finiteDifference,
+} from './calculus';
 export { Maclaurin, xMaclaurin } from './maclaurin';
 
 export {
