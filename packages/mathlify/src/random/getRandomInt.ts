@@ -6,15 +6,18 @@
  * @param options `{avoid: []}` array of numbers to be avoided
  *
  */
-export function getRandomInt(min: number = -9, max: number = 9, options?: { avoid?: number[] }): number {
+export function getRandomInt(min: number = -9, max: number = 9, options?: { avoid?: number | number[] }): number {
 	min = Math.ceil(min); // in case min is non-integer
 	max = Math.floor(max); // in case max is non-integer
 	[min, max] = [Math.min(min, max), Math.max(min, max)];
 	let randomInt = Math.floor(Math.random() * (max - min + 1)) + min;
-	const { avoid } = {
+	let { avoid } = {
 		avoid: [],
 		...options,
 	};
+	if (typeof avoid === 'number') {
+		avoid = [avoid];
+	}
 	if (avoid.length !== 0) {
 		let avoidArray = avoid.filter((num) => num >= min && num <= max);
 		avoidArray = avoidArray.filter((num, i) => avoidArray.indexOf(num) === i);
