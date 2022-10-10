@@ -223,6 +223,24 @@ export class Polynomial extends Expression {
 		return this.ascending ? polyWithC : polyWithC.changeAscending();
 	}
 
+	/** definite integral (fraction form)*/
+	definiteIntegral(lower: number | Fraction, upper: number | Fraction): Fraction {
+		const integral = this.integrate();
+		return integral.subIn(upper).minus(integral.subIn(lower));
+	}
+
+	/** definite integral (number form) */
+	definiteIntegralNumber(lower: number | Fraction, upper: number | Fraction): number {
+		if (typeof lower !== 'number') {
+			lower = lower.valueOf();
+		}
+		if (typeof upper !== 'number') {
+			upper = upper.valueOf();
+		}
+		const integral = this.integrate();
+		return integral.subInNumber(upper) - integral.subInNumber(lower);
+	}
+
 	/**
 	 * @returns an ascending polynomial only up until degree n
 	 */
