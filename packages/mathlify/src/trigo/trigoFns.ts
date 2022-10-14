@@ -1,7 +1,10 @@
 import { Fraction, SquareRoot } from '../core';
 import { Angle } from './angleClass';
 
-export function cos(theta: Angle): SquareRoot {
+export function cos(theta: Angle | number | Fraction): SquareRoot {
+	if (typeof theta === 'number' || theta instanceof Fraction) {
+		theta = new Angle(theta);
+	}
 	theta = new Angle(theta.k); // change to -pi to pi domain
 	if (theta.k.den === 1) {
 		if (theta.k.num === 0) {
@@ -35,7 +38,10 @@ export function cos(theta: Angle): SquareRoot {
 	throw new Error(`${theta} cos function only valid for special angles`);
 }
 
-export function sin(theta: Angle): SquareRoot {
+export function sin(theta: Angle | number | Fraction): SquareRoot {
+	if (typeof theta === 'number' || theta instanceof Fraction) {
+		theta = new Angle(theta);
+	}
 	theta = new Angle(theta.k); // change to -pi to pi domain
 	if (theta.k.den === 1) {
 		if (theta.k.num === 0) {
