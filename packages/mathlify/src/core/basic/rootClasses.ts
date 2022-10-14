@@ -58,7 +58,6 @@ export class NthRoot extends BasicTerm {
 			this.variableString = '';
 		}
 		if (this.coeff.isEqualTo(0)) {
-			this.radicand = Fraction.ZERO;
 			this.variableString = '';
 		}
 	}
@@ -114,6 +113,9 @@ export class NthRoot extends BasicTerm {
 	 */
 	isEqualTo(x: number | Fraction | NthRoot): boolean {
 		x = x instanceof NthRoot ? x : new NthRoot(this.n, 1, x);
+		if (x.coeff.isEqualTo(0) || this.coeff.isEqualTo(0)) {
+			return x.coeff.isEqualTo(0) && this.coeff.isEqualTo(0);
+		}
 		return this.n === x.n && this.radicand.isEqualTo(x.radicand) && this.coeff.isEqualTo(x.coeff);
 	}
 	/**
@@ -206,6 +208,27 @@ export class SquareRoot extends NthRoot {
 	divide(x: SquareRoot | number | Fraction): SquareRoot {
 		x = numberToSquareRoot(x);
 		return new SquareRoot(this.radicand.divide(x.radicand), this.coeff.divide(x.coeff));
+	}
+	/**
+	 * addition of radicals: only work for same radicand currently
+	 */
+	plus(x: SquareRoot): SquareRoot {
+		if (this.isEqualTo(0)) {
+			return x;
+		}
+		if (x.isEqualTo(0)) {
+			return this;
+		}
+		if (this.radicand.isEqualTo(x.radicand)) {
+			return new SquareRoot(this.radicand, this.coeff.plus(x.coeff));
+		}
+		throw new Error(`${x} and ${this} have different radicands`);
+	}
+	/**
+	 * subtraction of radicals: only work for same radicand currently
+	 */
+	minus(x: SquareRoot): SquareRoot {
+		return this.plus(x.negative());
 	}
 
 	/**
