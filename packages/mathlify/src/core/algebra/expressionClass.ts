@@ -142,7 +142,13 @@ function combineLikeTerms(terms: Term[]): Term[] {
 			newTerms.push(term.clone());
 		} else {
 			// combine like terms
-			newTerms[variableIndex] = <Term>newTerms[variableIndex].plus(term);
+			const oldTerm = newTerms[variableIndex];
+			const newTerm = oldTerm.plus(term);
+			if (newTerm instanceof Term) {
+				newTerms[variableIndex] = newTerm;
+			} else {
+				throw new Error(`${newTerm} combining like terms failed.`);
+			}
 		}
 	});
 	return newTerms;
