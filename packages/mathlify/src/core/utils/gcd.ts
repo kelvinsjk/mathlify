@@ -20,6 +20,20 @@ export function gcd(...integers: number[]): number {
 	}
 }
 
+export function lcm(...integers: number[]): number {
+	if (integers.length === 0) {
+		throw new RangeError('lcm function must have at least one argument');
+	} else if (integers.length === 1) {
+		return Math.abs(integers[0]);
+	} else if (integers.length === 2) {
+		return lcmTwo(integers[0], integers[1]);
+	} else {
+		// recursively call this method
+		const [integer1, integer2, ...restOfIntegers] = integers;
+		return lcm(lcmTwo(integer1, integer2), ...restOfIntegers);
+	}
+}
+
 /**
  * Greatest common divisor of two integers
  *
@@ -42,4 +56,8 @@ function gcdTwo(a: number, b: number): number {
 		[a, b] = [b, a % b];
 	}
 	return a;
+}
+
+function lcmTwo(a: number, b: number): number {
+	return Math.abs(a * b) / gcdTwo(a, b);
 }

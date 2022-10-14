@@ -1,4 +1,4 @@
-export { gcd } from './gcd';
+export { gcd, lcm } from './gcd';
 export { factorize } from './factorize';
 export { numberToFraction } from './numberToFraction';
 export { numberToNthRoot } from './numberToNthRoot';
