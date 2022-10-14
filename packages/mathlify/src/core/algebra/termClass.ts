@@ -22,7 +22,7 @@ export class Term extends BasicTerm {
 
 	constructor(...basicUnits: (number | Fraction | string | SquareRoot | VariableTerm | Imaginary)[]) {
 		let coeff = new Fraction(1);
-		let simplifiedBasicUnits: (SquareRoot | VariableTerm)[] = [];
+		let simplifiedBasicUnits: VariableTerm[] = [];
 		const variables: string[] = [];
 		const variablePositions: { [key: string]: number } = {};
 		let surd: SquareRoot | undefined = undefined;
@@ -67,7 +67,7 @@ export class Term extends BasicTerm {
 						simplifiedBasicUnits[variablePositions[unit.variable]] = new VariableTerm(1, {
 							variable: unit.variable,
 							n: unit.n,
-						}).times(<VariableTerm>simplifiedBasicUnits[variablePositions[unit.variable]]);
+						}).times(simplifiedBasicUnits[variablePositions[unit.variable]]);
 					} else {
 						variables.push(unit.variable);
 						simplifiedBasicUnits.push(new VariableTerm(1, { variable: unit.variable, n: unit.n }));
@@ -76,8 +76,17 @@ export class Term extends BasicTerm {
 				}
 			});
 		// sort basic units
-		simplifiedBasicUnits.sort();
-		simplifiedBasicUnits = simplifiedBasicUnits.filter((e) => e instanceof SquareRoot || !e.n.isEqualTo(0));
+		simplifiedBasicUnits.sort((a, b) => {
+			// functions are placed last
+			if (a.variable[0] === '\\' && b.variable[0] !== '\\') {
+				return 1;
+			}
+			if (a.variable[0] !== '\\' && b.variable[0] === '\\') {
+				return -1;
+			}
+			return a < b ? -1 : 1;
+		});
+		simplifiedBasicUnits = simplifiedBasicUnits.filter((e) => !e.n.isEqualTo(0));
 		if (surd !== undefined) {
 			simplifiedBasicUnits.unshift(surd);
 		}
