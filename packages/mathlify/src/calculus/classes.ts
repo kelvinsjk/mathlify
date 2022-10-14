@@ -1,4 +1,4 @@
-import { Fraction, Polynomial, VariableTerm, numberToFraction, BasicTerm } from '../core/index';
+import { Fraction, Polynomial, VariableTerm, numberToFraction, BasicTerm, SquareRoot } from '../core/index';
 import { Rational } from '../algebra';
 
 /**
@@ -81,6 +81,50 @@ export class PowerFn {
 		return new PowerFn(this.n, { fx: this.fx, coeff: this.coeff.divide(x) });
 	}
 
+	removeCoeff(): PowerFn {
+		return new PowerFn(this.n, { fx: this.fx });
+	}
+
+	/** sub in: only works for polynomial inner function
+	 * and integral n at the moment
+	 * also works for square roots if the value substituted in can be square-rooted
+	 */
+	subIn(x: number | Fraction): Fraction {
+		if (!(this.fx instanceof Polynomial)) {
+			throw new Error(`PowerFn.subIn() only works for polynomial inner function`);
+		}
+		if (this.n.isInteger()) {
+			if (this.n.isGreaterThan(0)) {
+				return this.coeff.times(this.fx.subIn(x).pow(this.n.num));
+			} else {
+				return this.coeff.divide(this.fx.subIn(x).pow(this.n.abs().num));
+			}
+		}
+		if (this.n.den === 2) {
+			const sqrtX = new SquareRoot(this.fx.subIn(x));
+			if (sqrtX.isRational()) {
+				if (this.n.isGreaterThan(0)) {
+					return this.coeff.times(sqrtX.coeff.pow(this.n.num));
+				} else {
+					return this.coeff.divide(sqrtX.coeff.pow(this.n.abs().num));
+				}
+			}
+		}
+		throw new Error(`PowerFn.subIn() only works for polynomial inner function and integral n at the moment `);
+	}
+
+	/**
+	 * definite integral: only works for polynomial inner function
+	 * and integral n \neq -1 at the moment
+	 */
+	definiteIntegral(lower: number | Fraction, upper: number | Fraction): Fraction {
+		if (this.n.isEqualTo(-1)) {
+			throw new Error(`logarithmic integral not supported at the moment`);
+		}
+		const integral = this.integrate() as PowerFn;
+		return integral.subIn(upper).minus(integral.subIn(lower));
+	}
+
 	/**
 	 * `toString` method
 	 *
@@ -145,6 +189,13 @@ export class SinFn {
 		return new CosFn({ fx: this.fx, coeff: this.coeff.negative() });
 	}
 
+	times(x: number | Fraction): SinFn {
+		return new SinFn({ fx: this.fx, coeff: this.coeff.times(x) });
+	}
+	removeCoeff(): SinFn {
+		return new SinFn({ fx: this.fx });
+	}
+
 	/**
 	 * `toString` method
 	 *
@@ -192,10 +243,18 @@ export class CosFn {
 		return new SinFn({ fx: this.fx, coeff: this.coeff.negative() });
 	}
 
+	times(x: number | Fraction): CosFn {
+		return new CosFn({ fx: this.fx, coeff: this.coeff.times(x) });
+	}
+
 	/** integrates this expression */
 	integrate(): SinFn {
 		//TODO: chain rule version
 		return new SinFn({ fx: this.fx, coeff: this.coeff });
+	}
+
+	removeCoeff(): CosFn {
+		return new CosFn({ fx: this.fx });
 	}
 
 	/**
@@ -209,6 +268,62 @@ export class CosFn {
 			fxString = this.fx.terms.length === 1 ? `${this.fx}` : `\\left( ${this.fx} \\right)`;
 		}
 		return `${new BasicTerm(this.coeff, `\\cos ${fxString}`)}`;
+	}
+}
+
+/**
+ * function representing k exp ( f(x) )
+ */
+export class ExpFn {
+	/** coefficient k in k exp ( f(x) ) */
+	coeff: Fraction;
+	/** "inner" function f(x) */
+	fx: Polynomial; //TODO: Exp|Ln|Sin|Cos
+	/**
+	 * Creates a new CosFn class
+	 * @param options defaults to `{ fx: "x", coeff: 1 }`
+	 */
+	constructor(options?: { fx?: string | VariableTerm | Polynomial; coeff?: number | Fraction }) {
+		let { fx, coeff } = {
+			fx: 'x',
+			coeff: 1,
+			...options,
+		};
+		if (typeof fx === 'string') {
+			fx = new Polynomial([1, 0], { variable: fx });
+		} else if (fx instanceof VariableTerm) {
+			fx = new Polynomial([fx.coeff, 0], { variable: fx.variable });
+		}
+		this.fx = fx;
+		this.coeff = numberToFraction(coeff);
+	}
+
+	/** differentiates this expression */
+	differentiate(): ExpFn {
+		//TODO: chain rule version
+		return new ExpFn({ fx: this.fx, coeff: this.coeff });
+	}
+
+	/** integrates this expression */
+	integrate(): ExpFn {
+		//TODO: chain rule version
+		return new ExpFn({ fx: this.fx, coeff: this.coeff });
+	}
+
+	times(x: number | Fraction): ExpFn {
+		return new ExpFn({ fx: this.fx, coeff: this.coeff.times(x) });
+	}
+	removeCoeff(): ExpFn {
+		return new ExpFn({ fx: this.fx });
+	}
+
+	/**
+	 * `toString` method
+	 *
+	 * @returns the LaTeX string representation of the sum of all the terms
+	 */
+	toString(): string {
+		return `${new BasicTerm(this.coeff, `\\mathrm{e}^{${this.fx}}`)}`;
 	}
 }
 

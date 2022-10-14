@@ -3,12 +3,7 @@
  *
  * @param intervals number of intervals (defaults to 100)
  */
-export function simpsons(
-	f: (x: number) => number,
-	lower: number,
-	upper: number,
-	intervals = 100,
-): number {
+export function simpsons(f: (x: number) => number, lower: number, upper: number, intervals = 100): number {
 	let result = 0;
 	const stepSize = (upper - lower) / intervals;
 	let i: number;
