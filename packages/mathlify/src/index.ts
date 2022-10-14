@@ -9,6 +9,7 @@ export {
 	Expression,
 	Polynomial,
 	gcd,
+	lcm,
 	factorize,
 	numberToFraction,
 	numberToSquareRoot,
@@ -29,6 +30,7 @@ export {
 	heads,
 	getRandomAngle,
 	sample,
+	sampleN,
 } from './random';
 
 export { JSONParse, factorPairs, UnsimplifiedExpression, BracketedTerm } from './misc';
@@ -46,12 +48,13 @@ export {
 	completeSquare,
 	longDivide,
 	linear,
+	subSurdInPoly,
 } from './polynomialMethods';
 
 export { cramers, cramersFrac, determinantFrac, bisection } from './numerical';
 
 export { Complex, ComplexExp, xComplex, expToCartesian, complexToQuadratic, subComplexIntoPoly } from './complex';
-export { Angle, sin, cos, tan } from './trigo';
+export { Angle, sin, cos, tan, asin, acos, atan } from './trigo';
 export { AP, GP, solveGpSN, solveGpSNNumber } from './sequences';
 
 export { Rational, solveRational, partialFractions, xPolynomial } from './algebra';
@@ -59,13 +62,17 @@ export {
 	PowerFn,
 	SinFn,
 	CosFn,
+	ExpFn,
 	LnFn,
 	RationalFn,
 	Parametric,
+	integrate,
+	definiteIntegral,
 	rationalToPowerFn,
 	simpsons,
 	finiteDifference,
 } from './calculus';
+
 export { Maclaurin, xMaclaurin } from './maclaurin';
 
 export {
