@@ -12,3 +12,4 @@ export {
 export { solveQuadraticComplex } from './solveQuadraticComplex';
 export { longDivide } from './longDivide';
 export { linear } from './linear';
+export { subSurdInPoly } from './polynomialsAndSurds';
