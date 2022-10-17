@@ -66,7 +66,7 @@ xVectors('uVectors', () => {
 	assert.is(`${zero}`, `\\mathbf{0}`);
 	assert.is(`${zero2}`, `\\mathbf{0}`);
 	assert.is(`${zero3}`, `\\mathbf{0}`);
-	assert.is(`${dot1}`, `2 \\left| \\mathbf{a} \\right|^2 k + \\left| \\mathbf{a} \\right|^2 k^2`);
+	assert.is(`${dot1}`, `2 k \\left| \\mathbf{a} \\right|^2 + k^2 \\left| \\mathbf{a} \\right|^2`);
 });
 
 xVectors.run();

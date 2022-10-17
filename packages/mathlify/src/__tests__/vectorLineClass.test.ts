@@ -57,11 +57,11 @@ vectorLineClass('toString', () => {
 	const xEqual2YEqualMinus2 = new Line(new Vector(2, -2), new Vector(0, 0, 1));
 	const xEqual2ZEqualMinus1 = new Line(new Vector(2, 2, -1), new Vector(0, 3, 0));
 	assert.is(xEqual2YEqualZ.toCartesianString(), 'x = 2, y = z');
-	assert.is(xEqual2YEqualMinus2.toCartesianString(), 'x = 2, y = - 2, z \\in \\R');
-	assert.is(xEqual2ZEqualMinus1.toCartesianString(), 'x = 2, y \\in \\R, z = - 1');
+	assert.is(xEqual2YEqualMinus2.toCartesianString(), 'x = 2, y = - 2, z \\in \\mathbb{R}');
+	assert.is(xEqual2ZEqualMinus1.toCartesianString(), 'x = 2, y \\in \\mathbb{R}, z = - 1');
 	const yEqual1ZEqual0 = new Line(new Vector(1, 1, 0), new Vector(1));
 	const xMinusTwoOver3EqualZ = new Line(new Vector(2, 0, 0), new Vector(3, 0, 1));
-	assert.is(yEqual1ZEqual0.toCartesianString(), 'x \\in \\R, y = 1, z = 0');
+	assert.is(yEqual1ZEqual0.toCartesianString(), 'x \\in \\mathbb{R}, y = 1, z = 0');
 	assert.is(xMinusTwoOver3EqualZ.toCartesianString(), '\\frac{x - 2}{3} = z, y = 0');
 	const xMinusTwoOver3EqualYPlusOneOverMinus1 = new Line(new Vector(2, -1, 0), new Vector(3, -1, 0));
 	assert.is(xMinusTwoOver3EqualYPlusOneOverMinus1.toCartesianString(), '\\frac{x - 2}{3} = \\frac{y + 1}{-1}, z = 0');

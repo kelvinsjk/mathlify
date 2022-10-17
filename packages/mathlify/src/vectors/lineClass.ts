@@ -1,5 +1,6 @@
 import { Vector } from './vectorClass';
 import { type Fraction, type SquareRoot, Polynomial, numberToFraction } from '../core';
+import { cramersFrac } from '../numerical';
 
 /**
  * Line class representing a 3D Line represented in vector form
@@ -129,21 +130,50 @@ export class Line {
 			return null;
 		}
 		// solve for lambda and mu from first two rows
-		const [a1, b1, c1, a2, b2, c2] = [
+		const [a1, b1, c1, a2, b2, c2, a3, b3, c3] = [
 			this.d.x,
 			l2.d.x.negative(),
 			l2.a.x.minus(this.a.x),
 			this.d.y,
 			l2.d.y.negative(),
 			l2.a.y.minus(this.a.y),
+			this.d.z,
+			l2.d.z.negative(),
+			l2.a.z.minus(this.a.z),
 		];
-		const det = determinant(a1, b1, a2, b2);
-		if (det.isEqualTo(0)) {
-			// TODO: check for 1st/3rd row, 2nd/3rd row
-			return null;
+		let det = determinant(a1, b1, a2, b2);
+		let x1: Fraction, x2: Fraction, x3: Fraction, y1: Fraction, y2: Fraction, y3: Fraction;
+		if (!det.isEqualTo(0)) {
+			x1 = a1;
+			x2 = b1;
+			x3 = c1;
+			y1 = a2;
+			y2 = b2;
+			y3 = c2;
+		} else {
+			det = determinant(a1, b1, a3, b3);
+			if (!det.isEqualTo(0)) {
+				x1 = a1;
+				x2 = b1;
+				x3 = c1;
+				y1 = a3;
+				y2 = b3;
+				y3 = c3;
+			} else {
+				det = determinant(a2, b2, a3, b3);
+				if (det.isEqualTo(0)) {
+					return null;
+				} else {
+					x1 = a2;
+					x2 = b2;
+					x3 = c2;
+					y1 = a3;
+					y2 = b3;
+					y3 = c3;
+				}
+			}
 		}
-		const lambda = determinant(c1, b1, c2, b2).divide(det);
-		const mu = determinant(a1, c1, a2, c2).divide(det);
+		const [lambda, mu] = cramersFrac(x1, x2, x3, y1, y2, y3);
 		// check if intersecting
 		if (this.point(lambda).isEqualTo(l2.point(mu))) {
 			// intersecting lines
