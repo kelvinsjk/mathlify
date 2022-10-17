@@ -262,13 +262,13 @@ export class Line {
 			if (this.d.y.isEqualTo(0)) {
 				// x,y zero
 				// by construction z cannot be zero
-				return `x = ${this.a.x}, y = ${this.a.y}, z \\in \\R`;
+				return `x = ${this.a.x}, y = ${this.a.y}, z \\in \\mathbb{R}`;
 			} else {
 				// x zero, y non-zero
 				const yString = toCartesianComponent('y', this.a.y, this.d.y);
 				if (this.d.z.isEqualTo(0)) {
 					// y non-zero, x,z zero
-					return `x = ${this.a.x}, y \\in \\R, z = ${this.a.z}`;
+					return `x = ${this.a.x}, y \\in \\mathbb{R}, z = ${this.a.z}`;
 				} else {
 					// x zero, y,z non-zero
 					const zString = toCartesianComponent('z', this.a.z, this.d.z);
@@ -282,7 +282,7 @@ export class Line {
 				// x non-zero, y zero
 				if (this.d.z.isEqualTo(0)) {
 					// x non-zero, y,z zero
-					return `x \\in \\R, y = ${this.a.y}, z = ${this.a.z}`;
+					return `x \\in \\mathbb{R}, y = ${this.a.y}, z = ${this.a.z}`;
 				} else {
 					// x,z non-zero, y zero
 					const zString = toCartesianComponent('z', this.a.z, this.d.z);
