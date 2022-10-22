@@ -84,7 +84,7 @@ vectorLineClass('intersection', () => {
 	const l6ReflectedInL2 = l2.reflect(l6) as Line;
 	const l6ReflectedInL2V2 = new Line(new Vector(6, 9, 5), new Vector(2, -1, 3));
 	assert.is(l6ReflectedInL2.isEqualTo(l6ReflectedInL2V2), true);
-	const l7 = new Line(new Vector(2, 4, 5), new Vector(1, 3, 2));
+	const l7 = new Line(new Vector(-2, -9, 8), new Vector(-2, 5, 3));
 	const l8 = new Line(new Vector(2, 4, 5), new Vector(1, 3, -2));
 	assert.is(l7.intersect(l1), null);
 	assert.is(l8.intersect(l1), null);
