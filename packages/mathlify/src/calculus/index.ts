@@ -6,3 +6,5 @@ export { integrate, definiteIntegral } from './integrate';
 
 export { simpsons } from './simpsons';
 export { finiteDifference } from './finiteDifference';
+
+export { de } from './differential_equations';

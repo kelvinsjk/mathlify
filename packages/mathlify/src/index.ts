@@ -71,6 +71,7 @@ export {
 	rationalToPowerFn,
 	simpsons,
 	finiteDifference,
+	de,
 } from './calculus';
 
 export { Maclaurin, xMaclaurin } from './maclaurin';
