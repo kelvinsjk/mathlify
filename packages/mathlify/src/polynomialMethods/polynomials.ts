@@ -156,22 +156,30 @@ export function shiftPoly(poly: Polynomial, a: number | Fraction): Polynomial {
 
 /**
  * completes the square
- *
  */
 export function completeSquare(poly: Polynomial): string {
 	if (poly.degree !== 2) {
 		throw new Error(`${poly} is not a quadratic polynomial`);
 	}
-	const [c, b, a] = poly.coeffs;
-	const bOver2A = b.divide(a.times(2));
-	const perfectSquare = new Polynomial([1, bOver2A], { variable: poly.variable });
-	const bracketed = bOver2A.isEqualTo(0) ? `${perfectSquare}^2` : `\\left( ${perfectSquare} \\right)^2`;
-	const turningPt = c.minus(b.square().divide(4).divide(a));
-	const start = a.isEqualTo(1) ? `${bracketed}` : a.isEqualTo(-1) ? `- ${bracketed}` : `${a} ${bracketed}`;
-	if (turningPt.isEqualTo(0)) {
-		return start;
-	} else {
-		const sign = turningPt.isGreaterThan(0) ? ` + ` : ``;
-		return `${start}${sign}${turningPt}`;
+	const { a, completedSquare, c } = completeSquareParams(poly);
+	const bOver2A = completedSquare.coeffs[1];
+	const bracketed = bOver2A.isEqualTo(0) ? `${completedSquare}^2` : `\\left( ${completedSquare} \\right)^2`;
+	const exp = new Expression(new Term(a, `${bracketed}`), c);
+	return `${exp}`;
+}
+
+/**
+ * completes the square
+ * returns a (x+b)^2 + c
+ * as `{a, completedSquare: (x+b), c}`
+ *
+ */
+export function completeSquareParams(poly: Polynomial): { a: Fraction; completedSquare: Polynomial; c: Fraction } {
+	if (poly.degree !== 2) {
+		throw new Error(`${poly} is not a quadratic polynomial`);
 	}
+	const [c1, b1, a] = poly.coeffs;
+	const b = b1.divide(2).divide(a);
+	const c = c1.minus(b1.square().divide(4).divide(a));
+	return { a, c, completedSquare: new Polynomial([1, b], { variable: poly.variable }) };
 }

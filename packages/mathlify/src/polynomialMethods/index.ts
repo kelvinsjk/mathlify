@@ -8,6 +8,7 @@ export {
 	solveLinear,
 	shiftPoly,
 	completeSquare,
+	completeSquareParams,
 } from './polynomials';
 export { solveQuadraticComplex } from './solveQuadraticComplex';
 export { longDivide } from './longDivide';

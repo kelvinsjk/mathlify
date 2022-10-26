@@ -1,4 +1,5 @@
 import { trigo, trigoD } from './trigo';
+import { mf26 } from './mf26';
 import { byParts, byPartsD } from './byParts';
 import type { Angle } from '../../trigo';
 import type { Fraction, Expression } from '../../core';
@@ -8,6 +9,8 @@ export const integrate = {
 	trigo,
 	/** by parts integrations */
 	byParts,
+	/** integration of 1/(x^2 \\pm a^2) or 1/sqrt(x^2 \\pm a^2) */
+	mf26,
 };
 
 export const definiteIntegral: {
