@@ -3,8 +3,7 @@ import { Polynomial, Expression, Fraction, Term } from '../../core';
 /**
  * Solves DE of the form dxdt = a + b t
  * @param poly a + bt as a Polynomial, or [a, b] as an array or b if a=0.
- * @param options `{variable, initial}`. variable is used as 't' if no polynomial is provided (otherwise
- * variable within polynomial is used)
+ * @param options `{variable, initial}`. variable is used as 't'
  * @returns solution of the DE in expression form A/b exp(bt) - a/b.
  * general solution in terms of 'A' if no initial provided,
  * particular solution otherwise
@@ -23,7 +22,6 @@ export function type1a(
 	if (typeof poly === 'number' || poly instanceof Fraction) {
 		poly = new Polynomial([0, poly], { ascending: true, variable });
 	}
-	variable = poly.variable;
 	const [a, b] = poly.coeffs;
 	const bt = new Polynomial(b, { variable });
 	// a + b x = A exp( b t )

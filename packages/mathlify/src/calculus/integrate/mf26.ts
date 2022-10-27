@@ -1,19 +1,38 @@
-import { Polynomial, Fraction, SquareRoot, numberToFraction, Term, numberToSquareRoot, Expression } from '../../core';
+import {
+	lcm,
+	Polynomial,
+	Fraction,
+	SquareRoot,
+	numberToFraction,
+	Term,
+	numberToSquareRoot,
+	Expression,
+} from '../../core';
 import { completeSquareParams } from '../../polynomialMethods';
 import { Angle, atan, asin } from '../../trigo';
 
 /**
  * integrates 1/quadratic or 1/sqrt(quadratic)
+ * @param options defaults to `{squareRootMode: false, modulus: true, initial: undefined}`.
+ * initial only valid for finding particular solution in DE qns for ln qns
  */
-export function mf26(quadratic: Polynomial, squareRootMode = false): ArcFunction | LnFunction {
+export function mf26(
+	quadratic: Polynomial,
+	options?: { squareRootMode?: boolean; initial?: number | Fraction; modulus?: boolean },
+): ArcFunction | LnFunction {
 	const { a, completedSquare, c } = completeSquareParams(quadratic);
+	const { squareRootMode, initial, modulus } = {
+		squareRootMode: false,
+		modulus: true,
+		...options,
+	};
 	if (squareRootMode) {
 		return arcsin(completedSquare, c, { coeff: a });
 	}
 	if (a.isGreaterThan(0) && c.isGreaterThan(0)) {
 		return arctan(completedSquare, c, { coeff: a });
 	} else if (a.times(c).isLessThan(0)) {
-		return ln(completedSquare, c, { coeff: a });
+		return ln(completedSquare, c, { coeff: a, initial, modulus });
 	} else {
 		throw new Error(`1/(-x^2 - a^2) not supported at the moment. Consider trying again after factoring out -1.`);
 	}
@@ -35,8 +54,11 @@ function arctan(x: Polynomial, a2: number | Fraction, options?: { coeff?: number
 	if (a.isEqualTo(1)) {
 		xTerm = `${x}`;
 	} else {
-		const aWithoutDen = a.times(a.coeff.den);
-		xTerm = `\\frac{${x.times(a.coeff.den)}}{${aWithoutDen}}`;
+		const x0Coeff = x.coeffs[0];
+		const multiple = lcm(a.coeff.den, x0Coeff.den);
+		const aWithoutDen = a.times(multiple);
+		const xWithoutDen = x.times(multiple);
+		xTerm = `\\frac{${xWithoutDen}}{${aWithoutDen}}`;
 	}
 	const poly = x;
 	return {
@@ -61,9 +83,14 @@ function arctan(x: Polynomial, a2: number | Fraction, options?: { coeff?: number
  * integrates 1 / ( coeff (x+b)^2 - a2 )
  * @param x represents x+b
  */
-function ln(x: Polynomial, a2: number | Fraction, options?: { coeff?: number | Fraction }): LnFunction {
-	let { coeff } = {
+function ln(
+	x: Polynomial,
+	a2: number | Fraction,
+	options?: { coeff?: number | Fraction; initial?: number | Fraction; modulus?: boolean },
+): LnFunction {
+	let { coeff, initial, modulus } = {
 		coeff: 1,
+		modulus: true,
 		...options,
 	};
 	coeff = numberToFraction(coeff);
@@ -74,9 +101,39 @@ function ln(x: Polynomial, a2: number | Fraction, options?: { coeff?: number | F
 	const poly = x;
 	return {
 		toString(): string {
-			const xNum = positiveCoeff ? new Expression(...poly.terms, a.negative()) : new Expression(...poly.terms, a);
-			const xDen = positiveCoeff ? new Expression(a, ...poly.terms) : new Expression(a, ...poly.negative().terms);
-			const term = new Term(a.reciprocal().divide(2).divide(coeff), `\\ln \\left| \\frac{${xNum}}{${xDen}} \\right|`);
+			const x0Coeff = x.coeffs[0];
+			const multiple = lcm(a.coeff.den, x0Coeff.den);
+			const aWithoutDen = a.times(multiple);
+			const xWithoutDen = x.times(multiple);
+			let xNum: Expression, xDen: Expression;
+			if (initial) {
+				if (!a.isRational()) {
+					throw new Error(`sub in only implemented for rational a in 1/(x^2 + a^2)`);
+				}
+				const aCoeff = a.coeff;
+				const integrationConstant = positiveCoeff
+					? x.subIn(initial).minus(aCoeff).divide(x.subIn(initial).plus(aCoeff))
+					: aCoeff.plus(x.subIn(initial)).divide(aCoeff.minus(x.subIn(initial)));
+				xNum = positiveCoeff
+					? new Expression(...xWithoutDen.terms, aWithoutDen.negative()).times(integrationConstant.den)
+					: new Expression(...xWithoutDen.terms, aWithoutDen).times(integrationConstant.den);
+				xDen = positiveCoeff
+					? new Expression(aWithoutDen, ...xWithoutDen.terms).times(integrationConstant.num)
+					: new Expression(aWithoutDen, ...xWithoutDen.negative().terms).times(integrationConstant.num);
+			} else {
+				xNum = positiveCoeff
+					? new Expression(...xWithoutDen.terms, aWithoutDen.negative())
+					: new Expression(...xWithoutDen.terms, aWithoutDen);
+				xDen = positiveCoeff
+					? new Expression(aWithoutDen, ...xWithoutDen.terms)
+					: new Expression(aWithoutDen, ...xWithoutDen.negative().terms);
+			}
+			const open = modulus ? `|` : `(`;
+			const close = modulus ? `|` : `)`;
+			const term = new Term(
+				a.reciprocal().divide(2).divide(coeff),
+				`\\ln \\left${open} \\frac{${xNum}}{${xDen}} \\right${close}`,
+			);
 			return `${term}`;
 		},
 		subIn(x: number | Fraction): LnValue {
@@ -108,8 +165,11 @@ function arcsin(x: Polynomial, a2: number | Fraction, options?: { coeff?: number
 	if (a.isEqualTo(1)) {
 		xTerm = `${x}`;
 	} else {
-		const aWithoutDen = a.times(a.coeff.den);
-		xTerm = `\\frac{${x.times(a.coeff.den)}}{${aWithoutDen}}`;
+		const x0Coeff = x.coeffs[0];
+		const multiple = lcm(a.coeff.den, x0Coeff.den);
+		const aWithoutDen = a.times(multiple);
+		const xWithoutDen = x.times(multiple);
+		xTerm = `\\frac{${xWithoutDen}}{${aWithoutDen}}`;
 	}
 	const poly = x;
 	const sinCoeff = new SquareRoot(coeff.reciprocal());
