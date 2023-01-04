@@ -67,6 +67,12 @@ export class Expression {
 		return k.terms.reduce((exp, term) => exp.plus(this.times(term)), new Expression(0));
 	}
 
+	/** applies negative to square root and imaginary terms */
+	conjugate(): Expression {
+		const terms = this.terms.map((term) => term.conjugate());
+		return new Expression(...terms);
+	}
+
 	negative(): Expression {
 		return new Expression(...this.terms.map((term) => term.negative()));
 	}
