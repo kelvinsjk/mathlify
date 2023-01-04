@@ -47,7 +47,7 @@ export class Term extends BasicTerm {
 							if (newSurd.isRational()) {
 								surd = undefined;
 							} else {
-								surd = new SquareRoot(surd.radicand);
+								surd = new SquareRoot(newSurd.radicand);
 							}
 						}
 					}
