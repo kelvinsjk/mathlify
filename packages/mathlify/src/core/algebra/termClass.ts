@@ -19,6 +19,8 @@ import { Expression } from './expressionClass';
 export class Term extends BasicTerm {
 	/** array of basic units (sqrt, variableTerms, imaginary unit) */
 	basicUnits: (SquareRoot | VariableTerm | Imaginary)[];
+	isSurd: boolean;
+	isImag: boolean;
 
 	constructor(...basicUnits: (number | Fraction | string | SquareRoot | VariableTerm | Imaginary)[]) {
 		let coeff = new Fraction(1);
@@ -27,6 +29,8 @@ export class Term extends BasicTerm {
 		const variablePositions: { [key: string]: number } = {};
 		let surd: SquareRoot | undefined = undefined;
 		let imaginary: Imaginary | undefined = undefined;
+		let imagPresent = false;
+		let surdPresent = false;
 		basicUnits
 			.filter((e) => e !== '')
 			.forEach((unit) => {
@@ -34,20 +38,28 @@ export class Term extends BasicTerm {
 					coeff = coeff.times(unit);
 				}
 				if (typeof unit === 'string') {
-					unit = unit === 'i' ? new Imaginary() : new VariableTerm(1, { variable: unit });
+					if (unit === 'i') {
+						unit = new Imaginary();
+						imagPresent = true;
+					} else {
+						unit = new VariableTerm(1, { variable: unit });
+					}
 				}
 				if (unit instanceof SquareRoot) {
 					coeff = coeff.times(unit.coeff);
 					if (!unit.isRational()) {
 						if (surd === undefined) {
 							surd = new SquareRoot(unit.radicand);
+							surdPresent = true;
 						} else {
 							const newSurd = surd.times(new SquareRoot(unit.radicand));
 							coeff = coeff.times(newSurd.coeff);
 							if (newSurd.isRational()) {
 								surd = undefined;
+								surdPresent = false;
 							} else {
 								surd = new SquareRoot(newSurd.radicand);
+								surdPresent = true;
 							}
 						}
 					}
@@ -56,9 +68,11 @@ export class Term extends BasicTerm {
 					coeff = coeff.times(unit.coeff);
 					if (imaginary === undefined) {
 						imaginary = new Imaginary();
+						imagPresent = true;
 					} else {
 						coeff = coeff.times(-1);
 						imaginary = undefined;
+						imagPresent = false;
 					}
 				}
 				if (unit instanceof VariableTerm) {
@@ -102,6 +116,8 @@ export class Term extends BasicTerm {
 			),
 		);
 		this.basicUnits = simplifiedBasicUnits;
+		this.isImag = imagPresent;
+		this.isSurd = surdPresent && !imagPresent;
 	}
 
 	/**
@@ -154,6 +170,11 @@ export class Term extends BasicTerm {
 		return imagPow instanceof Fraction
 			? new Term(this.coeff.pow(n).times(imagPow), ...basicUnits.map((x) => x.pow(n)))
 			: new Term(this.coeff.pow(n), ...basicUnits.map((x) => x.pow(n)), imagPow);
+	}
+
+	// applies negative if surd or imaginary term present
+	conjugate(): Term {
+		return this.isImag || this.isSurd ? this.negative() : this.clone();
 	}
 
 	subIn(x: number | Fraction): Fraction {
