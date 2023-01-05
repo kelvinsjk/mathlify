@@ -56,8 +56,8 @@ export class Regression {
 	}
 
 	linearize(functions?: {
-		xFn?: (x1: number) => number;
-		yFn?: (y1: number) => number;
+		xFn?: ((x1: number) => number) | 'ln' | 'reciprocal' | 'square';
+		yFn?: ((y1: number) => number) | 'ln' | 'reciprocal' | 'square';
 		x?: string;
 		y?: string;
 	}): Regression {
