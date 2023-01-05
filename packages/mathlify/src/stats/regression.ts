@@ -68,8 +68,36 @@ export class Regression {
 			y: this.y,
 			...functions,
 		};
-		const xData = this.xData.map(xFn);
-		const yData = this.yData.map(yFn);
+		let xFnFinal: (x: number) => number;
+		let yFnFinal: (x: number) => number;
+		if (typeof xFn === 'string') {
+			if (xFn === 'ln') {
+				xFnFinal = ln;
+			} else if (xFn === 'reciprocal') {
+				xFnFinal = reciprocal;
+			} else if (xFn === 'square') {
+				xFnFinal = square;
+			} else {
+				throw new Error(`Invalid function name ${xFn}`);
+			}
+		} else {
+			xFnFinal = xFn;
+		}
+		if (typeof yFn === 'string') {
+			if (yFn === 'ln') {
+				yFnFinal = ln;
+			} else if (yFn === 'reciprocal') {
+				yFnFinal = reciprocal;
+			} else if (yFn === 'square') {
+				yFnFinal = square;
+			} else {
+				throw new Error(`Invalid function name ${xFn}`);
+			}
+		} else {
+			yFnFinal = yFn;
+		}
+		const xData = this.xData.map(xFnFinal);
+		const yData = this.yData.map(yFnFinal);
 		return new Regression(xData, yData, { x, y });
 	}
 }
@@ -79,3 +107,13 @@ const sumX2 = (xData: number[]) => xData.reduce((a, b) => a + b * b, 0);
 const sumXY = (xData: number[], yData: number[]) => xData.reduce((a, b, i) => a + b * yData[i], 0);
 const sXX = (xData: number[]) => sumX2(xData) - (sumX(xData) * sumX(xData)) / xData.length;
 const sXY = (xData: number[], yData: number[]) => sumXY(xData, yData) - (sumX(xData) * sumX(yData)) / xData.length;
+
+function ln(x: number): number {
+	return Math.log(x);
+}
+function reciprocal(x: number): number {
+	return 1 / x;
+}
+function square(x: number): number {
+	return x * x;
+}
