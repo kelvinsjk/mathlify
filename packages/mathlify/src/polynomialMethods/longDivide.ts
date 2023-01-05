@@ -3,7 +3,7 @@ import { Polynomial } from '../core';
 /**
  * given p(x)/d(x),
  *
- * @returns [q(x), r(x)]: quotient q(x) and remainder r(x)
+ * @returns {quotient, remainder}
  */
 export function longDivide(
 	poly: Polynomial,

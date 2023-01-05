@@ -246,7 +246,7 @@ export class Polynomial extends Expression {
 	 */
 	concatenate(n: number): Polynomial {
 		const coeffs = this.coeffs.slice(0, n + 1);
-		return new Polynomial(coeffs, { ascending: this.ascending, variable: this.variable });
+		return new Polynomial(coeffs, { ascending: true, variable: this.variable });
 	}
 
 	/** checks if two polynomials are equal: i.e., coefficient array is the same and same variable */
