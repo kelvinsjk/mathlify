@@ -60,16 +60,22 @@ export class PowerFn {
 
 	/**
 	 * integration of this expression, using the f'(x) ( f(x) )^n formula
-	 * by assuming that f'(x) is present
+	 * for non-linear fx, we assume f'(x) is present
 	 */
-	integrate(): PowerFn | LnFn {
+	integrate(options?: { modulus?: boolean }): PowerFn | LnFn {
+		const { modulus } = {
+			modulus: true,
+			...options,
+		};
+		const divisor = this.fx instanceof Polynomial && this.fx.degree === 1 ? this.fx.coeffs[1] : 1;
 		if (this.n.isEqualTo(-1)) {
-			if (!(this.fx instanceof Polynomial && this.fx.degree === 1)) {
+			if (!(this.fx instanceof Polynomial)) {
+				// TODO: other forms
 				throw new Error(`Only polynomials of degree 1 supported for inner integrand ${this.fx}`);
 			}
-			return new LnFn({ fx: this.fx, coeff: this.coeff.divide(this.fx.coeffs[1]), modulus: true });
+			return new LnFn({ fx: this.fx, coeff: this.coeff.divide(divisor), modulus });
 		} else {
-			return new PowerFn(this.n.plus(1), { fx: this.fx, coeff: this.coeff.divide(this.n.plus(1)) });
+			return new PowerFn(this.n.plus(1), { fx: this.fx, coeff: this.coeff.divide(this.n.plus(1)).divide(divisor) });
 		}
 	}
 
@@ -111,6 +117,16 @@ export class PowerFn {
 			}
 		}
 		throw new Error(`PowerFn.subIn() only works for polynomial inner function and integral n at the moment `);
+	}
+
+	/**
+	 * only works for polynomial inner function at the moment
+	 */
+	subInNumber(x: number): number {
+		if (!(this.fx instanceof Polynomial)) {
+			throw new Error(`PowerFn.subIn() only works for polynomial inner function`);
+		}
+		return Math.pow(this.fx.subInNumber(x), this.n.valueOf()) * this.coeff.valueOf();
 	}
 
 	/**

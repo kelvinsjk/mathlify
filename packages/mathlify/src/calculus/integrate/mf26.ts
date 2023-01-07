@@ -18,12 +18,13 @@ import { Angle, atan, asin } from '../../trigo';
  */
 export function mf26(
 	quadratic: Polynomial,
-	options?: { squareRootMode?: boolean; initial?: number | Fraction; modulus?: boolean },
+	options?: { squareRootMode?: boolean; initial?: number | Fraction; modulus?: boolean; flip?: boolean },
 ): ArcFunction | LnFunction {
 	const { a, completedSquare, c } = completeSquareParams(quadratic);
-	const { squareRootMode, initial, modulus } = {
+	const { squareRootMode, initial, modulus, flip } = {
 		squareRootMode: false,
 		modulus: true,
+		flip: false,
 		...options,
 	};
 	if (squareRootMode) {
@@ -32,7 +33,7 @@ export function mf26(
 	if (a.isGreaterThan(0) && c.isGreaterThan(0)) {
 		return arctan(completedSquare, c, { coeff: a });
 	} else if (a.times(c).isLessThan(0)) {
-		return ln(completedSquare, c, { coeff: a, initial, modulus });
+		return ln(completedSquare, c, { coeff: a, initial, modulus, flip });
 	} else {
 		throw new Error(`1/(-x^2 - a^2) not supported at the moment. Consider trying again after factoring out -1.`);
 	}
@@ -86,11 +87,12 @@ function arctan(x: Polynomial, a2: number | Fraction, options?: { coeff?: number
 function ln(
 	x: Polynomial,
 	a2: number | Fraction,
-	options?: { coeff?: number | Fraction; initial?: number | Fraction; modulus?: boolean },
+	options?: { coeff?: number | Fraction; initial?: number | Fraction; modulus?: boolean; flip?: boolean },
 ): LnFunction {
-	let { coeff, initial, modulus } = {
+	let { coeff, initial, modulus, flip } = {
 		coeff: 1,
 		modulus: true,
+		flip: false,
 		...options,
 	};
 	coeff = numberToFraction(coeff);
@@ -116,20 +118,23 @@ function ln(
 					: aCoeff.plus(x.subIn(initial)).divide(aCoeff.minus(x.subIn(initial)));
 				xNum = positiveCoeff
 					? new Expression(...xWithoutDen.terms, aWithoutDen.negative()).times(integrationConstant.den)
-					: new Expression(...xWithoutDen.terms, aWithoutDen).times(integrationConstant.den);
+					: new Expression(aWithoutDen, ...xWithoutDen.terms).times(integrationConstant.den);
 				xDen = positiveCoeff
-					? new Expression(aWithoutDen, ...xWithoutDen.terms).times(integrationConstant.num)
+					? new Expression(...xWithoutDen.terms, aWithoutDen).times(integrationConstant.num)
 					: new Expression(aWithoutDen, ...xWithoutDen.negative().terms).times(integrationConstant.num);
 			} else {
 				xNum = positiveCoeff
 					? new Expression(...xWithoutDen.terms, aWithoutDen.negative())
-					: new Expression(...xWithoutDen.terms, aWithoutDen);
+					: new Expression(aWithoutDen, ...xWithoutDen.terms);
 				xDen = positiveCoeff
-					? new Expression(aWithoutDen, ...xWithoutDen.terms)
+					? new Expression(...xWithoutDen.terms, aWithoutDen)
 					: new Expression(aWithoutDen, ...xWithoutDen.negative().terms);
 			}
 			const open = modulus ? `|` : `(`;
 			const close = modulus ? `|` : `)`;
+			if (flip) {
+				[xNum, xDen] = [xDen, xNum];
+			}
 			const term = new Term(
 				a.reciprocal().divide(2).divide(coeff),
 				`\\ln \\left${open} \\frac{${xNum}}{${xDen}} \\right${close}`,
@@ -145,6 +150,29 @@ function ln(
 			return positiveCoeff
 				? new LnValue(poly.subIn(x).minus(aFrac).divide(poly.subIn(x).plus(aFrac)), { coeff: lnCoeff })
 				: new LnValue(poly.subIn(x).plus(aFrac).divide(poly.subIn(x).negative().plus(aFrac)), { coeff: lnCoeff });
+		},
+		subInSurdCase(x: number | Fraction): string {
+			const x0Coeff = poly.coeffs[0];
+			const multiple = lcm(a.coeff.den, x0Coeff.den);
+			const x1 = poly.times(multiple).subIn(x);
+			const xWithoutDen = x1.times(x1.den);
+			const aWithoutDen = a.times(multiple).times(x1.den);
+			let xNum = positiveCoeff
+				? new Expression(xWithoutDen, aWithoutDen.negative())
+				: new Expression(aWithoutDen, xWithoutDen);
+			let xDen = positiveCoeff
+				? new Expression(xWithoutDen, aWithoutDen)
+				: new Expression(aWithoutDen, xWithoutDen.negative());
+			const open = modulus ? `|` : `(`;
+			const close = modulus ? `|` : `)`;
+			if (flip) {
+				[xNum, xDen] = [xDen, xNum];
+			}
+			const term = new Term(
+				a.reciprocal().divide(2).divide(coeff),
+				`\\ln \\left${open} \\frac{${xNum}}{${xDen}} \\right${close}`,
+			);
+			return `${term}`;
 		},
 	};
 }
@@ -198,6 +226,7 @@ interface ArcFunction {
 interface LnFunction {
 	toString(): string;
 	subIn(x: number | Fraction): LnValue;
+	subInSurdCase(x: number | Fraction): string;
 }
 
 /**
