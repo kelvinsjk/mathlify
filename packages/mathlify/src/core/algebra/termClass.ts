@@ -189,14 +189,17 @@ export class Term extends BasicTerm {
 	}
 
 	subInNumber(x: number): number {
-		let frac = this.coeff.valueOf();
+		let val = this.coeff.valueOf();
 		for (const unit of this.basicUnits) {
-			if (!(unit instanceof VariableTerm)) {
+			if (unit instanceof VariableTerm) {
+				val = val * unit.subInNumber(x);
+			} else if (unit instanceof SquareRoot) {
+				val = val * unit.valueOf();
+			} else {
 				throw new Error(`subIn only valid for Unknowns at the moment ${unit}`);
 			}
-			frac = frac * unit.subInNumber(x);
 		}
-		return frac;
+		return val;
 	}
 
 	square(): Term {
