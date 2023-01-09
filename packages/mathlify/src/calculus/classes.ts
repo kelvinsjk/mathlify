@@ -330,13 +330,20 @@ export class ExpFn {
 
 	/** differentiates this expression */
 	differentiate(): ExpFn {
-		//TODO: chain rule version
+		//TODO: full chain rule version
+		if (this.fx.coeffs.length === 2) {
+			// linear fx
+			return new SinFn({ fx: this.fx, coeff: this.coeff.times(this.fx.coeffs[1]) });
+		}
 		return new ExpFn({ fx: this.fx, coeff: this.coeff });
 	}
 
 	/** integrates this expression */
 	integrate(): ExpFn {
-		//TODO: chain rule version
+		if (this.fx.coeffs.length === 2) {
+			// linear fx
+			return new SinFn({ fx: this.fx, coeff: this.coeff.divide(this.fx.coeffs[1]) });
+		}
 		return new ExpFn({ fx: this.fx, coeff: this.coeff });
 	}
 
