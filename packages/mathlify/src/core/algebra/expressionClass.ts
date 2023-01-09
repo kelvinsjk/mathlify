@@ -100,6 +100,10 @@ export class Expression {
 		return this.terms.reduce((sum, term) => sum + term.subInNumber(x), 0);
 	}
 
+	valueOf(): number {
+		return this.terms.reduce((sum, term) => sum + term.valueOf(), 0);
+	}
+
 	/**
 	 * adds the two expressions,
 	 * similar to concatenating the terms in the two expressions, combining like terms

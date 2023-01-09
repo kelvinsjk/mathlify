@@ -1,5 +1,5 @@
 import { Expression } from './expressionClass';
-import { VariableTerm } from '../basic/variableTermClass';
+import { VariableTerm, SquareRoot } from '../basic';
 import { Fraction } from '../fractionClass';
 import { numberToFraction } from '../utils/numberToFraction';
 
@@ -171,6 +171,12 @@ export class Polynomial extends Expression {
 	simplify(): Polynomial {
 		const [newCoeffs] = Fraction.factorize(...this.coeffs);
 		return new Polynomial(newCoeffs, { ascending: true, variable: this.variable }).changeAscending(this.ascending);
+	}
+
+	subInSurd(x: number | SquareRoot): Expression {
+		const xSurd = typeof x === 'number' ? new SquareRoot(1, x) : x;
+		const terms = this.coeffs.map((a, i) => xSurd.pow(i).times(a));
+		return new Expression(...terms);
 	}
 
 	/**

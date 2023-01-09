@@ -196,7 +196,19 @@ export class Term extends BasicTerm {
 			} else if (unit instanceof SquareRoot) {
 				val = val * unit.valueOf();
 			} else {
-				throw new Error(`subIn only valid for Unknowns at the moment ${unit}`);
+				throw new Error(`subIn not valid for imaginary units: ${unit}`);
+			}
+		}
+		return val;
+	}
+
+	valueOf(): number {
+		let val = this.coeff.valueOf();
+		for (const unit of this.basicUnits) {
+			if (unit instanceof SquareRoot) {
+				val = val * unit.valueOf();
+			} else {
+				throw new Error(`value only valid for SquareRoots at the moment: ${unit}`);
 			}
 		}
 		return val;
