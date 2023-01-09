@@ -1,4 +1,4 @@
-import { Polynomial, Fraction, numberToFraction } from '../core';
+import { Polynomial, Fraction, numberToFraction, SquareRoot } from '../core';
 import { solveLinear, solveQuadratic, longDivide } from '../polynomialMethods';
 
 /**
@@ -137,6 +137,16 @@ export class Rational {
 	/** subs in a fraction/integer */
 	subIn(x: number | Fraction): Fraction {
 		return this.num.subIn(x).divide(this.den.subIn(x));
+	}
+
+	subInNumber(x: number): number {
+		return this.num.subInNumber(x) / this.den.subInNumber(x);
+	}
+
+	differentiate(): Rational {
+		const num = this.num.differentiate().times(this.den).minus(this.den.differentiate().times(this.num));
+		const den = this.den.square();
+		return new Rational(num, den, { poles: this.poles });
 	}
 
 	replaceXWith(x: string | Polynomial): Rational {
