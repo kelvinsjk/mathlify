@@ -1,5 +1,6 @@
 import { Fraction, Polynomial, VariableTerm, numberToFraction, BasicTerm, SquareRoot } from '../core/index';
 import { Rational } from '../algebra';
+import { sin, cos, Angle } from '../trigo';
 
 /**
  * function representing k ( f(x) )^n
@@ -220,6 +221,23 @@ export class SinFn {
 	}
 
 	/**
+	 * @returns special ratios
+	 *
+	 * only works for sin nx at the moment
+	 */
+	subIn(x: Angle | number | Fraction): SquareRoot {
+		if (!(x instanceof Angle)) {
+			x = new Angle(x);
+		}
+		if (this.fx.coeffs.length === 2 && this.fx.coeffs[0].isEqualTo(0)) {
+			x = x.times(this.fx.coeffs[1]);
+		} else {
+			throw new Error(`only works for sin(nx) at the moment ${this}`);
+		}
+		return sin(x).times(this.coeff);
+	}
+
+	/**
 	 * `toString` method
 	 *
 	 * @returns the LaTeX string representation of the sum of all the terms
@@ -285,6 +303,23 @@ export class CosFn {
 
 	removeCoeff(): CosFn {
 		return new CosFn({ fx: this.fx });
+	}
+
+	/**
+	 * @returns special ratios
+	 *
+	 * only works for sin nx at the moment
+	 */
+	subIn(x: Angle | number | Fraction): SquareRoot {
+		if (!(x instanceof Angle)) {
+			x = new Angle(x);
+		}
+		if (this.fx.coeffs.length === 2 && this.fx.coeffs[0].isEqualTo(0)) {
+			x = x.times(this.fx.coeffs[1]);
+		} else {
+			throw new Error(`only works for sin(nx) at the moment ${this}`);
+		}
+		return cos(x).times(this.coeff);
 	}
 
 	/**
