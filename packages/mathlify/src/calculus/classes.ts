@@ -195,13 +195,20 @@ export class SinFn {
 
 	/** differentiates this expression */
 	differentiate(): CosFn {
-		//TODO: chain rule version
+		//TODO: full chain rule version
+		if (this.fx.coeffs.length === 2) {
+			// linear fx
+			return new CosFn({ fx: this.fx, coeff: this.coeff.times(this.fx.coeffs[1]) });
+		}
 		return new CosFn({ fx: this.fx, coeff: this.coeff });
 	}
 
 	/** integrates this expression */
 	integrate(): CosFn {
-		//TODO: chain rule version
+		if (this.fx.coeffs.length === 2) {
+			// linear fx
+			return new CosFn({ fx: this.fx, coeff: this.coeff.negative().divide(this.fx.coeffs[1]) });
+		}
 		return new CosFn({ fx: this.fx, coeff: this.coeff.negative() });
 	}
 
@@ -255,7 +262,11 @@ export class CosFn {
 
 	/** differentiates this expression */
 	differentiate(): SinFn {
-		//TODO: chain rule version
+		//TODO: full chain rule version
+		if (this.fx.coeffs.length === 2) {
+			// linear fx
+			return new SinFn({ fx: this.fx, coeff: this.coeff.negative().times(this.fx.coeffs[1]) });
+		}
 		return new SinFn({ fx: this.fx, coeff: this.coeff.negative() });
 	}
 
@@ -265,7 +276,10 @@ export class CosFn {
 
 	/** integrates this expression */
 	integrate(): SinFn {
-		//TODO: chain rule version
+		if (this.fx.coeffs.length === 2) {
+			// linear fx
+			return new SinFn({ fx: this.fx, coeff: this.coeff.divide(this.fx.coeffs[1]) });
+		}
 		return new SinFn({ fx: this.fx, coeff: this.coeff });
 	}
 
