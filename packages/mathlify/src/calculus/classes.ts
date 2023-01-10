@@ -44,15 +44,19 @@ export class PowerFn {
 	 * power is the PowerFn n ( f(x) )^(n-1) and fPrime is f'(x)
 	 */
 	differentiate(): { string: string; power: PowerFn; fPrime: Polynomial | CosFn | SinFn | RationalFn } {
-		const power = new PowerFn(this.n.minus(1), { fx: this.fx, coeff: this.coeff.times(this.n) });
 		const fPrime = this.fx.differentiate();
 		const fPrimeTwo = this.fx.differentiate();
-		const coeff =
+		let coeff =
 			fPrime instanceof Polynomial || fPrime instanceof RationalFn
 				? this.coeff.times(this.n)
 				: this.coeff.times(this.n).times(fPrime.coeff);
 		if (!(fPrimeTwo instanceof Polynomial || fPrimeTwo instanceof RationalFn)) {
 			fPrimeTwo.coeff = new Fraction(1);
+		}
+		let power = new PowerFn(this.n.minus(1), { fx: this.fx, coeff: this.coeff.times(this.n) });
+		if (fPrime instanceof Polynomial && fPrime.degree === 0) {
+			coeff = coeff.times(fPrime.coeffs[0]);
+			power = power.times(fPrime.coeffs[0]);
 		}
 		const term = `${fPrimeTwo} ${new PowerFn(this.n.minus(1), { fx: this.fx })}`;
 		const string = `${new BasicTerm(coeff, term)}`;

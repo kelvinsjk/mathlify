@@ -213,15 +213,15 @@ export class Polynomial extends Expression {
 	 * or a point on the curve (x1, y1).
 	 */
 	integrate(options?: { c?: number | Fraction; x1?: number | Fraction; y1?: number | Fraction }): Polynomial {
+		let c = options?.c ?? 0;
 		if (this.degree === 0) {
-			return new Polynomial([0]);
+			return new Polynomial([this.coeffs[0], c]);
 		}
 		const newCoeffs = [0, ...this.coeffs.map((coeff, i) => coeff.divide(i + 1))];
 		const newPoly = new Polynomial(newCoeffs, { ascending: true, variable: this.variable });
 		const { x1, y1 } = {
 			...options,
 		};
-		let c = options?.c ?? 0;
 		if (x1 !== undefined && y1 !== undefined) {
 			c = newPoly.subIn(x1).negative().plus(y1);
 		}
