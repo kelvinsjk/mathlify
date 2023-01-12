@@ -135,6 +135,21 @@ export class PowerFn {
 	}
 
 	/**
+	 * if n = k/2, then substituting a value in will return a surd.
+	 * this method accomplishes that
+	 */
+	subInToGetSurd(x: number | Fraction): SquareRoot {
+		if (this.n.den !== 2) {
+			throw new Error(`subInToGetSurd method only works if denominator of n is 2. ${this.n} received.`);
+		}
+		if (!(this.fx instanceof Polynomial)) {
+			throw new Error(`PowerFn.subIn() only works for polynomial inner function`);
+		}
+		const sqrtX = new SquareRoot(this.fx.subIn(x));
+		return sqrtX.pow(this.n.num).times(this.coeff);
+	}
+
+	/**
 	 * definite integral: only works for polynomial inner function
 	 * and integral n \neq -1 at the moment
 	 */
