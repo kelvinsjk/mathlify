@@ -1,6 +1,6 @@
 {
 	"name": "mathlify",
-	"version": "0.1.30",
+	"version": "0.1.31",
 	"description": "bringing mathematics into the digital age",
 	"source": "src/index.ts",
 	"type": "module",
@@ -12,8 +12,8 @@
 		"prepublishOnly": "pnpm run test && pnpm run lint",
 		"preversion": "pnpm run lint",
 		"version": "pnpm run format && git add -A src",
-		"postversion": "git push && git push --tags",
-		"postpublish": "git add package.json && git add package-lock.json",
+		"postversion": "git commit -m 'new version' && git push && git push --tags",
+		"postpublish": "git add package.json && git add package-lock.json && got commit -m 'new version'",
 		"format": "prettier --write \"src/**/*.ts\"",
 		"lint": "eslint --ignore-path .gitignore",
 		"build": "parcel build",
