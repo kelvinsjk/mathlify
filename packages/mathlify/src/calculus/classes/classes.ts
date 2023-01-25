@@ -1,6 +1,6 @@
-import { Fraction, Polynomial, VariableTerm, numberToFraction, BasicTerm, SquareRoot } from '../core/index';
-import { Rational } from '../algebra';
-import { sin, cos, Angle } from '../trigo';
+import { Fraction, Polynomial, VariableTerm, numberToFraction, BasicTerm, SquareRoot } from '../../core/index';
+import { Rational } from '../../algebra';
+import { sin, cos, Angle } from '../../trigo';
 
 /**
  * function representing k ( f(x) )^n

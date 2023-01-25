@@ -65,6 +65,7 @@ export {
 	ExpFn,
 	LnFn,
 	RationalFn,
+	Laurent,
 	Parametric,
 	integrate,
 	definiteIntegral,

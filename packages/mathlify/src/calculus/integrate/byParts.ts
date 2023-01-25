@@ -1,4 +1,4 @@
-import { PowerFn, CosFn, SinFn, ExpFn } from '../classes';
+import { PowerFn, CosFn, SinFn, ExpFn } from '../classes/classes';
 import { Expression, Term, Fraction, numberToFraction } from '../../core';
 import { Angle, cos, sin } from '../../trigo';
 

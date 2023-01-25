@@ -1,4 +1,4 @@
 export { BasicTerm } from './basicTermClass';
-export { Imaginary, ImaginaryJSON } from './imaginaryClass';
-export { NthRoot, SquareRoot, SquareRootJSON } from './rootClasses';
-export { VariableTerm, VariableTermJSON } from './variableTermClass';
+export { Imaginary, type ImaginaryJSON } from './imaginaryClass';
+export { NthRoot, SquareRoot, type SquareRootJSON } from './rootClasses';
+export { VariableTerm, type VariableTermJSON } from './variableTermClass';

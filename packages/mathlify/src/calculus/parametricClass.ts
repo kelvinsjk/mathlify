@@ -1,5 +1,5 @@
 import { Polynomial } from '../core';
-import { PowerFn, CosFn, SinFn } from './classes';
+import { PowerFn, CosFn, SinFn } from './classes/classes';
 
 /**
  * Parametric Eqn class

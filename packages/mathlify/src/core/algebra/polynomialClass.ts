@@ -285,7 +285,7 @@ export class Polynomial extends Expression {
 	 * toJSON method that allows for quick reconstruction of class instance
 	 * by storing its constructor arguments
 	 */
-	toJSON(): { type: string; args: [Fraction[], { ascending: boolean; degree: number; variable: string }] } {
+	toJSON(): { type: 'polynomial'; args: [Fraction[], { ascending: boolean; degree: number; variable: string }] } {
 		const coeffs = this.coeffs.map((e) => e.clone());
 		if (!this.ascending) {
 			coeffs.reverse();

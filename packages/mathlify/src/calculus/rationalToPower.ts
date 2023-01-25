@@ -1,5 +1,5 @@
 import { Rational } from '../algebra';
-import { PowerFn } from './classes';
+import { PowerFn } from './classes/classes';
 
 export function rationalToPowerFn(rational: Rational): PowerFn {
 	if (rational.num.degree > 0) {

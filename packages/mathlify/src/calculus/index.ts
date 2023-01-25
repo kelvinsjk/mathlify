@@ -1,4 +1,4 @@
-export { PowerFn, SinFn, CosFn, LnFn, ExpFn, RationalFn } from './classes';
+export { PowerFn, SinFn, CosFn, LnFn, ExpFn, RationalFn, Laurent } from './classes/';
 export { Parametric } from './parametricClass';
 export { rationalToPowerFn } from './rationalToPower';
 

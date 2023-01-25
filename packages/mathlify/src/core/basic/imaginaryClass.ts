@@ -49,6 +49,6 @@ export class Imaginary extends BasicTerm {
 }
 
 export interface ImaginaryJSON {
-	type: string;
+	type: 'imaginary';
 	args: [FractionJSON];
 }
