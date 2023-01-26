@@ -75,7 +75,12 @@ export function factorizeCubic(poly: Polynomial, root: number | Fraction): [Poly
  * throws [NaN, NaN] if complex roots found: consider using complex solver
  *
  */
-export function solveQuadratic(poly: Polynomial): [Fraction, Fraction] | [number, number] {
+export function solveQuadratic(
+	poly: Polynomial | (number | Fraction)[],
+): [Fraction, Fraction, 'frac'] | [number, number, 'float'] | [number, number, 'NaN'] {
+	if (!(poly instanceof Polynomial)) {
+		poly = new Polynomial(poly);
+	}
 	if (poly.degree !== 2) {
 		throw new Error(`${poly} is not a quadratic polynomial`);
 	}
@@ -87,20 +92,20 @@ export function solveQuadratic(poly: Polynomial): [Fraction, Fraction] | [number
 	}
 	const discriminant = b.square().minus(a.times(c).times(4));
 	if (discriminant.valueOf() < 0) {
-		return [NaN, NaN];
+		return [NaN, NaN, 'NaN'];
 	}
 	const sqrt = new SquareRoot(discriminant);
 	if (sqrt.isRational()) {
 		const sqrtValue = sqrt.coeff;
 		const root1 = b.negative().minus(sqrtValue).divide(2).divide(a);
 		const root2 = b.negative().plus(sqrtValue).divide(2).divide(a);
-		return [root1, root2];
+		return [root1, root2, 'frac'];
 	}
 	// irrational answers
 	const sqrtValue = sqrt.valueOf();
 	const root1 = (-b.valueOf() - sqrtValue) / 2 / a.valueOf();
 	const root2 = (-b.valueOf() + sqrtValue) / 2 / a.valueOf();
-	return [root1, root2];
+	return [root1, root2, 'float'];
 }
 
 /**
@@ -109,7 +114,10 @@ export function solveQuadratic(poly: Polynomial): [Fraction, Fraction] | [number
  * throws if complex roots found: consider using complex solver
  *
  */
-export function solveQuadraticSurd(poly: Polynomial): [Expression, Expression] {
+export function solveQuadraticSurd(poly: Polynomial | (number | Fraction)[]): [Expression, Expression] {
+	if (!(poly instanceof Polynomial)) {
+		poly = new Polynomial(poly);
+	}
 	if (poly.degree !== 2) {
 		throw new Error(`${poly} is not a quadratic polynomial`);
 	}
@@ -134,7 +142,10 @@ export function solveQuadraticSurd(poly: Polynomial): [Expression, Expression] {
 /**
  * solves a linear equation
  */
-export function solveLinear(poly: Polynomial): Fraction {
+export function solveLinear(poly: Polynomial | (number | Fraction)[]): Fraction {
+	if (!(poly instanceof Polynomial)) {
+		poly = new Polynomial(poly);
+	}
 	return poly.coeffs[0].negative().divide(poly.coeffs[1]);
 }
 

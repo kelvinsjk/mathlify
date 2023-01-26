@@ -167,7 +167,9 @@ export class Polynomial extends Expression {
 		return this.pow(2);
 	}
 
-	// returns a polynomial with positive leading coefficient and gcd(...coeffs) = 1
+	/**
+	 * returns a polynomial with positive leading coefficient and gcd(...coeffs) = 1
+	 * */
 	simplify(): Polynomial {
 		const [newCoeffs] = Fraction.factorize(...this.coeffs);
 		return new Polynomial(newCoeffs, { ascending: true, variable: this.variable }).changeAscending(this.ascending);

@@ -11,9 +11,12 @@ import { Fraction, numberToFraction } from '../core/index';
 export function getRandomFrac(options?: {
 	numRange?: [number, number];
 	denRange?: [number, number];
-	avoid?: (number | Fraction)[];
+	avoid?: number | Fraction | (number | Fraction)[];
 }): Fraction {
-	const avoidArray = options?.avoid ?? [];
+	let avoidArray = options?.avoid ?? [];
+	if (!Array.isArray(avoidArray)) {
+		avoidArray = [avoidArray];
+	}
 	const fractionOptions = {
 		numRange: options?.numRange ?? [-9, 9],
 		denRange: options?.denRange ?? [1, 9],

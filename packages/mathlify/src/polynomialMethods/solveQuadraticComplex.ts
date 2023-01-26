@@ -1,8 +1,13 @@
 import { solveQuadraticSurd } from './polynomials';
 import { Complex, xComplex } from '../complex';
-import { Polynomial, SquareRoot } from '../core';
+import { Polynomial, SquareRoot, type Fraction } from '../core';
 
-export function solveQuadraticComplex(poly: Polynomial): [Complex, Complex] | [xComplex, xComplex] {
+export function solveQuadraticComplex(
+	poly: Polynomial | (number | Fraction)[],
+): [Complex, Complex] | [xComplex, xComplex] {
+	if (!(poly instanceof Polynomial)) {
+		poly = new Polynomial(poly);
+	}
 	if (poly.degree !== 2) {
 		throw new Error(`${poly} is not a quadratic polynomial`);
 	}
