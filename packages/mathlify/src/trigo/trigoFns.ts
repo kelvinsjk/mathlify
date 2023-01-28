@@ -75,6 +75,6 @@ export function sin(theta: Angle | number | Fraction): SquareRoot {
 	throw new Error(`${theta} sin function only valid for special angles`);
 }
 
-export function tan(theta: Angle): SquareRoot {
+export function tan(theta: Angle | number | Fraction): SquareRoot {
 	return sin(theta).divide(cos(theta));
 }
