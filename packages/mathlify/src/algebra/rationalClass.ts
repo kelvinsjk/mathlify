@@ -48,11 +48,13 @@ export class Rational {
 		const poles = assignPoles(den, options?.poles);
 		// check for common factors
 		let newPoles = poles.map((x) => x);
+		console.log(`poles, ${poles}`);
 		poles.forEach((x) => {
 			const numerator = num as Polynomial;
 			if (numerator.subIn(x).isEqualTo(0)) {
-				({ quotient: num } = longDivide(<Polynomial>num, new Polynomial([1, x.negative()], { variable: unknown })));
-				({ quotient: den } = longDivide(<Polynomial>den, new Polynomial([1, x.negative()], { variable: unknown })));
+				const denominator = den as Polynomial;
+				({ quotient: num } = longDivide(numerator, new Polynomial([1, x.negative()], { variable: unknown })));
+				({ quotient: den } = longDivide(denominator, new Polynomial([1, x.negative()], { variable: unknown })));
 				newPoles = newPoles.filter((y) => !y.isEqualTo(x));
 			}
 		});
@@ -175,8 +177,8 @@ function assignPoles(den: Polynomial, providedPoles?: (number | Fraction)[]): Fr
 		return [solveLinear(den)];
 	} else if (den.degree === 2) {
 		const roots = solveQuadratic(den);
-		if (roots[0] instanceof Fraction) {
-			return <Fraction[]>roots;
+		if (roots[2] === 'frac') {
+			return [roots[0], roots[1]];
 		}
 	} else {
 		// degree 3 and above

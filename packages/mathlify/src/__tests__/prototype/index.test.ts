@@ -7,7 +7,6 @@ import {
 	gcd,
 	xVector,
 	uVector,
-	Unknown,
 	Term,
 	expToPoly,
 	solveQuadratic,
@@ -30,11 +29,8 @@ longDivision('long division', () => {
 });
 
 longDivision('xPoly', () => {
-	const sN = new xPolynomial(['A', 'B', 0], { unknown: 'n' });
+	const sN = new xPolynomial(['A', 'B', 0], { variable: 'n' });
 	const sNMinus1 = sN.replaceXWith(new Polynomial([1, -1]));
-	console.log(`${sN}`);
-	console.log(`${sNMinus1}`);
-	console.log(`${sN.minus(sNMinus1)}`);
 });
 
 longDivision.run();
