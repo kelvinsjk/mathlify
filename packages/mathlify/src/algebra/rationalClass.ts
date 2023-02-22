@@ -48,7 +48,6 @@ export class Rational {
 		const poles = assignPoles(den, options?.poles);
 		// check for common factors
 		let newPoles = poles.map((x) => x);
-		console.log(`poles, ${poles}`);
 		poles.forEach((x) => {
 			const numerator = num as Polynomial;
 			if (numerator.subIn(x).isEqualTo(0)) {

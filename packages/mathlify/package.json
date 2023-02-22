@@ -13,7 +13,6 @@
 		"preversion": "pnpm run lint",
 		"version": "pnpm run format && git add -A src",
 		"postversion": "git commit -m 'new version' && git push && git push --tags",
-		"postpublish": "git add package.json && git add package-lock.json && git commit -m 'new version'",
 		"format": "prettier --write \"src/**/*.ts\"",
 		"lint": "eslint --ignore-path .gitignore",
 		"build": "parcel build",

@@ -91,11 +91,18 @@ export class ComplexExp extends Term {
 	/**
 	 * returns the polar form r (cos theta + i sin theta)
 	 */
-	toPolarString(): string {
-		const trigoString = this.arg.k.isLessThan(0)
-			? `\\cos \\left( ${this.arg} \\right) + \\mathrm{i} \\sin \\left( ${this.arg} \\right)`
-			: `\\cos ${this.arg} + \\mathrm{i} \\sin ${this.arg}`;
-		return this.mod.isEqualTo(1) ? trigoString : `${this.mod} \\left( ${trigoString} \\right)`;
+	toPolarString(wrap = false): string {
+		if (wrap) {
+			const trigoString = this.arg.k.isLessThan(0)
+				? `\\cos ( ${this.arg} ) + \\mathrm{i} \\sin ( ${this.arg} )`
+				: `\\cos ${this.arg} + \\mathrm{i} \\sin ${this.arg}`;
+			return this.mod.isEqualTo(1) ? trigoString : `${this.mod} ( ${trigoString} )`;
+		} else {
+			const trigoString = this.arg.k.isLessThan(0)
+				? `\\cos \\left( ${this.arg} \\right) + \\mathrm{i} \\sin \\left( ${this.arg} \\right)`
+				: `\\cos ${this.arg} + \\mathrm{i} \\sin ${this.arg}`;
+			return this.mod.isEqualTo(1) ? trigoString : `${this.mod} \\left( ${trigoString} \\right)`;
+		}
 	}
 	clone(): ComplexExp {
 		return new ComplexExp(this.mod, this.arg);
