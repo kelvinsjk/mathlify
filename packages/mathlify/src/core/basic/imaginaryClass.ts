@@ -33,7 +33,8 @@ export class Imaginary extends BasicTerm {
 		return result;
 	}
 	square(): Fraction {
-		return <Fraction>this.times(this);
+		const x = this.times(this) as Fraction;
+		return x;
 	}
 
 	clone(): Imaginary {

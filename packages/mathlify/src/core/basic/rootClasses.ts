@@ -130,7 +130,7 @@ export class NthRoot extends BasicTerm {
 	 *
 	 * Warning: throws if NthRoot is not a rational number.
 	 */
-	numberToFraction(): Fraction {
+	toFraction(): Fraction {
 		if (!this.isRational()) {
 			throw new Error('NthRoot is not a rational number');
 		}
@@ -222,7 +222,7 @@ export class SquareRoot extends NthRoot {
 		if (this.radicand.isEqualTo(x.radicand)) {
 			return new SquareRoot(this.radicand, this.coeff.plus(x.coeff));
 		}
-		throw new Error(`${x} and ${this} have different radicands`);
+		throw new Error(`${x} and ${this} have different radicands. Consider using an Expression class`);
 	}
 	/**
 	 * subtraction of radicals: only work for same radicand currently

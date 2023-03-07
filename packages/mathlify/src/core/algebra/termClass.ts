@@ -181,7 +181,7 @@ export class Term extends BasicTerm {
 		let frac = this.coeff.clone();
 		for (const unit of this.basicUnits) {
 			if (!(unit instanceof VariableTerm)) {
-				throw new Error(`subIn only valid for Unknowns at the moment ${unit}`);
+				throw new Error(`subIn only valid for Variable Terms at the moment ${unit}`);
 			}
 			frac = frac.times(unit.subIn(x));
 		}

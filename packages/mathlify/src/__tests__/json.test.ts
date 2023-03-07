@@ -1,7 +1,7 @@
 import { test, suite } from 'uvu';
 import * as assert from 'uvu/assert';
 
-import { Fraction, Term, Expression, Polynomial, JSONParse } from '../index';
+import { Fraction, Term, Expression, Polynomial, JSONParse, SquareRoot, Imaginary } from '../index';
 
 const json = suite('json methods');
 
@@ -20,10 +20,13 @@ const oneSixthX2Parsed = JSONParse(oneSixthX2Json) as Polynomial;
 const mixed = [oneSixth, oneSixthX2];
 const mixedJson = JSON.stringify(mixed);
 const [oneSixthV2, oneSixthX2V2] = JSONParse(mixedJson) as [Fraction, Polynomial];
+const sixthRoot2 = new SquareRoot(2, oneSixth);
+const i = new Imaginary();
 
 json('single item', () => {
 	//assert.throws(() => JSONParse('{"type":"impossible","args":[1]}'));
 	assert.is(oneSixthJSON, '{"type":"fraction","args":[1,6]}');
+	assert.is(JSON.stringify(i), '{"type":"imaginary","args":[{"type":"fraction","args":[1,1]}]}');
 	assert.is(oneSixthParsed.isEqualTo(oneSixth), true);
 	//assert.is(oneSixthXJson, '{"type":"term","args":[{"type":"fraction","args":[1,6]},"x"]}');
 	assert.is(oneSixthXParsed.toString(), '\\frac{1}{6} x');
@@ -39,6 +42,7 @@ json('single item', () => {
 	assert.is(oneSixthX2Parsed.toString(), '\\frac{1}{6} x + 2');
 	assert.is(oneSixthV2.isEqualTo(oneSixth), true);
 	assert.is(oneSixthX2V2.toString(), '\\frac{1}{6} x + 2');
+	assert.is(`${JSONParse(JSON.stringify(sixthRoot2))}`, `\\frac{1}{6} \\sqrt{2}`);
 });
 
 json.run();

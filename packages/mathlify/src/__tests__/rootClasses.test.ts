@@ -27,6 +27,7 @@ rootClasses('toString', () => {
 	assert.is(`${zero}`, '0');
 	assert.is(`${two}`, '2');
 	assert.is(`${sqrtTwo}`, '\\sqrt{2}');
+	assert.is(`${sqrtTwo.toFixed(2)}`, '1.41');
 	assert.is(`${threeSqrtTwo}`, '3 \\sqrt{2}');
 	assert.is(`${oneSixthRootThree}`, '\\frac{1}{6} \\sqrt{3}');
 	assert.is(`${cubeRootTwo}`, '\\sqrt[3]{2}');
@@ -45,6 +46,13 @@ rootClasses('arithmetic', () => {
 	assert.is(`${cubeRootTwo.divide(2)}`, '\\frac{1}{2} \\sqrt[3]{2}');
 	assert.is(`${threeSqrtTwo.times(3)}`, '9 \\sqrt{2}');
 	assert.is(`${threeSqrtTwo.divide(3)}`, '\\sqrt{2}');
+	assert.is(`${sqrtTwo.times(-1).abs()}`, '\\sqrt{2}');
+	assert.is(`${threeSqrtTwo.minus(sqrtTwo)}`, '2 \\sqrt{2}');
+	assert.is(`${sqrtTwo.minus(new SquareRoot(3, 0))}`, '\\sqrt{2}');
+	assert.is(`${new SquareRoot(3, 0).minus(sqrtTwo)}`, '- \\sqrt{2}');
+	assert.throws(() => {
+		sqrtTwo.plus(oneSixthRootThree);
+	});
 });
 
 rootClasses('type conversions', () => {
@@ -54,6 +62,10 @@ rootClasses('type conversions', () => {
 	assert.is(oneSixthRootThree.isEqualTo(new SquareRoot(3, new Fraction(1, 6))), true);
 	//assert.is(four.toFraction().isEqualTo(4), true);
 	assert.is(four.isEqualTo(new Fraction(4)), true);
+	assert.throws(() => {
+		cubeRootTwo.toFraction();
+	});
+	assert.is(four.toFraction().isEqualTo(4), true);
 });
 
 rootClasses('clone', () => {

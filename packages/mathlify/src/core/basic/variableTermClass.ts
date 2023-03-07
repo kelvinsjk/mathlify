@@ -32,7 +32,7 @@ export class VariableTerm extends BasicTerm {
 			const n = numberToFraction(nNumber);
 			let variableString: string; // x^n
 			if (n.isEqualTo(1) || n.isEqualTo(0)) {
-				variableString = variable;
+				variableString = n.isEqualTo(1) ? variable : '';
 			} else {
 				const powerString = `${n}`.length > 1 ? `{${n}}` : `${n}`;
 				variableString = `${variable}^${powerString}`;
