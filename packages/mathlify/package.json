@@ -7,11 +7,13 @@
 		"dev": "vite",
 		"build": "vite build",
 		"preview": "vite preview",
+		"test": "vitest --coverage",
 		"check": "svelte-check --tsconfig ./tsconfig.json"
 	},
 	"devDependencies": {
 		"@sveltejs/vite-plugin-svelte": "^2.0.4",
 		"@tsconfig/svelte": "^4.0.1",
+		"@vitest/coverage-c8": "^0.31.4",
 		"eslint": "^8.41.0",
 		"prettier": "^2.8.8",
 		"svelte": "^3.58.0",
