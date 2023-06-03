@@ -99,9 +99,15 @@ export class Fraction {
 	 * @param n integer
 	 * @returns this fraction to the power of `n`
 	 */
-	pow(n: number): Fraction {
+	pow(n: number | Fraction): Fraction {
+		if (n instanceof Fraction) {
+			if (n.den !== 1) {
+				throw new RangeError(`only integral n are allowed for fraction.pow at the moment. ${n} received`);
+			}
+			n = n.valueOf();
+		}
 		if (!Number.isInteger(n)) {
-			throw new RangeError('only integral n are allowed for fraction.pow(n)');
+			throw new RangeError(`only integral n are allowed for fraction.pow(n). ${n} received`);
 		}
 		const modN = Math.abs(n);
 		const thisPowerModN = new Fraction(Math.pow(this.num, modN), Math.pow(this.den, modN));
@@ -122,6 +128,13 @@ export class Fraction {
 	isEqualTo(f2: number | Fraction): boolean {
 		f2 = numberToFraction(f2);
 		return this.num === f2.num && this.den == f2.den;
+	}
+
+	/**
+	 * checks if this fraction not is equal to `f2`
+	 */
+	isNotEqualTo(f2: number | Fraction): boolean {
+		return !this.isEqualTo(f2);
 	}
 
 	/**

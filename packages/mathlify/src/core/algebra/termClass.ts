@@ -19,8 +19,8 @@ import { Expression } from './expressionClass';
 export class Term extends BasicTerm {
 	/** array of basic units (sqrt, variableTerms, imaginary unit) */
 	basicUnits: (SquareRoot | VariableTerm | Imaginary)[];
-	isSurd: boolean;
-	isImag: boolean;
+	//isSurd: boolean;
+	//isImag: boolean;
 
 	constructor(...basicUnits: (number | Fraction | string | SquareRoot | VariableTerm | Imaginary)[]) {
 		let coeff = new Fraction(1);
@@ -116,8 +116,8 @@ export class Term extends BasicTerm {
 			),
 		);
 		this.basicUnits = simplifiedBasicUnits;
-		this.isImag = imagPresent;
-		this.isSurd = surdPresent && !imagPresent;
+		//this.isImag = imagPresent;
+		//this.isSurd = surdPresent && !imagPresent;
 	}
 
 	/**
@@ -173,9 +173,9 @@ export class Term extends BasicTerm {
 	}
 
 	// applies negative if surd or imaginary term present
-	conjugate(): Term {
-		return this.isImag || this.isSurd ? this.negative() : this.clone();
-	}
+	//conjugate(): Term {
+	//	return this.isImag || this.isSurd ? this.negative() : this.clone();
+	//}
 
 	subIn(x: number | Fraction): Fraction {
 		let frac = this.coeff.clone();

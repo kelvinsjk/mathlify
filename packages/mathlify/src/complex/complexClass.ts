@@ -1,4 +1,4 @@
-import { Fraction, Imaginary, Expression, numberToFraction, SquareRoot } from '../core';
+import { Fraction, Imaginary, Expression, numberToFraction, SquareRoot, Term } from '../core';
 
 /**
  * Complex class representing x + yi
@@ -14,10 +14,10 @@ export class Complex extends Expression {
 	 */
 	constructor(real: number | Fraction, imag: number | Fraction = 0) {
 		const x = numberToFraction(real);
-		const y = new Imaginary(imag);
-		super(x, y);
+		// const y = new Imaginary(imag);
+		super(x, new Term(imag, 'i'));
 		this.real = x;
-		this.imag = y.coeff;
+		this.imag = numberToFraction(imag);
 	}
 
 	/**

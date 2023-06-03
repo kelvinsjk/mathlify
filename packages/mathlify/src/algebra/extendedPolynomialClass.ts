@@ -1,4 +1,4 @@
-import { Fraction, VariableTerm, Expression, numberToFraction, type Term, Polynomial } from '../core';
+import { Fraction, Expression, numberToFraction, Term, Polynomial } from '../core';
 
 /**
  * Polynomial class representing "ax^n + bx^n-1 + ... + k"
@@ -19,7 +19,7 @@ export class xPolynomial extends Expression {
 	 * @param options defaults to `{ascending: false, degree: coeffs.length-1, variable: 'x'}`
 	 */
 	constructor(
-		coeffs: (number | Fraction | string | Expression | VariableTerm)[] | (number | Fraction),
+		coeffs: (number | Fraction | string | Expression)[] | (number | Fraction),
 		options?: { ascending?: boolean; degree?: number; variable?: string },
 	) {
 		if (!Array.isArray(coeffs)) {
@@ -51,7 +51,7 @@ export class xPolynomial extends Expression {
 		}
 		// generate unknown terms
 		const polynomialTerms = coeffsFrac.map((coeff, n) => {
-			return coeff.times(new VariableTerm(variable).pow(n));
+			return coeff.times(new Term(variable, n));
 		});
 		// descending order typesetting if necessary;
 		if (!ascending) {
@@ -280,7 +280,7 @@ function toXPolynomial(p2: number | Fraction | string | Polynomial | xPolynomial
 	return new xPolynomial([p2]);
 }
 
-function toExpression(x: number | Fraction | string | Expression | VariableTerm) {
+function toExpression(x: number | Fraction | string | Expression) {
 	if (x instanceof Expression) {
 		return x;
 	}

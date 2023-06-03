@@ -1,4 +1,4 @@
-import { VariableTerm, Expression, Polynomial } from '../core/index';
+import { Expression, Polynomial } from '../core/index';
 import { createZeroArray } from '../core/algebra/polynomialClass';
 
 /**
@@ -16,33 +16,31 @@ export function expToPoly(exp: Expression, options?: { n?: number; ascending?: b
 	const coeffs = createZeroArray(n + 1);
 	let variable: string | undefined = undefined;
 	exp.terms.forEach((term) => {
+		const length = Object.keys(term.symbols).length;
 		// constant term
-		if (term.basicUnits.length === 0) {
+		if (length === 0) {
 			coeffs[0] = coeffs[0].plus(term.coeff);
 			return;
 		}
 		// checks for unknown term
-		if (term.basicUnits.length > 1) {
+		if (length > 1) {
 			throw new Error(`cannot convert term with more than one basic unit ${term}`);
 		}
-		const unit = term.basicUnits[0];
-		if (!(unit instanceof VariableTerm)) {
-			throw new Error(`cannot convert term with non-unknown basic unit ${term}`);
-		}
+		const unit = term.symbols[Object.keys(term.symbols)[0]];
 		// checks if more than one unknown
 		if (variable === undefined) {
-			variable = unit.variable;
+			variable = unit.symbol.symbol;
 		} else {
-			if (variable !== unit.variable) {
+			if (variable !== unit.symbol.symbol) {
 				throw new Error(`cannot convert term with multiple unknowns ${unit}, ${variable}`);
 			}
 		}
 		// checks validity of degree
-		if (unit.n.isLessThan(0) || unit.n.isGreaterThan(n) || !unit.n.isInteger()) {
+		if (unit.power.isLessThan(0) || unit.power.isGreaterThan(n) || !unit.power.isInteger()) {
 			throw new Error(`Invalid degree for ${unit} to be converted into polynomial`);
 		}
 		// adds into coeffs array
-		coeffs[unit.n.valueOf()] = coeffs[unit.n.valueOf()].plus(term.coeff);
+		coeffs[unit.power.valueOf()] = coeffs[unit.power.valueOf()].plus(term.coeff);
 	});
 	if (!ascending) {
 		coeffs.reverse();

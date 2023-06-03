@@ -14,6 +14,7 @@ import {
 	uVectorExpression,
 	uxVector,
 	cramersFrac,
+	Expression,
 } from '../../index';
 
 const vectorsI = suite('12: Vectors I');
@@ -137,11 +138,7 @@ function qn10(variables?: { a?: Vector; b?: Vector }): [xVector, SquareRoot] {
 	let { a, b } = { a: new Vector(2, 3, 6), b: new Vector(1, -2, 2) };
 	// construction
 	const variable = 'p';
-	const pA = new xVector(
-		new VariableTerm(a.x, { variable }),
-		new VariableTerm(a.y, { variable }),
-		new VariableTerm(a.z, { variable }),
-	);
+	const pA = new xVector(new Term(a.x, variable), new Term(a.y, variable), new Term(a.z, variable));
 	const p = b.magnitude().divide(a.magnitude());
 
 	return [pA, p];
@@ -173,15 +170,15 @@ function qn12(variables?: { a?: Vector; b?: Vector; m1?: number; l2?: number; m2
 	// solution working
 	const lambda = new Term('\\lambda');
 	const c3 = new xVector(
-		lambda.times(a.x).plus(b.multiply(m2).x),
-		lambda.times(a.y).plus(b.multiply(m2).y),
-		lambda.times(a.z).plus(b.multiply(m2).z),
+		new Expression(lambda.times(a.x), b.multiply(m2).x),
+		new Expression(lambda.times(a.y), b.multiply(m2).y),
+		new Expression(lambda.times(a.z), b.multiply(m2).z),
 	);
 	const quadratic = expToPoly(c3.magnitudeSquare().minus(c2.magnitudeSquare()));
-	const roots = solveQuadratic(quadratic) as [Fraction, Fraction];
+	const roots = solveQuadratic(quadratic);
 	const [lambda1, lambda2] = roots;
-	const c2b = c3.subIn(lambda2);
-	const c2a = c3.subIn(lambda1);
+	const c2b = c3.subIn(lambda2 as Fraction);
+	const c2a = c3.subIn(lambda1 as Fraction);
 
 	return [c2a, c2b];
 }
@@ -202,8 +199,8 @@ function qn15(variables?: {
 	// question
 	const f1 = new Fraction(l1, l1 + m1);
 	const f2 = new Fraction(l2, l2 + m2);
-	const f1A = new uxVector('a', new VariableTerm(f1, { variable: '\\lambda' }));
-	const f2B = new uxVector('b', new VariableTerm(f2, { variable: '\\mu' }));
+	const f1A = new uxVector('a', new Term(f1, '\\lambda'));
+	const f2B = new uxVector('b', new Term(f2, '\\mu'));
 	const bcVec = `\\mathbf{r} = ${f1A} + (1-\\lambda) \\mathbf{b}`;
 	const adVec = `\\mathbf{r} = (1-\\mu) \\mathbf{a} + ${f2B}`;
 
@@ -228,7 +225,7 @@ function qn16(variables?: { u?: Vector }): [xVector, xVector] {
 
 	// answer
 	const vector = v.plus(u).cross(v.negative().plus(u));
-	const v2 = new xVector('a', 0, new VariableTerm(-1, { variable: 'a' }));
+	const v2 = new xVector('a', 0, new Term(-1, 'a'));
 	const vector2 = v2.plus(u).cross(v2.negative().plus(u));
 	// typeset
 	return [vector, vector2];

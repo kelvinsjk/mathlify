@@ -1,12 +1,17 @@
-import { Term } from './termClass';
-//import { Term } from './termClass';
+import { Term } from './term';
 import { Fraction } from '../fractionClass';
-import { VariableTerm, SquareRoot, Imaginary } from '../basic';
+import {
+	VariableTerm,
+	//SquareRoot,
+	Imaginary,
+} from '../basic';
+import { SquareRoot } from './sqrt';
 
 /**
  * Expression class representing the sum of `Terms`
  */
 export class Expression {
+	kind: string;
 	/** array of terms making up the expression */
 	terms: Term[] = [];
 
@@ -16,15 +21,26 @@ export class Expression {
 	 * `number` and `Fraction` types will be transformed into constant terms,
 	 *  while `string` type will be transformed into a term with coefficient 1
 	 */
-	constructor(...args: (Term | VariableTerm | Fraction | number | string | SquareRoot | Imaginary)[]) {
-		const terms = args.map((term) => {
-			if (term instanceof Term) {
-				return term.clone();
+	constructor(
+		...args: (number | Fraction | string | [string, number | Fraction] | SquareRoot | Term | ExpressionOptions)[]
+	) {
+		let terms: Term[] = [];
+		let kind = 'expression';
+		args.forEach((x) => {
+			if (typeof x === 'object' && 'expressionKind' in x) {
+				kind = x.expressionKind;
+			} else {
+				const xTerm = x instanceof Term || x instanceof SquareRoot ? x : new Term(x);
+				const i = terms.findIndex((y) => y.isLike(xTerm));
+				if (i === -1) {
+					terms.push(xTerm);
+				} else {
+					terms = [...terms.slice(0, i), terms[i].plus(xTerm), ...terms.slice(i + 1)];
+				}
 			}
-			return new Term(term);
 		});
-		// combine like terms and remove zero terms
-		this.terms = combineLikeTerms(terms).filter((term) => !term.coeff.isEqualTo(0));
+		this.terms = terms.filter((x) => !x.coeff.isEqualTo(0));
+		this.kind = kind;
 	}
 
 	/**
@@ -36,12 +52,9 @@ export class Expression {
 		if (this.terms.length === 0) {
 			return '0';
 		}
-		let outputString = '';
-		this.terms.forEach((term, i) => {
-			if (i !== 0) {
-				outputString += term.coeff.isGreaterThan(0) ? ' + ' : ' ';
-			}
-			outputString += term.toString();
+		let outputString = this.terms[0].toString();
+		this.terms.slice(1).forEach((term) => {
+			outputString += term.coeff.isGreaterThan(0) ? ` + ${term}` : ` ${term}`;
 		});
 		return outputString;
 	}
@@ -60,12 +73,19 @@ export class Expression {
 	/**
 	 * performs scalar multiplication on each term of this
 	 */
-	times(k: number | Fraction | string | VariableTerm | SquareRoot | Imaginary | Term | Expression): Expression {
+	times(k: number | Fraction | string | SquareRoot | Term | Expression): Expression {
 		if (!(k instanceof Expression)) {
 			const terms = this.terms.map((term) => term.times(k));
 			return new Expression(...terms);
 		}
 		return k.terms.reduce((exp, term) => exp.plus(this.times(term)), new Expression(0));
+	}
+
+	divide(x: number | Fraction | string | SquareRoot | Term | Expression): Expression {
+		if (x instanceof Expression) {
+			throw new RangeError(`division by Expression not supported at the moment`);
+		}
+		return new Expression(...this.terms.map((y) => y.divide(x)));
 	}
 
 	/** applies negative to square root and imaginary terms */
@@ -111,9 +131,7 @@ export class Expression {
 	 *
 	 * @returns the sum
 	 */
-	plus(
-		newExpression: number | Fraction | string | VariableTerm | SquareRoot | Imaginary | Term | Expression,
-	): Expression {
+	plus(newExpression: number | Fraction | string | SquareRoot | Term | Expression): Expression {
 		return newExpression instanceof Expression
 			? new Expression(...this.terms, ...newExpression.terms)
 			: new Expression(...this.terms, newExpression);
@@ -124,9 +142,7 @@ export class Expression {
 	 *
 	 * @returns the difference
 	 */
-	minus(
-		newExpression: number | Fraction | string | VariableTerm | SquareRoot | Imaginary | Term | Expression,
-	): Expression {
+	minus(newExpression: number | Fraction | string | SquareRoot | Term | Expression): Expression {
 		if (!(newExpression instanceof Expression)) {
 			newExpression = new Expression(newExpression);
 		}
@@ -142,25 +158,6 @@ export class Expression {
 	}
 }
 
-function combineLikeTerms(terms: Term[]): Term[] {
-	const variableArray: string[] = [],
-		newTerms: Term[] = [];
-	terms.forEach((term) => {
-		const variableIndex = variableArray.indexOf(term.variableString);
-		if (variableIndex === -1) {
-			// new term type
-			variableArray.push(term.variableString);
-			newTerms.push(term.clone());
-		} else {
-			// combine like terms
-			const oldTerm = newTerms[variableIndex];
-			const newTerm = oldTerm.plus(term);
-			if (newTerm instanceof Term) {
-				newTerms[variableIndex] = newTerm;
-			} else {
-				throw new Error(`${newTerm} combining like terms failed.`);
-			}
-		}
-	});
-	return newTerms;
+export interface ExpressionOptions {
+	expressionKind: string;
 }

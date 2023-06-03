@@ -1,4 +1,4 @@
-import { Fraction, Imaginary, Term, Expression, numberToFraction, SquareRoot, numberToSquareRoot } from '../core';
+import { Fraction, Surd, Imaginary, Term, Expression, numberToFraction, SquareRoot, numberToSquareRoot } from '../core';
 import { Angle } from '../trigo';
 
 /**
@@ -24,10 +24,10 @@ export class ComplexExp extends Term {
 			theta = new Angle(theta);
 		}
 		if (theta.isEqualTo(0)) {
-			super(r);
+			super(r.coeff, new Surd(r.radicand.valueOf()));
 		} else {
 			const argumentTerm = new Term(1).times(theta).times('i');
-			super(r, `\\mathrm{e}^{${argumentTerm}}`);
+			super(r.coeff, new Surd(r.radicand.valueOf()), `\\mathrm{e}^{${argumentTerm}}`);
 		}
 		if (r.coeff.isLessThan(0)) {
 			throw new Error(`r ${r} must be non-negative`);

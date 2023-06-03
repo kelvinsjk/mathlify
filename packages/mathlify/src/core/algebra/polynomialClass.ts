@@ -1,5 +1,8 @@
-import { Expression } from './expressionClass';
-import { VariableTerm, SquareRoot } from '../basic';
+//import { Expression } from './expressionClass';
+//import { VariableTerm, SquareRoot } from '../basic';
+import { Expression } from './expression';
+import { SquareRoot } from './sqrt';
+import { Term } from './term';
 import { Fraction } from '../fractionClass';
 import { numberToFraction } from '../utils/numberToFraction';
 
@@ -60,7 +63,7 @@ export class Polynomial extends Expression {
 		}
 		// generate variable terms
 		const polynomialTerms = coeffsFrac.map((coeff, n) => {
-			return new VariableTerm(coeff, { variable, n });
+			return new Term(coeff, [variable, n]);
 		});
 		// descending order typesetting if necessary;
 		if (!ascending) {

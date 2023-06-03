@@ -21,9 +21,9 @@ import {
 	completeSquare,
 } from '../../index';
 
-const vectorsI = suite('12: Vectors I');
+const vectorsII = suite('13: Vectors II');
 
-vectorsI('2007-2009', () => {
+vectorsII('2007-2009', () => {
 	const vars07 = qn07();
 	assert.is(`${vars07[0].toCoordinates()}`, '\\left( \\frac{5}{2}, \\frac{3}{2}, \\frac{11}{2} \\right)');
 	assert.is(`${vars07[1]}`, '78.8^\\circ');
@@ -44,7 +44,7 @@ vectorsI('2007-2009', () => {
 	//assert.is(`${vars09[3]}`, '139');
 });
 
-vectorsI('2010-2014', () => {
+vectorsII('2010-2014', () => {
 	//const vars10 = qn10();
 	//assert.is(`${vars10[0]}`, '\\begin{pmatrix}\n\t2 p \\\\\n\t3 p \\\\\n\t6 p\n\\end{pmatrix}');
 	//assert.is(`${vars10[1]}`, '\\frac{3}{7}');
@@ -60,7 +60,7 @@ vectorsI('2010-2014', () => {
 	assert.is(`${vars14[2]}`, '21 \\mu^2 + 36 \\mu + 50');
 	assert.is(`${vars14[3].toCoordinates()}`, '\\left( \\frac{18}{7}, \\frac{15}{7}, - \\frac{12}{7} \\right)');
 });
-vectorsI('2015-2019', () => {
+vectorsII('2015-2019', () => {
 	//const vars15 = qn15();
 	//assert.is(`${vars15[0]}`, '\\frac{3}{5} \\mathbf{a}');
 	//assert.is(`${vars15[1]}`, '\\mathbf{r} = (1-\\mu) \\mathbf{a} + \\frac{5}{11} \\mu \\mathbf{b}');
@@ -80,7 +80,7 @@ vectorsI('2015-2019', () => {
 	assert.is(`${vars17[3]}`, '\\frac{1}{2} \\sqrt{10}');
 });
 
-vectorsI.run();
+vectorsII.run();
 
 function qn07(variables?: { a?: Vector; b?: Vector; n?: Vector; lambda?: Fraction }): [Vector, string, SquareRoot] {
 	let { a, b, lambda, n } = {
@@ -169,9 +169,9 @@ function qn14(variables?: {
 	const q = new Plane(a, d, n, { points: 1 });
 	const m = p.intersectPlane(q) as Line;
 	m.lambda = '\\mu';
-	const exp1 = new Term(m.d.x, '\\mu').plus(m.a.minus(a).x).square() as Expression;
-	const exp2 = new Term(m.d.y, '\\mu').plus(m.a.minus(a).y).square();
-	const exp3 = new Term(m.d.z, '\\mu').plus(m.a.minus(a).z).square();
+	const exp1 = new Expression(new Term(m.d.x, '\\mu'), m.a.minus(a).x.square());
+	const exp2 = new Expression(new Term(m.d.y, '\\mu'), m.a.minus(a).y.square());
+	const exp3 = new Expression(new Term(m.d.z, '\\mu'), m.a.minus(a).z.square());
 	const exp = exp1.plus(exp2).plus(exp3);
 	const foot = m.footOfPerpendicular(a);
 

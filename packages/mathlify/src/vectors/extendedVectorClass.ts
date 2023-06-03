@@ -21,9 +21,9 @@ export class xVector {
 	 *
 	 */
 	constructor(
-		x: number | Fraction | string | VariableTerm | Term | Expression,
-		y?: number | Fraction | string | VariableTerm | Term | Expression,
-		z?: number | Fraction | string | VariableTerm | Term | Expression,
+		x: number | Fraction | string | Term | Expression,
+		y?: number | Fraction | string | Term | Expression,
+		z?: number | Fraction | string | Term | Expression,
 		options?: { coeff?: number | Fraction },
 	) {
 		x = toExpression(x);
@@ -215,8 +215,8 @@ export class xVector {
 	static K = new xVector(0, 0, 1);
 }
 
-function toExpression(x: number | Fraction | string | VariableTerm | Term | Expression): Expression {
-	if (typeof x === 'number' || x instanceof Fraction || x instanceof VariableTerm || typeof x === 'string') {
+function toExpression(x: number | Fraction | string | Term | Expression): Expression {
+	if (typeof x === 'number' || x instanceof Fraction || typeof x === 'string') {
 		return new Expression(new Term(x));
 	}
 	return x instanceof Term ? new Expression(x) : x.clone();

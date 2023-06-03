@@ -1,5 +1,6 @@
 import { Fraction } from '../fractionClass';
-import { SquareRoot } from '../basic/rootClasses';
+// import { SquareRoot } from '../basic/rootClasses';
+import { SquareRoot } from '../algebra/sqrt';
 
 /**
  * takes an integer and/or Fraction, and returns a new Fraction instance

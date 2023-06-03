@@ -1,4 +1,4 @@
-import { Fraction, Term, Expression, VariableTerm, SquareRoot, Imaginary, Polynomial } from '../core/index';
+import { Fraction, Term, Expression, VariableTerm, SquareRoot, Imaginary, Polynomial, MathSymbol } from '../core/index';
 import { Vector } from '../vectors/index';
 import { Laurent } from '../calculus';
 
@@ -56,4 +56,5 @@ const classes = {
 	squareRoot: SquareRoot,
 	polynomial: Polynomial,
 	laurent: Laurent,
+	mathSymbol: MathSymbol,
 };

@@ -15,8 +15,8 @@ export class xComplex extends Expression {
 	 * Creates a new Complex instance
 	 */
 	constructor(
-		real: number | Fraction | string | Imaginary | VariableTerm | SquareRoot | Term | Expression,
-		imag: number | Fraction | string | Imaginary | VariableTerm | SquareRoot | Term | Expression = 0,
+		real: number | Fraction | string | SquareRoot | Term | Expression,
+		imag: number | Fraction | string | SquareRoot | Term | Expression = 0,
 	) {
 		real = real instanceof Expression ? real.clone() : new Expression(real);
 		imag = imag instanceof Expression ? imag.clone() : new Expression(imag);

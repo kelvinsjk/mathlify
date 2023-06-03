@@ -1,13 +1,4 @@
-import {
-	xVector,
-	Expression,
-	Fraction,
-	VariableTerm,
-	Term,
-	uVector,
-	uVectorExpression,
-	uxVectorExpression,
-} from '../index';
+import { xVector, Expression, Fraction, Term, uVector, uVectorExpression, uxVectorExpression } from '../index';
 
 import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
@@ -26,7 +17,7 @@ xVectors('boolean checks', () => {
 	const x = new xVector('x', new Term(0), new Expression(2));
 	const y = new xVector('x', 0, new Fraction(2));
 	const z = new xVector('y', 0, new Fraction(2));
-	const twoX = new xVector(new VariableTerm(2, { variable: 'x' }), 0, 4);
+	const twoX = new xVector(new Term(2, 'x'), 0, 4);
 	const xPerp = new xVector(-2, 'y', 'x');
 	const threeX = x.multiply(3);
 	const threeX2 = x.multiply(3, { multiplyIntoCoeff: true });

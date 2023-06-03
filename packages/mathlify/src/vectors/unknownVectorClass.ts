@@ -144,13 +144,13 @@ export class uxVector {
 	 * @param coeff the k in k a
 	 * @param vector the a in k a
 	 */
-	constructor(vector: string, coeff: Fraction | number | string | VariableTerm | Term = 1) {
+	constructor(vector: string, coeff: Fraction | number | string | Term = 1) {
 		// bold face if not already
 		vector = vector.slice(0, 7) === '\\mathbf' ? vector : `\\mathbf{${vector}}`;
 		if (coeff instanceof Term) {
 			this.coeff = coeff.clone();
 		} else {
-			this.coeff = coeff instanceof VariableTerm ? new Term(1, coeff) : new Term(coeff);
+			this.coeff = new Term(coeff);
 		}
 		this.vector = vector;
 	}
@@ -340,10 +340,10 @@ function combineLikeXVectors(vectors: (uVector | uxVector)[]): (uxVector | uVect
 			const coeff1 = newTerms[variableIndex].coeff;
 			const coeff2 = term.coeff;
 			let newCoeff: Term | Fraction | Expression;
-			if (coeff1 instanceof Fraction) {
+			if (coeff1 instanceof Fraction && coeff2 instanceof Fraction) {
 				newCoeff = coeff2.plus(coeff1);
 			} else {
-				newCoeff = coeff1.plus(coeff2);
+				newCoeff = new Expression(coeff1, coeff2);
 			}
 			if (!(newCoeff instanceof Expression)) {
 				newTerms[variableIndex] = new uxVector(term.vector, newCoeff);

@@ -64,7 +64,7 @@ function arctan(x: Polynomial, a2: number | Fraction, options?: { coeff?: number
 	const poly = x;
 	return {
 		toString(): string {
-			const term = new Term(a.reciprocal().divide(coeff), `\\tan^{-1} \\left( ${xTerm} \\right)`);
+			const term = a.reciprocal().divide(coeff).times(`\\tan^{-1} \\left( ${xTerm} \\right)`);
 			return `${term}`;
 		},
 		subIn(x: number | Fraction | SquareRoot): Angle {
@@ -135,10 +135,11 @@ function ln(
 			if (flip) {
 				[xNum, xDen] = [xDen, xNum];
 			}
-			const term = new Term(
-				a.reciprocal().divide(2).divide(coeff),
-				`\\ln \\left${open} \\frac{${xNum}}{${xDen}} \\right${close}`,
-			);
+			const term = a
+				.reciprocal()
+				.divide(2)
+				.divide(coeff)
+				.times(`\\ln \\left${open} \\frac{${xNum}}{${xDen}} \\right${close}`);
 			return `${term}`;
 		},
 		subIn(x: number | Fraction): LnValue {
@@ -168,10 +169,11 @@ function ln(
 			if (flip) {
 				[xNum, xDen] = [xDen, xNum];
 			}
-			const term = new Term(
-				a.reciprocal().divide(2).divide(coeff),
-				`\\ln \\left${open} \\frac{${xNum}}{${xDen}} \\right${close}`,
-			);
+			const term = a
+				.reciprocal()
+				.divide(2)
+				.divide(coeff)
+				.times(`\\ln \\left${open} \\frac{${xNum}}{${xDen}} \\right${close}`);
 			return `${term}`;
 		},
 	};
@@ -203,7 +205,7 @@ function arcsin(x: Polynomial, a2: number | Fraction, options?: { coeff?: number
 	const sinCoeff = new SquareRoot(coeff.reciprocal());
 	return {
 		toString(): string {
-			const term = new Term(sinCoeff, `\\sin^{-1} \\left( ${xTerm} \\right)`);
+			const term = sinCoeff.times(`\\sin^{-1} \\left( ${xTerm} \\right)`);
 			return `${term}`;
 		},
 		subIn(x: number | Fraction | SquareRoot): Angle {

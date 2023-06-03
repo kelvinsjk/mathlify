@@ -13,6 +13,13 @@ export {
 	factorize,
 	numberToFraction,
 	numberToSquareRoot,
+	MathSymbol,
+	ImaginarySymbol,
+	type ImaginarySymbolJSON,
+	Surd,
+	type SurdJSON,
+	RootSymbol,
+	type RootSymbolJSON,
 } from './core';
 
 export { Vector, Line, Plane, xVector, uVector, uxVector, uVectorExpression, uxVectorExpression } from './vectors';
