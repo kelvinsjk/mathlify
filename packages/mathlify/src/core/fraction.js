@@ -1,8 +1,4 @@
-import {
-	gcd,
-	lcm,
-	numberToFraction,
-} from "./utils/index.js";
+import { gcd, lcm, numberToFraction } from './utils/index.js';
 
 /** Fraction class
  * @property {number} num - the numerator (an integer)
@@ -23,11 +19,7 @@ export class Fraction {
 				`Non-integer {num: ${num}, den:${den}} received in Fraction class constructor`
 			);
 		}
-		if (
-			!Number.isFinite(num) ||
-			!Number.isFinite(den) ||
-			den === 0
-		) {
+		if (!Number.isFinite(num) || !Number.isFinite(den) || den === 0) {
 			throw new Error(
 				`Infinity {num: ${num}, den:${den}} received in Fraction class constructor`
 			);
@@ -58,14 +50,10 @@ export class Fraction {
 	 */
 	toString() {
 		if (this.den === 1) {
-			return this.num < 0
-				? `- ${Math.abs(this.num)}`
-				: `${this.num}`;
+			return this.num < 0 ? `- ${Math.abs(this.num)}` : `${this.num}`;
 		}
-		const sign = this.sign() === 1 ? "" : "- ";
-		return `${sign}\\frac{${Math.abs(this.num)}}{${
-			this.den
-		}}`;
+		const sign = this.sign() === 1 ? '' : '- ';
+		return `${sign}\\frac{${Math.abs(this.num)}}{${this.den}}`;
 	}
 
 	//  BOOLEAN METHODS
@@ -84,10 +72,7 @@ export class Fraction {
 	 * @returns {boolean}
 	 */
 	isEqualTo(x) {
-		return (
-			Math.abs(this.valueOf() - x.valueOf()) <
-			Number.EPSILON
-		);
+		return Math.abs(this.valueOf() - x.valueOf()) < Number.EPSILON;
 	}
 
 	/**
@@ -152,10 +137,7 @@ export class Fraction {
 	 */
 	plus(x) {
 		x = numberToFraction(x);
-		return new Fraction(
-			this.num * x.den + this.den * x.num,
-			this.den * x.den
-		);
+		return new Fraction(this.num * x.den + this.den * x.num, this.den * x.den);
 	}
 
 	/**
@@ -230,9 +212,7 @@ export class Fraction {
 			Math.pow(this.num, n),
 			Math.pow(this.den, n)
 		);
-		return reciprocal
-			? newFraction.reciprocal()
-			: newFraction;
+		return reciprocal ? newFraction.reciprocal() : newFraction;
 	}
 
 	/**
@@ -241,6 +221,14 @@ export class Fraction {
 	 */
 	square() {
 		return this.pow(2);
+	}
+
+	/**
+	 * absolute value
+	 * @returns {Fraction} - the absolute value of this
+	 */
+	abs() {
+		return new Fraction(Math.abs(this.num), this.den);
 	}
 
 	// number methods
@@ -304,7 +292,7 @@ export class Fraction {
 	 */
 	toJSON() {
 		return {
-			kind: "fraction",
+			kind: 'fraction',
 			num: this.num,
 			den: this.den,
 			args: [this.num, this.den],
@@ -330,10 +318,7 @@ export class Fraction {
 			nums.push(x.num);
 			dens.push(x.den);
 		});
-		const positiveGcd = new Fraction(
-			gcd(...nums),
-			lcm(...dens)
-		);
+		const positiveGcd = new Fraction(gcd(...nums), lcm(...dens));
 		return fractions.every((x) => x.valueOf() < 0)
 			? positiveGcd.negative()
 			: positiveGcd;

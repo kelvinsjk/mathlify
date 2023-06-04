@@ -11,23 +11,36 @@
   const nextLink = `/${chapters[i].title}/${chapters[i].sections[j].title}/${chapters[i].sections[j].subsections[k].title}`;
   const nextDesc = chapters[i].sections[j].subsections[k].description;
 
-  import {Fraction} from 'mathlify';
-  import {math} from 'mathlifier';
+  import { CodeBlock } from '@skeletonlabs/skeleton';
+  import { Fraction, getRandomFrac } from 'mathlify';
+  import { math, display } from 'mathlifier';
 
-  const frac = new Fraction(4,9);
-  const int = 2;
-  const qnString = `${frac} \\times ${int}`;
-  const ans = frac.times(int);
+  const x = new Fraction(4,9);
+  const y = new Fraction(3,5);
+  const qnString = `${x} \\times ${y}`;
+  const ans = x.times(y);
+  const ansString = `${ans}`;
+  const latexString = `${x} \\times ${y} = ${ans}`;
+  const code = 
+`const x = new Fraction(4,9);
+const y = new Fraction(3,5);
+const ans = x.times(y);
+const latexString = \`\${x} \\times \${y} = \${ans}\`;`;
 
-  //let a = Math.ceil(Math.random()*9);
-  //let b = Math.ceil(Math.random()*10);
-  //const c = Math.ceil(Math.random()*10);
-  //let frac1 = new Fraction(a,b);
-  //while (frac1.isInteger()){
-  //  a = Math.ceil(Math.random()*9);
-  //  b = Math.ceil(Math.random()*10);
-  //  frac1 = new Fraction(a,b);
-  //}
+  const x2 = getRandomFrac().abs();
+  const y2 = getRandomFrac({allowInt: false}).abs();
+  const qnString2 = `${x2} \\cdot ${y2}`;
+  const ans2 = x2.times(y2);
+  const ansString2 = `${ans2}`;
+  const latexString2 = `${x2} \\times ${y2} = ${ans2}`;
+  const code2 = 
+`const x = new Fraction(4,9);
+const y = new Fraction(3,5);
+const ans = x.times(y);
+const latexString = \`\${x} \\times \${y} = \${ans}\`;`;
+
+  import {svelteCode} from '../01-multiplying-integers/+page.svelte';
+
 </script>
 
 <svelte:head>
@@ -51,16 +64,22 @@
   </p>
 
   <h2>Questions</h2>
-  <div>
+  <div class="grid gap-4">
     <div>
       Q1. Evaluate {@html math(qnString)}
+    </div>
+    <div>
+      Q2. Evaluate {@html math(qnString2)}
     </div>
   </div>
   
   <h2>Answers</h2>
-  <div>
+  <div class="grid gap-4">
     <div>
       A1. {@html math(`${ans}`)}
+    </div>
+    <div>
+      A2. {@html math(`${ans2}`)}
     </div>
   </div>
 
@@ -78,6 +97,26 @@
     The following is the source code used to generate the questions.
     Q1 is static (ie the numbers are fixed), while Q2 is generated randomly.
   </div>
+
+  <p>
+    The mathlify library, used in conjunction with JavaScript's template literal strings,
+    makes for idiomatic code that conveniently outputs as a {@html math('\\LaTeX')} string.
+    We can then display it with our medium of choice (to a {@html math('\\TeX')} file to
+    pdf, or to the DOM for the web via libraries like {@html math('\\KaTeX')} and MathJax).
+  </p>
+  <h3>Static Q1</h3>
+  <CodeBlock language="ts" {code} />
+  {@html display(latexString)}
+  <h3>Random generated Q2</h3>
+  <CodeBlock language="ts" code={code2} />
+  {@html display(latexString2)}
+  <h3>Example with Svelte and Mathlifier</h3>
+  <p>
+    We like using the mathlifier library (which is a small wrapper over {@html math('\\KaTeX')}),
+    and the Svelte framework.
+  </p>
+  <CodeBlock language="svelte" code={svelteCode} />
+
 </div>
 
 <style>

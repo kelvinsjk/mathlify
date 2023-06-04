@@ -4,5 +4,5 @@
  * @returns the Fraction class representation of x
  */
 export function numberToFraction(x: number | Fraction): Fraction;
-import { Fraction } from '../fraction';
+import { Fraction } from "../fraction.js";
 //# sourceMappingURL=toFraction.d.ts.map

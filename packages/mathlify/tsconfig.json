@@ -1,5 +1,4 @@
 {
-	"extends": "@tsconfig/svelte/tsconfig.json",
 	"compilerOptions": {
 		"target": "ESNext",
 		"useDefineForClassFields": true,
@@ -16,12 +15,7 @@
 		"outDir": "./types",
 		"declarationMap": true
 	},
-	"include": [
-		"src/**/*.d.ts",
-		"src/**/*.ts",
-		"src/**/*.js",
-		"src/**/*.svelte"
-	],
+	"include": ["src/**/*.d.ts", "src/**/*.ts", "src/**/*.js", "src/**/*.svelte"],
 	"exclude": ["src/**/*.test.ts"],
 	"references": [{ "path": "./tsconfig.node.json" }]
 }

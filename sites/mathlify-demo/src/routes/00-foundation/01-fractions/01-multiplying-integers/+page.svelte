@@ -1,3 +1,20 @@
+<script context="module">
+  export const svelteCode = 
+`<script>
+  import { math } from 'mathlifier';
+  // frac, int and ans from above
+  const qnString = \`\${frac} \\times \${int}\`;
+  const ansString = \`\${ans}\`;
+<\/script>
+
+<h2>Question</h2>
+Q1. {@html math(qnString)}
+<h2>Answer</h2>
+A1. {@html math(ansString)}
+`;
+  
+</script>
+
 <script lang="ts">
   const chapter = '00-foundation';
   const section = '01-fractions';
@@ -9,8 +26,9 @@
   const nextLink = `/${chapters[i].title}/${chapters[i].sections[j].title}/${chapters[i].sections[j].subsections[k+1].title}`;
   const nextDesc = chapters[i].sections[j].subsections[k+1].description;
 
-  import {Fraction} from 'mathlify';
-  import {math} from 'mathlifier';
+  import { CodeBlock } from '@skeletonlabs/skeleton';
+  import { Fraction, getRandomFrac, getRandomInt } from 'mathlify';
+  import { math,display } from 'mathlifier';
 
   const frac = new Fraction(4,9);
   const int = 2;
@@ -21,26 +39,22 @@
 `import { Fraction } from 'mathlify';
 const frac = new Fraction(4,9);
 const int = 2;
-const qnString = \`\${frac} \\times \${int}\`;
 const ans = frac.times(int);
-const ansString = \`\${ans}\`
-// qnString: "\\frac{4}{9} \\times 2"
-// ansString: "\\frac{8}{9}"`;
+const latexString = \`\${frac} \\times \${int} = \${ans}\`;
+// latexString: "\\frac{4}{9} \\times 2 = \\frac{8}{9}"`;
 
-  import { CodeBlock } from '@skeletonlabs/skeleton';
+  const frac2 = getRandomFrac({allowInt: false}).abs();
+  const int2 = getRandomInt({min: 2});
+  const qnString2 = `${int2} \\cdot ${frac2}`;
+  const ans2 = frac2.times(int2);
+  const ansString2 = `${ans2}`;
 
-  const svelteCode = 
-`<script>
-  import { math } from 'mathlifier';
-  // qnString and ansString from code above
-<\/script>
-
-<h2>Question</h2>
-Q1. {@html math(qnString)}
-<h2>Answer</h2>
-A1. {@html math(ansString)}
-`;
-
+  const code2 = 
+`import { getRandomFrac, getRandomInt } from 'mathlify';
+const frac = getRandomFrac({allowInt: false}).abs();
+const int = getRandomInt({min: 2});
+const ans = frac.times(int);
+const latexString = \`\${int} \\cdot \${frac} = \${ans}\`;`;
 </script>
 
 <svelte:head>
@@ -64,16 +78,22 @@ A1. {@html math(ansString)}
   </p>
 
   <h2>Questions</h2>
-  <div>
+  <div class="grid gap-4">
     <div>
       Q1. Evaluate {@html math(qnString)}
+    </div>
+    <div>
+      Q2. Evaluate {@html math(qnString2)}
     </div>
   </div>
   
   <h2>Answers</h2>
-  <div>
+  <div class="grid gap-4">
     <div>
       A1. {@html math(ansString)}
+    </div>
+    <div>
+      A2. {@html math(ansString2)}
     </div>
   </div>
 
@@ -99,6 +119,10 @@ A1. {@html math(ansString)}
   </p>
   <h3>Static Q1</h3>
   <CodeBlock language="ts" {code} />
+  {@html display(`${frac} \\times ${int} = ${ans}`)}
+  <h3>Random generated Q2</h3>
+  <CodeBlock language="ts" code={code2} />
+  {@html display(`${int2} \\cdot ${frac2} = ${ans2}`)}
   <h3>Example with Svelte and Mathlifier</h3>
   <p>
     We like using the mathlifier library (which is a small wrapper over {@html math('\\KaTeX')}),

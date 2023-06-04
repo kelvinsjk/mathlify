@@ -1,5 +1,5 @@
-import { Fraction } from "../core/index.js";
-import { getRandomInt } from "./getRandomInt.js";
+import { Fraction } from '../core/index.js';
+import { getRandomInt } from './getRandomInt.js';
 
 /**
  * gets a random fraction
@@ -19,42 +19,22 @@ export function getRandomFrac(options) {
 		getRandomInt({ min: numRange[0], max: numRange[1] }),
 		getRandomInt({
 			min: denRange[0],
-			max: numRange[1],
+			max: denRange[1],
 			avoid: 0,
 		})
 	);
-	while (!allowInt && randomFrac.isInteger()) {
+	while (
+		avoidArr.some((x) => randomFrac.isEqualTo(x)) ||
+		(!allowInt && randomFrac.isInteger())
+	) {
 		randomFrac = new Fraction(
 			getRandomInt({ min: numRange[0], max: numRange[1] }),
 			getRandomInt({
 				min: denRange[0],
-				max: numRange[1],
+				max: denRange[1],
 				avoid: 0,
 			})
 		);
-	}
-	while (avoidArr.some((x) => randomFrac.isEqualTo(x))) {
-		randomFrac = new Fraction(
-			getRandomInt({ min: numRange[0], max: numRange[1] }),
-			getRandomInt({
-				min: denRange[0],
-				max: numRange[1],
-				avoid: 0,
-			})
-		);
-		while (!allowInt && randomFrac.isInteger()) {
-			randomFrac = new Fraction(
-				getRandomInt({
-					min: numRange[0],
-					max: numRange[1],
-				}),
-				getRandomInt({
-					min: denRange[0],
-					max: numRange[1],
-					avoid: 0,
-				})
-			);
-		}
 	}
 	return randomFrac;
 }

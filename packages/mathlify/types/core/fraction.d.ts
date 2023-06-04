@@ -150,6 +150,11 @@ export class Fraction {
      */
     square(): Fraction;
     /**
+     * absolute value
+     * @returns {Fraction} - the absolute value of this
+     */
+    abs(): Fraction;
+    /**
      * rounds off number
      * @returns {number}
      */
