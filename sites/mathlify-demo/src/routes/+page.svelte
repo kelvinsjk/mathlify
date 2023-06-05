@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {chapters} from "./chapters";
+  import {chapters} from "$lib/chapters";
 </script>
 
 <svelte:head>
@@ -12,27 +12,27 @@
   </h1>
   <nav class="list-nav">
     <ul>
-      {#each chapters as chapter}
+      {#each chapters as chapter,i}
       <li>
-        <a href={`/${chapter.title}`}>
+        <a href={`/${i}`}>
           <span class="badge-icon mr-1">📙</span>
-          {chapter.description}
+          {chapter.title}
         </a>
       </li>
       <ul class="nested">
-        {#each chapter.sections as section}
+        {#each chapter.sections as section,j}
         <li>
-          <a href={`/${chapter.title}/${section.title}`}>
+          <a href={`/${i}/${j+1}`}>
             <span class="badge-icon mr-1">📖</span>
-            {section.description}
+            {section.title}
           </a>
         </li>
         <ul class="nested">
           {#each section.subsections as subsection}
           <li>
-            <a href={`/${chapter.title}/${section.title}/${subsection.title}`}>
+            <a href={`/${i}/${j+1}/${subsection.slug}`}>
               <span class="badge-icon mr-1">📑</span>
-              {subsection.description}
+              {subsection.title}
             </a>
           </li>
           {/each}

@@ -1,42 +1,39 @@
 <script lang="ts">
-  import {chapters} from "../chapters";
-  const chapterTitle = '00-foundation';
-  const i = 0;
-</script>
+  import type {PageData} from './$types';
+  export let data: PageData;
 
-<svelte:head>
-  <title>Foundations with numbers</title>
-</svelte:head>
+  let {i, title, shortTitle, description, sections} = data;
+  $: ({i, title, shortTitle, description, sections} = data);
+
+</script>
 
 <ol class="breadcrumb">
 	<li class="crumb"><a class="anchor" href="/">Home</a></li>
 	<li class="crumb-separator" aria-hidden>&rsaquo;</li>
-	<li class="crumb">Foundations</li>
+	<li class="crumb">{shortTitle}</li>
 </ol>
 
 <div class="prose">
-  <h1>Chapter 0:<br>Foundation with numbers</h1>
+  <h1>Chapter {i}:<br>{title}</h1>
   <p>
-    In this chapter, we develop our arithmetic skill with numbers, branching from
-    the familiar whole numbers to fractions and negative numbers.
+    {description}
   </p>
-
   <h2>Sections</h2>
   <nav class="list-nav">
     <ul>
-      {#each chapters[0].sections as section}
+      {#each sections as section,j}
       <li>
-        <a href={`/${chapterTitle}/${section.title}`}>
+        <a href={`/${i}/${j+1}`}>
           <span class="badge-icon mr-1">📖</span>
-          {section.description}
+          {section.title}
         </a>
       </li>
       <ul class="nested">
         {#each section.subsections as subsection}
         <li>
-          <a href={`/${chapterTitle}/${section.title}/${subsection.title}`}>
+          <a href={`/${i}/${j+1}/${subsection.slug}`}>
             <span class="badge-icon mr-1">📑</span>
-            {subsection.description}
+            {subsection.title}
           </a>
         </li>
         {/each}

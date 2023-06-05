@@ -1,20 +1,35 @@
 <script lang="ts">
-  const chapter = '00-foundation';
-  const section = '01-fractions';
-  const title = 'Multiplying fractions with fractions';
-  import {chapters} from '../../../chapters';
+  import { CodeBlock } from '@skeletonlabs/skeleton';
+  import { math,display } from 'mathlifier';
+  import { chapters } from '$lib/chapters';
+
+  const shortTitle = `Multiplication 2`;
+  const description = `In this part, we learn how to
+    multiply fractions with fractions.`;
   const i = 0;
   const j = 0;
-  const k = 1;
-  //const nextLink = `/${chapters[i].title}/${chapters[i].sections[j].title}/${chapters[i].sections[j].subsections[k+1].title}`;
-  //const nextDesc = chapters[i].sections[j].subsections[k+1].description;
-  const nextLink = `/${chapters[i].title}/${chapters[i].sections[j].title}/${chapters[i].sections[j].subsections[k].title}`;
-  const nextDesc = chapters[i].sections[j].subsections[k].description;
-
-  import { CodeBlock } from '@skeletonlabs/skeleton';
+  const k = 2;
+  
+  const chapter = chapters[i];
+  const sections = chapter.sections;
+  const section = sections[j];
+  const subsections = section.subsections;
+  const subsection = subsections[k];
+  const title = subsection.title;
+  const [nextLink, nextDesc] = (()=>{
+    if (k < subsections.length-1) {
+      return [`/${i}/${j+1}/${subsections[k+1].slug}`, subsections[k+1].title];
+    }
+    if (j < sections.length - 1) {
+      return [`/${i}/${j+2}}`, sections[j+1].title]
+    }
+    if (i < chapters.length - 1){
+      return [`/${i+1}}`, chapters[i+1].title]
+    }
+    return [null, null];
+  })();
+  
   import { Fraction, getRandomFrac } from 'mathlify';
-  import { math, display } from 'mathlifier';
-
   const x = new Fraction(4,9);
   const y = new Fraction(3,5);
   const qnString = `${x} \\times ${y}`;
@@ -24,8 +39,8 @@
   const code = 
 `const x = new Fraction(4,9);
 const y = new Fraction(3,5);
-const ans = x.times(y);
-const latexString = \`\${x} \\times \${y} = \${ans}\`;`;
+const latexString = \`\${x} \\\\times \${y} = \${x.times(y)}\`;
+// latexString: "\\frac{4}{9} \\times \\frac{3}{5} = \\frac{4}{15}"`;
 
   const x2 = getRandomFrac().abs();
   const y2 = getRandomFrac({allowInt: false}).abs();
@@ -34,13 +49,24 @@ const latexString = \`\${x} \\times \${y} = \${ans}\`;`;
   const ansString2 = `${ans2}`;
   const latexString2 = `${x2} \\times ${y2} = ${ans2}`;
   const code2 = 
-`const x = new Fraction(4,9);
-const y = new Fraction(3,5);
-const ans = x.times(y);
-const latexString = \`\${x} \\times \${y} = \${ans}\`;`;
+`const x = getRandomFrac().abs();
+const y = getRandomFrac({allowInt: false}).abs();
+const latexString = \`\${x} \\\\times \${y} = \${x.times(y)}\`;`;
 
-  import {svelteCode} from '../01-multiplying-integers/+page.svelte';
+const svelteCode = 
+`<script>
+  import { math } from 'mathlifier';
+  // x,y from above
+  const qnString = \`\${x} \\\\times \${y}\`;
+  const ans = x.times(y);
+  const ansString = \`\${ans}\`;
+<\/script>
 
+<h2>Question</h2>
+Q1. {@html math(qnString)}
+<h2>Answer</h2>
+A1. {@html math(ansString)}
+`;
 </script>
 
 <svelte:head>
@@ -50,17 +76,17 @@ const latexString = \`\${x} \\times \${y} = \${ans}\`;`;
 <ol class="breadcrumb">
 	<li class="crumb"><a class="anchor" href="/">Home</a></li>
 	<li class="crumb-separator" aria-hidden>&rsaquo;</li>
-	<li class="crumb"><a class="anchor" href={`/${chapter}`}>Foundation</a></li>
+	<li class="crumb"><a class="anchor" href={`/${i}`}>{chapter.shortTitle}</a></li>
 	<li class="crumb-separator" aria-hidden>&rsaquo;</li>
-	<li class="crumb"><a class="anchor" href={`/${chapter}/${section}`}>Fractions</a></li>
+	<li class="crumb"><a class="anchor" href={`/${i}/${j+1}`}>{section.shortTitle}</a></li>
 	<li class="crumb-separator" aria-hidden>&rsaquo;</li>
-	<li class="crumb">Multiplication 2</li>
+	<li class="crumb">{shortTitle}</li>
 </ol>
 
 <div class="prose">
   <h1>Subsection {k+1}:<br>{title}</h1>
   <p>
-    In this section, we learn how to multiply fractions with fractions.
+    {description}
   </p>
 
   <h2>Questions</h2>
@@ -76,27 +102,29 @@ const latexString = \`\${x} \\times \${y} = \${ans}\`;`;
   <h2>Answers</h2>
   <div class="grid gap-4">
     <div>
-      A1. {@html math(`${ans}`)}
+      A1. {@html math(ansString)}
     </div>
     <div>
-      A2. {@html math(`${ans2}`)}
+      A2. {@html math(ansString2)}
     </div>
   </div>
 
+  {#if nextLink}
   <h2>Up Next</h2>
   <div>
     <span class="mr-2 mb-4 inline-block">
       {nextDesc}
     </span> <a href={nextLink} class="btn variant-filled-primary">🎓 Continue >></a>
   </div>
+  {/if}
 
   <h2>
     Source code
   </h2>
-  <div>
+  <p>
     The following is the source code used to generate the questions.
     Q1 is static (ie the numbers are fixed), while Q2 is generated randomly.
-  </div>
+  </p>
 
   <p>
     The mathlify library, used in conjunction with JavaScript's template literal strings,
@@ -116,12 +144,4 @@ const latexString = \`\${x} \\times \${y} = \${ans}\`;`;
     and the Svelte framework.
   </p>
   <CodeBlock language="svelte" code={svelteCode} />
-
 </div>
-
-<style>
-  a.btn {
-    text-decoration: none;
-  }
-  
-</style>
