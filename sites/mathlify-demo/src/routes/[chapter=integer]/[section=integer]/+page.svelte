@@ -14,6 +14,11 @@
 	<li class="crumb-separator" aria-hidden>&rsaquo;</li>
 	<li class="crumb">{shortTitle}</li>
 </ol>
+<ol class="breadcrumb mt-4 text-sm">
+	<li class="crumb">{shortTitle}</li>
+	<li class="crumb-separator" aria-hidden>&rsaquo;</li>
+	<li class="crumb"><a class="anchor" href={`/${i}/${j}/${subsections[0].slug}`}>{subsections[0].shortTitle}</a></li>
+</ol>
 
 <div class="prose">
   <h1>Section {j}:<br>{title}</h1>

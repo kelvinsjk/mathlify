@@ -27,9 +27,13 @@
 	main {
 		padding: 1rem;
 	}
-	@media screen and (min-width: 768px) {
+	@media screen and (min-width: 640px) {
 		main, :global(.app-bar) {
 			padding-inline: 4rem;
+		}
+
+		main {
+			padding-block: 2rem;
 		}
 	}
 </style>

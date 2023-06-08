@@ -5,12 +5,18 @@
   let {i, title, shortTitle, description, sections} = data;
   $: ({i, title, shortTitle, description, sections} = data);
 
+  const nextShortTitle = sections[0].title;
 </script>
 
 <ol class="breadcrumb">
 	<li class="crumb"><a class="anchor" href="/">Home</a></li>
 	<li class="crumb-separator" aria-hidden>&rsaquo;</li>
 	<li class="crumb">{shortTitle}</li>
+</ol>
+<ol class="breadcrumb mt-4 text-sm">
+	<li class="crumb">{shortTitle}</li>
+	<li class="crumb-separator" aria-hidden>&rsaquo;</li>
+	<li class="crumb"><a class="anchor" href={`/${i}/1`}>{nextShortTitle}</a></li>
 </ol>
 
 <div class="prose">

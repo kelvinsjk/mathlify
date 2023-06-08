@@ -4,11 +4,11 @@
   import { chapters } from '$lib/chapters';
 
   const description = `In this part, we learn how to
-    divide fractions by whole numbers and vice versa.
+    add fractions.
   `;
   const i = 0;
   const j = 0;
-  const k = 4;
+  const k = 5;
   
   const chapter = chapters[i];
   const sections = chapter.sections;
@@ -41,42 +41,38 @@
     return [null, null, null];
   })();
   
-  import { Fraction, getRandomFrac, getRandomInt } from 'mathlify';
-  const frac = new Fraction(4,9);
-  const int = 6;
-  const qnString = `${frac} \\div ${int}`;
-  const qnString2 = `${int} \\div ${frac}`;
-  const ans = frac.divide(int);
-  const ans2 = new Fraction(int).divide(frac);
+  import { Fraction, getRandomFrac } from 'mathlify';
+  const x = new Fraction(1,2);
+  const y = new Fraction(2,3);
+  const qnString = `${x} + ${y}`;
+  const ans = x.plus(y);
   const ansString = `${ans}`;
-  const ansString2 = `${ans2}`;
-  const latexString = `${frac} \\div ${int} = ${ans}`;
-  const latexString2 = `${int} \\div ${frac} = ${ans2}`;
+  const latexString = `${x} + ${y} = ${ans}`;
   const code = 
-`const frac = new Fraction(4,9);
-const int = 6;
-const latexString = \`\${frac} \\\\div \${int} = \${frac.divide(int)}\`;
-// latexString: "\\frac{4}{9} \\div 6 = \\frac{2}{27}"
-const latexString2 = \`\${int} \\\\div \${frac} = \${new Fraction(int).divide(frac)}\`;
-// latexString: "6 \\div \\frac{4}{9} = \\frac{27}{2}"`;
+`const x = new Fraction(1,2);
+const y = new Fraction(2,3);
+const latexString = \`\${x} + \${y} = \${x.plus(y)}\`;
+// latexString: "\\frac{1}{2} + \\frac{2}{3} = \\frac{7}{6}"
+`;
 
-  const frac3 = getRandomFrac({allowInt: false}).abs();
-  const int3 = getRandomInt({min: 1});
-  const qnString3 = `${frac3} \\div ${int3}`;
-  const ans3 = frac3.divide(int3);
-  const ansString3 = `${ans3}`;
-  const latexString3 = `${frac3} \\div ${int3} = ${ans3}`;
+  const x2 = getRandomFrac().abs();
+  const y2 = getRandomFrac({allowInt: false}).abs();
+  const qnString2 = `${x2} + ${y2}`;
+  const ans2 = x2.plus(y2);
+  const ansString2 = `${ans2}`;
+  const latexString2 = `${x2} + ${y2} = ${ans2}`;
   const code2 = 
-`const frac = getRandomFrac({allowInt: false}).abs();
-const int = getRandomInt({min: 1});
-const latexString = \`\${frac} \\\\div \${int} = \${frac.divide(int)}\`;`;
+`const x2 = getRandomFrac().abs();
+const y2 = getRandomFrac({allowInt: false}).abs();
+const latexString = \`\${x} + \${y} = \${x.plus(y)}\`;
+`;
 
 const svelteCode = 
 `<script>
   import { math } from 'mathlifier';
-  // frac,int from above
-  const qnString = \`\${frac} \\\\div \${int}\`;
-  const ans = frac.divide(int);
+  // x,y from above
+  const qnString = \`\${x} + \${y}\`;
+  const ans = x.plus(y);
   const ansString = \`\${ans}\`;
 <\/script>
 
@@ -121,26 +117,20 @@ A1. {@html math(ansString)}
   <h2>Questions</h2>
   <div class="grid gap-4">
     <div>
-      Q1a. Evaluate {@html math(qnString)}
+      Q1. Evaluate {@html math(qnString)}
     </div>
     <div>
-      Q1b. Evaluate {@html math(qnString2)}
-    </div>
-    <div>
-      Q2. Evaluate {@html math(qnString3)}
+      Q2. Evaluate {@html math(qnString2)}
     </div>
   </div>
   
   <h2>Answers</h2>
   <div class="grid gap-4">
     <div>
-      A1a. {@html math(ansString)}
+      A1. {@html math(ansString)}
     </div>
     <div>
-      A1b. {@html math(ansString2)}
-    </div>
-    <div>
-      A2. {@html math(ansString3)}
+      A2. {@html math(ansString2)}
     </div>
   </div>
 
@@ -170,10 +160,9 @@ A1. {@html math(ansString)}
   <h3>Static Q1</h3>
   <CodeBlock language="ts" {code} />
   {@html display(latexString)}
-  {@html display(latexString2)}
   <h3>Random generated Q2</h3>
   <CodeBlock language="ts" code={code2} />
-  {@html display(latexString3)}
+  {@html display(latexString2)}
   <h3>Example with Svelte and Mathlifier</h3>
   <p>
     We like using the mathlifier library (which is a small wrapper over {@html math('\\KaTeX')}),

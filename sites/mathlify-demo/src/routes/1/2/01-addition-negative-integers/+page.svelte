@@ -1,14 +1,12 @@
 <script lang="ts">
-  import { CodeBlock } from '@skeletonlabs/skeleton';
-  import { math,display } from 'mathlifier';
+  import { math } from 'mathlifier';
   import { chapters } from '$lib/chapters';
 
   const description = `In this part, we learn how to
-    divide fractions with fractions.
-  `;
+    add and subtract negative integers.`;
   const i = 0;
-  const j = 0;
-  const k = 3;
+  const j = 1;
+  const k = 0;
   
   const chapter = chapters[i];
   const sections = chapter.sections;
@@ -41,44 +39,44 @@
     return [null, null, null];
   })();
 
-  import { Fraction, getRandomFrac } from 'mathlify';
-  const x = new Fraction(4,9);
-  const y = new Fraction(3,5);
-  const qnString = `${x} \\div ${y}`;
-  const ans = x.divide(y);
+
+  import { getRandomInts } from 'mathlify';
+  const negativeTwo = -2;
+  const negativeFive = -5;
+  const three = 3;
+  const qnString = `${three} + (${negativeTwo})`;
+  const ans = three + negativeTwo;
+  const qnStringB = `${negativeFive} + ${three}`;
+  const ansB = negativeFive + three;
+  const qnStringC = `${negativeFive} + (${negativeTwo})`;
+  const ansC = negativeFive + negativeTwo;
+  const qnStringD = `${three} - (${negativeTwo})`;
+  const ansD = three - negativeTwo;
+  const qnStringE = `${negativeFive} - ${three}`;
+  const ansE = negativeFive - three;
+  const qnStringF = `${negativeFive} - (${negativeTwo})`;
+  const ansF = negativeFive - negativeTwo;
   const ansString = `${ans}`;
-  const latexString = `${x} \\div ${y} = ${ans}`;
-  const code = 
-`const x = new Fraction(4,9);
-const y = new Fraction(3,5);
-const latexString = \`\${x} \\\\div \${y} = \${x.divide(y)}\`;
-// latexString: "\\frac{4}{9} \\div \\frac{3}{5} = \\frac{20}{27}"`;
+  const ansStringB = `${ansB}`;
+  const ansStringC = `${ansC}`;
+  const ansStringD = `${ansD}`;
+  const ansStringE = `${ansE}`;
+  const ansStringF = `${ansF}`;
+  const qnStrings = [qnString, qnStringB, qnStringC, qnStringD, qnStringE, qnStringF];
+  const ansStrings = [ansString, ansStringB, ansStringC, ansStringD, ansStringE, ansStringF];
 
-  const x2 = getRandomFrac().abs();
-  const y2 = getRandomFrac({allowInt: false}).abs();
-  const qnString2 = `${x2} \\div ${y2}`;
-  const ans2 = x2.divide(y2);
-  const ansString2 = `${ans2}`;
-  const latexString2 = `${x2} \\div ${y2} = ${ans2}`;
-  const code2 = 
-`const x = getRandomFrac().abs();
-const y = getRandomFrac({allowInt: false}).abs();
-const latexString = \`\${x} \\\\div \${y} = \${x.divide(y)}\`;`;
+  const qnStrings2: string[] = [];
+  const ansStrings2: string[] = [];
+  for (let i =0; i<6; i++){
+    const [a,b] = getRandomInts(2);
+    const sign = i<3 ? '+' : '-';
+    qnStrings2.push(`${a} ${sign} ${brackets(b)}`);
+    ansStrings2.push(i<3 ? `${a+b}` : `${a-b}`);
+  }
 
-const svelteCode = 
-`<script>
-  import { math } from 'mathlifier';
-  // x,y from above
-  const qnString = \`\${x} \\\\div \${y}\`;
-  const ans = x.divide(y);
-  const ansString = \`\${ans}\`;
-<\/script>
-
-<h2>Question</h2>
-Q1. {@html math(qnString)}
-<h2>Answer</h2>
-A1. {@html math(ansString)}
-`;
+  function brackets(x: number): string {
+    return x < 0 ? `( ${x} )` : `${x}`;
+  }
 </script>
 
 <svelte:head>
@@ -94,6 +92,7 @@ A1. {@html math(ansString)}
 	<li class="crumb-separator" aria-hidden>&rsaquo;</li>
 	<li class="crumb">{subsection.shortTitle}</li>
 </ol>
+
 <ol class="breadcrumb mt-4 text-sm">
   {#if prevLink}
 	<li class="crumb"><a class="anchor" href={prevLink}>{prevShortTitle}</a></li>
@@ -114,22 +113,30 @@ A1. {@html math(ansString)}
 
   <h2>Questions</h2>
   <div class="grid gap-4">
+    {#each qnStrings as qnString,i}
     <div>
-      Q1. Evaluate {@html math(qnString)}
+      1{String.fromCharCode(97+i)}. Evaluate {@html math(qnString)}
     </div>
+    {/each}
+    {#each qnStrings2 as qnString,i}
     <div>
-      Q2. Evaluate {@html math(qnString2)}
+      2{String.fromCharCode(97+i)}. Evaluate {@html math(qnString)}
     </div>
+    {/each}
   </div>
   
   <h2>Answers</h2>
   <div class="grid gap-4">
+    {#each ansStrings as ansString,i}
     <div>
-      A1. {@html math(ansString)}
+      1{String.fromCharCode(97+i)}. {@html math(ansString)}
     </div>
+    {/each}
+    {#each ansStrings2 as ansString,i}
     <div>
-      A2. {@html math(ansString2)}
+      2{String.fromCharCode(97+i)}. {@html math(ansString)}
     </div>
+    {/each}
   </div>
 
   {#if nextLink}
@@ -140,33 +147,4 @@ A1. {@html math(ansString)}
     </span> <a href={nextLink} class="btn variant-filled-primary">🎓 Continue >></a>
   </div>
   {/if}
-
-  <h2>
-    Source code
-  </h2>
-  <p>
-    The following is the source code used to generate the questions.
-    Q1 is static (ie the numbers are fixed), while Q2 is generated randomly.
-  </p>
-  <p>
-    The mathlify library, used in conjunction with JavaScript's template literal strings,
-    makes for idiomatic code that conveniently outputs as a {@html math('\\LaTeX')} string.
-    We can then display it with our medium of choice (to a {@html math('\\TeX')} file to
-    pdf, or to the DOM for the web via libraries like {@html math('\\KaTeX')} and MathJax).
-  </p>
-
-  <h3>Static Q1</h3>
-  <CodeBlock language="ts" {code} />
-  {@html display(latexString)}
-  {@html display(latexString2)}
-
-  <h3>Random generated Q2</h3>
-  <CodeBlock language="ts" code={code2} />
-  {@html display(latexString2)}
-  <h3>Example with Svelte and Mathlifier</h3>
-  <p>
-    We like using the mathlifier library (which is a small wrapper over {@html math('\\KaTeX')}),
-    and the Svelte framework.
-  </p>
-  <CodeBlock language="svelte" code={svelteCode} />
 </div>
