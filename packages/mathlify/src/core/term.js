@@ -1,17 +1,14 @@
 import { gcd, lcm, numberToFraction } from './utils/index.js';
 
 /** Fraction class
- * @property {number} num - the numerator (an integer)
- * @property {number} den - the denominator (a positive integer)
- * @property {"fraction"} kind - mathlify fraction class kind
- * @property {"fraction"|"fraction-int"} type - mathlify fraction class type: whether it is an integer or a regular fraction
+ * @property {number|string|Fraction} term - the numerator (an integer)
+ * @property {string} [term] - the numerator (an integer)
+ * @property {TermOptions} [options] - the denominator (a positive integer)
+ *
  */
-export class Fraction {
+export class Term {
 	/**
-	 * @constructor
-	 * Creates a Fraction instance, automatically hoisting any negatives to the
-	 * numerator, and simplifying the numerator and denominator such that
-	 * gcd(num, den) == 1
+	 * Creates a Term instance, which is made up of
 	 * @param {number} num - the numerator (an integer)
 	 * @param {number} [den=1] - the denominator (a non-zero integer)
 	 */
@@ -33,14 +30,8 @@ export class Fraction {
 		}
 		// gcd
 		const divisor = gcd(num, den);
-		/**
-		 * num
-		 * @type {number}
-		 */
 		this.num = num / divisor;
 		this.den = den / divisor;
-		this.kind = 'fraction';
-		this.type = this.den === 1 ? 'fraction-int' : 'fraction';
 	}
 
 	// PRIMITIVE RETURN TYPES
@@ -64,106 +55,69 @@ export class Fraction {
 		return `${sign}\\frac{${Math.abs(this.num)}}{${this.den}}`;
 	}
 
+	//  BOOLEAN METHODS
+
 	/**
-	 * boolean methods for this fraction
+	 * checks if this fraction is an integer
+	 * @returns {boolean} whether this fraction is an integer
 	 */
-	is = {
-		/**
-		 * checks if this fraction is an integer
-		 * @returns {boolean} whether this fraction is an integer
-		 */
-		integer: () => this.den === 1,
+	isInteger() {
+		return this.den === 1;
+	}
 
-		/**
-		 * checks if this fraction is positive
-		 * @returns {boolean} whether this fraction is positive
-		 */
-		positive: () => this.num > 0,
+	/**
+	 * checks if two fractions are equal
+	 * @param {number|Fraction} x
+	 * @returns {boolean}
+	 */
+	isEqualTo(x) {
+		return Math.abs(this.valueOf() - x.valueOf()) < Number.EPSILON;
+	}
 
-		/**
-		 * checks if this fraction is negative
-		 * @returns {boolean} whether this fraction is negative
-		 */
-		negative: () => this.num < 0,
+	/**
+	 * checks if two fractions are not equal
+	 * @param {number|Fraction} x
+	 * @returns {boolean}
+	 */
+	isNotEqualTo(x) {
+		return !this.isEqualTo(x);
+	}
 
-		/**
-		 * checks if this fraction is zero
-		 * @returns {boolean} whether this fraction is zero
-		 */
-		zero: () => this.num === 0,
+	/**
+	 * checks if this fraction is greater than x
+	 * @param {number|Fraction} x
+	 * @returns {boolean}
+	 */
+	isGreaterThan(x) {
+		return this.valueOf() > x.valueOf();
+	}
 
-		/**
-		 * checks if two fractions are equal
-		 * @param {number|Fraction} x
-		 * @returns {boolean}
-		 */
-		equalTo: (x) => Math.abs(this.valueOf() - x.valueOf()) < Number.EPSILON,
+	/**
+	 * checks if this fraction is less than x
+	 * @param {number|Fraction} x
+	 * @returns {boolean}
+	 */
+	isLessThan(x) {
+		return this.valueOf() < x.valueOf();
+	}
 
-		/**
-		 * checks if this fraction is greater than x
-		 * @param {number|Fraction} x
-		 * @returns {boolean}
-		 */
-		greaterThan: (x) => this.valueOf() > x.valueOf(),
+	/**
+	 * checks if this fraction is less than or equal to x
+	 * @param {number|Fraction} x
+	 * @returns {boolean}
+	 */
+	isAtMost(x) {
+		return !this.isGreaterThan(x);
+	}
 
-		/**
-		 * checks if this fraction is less than x
-		 * @param {number|Fraction} x
-		 * @returns {boolean}
-		 */
-		lessThan: (x) => this.valueOf() < x.valueOf(),
-
-		/** checks negation */
-		not: {
-			/**
-			 * @returns {boolean} whether this fraction is not an integer
-			 */
-			integer: () => !this.is.integer(),
-			/**
-			 * @returns {boolean} whether this fraction is not positive
-			 */
-			positive: () => !this.is.positive(),
-			/**
-			 * @returns {boolean} whether this fraction is not negative
-			 * */
-			negative: () => !this.is.negative(),
-			/**
-			 * checks if this fraction is not zero
-			 * @returns {boolean} whether this fraction is not zero
-			 */
-			zero: () => !this.is.zero(),
-			/**
-			 * checks if this is not equal to x
-			 * @param {number|Fraction} x
-			 * @returns {boolean}
-			 */
-			equalTo: (x) => !this.is.equalTo(x),
-			/**
-			 * @param {number|Fraction} x
-			 * @returns {boolean} if this is not less than or equal to x
-			 * */
-			greaterThan: (x) => !this.is.greaterThan(x),
-			/**
-			 * @param {number|Fraction} x
-			 * @returns {boolean} if this is not greater than or equal to x
-			 * */
-			lessThan: (x) => !this.is.lessThan(x),
-		},
-
-		/**
-		 * at least
-		 * @param {number|Fraction} x
-		 * @returns {boolean} if this is at least x
-		 */
-		atLeast: (x) => this.is.not.lessThan(x),
-
-		/**
-		 * at most
-		 * @param {number|Fraction} x
-		 * @returns {boolean} if this is at most x
-		 * */
-		atMost: (x) => this.is.not.greaterThan(x),
-	};
+	/**
+	 * checks if this fraction is greater than or equal to x
+	 * @param {number|Fraction} x
+	 * @returns {boolean}
+	 */
+	isAtLeast(x) {
+		return !this.isLessThan(x);
+	}
 
 	// ARITHMETIC METHODS
 
@@ -231,7 +185,7 @@ export class Fraction {
 	 */
 	divide(x) {
 		x = numberToFraction(x);
-		if (x.is.equalTo(0)) {
+		if (x.isEqualTo(0)) {
 			throw new Error(`division by zero error`);
 		}
 		return this.times(x.reciprocal());

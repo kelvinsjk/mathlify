@@ -1,7 +1,7 @@
-export { Fraction, gcd, lcm } from "./core/index.js";
+export { Fraction, Term, gcd, lcm, bracket } from './core/index.js';
 export {
 	getRandomInt,
 	getRandomInts,
 	getRandomFrac,
 	getRandomFracs,
-} from "./random/index.js";
+} from './random/index.js';

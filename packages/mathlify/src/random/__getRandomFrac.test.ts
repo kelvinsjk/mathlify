@@ -20,7 +20,7 @@ test('randomFracs', () => {
 			numRange: [1, 3],
 			denRange: [1, 1],
 			avoid: [2, 3],
-		}).isEqualTo(1)
+		}).is.equalTo(1)
 	).toBe(true);
 	const twoArr = getRandomFracs(2);
 	expect(twoArr.length).toBe(2);
@@ -30,7 +30,7 @@ test('randomFracs', () => {
 		avoid: new Fraction(1, 3),
 		allowReps: false,
 	});
-	const [half, one] = x.isGreaterThan(y) ? [y, x] : [x, y];
+	const [half, one] = x.is.greaterThan(y) ? [y, x] : [x, y];
 	expect(one.num).toBe(1);
 	expect(one.den).toBe(1);
 	expect(half.num).toBe(1);

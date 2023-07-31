@@ -1,6 +1,5 @@
 import { Fraction } from './fraction';
 import { test, expect } from 'vitest';
-
 test('fraction throws on invalid constructor inputs', () => {
 	// @ts-ignore
 	expect(() => new Fraction('hello')).toThrow();
@@ -29,13 +28,19 @@ test('primitive returns', () => {
 });
 
 test('logical operators', () => {
-	expect(half.isInteger()).toBe(false);
-	expect(negativeFourThird.isEqualTo(-4 / 3)).toBe(true);
-	expect(negativeFourThird.isNotEqualTo(half)).toBe(true);
-	expect(negativeFourThird.isAtLeast(half)).toBe(false);
-	expect(negativeFourThird.isAtMost(half)).toBe(true);
-	expect(negativeFourThird.isGreaterThan(2)).toBe(false);
-	expect(negativeFourThird.isLessThan(2)).toBe(true);
+	expect(half.is.integer()).toBe(false);
+	expect(negativeFourThird.is.equalTo(-4 / 3)).toBe(true);
+	expect(negativeFourThird.is.not.equalTo(half)).toBe(true);
+	expect(negativeFourThird.is.atLeast(half)).toBe(false);
+	expect(negativeFourThird.is.atMost(half)).toBe(true);
+	expect(negativeFourThird.is.greaterThan(2)).toBe(false);
+	expect(negativeFourThird.is.lessThan(2)).toBe(true);
+	expect(negativeFourThird.is.negative()).toBe(true);
+	expect(negativeFourThird.is.positive()).toBe(false);
+	expect(negativeFourThird.is.zero()).toBe(false);
+	expect(zero.is.not.negative()).toBe(true);
+	expect(zero.is.not.positive()).toBe(true);
+	expect(zero.is.not.zero()).toBe(false);
 });
 
 test('arithmetic operators', () => {
@@ -49,17 +54,18 @@ test('arithmetic operators', () => {
 		half.pow(1.2);
 	}).toThrow();
 	expect(zero.sign()).toBe(0);
-	expect(negativeFourThird.plus(half).isEqualTo(new Fraction(-5, 6))).toBe(
+	expect(negativeFourThird.plus(half).is.equalTo(new Fraction(-5, 6))).toBe(
 		true
 	);
-	expect(negativeFourThird.divide(half).isEqualTo(new Fraction(-8, 3))).toBe(
+	expect(negativeFourThird.divide(half).is.equalTo(new Fraction(-8, 3))).toBe(
 		true
 	);
-	expect(negativeFourThird.minus(half).isEqualTo(new Fraction(-11, 6))).toBe(
+	expect(negativeFourThird.minus(half).is.equalTo(new Fraction(-11, 6))).toBe(
 		true
 	);
-	expect(negativeFourThird.square().isEqualTo(new Fraction(16, 9))).toBe(true);
-	expect(negativeFourThird.pow(-2).isEqualTo(new Fraction(9, 16))).toBe(true);
+	expect(negativeFourThird.square().is.equalTo(new Fraction(16, 9))).toBe(true);
+	expect(negativeFourThird.pow(-2).is.equalTo(new Fraction(9, 16))).toBe(true);
+	expect(negativeFourThird.abs().toString()).toBe('\\frac{4}{3}');
 });
 
 test('number methods', () => {
@@ -78,11 +84,17 @@ test('toJSON', () => {
 
 test('static methods/props', () => {
 	expect(
-		Fraction.gcd(negativeFourThird, half).isEqualTo(new Fraction(1, 6))
+		Fraction.gcd(negativeFourThird, half).is.equalTo(new Fraction(1, 6))
 	).toBe(true);
 	expect(
-		Fraction.gcd(negativeFourThird, -2).isEqualTo(new Fraction(-2, 3))
+		Fraction.gcd(negativeFourThird, -2).is.equalTo(new Fraction(-2, 3))
 	).toBe(true);
 	expect(Fraction.ONE.num).toBe(1);
 	expect(Fraction.ZERO.num).toBe(0);
+});
+
+test('fraction kind and type', () => {
+	expect(negativeFourThird.kind).toBe('fraction');
+	expect(negativeFourThird.type).toBe('fraction');
+	expect(zero.type).toBe('fraction-int');
 });

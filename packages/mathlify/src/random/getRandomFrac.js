@@ -24,8 +24,8 @@ export function getRandomFrac(options) {
 		})
 	);
 	while (
-		avoidArr.some((x) => randomFrac.isEqualTo(x)) ||
-		(!allowInt && randomFrac.isInteger())
+		avoidArr.some((x) => randomFrac.is.equalTo(x)) ||
+		(!allowInt && randomFrac.is.integer())
 	) {
 		randomFrac = new Fraction(
 			getRandomInt({ min: numRange[0], max: numRange[1] }),
