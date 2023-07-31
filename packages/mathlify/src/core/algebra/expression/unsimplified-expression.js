@@ -1,11 +1,10 @@
 import { Fraction } from '../../fraction.js';
-import { numberToFraction } from '../../utils';
+import { Term } from '../term/index.js';
+import { bracket } from '../../utils';
 
 /** Unsimplified Expression class
  * TODO: convert Fraction type to Term/Unsimplified Term type
- * @property {Fraction[]} terms - the terms in the expression
- * @property {[undefined, ...boolean[]]} additionArray - whether the terms are added (or subtracted)
- * @property {["always"|"off", ...("auto"|"always")[]]} bracketsArray - whether terms are surrounded by brackets
+ * @property {{term: Term, brackets: 'off'|'auto'|'always', addition: boolean}[]} terms - the terms in the expression
  * @property {"unsimplified-expression"} kind - mathlify unsimplified expression class kind
  * @property {"unsimplified-expression"} type - mathlify unsimplified expression class type
  */
@@ -13,19 +12,66 @@ export class UnsimplifiedExpression {
 	/**
 	 * @constructor
 	 * Creates an Unsimplified Expression instance
-	 * @param {[[number|Fraction, undefined|{brackets: 'off'|'always'}], ...(['+'|'-', number|Fraction, undefined|{brackets: 'always'|'auto'}])[]]} terms -
-	 * the terms of the expression and whether they are added/subtracted and wrapped in brackets.
-	 * brackets is 'off' and 'auto' by default
+	 * @param {(number|Fraction|Term|{term: number|Fraction|Term, brackets?: 'off'|'auto'|'always', addition?: boolean})[]} terms -
+	 * the terms are added by default and
+	 * brackets is 'off' for the first term and 'auto' by default.
 	 */
 	constructor(...terms) {
-		const [[firstTerm, options1], ...remainingTerms] = terms;
-		this.terms = [firstTerm];
-		this.additionArray = [undefined];
-		this.bracketsArray = [options1?.brackets ?? 'off'];
+		if (terms.length === 0) throw new Error('UnsimplifiedExpression must have at least one term');
+		/** @type {{term: Term, brackets: 'off'|'auto'|'always', addition: boolean}[]} */
+		const parsedTerms = [];
+		terms.forEach((term, i) => {
+			const t = (typeof term === 'number' || term instanceof Fraction) ? 
+				{ 
+					term: new Term(term),
+					/** @type {'off'|'auto'|'always'} */
+					brackets: i === 0 ? 'off' : 'auto',
+					addition: true,
+				} : term instanceof Term ? 
+				{ 
+					term: term,
+					/** @type {'off'|'auto'|'always'} */
+					brackets: i === 0 ? 'off' : 'auto', 
+					addition: true
+				} :
+				{
+					term: (term.term instanceof Term) ? term.term : new Term(term.term),
+					/** @type {'off'|'auto'|'always'} */
+					brackets: term.brackets ?? ((i === 0) ? 'off' : 'auto'),
+					addition: term.addition ?? true,
+				};
+			parsedTerms.push(t);
+		});
+		this.terms = parsedTerms;
+		this.kind = 'unsimplified-expression';
+		this.type = 'unsimplified-expression';
 	}
 
 	/** add terms to this Expression
 	 * @param {number|Fraction} x - term to be added
-	 * @param {{brackets: 'auto'|'always'}} [options = {brackets: 'auto'}] -
+	 * @param {{brackets: 'off'|'auto'|'always'}} [options = {brackets: 'auto'}] - options for the brackets (defaults to auto)
+	 * @returns {UnsimplifiedExpression} - the new Unsimplified Expression
 	 */
+	plus(x, options = {brackets: 'auto'}) {
+		return new UnsimplifiedExpression(...this.terms, {term: x, brackets: options.brackets, addition: true});
+	}
+
+	/** subtract terms from this Expression
+	 * @param {number|Fraction} x - term to be subtracted
+	 * @param {{brackets: 'off'|'auto'|'always'}} [options = {brackets: 'auto'}] - options for the brackets (defaults to auto)
+	 * @returns {UnsimplifiedExpression} - the new Unsimplified Expression
+	 */
+	minus(x, options = {brackets: 'auto'}) {
+		return new UnsimplifiedExpression(...this.terms, {term: x, brackets: options.brackets, addition: false});
+	}
+
+	/** toString
+	 * @returns {string} - the LaTeX string representation of the Expression
+	 */
+	toString() {
+		return this.terms.reduce((prev,curr,i)=>{
+			const sign = (i===0) ? (curr.addition ? '' : '- ') : (curr.addition ? ' + ' : ' - ');
+			return `${prev}${sign}${bracket(curr.term, {mode: curr.brackets})}`
+		},'');
+	}
 }

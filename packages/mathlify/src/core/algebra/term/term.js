@@ -44,6 +44,9 @@ export class Term {
 		this.type = this.symbols.size === 0 ? 'term-frac' : 'term';
 	}
 
+	// cast to fraction type if possible
+	
+
 	// PRIMITIVE RETURN TYPES
 	/**
 	 * casts this term as a latex string
@@ -58,11 +61,11 @@ export class Term {
 		// if there are terms, return the coefficient times the terms
 		// special cases: coeff===1, coeff===-1, coeff===0
 		if (this.coeff.abs().is.equalTo(1)) {
-			return this.coeff.is.equalTo(1) ? `${this.symbols}` : `- ${this.symbols}`;
+			return this.coeff.is.equalTo(1) ? `${Array.from(this.symbols.values()).join()}` : `- ${Array.from(this.symbols.values()).join()}`;
 		}
 		if (this.coeff.is.zero()) {
 			return '0';
 		}
-		return `${this.coeff} ${this.symbols}`;
+		return `${this.coeff} ${Array.from(this.symbols.values()).join()}`;
 	}
 }
