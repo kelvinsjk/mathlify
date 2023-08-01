@@ -1,5 +1,6 @@
 import { Fraction } from '../../fraction.js';
 import { Term } from '../term/index.js';
+import { Expression } from './expression.js';
 import { bracket } from '../../utils';
 
 /** Unsimplified Expression class
@@ -64,6 +65,14 @@ export class UnsimplifiedExpression {
 	minus(x, options = {brackets: 'auto'}) {
 		return new UnsimplifiedExpression(...this.terms, {term: x, brackets: options.brackets, addition: false});
 	}
+
+	/** simplify to Expression class 
+	 * @returns {Expression} - the simplified Expression
+	*/
+	simplify() {
+		return new Expression(...this.terms);
+	}
+
 
 	/** toString
 	 * @returns {string} - the LaTeX string representation of the Expression

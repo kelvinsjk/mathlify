@@ -1,4 +1,4 @@
-export { Fraction, Term, UnsimplifiedExpression, gcd, lcm, bracket } from './core/index.js';
+export { Fraction, Term, UnsimplifiedExpression, Expression, gcd, lcm, bracket } from './core/index.js';
 export {
 	getRandomInt,
 	getRandomInts,

@@ -14,6 +14,7 @@ import { Fraction } from '../..';
  * @property {Fraction} coeff - the coefficient of the term
  * TODO: update the types of the Map properties
  * @property {Map<string,string>} symbols - the denominator (a positive integer)
+ * @property {string} variable - the string representation of the variable
  * @property {"term"} kind - mathlify fraction class
  * @property {"term"|"term-frac"} kind - mathlify fraction class
  */
@@ -34,6 +35,9 @@ export class Term {
 			if (typeof x === 'number' || x instanceof Fraction) {
 				coeff = coeff.times(x);
 			} else {
+				if (x===''){
+					return;
+				}
 				// TODO: update different types of symbols
 				symbols.set(x, x);
 			}
@@ -42,6 +46,7 @@ export class Term {
 		this.symbols = symbols;
 		this.kind = 'term';
 		this.type = this.symbols.size === 0 ? 'term-frac' : 'term';
+		this.variable = Array.from(this.symbols.values()).join();
 	}
 
 	// cast to fraction type if possible
@@ -61,11 +66,11 @@ export class Term {
 		// if there are terms, return the coefficient times the terms
 		// special cases: coeff===1, coeff===-1, coeff===0
 		if (this.coeff.abs().is.equalTo(1)) {
-			return this.coeff.is.equalTo(1) ? `${Array.from(this.symbols.values()).join()}` : `- ${Array.from(this.symbols.values()).join()}`;
+			return this.coeff.is.equalTo(1) ? `${this.variable}` : `- ${this.variable}`;
 		}
 		if (this.coeff.is.zero()) {
 			return '0';
 		}
-		return `${this.coeff} ${Array.from(this.symbols.values()).join()}`;
+		return `${this.coeff} ${this.variable}`;
 	}
 }
