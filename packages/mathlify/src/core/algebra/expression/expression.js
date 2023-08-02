@@ -2,7 +2,9 @@ import { Fraction } from '../../fraction.js';
 import { Term } from '../term/index.js';
 
 /** Expression class
- * @property {Map<string,Fraction>} termMap - the terms in the expression, where the key is the variable name and the value is the coefficient
+ * @property {Map<string,Fraction>} termCoeffMap - the terms in the expression, where the key is the term signature and the value is the coefficient
+ * @property {Map<string,Map<string,Fraction>>} termPowerMap - key: term signature, value: term's power map
+ * @property {Map<string,boolean>} termFractionalDisplayMap - key: term signature, value: the fractionalDisplayMode of the term
  * @property {Term[]} terms - array of terms in the expression
  * @property {"expression"} kind - mathlify expression class kind
  * @property {"expression"|"expression-term"} type - mathlify expression class type
@@ -12,51 +14,102 @@ export class Expression {
 	 * @constructor
 	 * Creates an Expression instance
 	 * TODO: brackets handling, allow string
-	 * @param {(number|Fraction|string|Term|{term: number|Fraction|Term, brackets?: 'off'|'auto'|'always', addition?: boolean})[]} terms -
+	 * @param {(number|Fraction|string|Term|{term: number|Fraction|string|Term, brackets?: 'off'|'auto'|'always', addition?: boolean})[]} terms -
 	 * the terms are added by default and
 	 * brackets is 'off' by default.
 	 */
 	constructor(...terms) {
-		if (terms.length === 0)
+		if (terms.length === 0) {
 			throw new Error('Expression must have at least one term');
+		}
 		/** @type {Map<string,Fraction>} */
-		const termMap = new Map();
+		const termCoeffMap = new Map();
+		/** @type {Map<string,Map<string,Fraction>>} */
+		const termPowerMap = new Map();
+		/** @type {Map<string,boolean>} */
+		const termFractionalDisplayMap = new Map();
 		terms.forEach((term) => {
-			if (typeof term === 'number' || term instanceof Fraction) {
-				const currentConstant = termMap.get('') ?? new Fraction(0);
-				termMap.set('', currentConstant.plus(term));
-			} else if (typeof term === 'string') {
-				const currentConstant = termMap.get(term) ?? new Fraction(0);
-				termMap.set(term, currentConstant.plus(1));
-			} else if (term instanceof Term) {
-				const currentConstant = termMap.get(term.variable) ?? new Fraction(0);
-				termMap.set(term.variable, currentConstant.plus(term.coeff));
-			} else {
+			if (typeof term === 'number' || term instanceof Fraction) { //! numbers/Fractions
+				const currentConstant = termCoeffMap.get('') ?? new Fraction(0);
+				termCoeffMap.set('', currentConstant.plus(term));
+			} else if (typeof term === 'string') { //! strings
+				const currentConstant = termCoeffMap.get(term) ?? new Fraction(0);
+				termCoeffMap.set(term, currentConstant.plus(1));
+				if (!termPowerMap.has(term)){
+					termPowerMap.set(term, new Map([[term, new Fraction(1)]]));
+				}
+				if (!termFractionalDisplayMap.has(term)){
+					termFractionalDisplayMap.set(term, false);
+				}
+			} else if (term instanceof Term) { //! Term
+				// serialize variables
+				const variable = term.signature;
+				const currentConstant = termCoeffMap.get(variable) ?? new Fraction(0);
+				termCoeffMap.set(variable, currentConstant.plus(term.coeff));
+				if (!termPowerMap.has(variable)){
+					termPowerMap.set(variable, term.powerMap);
+				}
+				if (!termFractionalDisplayMap.has(variable)){
+					termFractionalDisplayMap.set(variable, term.fractionalDisplayMode);
+				}
+			} else { //! {term, addition} type
 				if (typeof term.term === 'number' || term.term instanceof Fraction) {
-					const currentConstant = termMap.get('') ?? new Fraction(0);
+					const currentConstant = termCoeffMap.get('') ?? new Fraction(0);
 					if (term.addition === false) {
-						termMap.set('', currentConstant.minus(term.term));
+						termCoeffMap.set('', currentConstant.minus(term.term));
 					} else {
-						termMap.set('', currentConstant.plus(term.term));
+						termCoeffMap.set('', currentConstant.plus(term.term));
+					}
+				} else if (typeof term.term === 'string') {
+					const currentConstant = termCoeffMap.get(term.term) ?? new Fraction(0);
+					if (term.addition === false) {
+						termCoeffMap.set(term.term, currentConstant.minus(1));
+					} else {
+						termCoeffMap.set(term.term, currentConstant.plus(1));
+					}
+					if (!termPowerMap.has(term.term)){
+						termPowerMap.set(term.term, new Map([[term.term, new Fraction(1)]]));
+					}
+					if (!termFractionalDisplayMap.has(term.term)){
+						termFractionalDisplayMap.set(term.term, false);
 					}
 				} else {
 					// term.term of Term type
-					const currentConstant =
-						termMap.get(term.term.variable) ?? new Fraction(0);
+					const variable = term.term.signature;
+					const currentConstant = termCoeffMap.get(variable) ?? new Fraction(0);
 					if (term.addition === false) {
-						termMap.set('', currentConstant.minus(term.term.coeff));
+						termCoeffMap.set(variable, currentConstant.minus(term.term.coeff));
 					} else {
-						termMap.set('', currentConstant.plus(term.term.coeff));
+						termCoeffMap.set(variable, currentConstant.plus(term.term.coeff));
+					}
+					if (!termPowerMap.has(variable)){
+						termPowerMap.set(variable, term.term.powerMap);
+					}
+					if (!termFractionalDisplayMap.has(variable)){
+						termFractionalDisplayMap.set(variable, term.term.fractionalDisplayMode);
 					}
 				}
 			}
 		});
-		this.termMap = termMap;
+		this.termCoeffMap = termCoeffMap;
+		this.termPowerMap = termPowerMap;
+		this.termFractionalDisplayMap = termFractionalDisplayMap;
 		/** @type {Term[]} */
 		const termsArray = [];
-		termMap.forEach((coeff, variable) => {
+		termCoeffMap.forEach((coeff, variable) => {
 			if (coeff.is.not.zero()) {
-				termsArray.push(new Term(coeff, variable));
+				/** @type {(Fraction|{variable: string, power: Fraction})[]} */
+				const termAtoms = [];
+				termAtoms.push(coeff);
+				const powerMap = this.termPowerMap.get(variable);
+				powerMap?.forEach((power, variable) => {
+					termAtoms.push({ variable, power });
+				});
+				const newTerm = new Term(...termAtoms);
+				if (this.termFractionalDisplayMap.get(variable)){
+					newTerm.setFractionalDisplay()
+				}
+				termsArray.push(newTerm);
 			}
 		});
 		this.terms = termsArray;

@@ -26,6 +26,11 @@ const uExpFraction1c = new Expression({
 const zero = new Expression(1, new Fraction(-2, 3)).minus(new Fraction(1, 3));
 const xPlus1 = new Expression(new Term('x'), 1);
 const xMinus1 = new Expression('x', -1);
+const minusXPlus1 = new Expression({term: 'x', addition: false}, 1);
+const xPlus2 = new Expression({term: 'x', addition: true}, 2);
+const threeFifthX = new Term(new Fraction(3, 5), 'x');
+threeFifthX.setFractionalDisplay();
+const threeFifthXPlus1 = new Expression(threeFifthX, 1);
 
 test('Expression', () => {
 	expect(() => new Expression()).to.throw();
@@ -42,5 +47,8 @@ test('Expression', () => {
 	expect(`${uExpFraction1c}`).to.equal('- \\frac{1}{2}');
 	expect(`${zero}`).to.equal('0');
 	expect(`${xPlus1}`).to.equal('x + 1');
+	expect(`${xPlus2}`).to.equal('x + 2');
 	expect(`${xMinus1}`).to.equal('x - 1');
+	expect(`${minusXPlus1}`).to.equal('- x + 1');
+	expect(`${threeFifthXPlus1}`).to.equal('\\frac{3 x}{5} + 1');
 });

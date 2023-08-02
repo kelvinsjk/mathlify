@@ -22,7 +22,7 @@
 		"svelte-check": "^3.4.6",
 		"tslib": "^2.6.1",
 		"typescript": "^5.1.6",
-		"vite": "^4.4.7",
+		"vite": "^4.4.8",
 		"vitest": "^0.33.0"
 	},
 	"keywords": [
@@ -33,5 +33,8 @@
 	"bugs": {
 		"url": "https://github.com/kelvinsjk/mathlify/issues"
 	},
-	"homepage": "https://github.com/kelvinsjk/mathlify#readme"
+	"homepage": "https://github.com/kelvinsjk/mathlify#readme",
+	"dependencies": {
+		"lodash.isequal": "^4.5.0"
+	}
 }

@@ -93,6 +93,12 @@ export class Fraction {
 		zero: () => this.num === 0,
 
 		/**
+		 * checks if this fraction is one
+		 * @returns {boolean} whether this fraction is one
+		 */
+		one: () => this.valueOf()===1,
+
+		/**
 		 * checks if two fractions are equal
 		 * @param {number|Fraction} x
 		 * @returns {boolean}
@@ -132,6 +138,11 @@ export class Fraction {
 			 * @returns {boolean} whether this fraction is not zero
 			 */
 			zero: () => !this.is.zero(),
+			/**
+			 * checks if this fraction is note one
+			 * @returns {boolean} whether this fraction is not one
+			 */
+			one: () => !this.is.one(),
 			/**
 			 * checks if this is not equal to x
 			 * @param {number|Fraction} x
