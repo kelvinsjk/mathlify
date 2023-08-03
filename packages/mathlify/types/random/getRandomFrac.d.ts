@@ -51,5 +51,5 @@ export type RandomFracsOptions = {
      */
     allowReps?: boolean | undefined;
 };
-import { Fraction } from "../core/index.js";
+import { Fraction } from '../core/index.js';
 //# sourceMappingURL=getRandomFrac.d.ts.map

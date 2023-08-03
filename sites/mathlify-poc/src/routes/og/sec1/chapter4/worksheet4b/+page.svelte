@@ -127,7 +127,7 @@
 	//! Compiled questions
 	const qArray = [q1s, q2s];
 	const wArray = [w1s, w2s];
-	const preamble = [simplifyString];
+	const preamble = [simplifyString, simplifyString];
 
 	const questions: QuestionType[] = [];
 	qArray.forEach((q, i) => {

@@ -1,7 +1,8 @@
 /** Fraction class
  * @property {number} num - the numerator (an integer)
  * @property {number} den - the denominator (a positive integer)
- *
+ * @property {"fraction"} kind - mathlify fraction class kind
+ * @property {"fraction"|"fraction-int"} type - mathlify fraction class type: whether it is an integer or a regular fraction
  */
 export class Fraction {
     /**
@@ -39,6 +40,7 @@ export class Fraction {
     /** 0 in the fraction class */
     static ZERO: Fraction;
     /**
+     * @constructor
      * Creates a Fraction instance, automatically hoisting any negatives to the
      * numerator, and simplifying the numerator and denominator such that
      * gcd(num, den) == 1
@@ -46,8 +48,14 @@ export class Fraction {
      * @param {number} [den=1] - the denominator (a non-zero integer)
      */
     constructor(num: number, den?: number | undefined);
+    /**
+     * num
+     * @type {number}
+     */
     num: number;
     den: number;
+    kind: string;
+    type: string;
     /**
      * casts this fraction as a float
      * @returns {number} this fraction in js number primitive type
@@ -59,46 +67,106 @@ export class Fraction {
      */
     toString(): string;
     /**
-     * checks if this fraction is an integer
-     * @returns {boolean} whether this fraction is an integer
+     * boolean methods for this fraction
      */
-    isInteger(): boolean;
-    /**
-     * checks if two fractions are equal
-     * @param {number|Fraction} x
-     * @returns {boolean}
-     */
-    isEqualTo(x: number | Fraction): boolean;
-    /**
-     * checks if two fractions are not equal
-     * @param {number|Fraction} x
-     * @returns {boolean}
-     */
-    isNotEqualTo(x: number | Fraction): boolean;
-    /**
-     * checks if this fraction is greater than x
-     * @param {number|Fraction} x
-     * @returns {boolean}
-     */
-    isGreaterThan(x: number | Fraction): boolean;
-    /**
-     * checks if this fraction is less than x
-     * @param {number|Fraction} x
-     * @returns {boolean}
-     */
-    isLessThan(x: number | Fraction): boolean;
-    /**
-     * checks if this fraction is less than or equal to x
-     * @param {number|Fraction} x
-     * @returns {boolean}
-     */
-    isAtMost(x: number | Fraction): boolean;
-    /**
-     * checks if this fraction is greater than or equal to x
-     * @param {number|Fraction} x
-     * @returns {boolean}
-     */
-    isAtLeast(x: number | Fraction): boolean;
+    is: {
+        /**
+         * checks if this fraction is an integer
+         * @returns {boolean} whether this fraction is an integer
+         */
+        integer: () => boolean;
+        /**
+         * checks if this fraction is positive
+         * @returns {boolean} whether this fraction is positive
+         */
+        positive: () => boolean;
+        /**
+         * checks if this fraction is negative
+         * @returns {boolean} whether this fraction is negative
+         */
+        negative: () => boolean;
+        /**
+         * checks if this fraction is zero
+         * @returns {boolean} whether this fraction is zero
+         */
+        zero: () => boolean;
+        /**
+         * checks if this fraction is one
+         * @returns {boolean} whether this fraction is one
+         */
+        one: () => boolean;
+        /**
+         * checks if two fractions are equal
+         * @param {number|Fraction} x
+         * @returns {boolean}
+         */
+        equalTo: (x: number | Fraction) => boolean;
+        /**
+         * checks if this fraction is greater than x
+         * @param {number|Fraction} x
+         * @returns {boolean}
+         */
+        greaterThan: (x: number | Fraction) => boolean;
+        /**
+         * checks if this fraction is less than x
+         * @param {number|Fraction} x
+         * @returns {boolean}
+         */
+        lessThan: (x: number | Fraction) => boolean;
+        /** checks negation */
+        not: {
+            /**
+             * @returns {boolean} whether this fraction is not an integer
+             */
+            integer: () => boolean;
+            /**
+             * @returns {boolean} whether this fraction is not positive
+             */
+            positive: () => boolean;
+            /**
+             * @returns {boolean} whether this fraction is not negative
+             * */
+            negative: () => boolean;
+            /**
+             * checks if this fraction is not zero
+             * @returns {boolean} whether this fraction is not zero
+             */
+            zero: () => boolean;
+            /**
+             * checks if this fraction is note one
+             * @returns {boolean} whether this fraction is not one
+             */
+            one: () => boolean;
+            /**
+             * checks if this is not equal to x
+             * @param {number|Fraction} x
+             * @returns {boolean}
+             */
+            equalTo: (x: number | Fraction) => boolean;
+            /**
+             * @param {number|Fraction} x
+             * @returns {boolean} if this is not less than or equal to x
+             * */
+            greaterThan: (x: number | Fraction) => boolean;
+            /**
+             * @param {number|Fraction} x
+             * @returns {boolean} if this is not greater than or equal to x
+             * */
+            lessThan: (x: number | Fraction) => boolean;
+        };
+        /**
+         * at least
+         * @param {number|Fraction} x
+         * @returns {boolean} if this is at least x
+         */
+        atLeast: (x: number | Fraction) => boolean;
+        /**
+         * at most
+         * @param {number|Fraction} x
+         * @returns {boolean} if this is at most x
+         * */
+        atMost: (x: number | Fraction) => boolean;
+    };
     /**
      * the sign of this fraction
      * @returns {number} 1 if this is positive, 0 if this is zero, and -1 otherwise

@@ -1,0 +1,1 @@
+//# sourceMappingURL=powerMapToTermAtoms.d.ts.map

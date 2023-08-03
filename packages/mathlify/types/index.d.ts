@@ -1,3 +1,3 @@
-export { Fraction, gcd, lcm } from "./core/index.js";
+export { Fraction, Term, UnsimplifiedExpression, Expression, gcd, lcm, bracket } from "./core/index.js";
 export { getRandomInt, getRandomInts, getRandomFrac, getRandomFracs } from "./random/index.js";
 //# sourceMappingURL=index.d.ts.map
