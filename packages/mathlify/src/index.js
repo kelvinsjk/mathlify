@@ -6,4 +6,4 @@ export {
 	getRandomFracs,
 } from './random/index.js';
 export { gcd, lcm, bracket } from './utils/index.js';
-export { UnsimplifiedExpression } from './algebra/index.js';
+export { RationalTerm, UnsimplifiedExpression } from './algebra/index.js';

@@ -15,8 +15,10 @@ export class RationalTerm {
 	/**
 	 * @constructor
 	 * Creates a Rational Term instance
-	 * @param {((number|Fraction|string|Term|{term: number|Fraction|string|Term, addition?: boolean}|(number|Fraction|string)[])[])|Expression} numerator - the numerator
-	 * @param {((number|Fraction|string|Term|{term: number|Fraction|string|Term, addition?: boolean}|(number|Fraction|string)[])[])|Expression} denominator - the denominator
+	 * @param {Expression|number|Fraction|string|Term|(number|Fraction|string|Term)[]} numerator - the numerator
+	 * @param {Expression|number|Fraction|string|Term|(number|Fraction|string|Term)[]} denominator - the denominator
+	 *
+	 *
 	 */
 	constructor(numerator, denominator) {
 		if (!(numerator instanceof Expression)) {
