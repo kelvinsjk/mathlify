@@ -87,5 +87,5 @@ export class Term {
      */
     toString(): string;
 }
-import { Fraction } from "../../fraction.js";
+import { Fraction } from '../../fraction.js';
 //# sourceMappingURL=term.d.ts.map

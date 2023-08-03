@@ -36,6 +36,12 @@ export class Expression {
      */
     minus(x: number | Fraction | string | Term): Expression;
     /**
+     * expression multiplication
+     * @param {number|Fraction|string|Term|Expression} x - term to be multiplied
+     * @returns {Expression} - the new Expression
+     */
+    times(x: number | Fraction | string | Term | Expression): Expression;
+    /**
      * sub in a value for a variable
      * @param {{[key: string]: number|Fraction}|number|Fraction} variableToValue - the values to sub in with the key being the variable signature.
      * @returns {Expression} - the new Expression

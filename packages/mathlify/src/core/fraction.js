@@ -1,4 +1,4 @@
-import { gcd, lcm, numberToFraction } from './utils/index.js';
+import { gcd, lcm, numberToFraction } from '../utils/index.js';
 
 /** Fraction class
  * @property {number} num - the numerator (an integer)
@@ -96,7 +96,7 @@ export class Fraction {
 		 * checks if this fraction is one
 		 * @returns {boolean} whether this fraction is one
 		 */
-		one: () => this.valueOf()===1,
+		one: () => this.valueOf() === 1,
 
 		/**
 		 * checks if two fractions are equal
@@ -365,16 +365,16 @@ export class Fraction {
 	 */
 	static gcd(...fractions) {
 		/** @type {number[]} */
-		const nums = [];
+		const numerators = [];
 		/** @type {number[]} */
 		const dens = [];
 		/** @type {boolean[]} */
 		fractions.forEach((f) => {
 			const x = numberToFraction(f);
-			nums.push(x.num);
+			numerators.push(x.num);
 			dens.push(x.den);
 		});
-		const positiveGcd = new Fraction(gcd(...nums), lcm(...dens));
+		const positiveGcd = new Fraction(gcd(...numerators), lcm(...dens));
 		return fractions.every((x) => x.valueOf() < 0)
 			? positiveGcd.negative()
 			: positiveGcd;

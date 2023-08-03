@@ -1,4 +1,6 @@
 /**
+ * creates the string representation of a Term, following the order
+ * as laid out in the term's powerMap
  * @param {Map<string,Fraction>} powerMap
  * @returns {string}
  */
