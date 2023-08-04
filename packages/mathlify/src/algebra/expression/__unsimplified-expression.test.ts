@@ -37,6 +37,9 @@ test("Unsimplified expression", () => {
   expect(`${uExp4h}`).to.equal(
     "- 27 - \\left( - 19 \\right) - \\left( - 24 \\right)"
   );
+  expect(`${new UnsimplifiedExpression([-2, "x"], [-2, "x"])}`).to.equal(
+    "- 2 x + \\left( - 2 x \\right)"
+  );
 });
 
 test("Simplification of expression", () => {

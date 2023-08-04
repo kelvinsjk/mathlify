@@ -1,5 +1,13 @@
+// the expression class is a collection of terms under addition
 // the termPowerMap contains a map of all the terms that have appeared in the expression in order, but may contain terms with zero coefficients
 // the terms array removes any such terms with zero coefficients
+
+// notes: when using rationalTerm within an expression,
+// the rational term is lost because the expression constructor tries
+// to simplify the expression by combining like terms and reconstruct the
+// term afterwards. The reconstruction does not understanding the workings
+// of the RationalTerm class and typesetting is lost. TODO: fix this
+/** @see RationalTerm  */
 
 import { Fraction } from "../../fraction.js";
 import { Term, powerMapToTerm } from "../term/index.js";
@@ -128,26 +136,41 @@ export class Expression {
     this.type = this.terms.length <= 1 ? "expression-term" : "expression";
   }
 
-  /** add terms to this Expression
-   * @param {number|Fraction|string|Term} x - term to be added
-   * @returns {Expression} - the new Expression
+  /**
+   * Expression addition
+   * @param {number|Fraction|string|Term|Expression} x - term/expression to be added
+   * @returns {Expression} - the sum of the two
    */
   plus(x) {
+    if (x instanceof Expression) {
+      return new Expression(...this.terms, ...x.terms);
+    }
     return new Expression(...this.terms, x);
   }
 
+  /**
+   * negative
+   * @returns {Expression} the negative of the expression
+   */
+  negative() {
+    return new Expression(...this.terms.map((term) => term.negative()));
+  }
+
   /** subtract terms from this Expression
-   * @param {number|Fraction|string|Term} x - term to be subtracted
-   * @returns {Expression} - the new Expression
+   * @param {number|Fraction|string|Term|Expression} x - term to be subtracted
+   * @returns {Expression} - the difference this minus x
    */
   minus(x) {
-    return new Expression(...this.terms, { term: x, addition: false });
+    if (typeof x === "number" || typeof x === "string") {
+      x = new Term(x);
+    }
+    return this.plus(x.negative());
   }
 
   /**
    * expression multiplication
    * @param {number|Fraction|string|Term|Expression} x - term to be multiplied
-   * @returns {Expression} - the new Expression
+   * @returns {Expression} - the product
    */
   times(x) {
     if (x instanceof Expression) {
@@ -165,6 +188,19 @@ export class Expression {
   }
 
   /**
+   * expression division
+   * @param {number|Fraction|string|Term} x - term to be divided
+   * @param {{fractionalDisplayMode: boolean}} [options] - whether to display the term as a fraction (default: false) (3/5 x by default, 3x/5 if true)
+   * @returns {Expression} - the quotient
+   */
+  divide(x, options = { fractionalDisplayMode: false }) {
+    if (!(x instanceof Term)) {
+      x = new Term(x);
+    }
+    return this.times(x.reciprocal(options));
+  }
+
+  /**
    * sub in a value for a variable
    * @param {{[key: string]: number|Fraction}|number|Fraction} variableToValue - the values to sub in with the key being the variable signature.
    * @returns {Expression} - the new Expression
@@ -173,6 +209,23 @@ export class Expression {
     const newTerms = this.terms.map((term) => term.subIn(variableToValue));
     return new Expression(...newTerms);
   }
+
+  /**
+   * boolean methods for this expression
+   */
+  is = {
+    /**
+     * @returns {boolean} - whether this expression is a singleton (ie can be cast to Term class)
+     * */
+    term: () => this.terms.length <= 1,
+
+    /**
+     * @returns {boolean} - whether this expression is a constant (ie can be cast to Fraction class)
+     * */
+    constant: () =>
+      this.terms.length === 0 ||
+      (this.terms.length === 1 && this.terms[0].is.constant()),
+  };
 
   /** methods to cast this term to other types */
   cast = {

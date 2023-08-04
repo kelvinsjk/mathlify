@@ -25,22 +25,37 @@ export class Expression {
     terms: Term[];
     kind: string;
     type: string;
-    /** add terms to this Expression
-     * @param {number|Fraction|string|Term} x - term to be added
-     * @returns {Expression} - the new Expression
+    /**
+     * Expression addition
+     * @param {number|Fraction|string|Term|Expression} x - term/expression to be added
+     * @returns {Expression} - the sum of the two
      */
-    plus(x: number | Fraction | string | Term): Expression;
+    plus(x: number | Fraction | string | Term | Expression): Expression;
+    /**
+     * negative
+     * @returns {Expression} the negative of the expression
+     */
+    negative(): Expression;
     /** subtract terms from this Expression
-     * @param {number|Fraction|string|Term} x - term to be subtracted
-     * @returns {Expression} - the new Expression
+     * @param {number|Fraction|string|Term|Expression} x - term to be subtracted
+     * @returns {Expression} - the difference this minus x
      */
-    minus(x: number | Fraction | string | Term): Expression;
+    minus(x: number | Fraction | string | Term | Expression): Expression;
     /**
      * expression multiplication
      * @param {number|Fraction|string|Term|Expression} x - term to be multiplied
-     * @returns {Expression} - the new Expression
+     * @returns {Expression} - the product
      */
     times(x: number | Fraction | string | Term | Expression): Expression;
+    /**
+     * expression division
+     * @param {number|Fraction|string|Term} x - term to be divided
+     * @param {{fractionalDisplayMode: boolean}} [options] - whether to display the term as a fraction (default: false) (3/5 x by default, 3x/5 if true)
+     * @returns {Expression} - the quotient
+     */
+    divide(x: number | Fraction | string | Term, options?: {
+        fractionalDisplayMode: boolean;
+    } | undefined): Expression;
     /**
      * sub in a value for a variable
      * @param {{[key: string]: number|Fraction}|number|Fraction} variableToValue - the values to sub in with the key being the variable signature.
@@ -49,6 +64,19 @@ export class Expression {
     subIn(variableToValue: number | Fraction | {
         [key: string]: number | Fraction;
     }): Expression;
+    /**
+     * boolean methods for this expression
+     */
+    is: {
+        /**
+         * @returns {boolean} - whether this expression is a singleton (ie can be cast to Term class)
+         * */
+        term: () => boolean;
+        /**
+         * @returns {boolean} - whether this expression is a constant (ie can be cast to Fraction class)
+         * */
+        constant: () => boolean;
+    };
     /** methods to cast this term to other types */
     cast: {
         /**

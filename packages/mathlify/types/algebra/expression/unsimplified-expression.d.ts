@@ -8,7 +8,7 @@ export class UnsimplifiedExpression {
     /**
      * @constructor
      * Creates an Unsimplified Expression instance
-     * @param {(number|Fraction|string|Term|{term: number|Fraction|string|Term, brackets?: 'off'|'auto'|'always', addition?: boolean})[]} terms -
+     * @param {(number|Fraction|string|Term|{term: number|Fraction|string|Term, brackets?: 'off'|'auto'|'always', addition?: boolean}|(number|Fraction|string)[])[]} terms -
      * the terms are added by default and
      * brackets is 'off' for the first term and 'auto' by default.
      */
@@ -16,7 +16,7 @@ export class UnsimplifiedExpression {
         term: number | Fraction | string | Term;
         brackets?: 'off' | 'auto' | 'always';
         addition?: boolean;
-    })[]);
+    } | (number | Fraction | string)[])[]);
     terms: {
         term: Term;
         brackets: 'off' | 'auto' | 'always';
@@ -49,7 +49,7 @@ export class UnsimplifiedExpression {
      */
     toString(): string;
 }
-import { Term } from '../../core/index.js';
-import { Fraction } from '../../core/index.js';
-import { Expression } from '../../core/index.js';
+import { Term } from "../../core/index.js";
+import { Fraction } from "../../core/index.js";
+import { Expression } from "../../core/index.js";
 //# sourceMappingURL=unsimplified-expression.d.ts.map

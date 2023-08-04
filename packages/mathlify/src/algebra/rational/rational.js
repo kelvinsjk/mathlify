@@ -1,134 +1,175 @@
-// the termPowerMap contains a map of all the terms that have appeared in the expression in order, but may contain terms with zero coefficients
-// the terms array removes any such terms with zero coefficients
+// rationalTerm represents ( num / den ), where both are expression types
 
-import { Expression, Fraction, Term } from '../../core/index.js';
+// notes: when using rationalTerm within an expression,
+// the rational term is lost because the expression constructor tries
+// to simplify the expression by combining like terms and reconstruct the
+// term afterwards. The reconstruction does not understanding the workings
+// of the RationalTerm class and typesetting is lost. TODO: fix this
+/** @see Expression  */
 
-// TODO: hoist negative denominator
+import { Expression, Fraction, Term } from "../../core/index.js";
 
-/** Expression class
- * @property {Expression} numerator - the numerator of the term
- * @property {Expression} denominator - the denominator of the term
+//TODO: use lcm for constant denominator addition
+
+/**
+ * RationalTerm class extending the Term class
+ * @property {Expression} num - the numerator of the term
+ * @property {Expression} den - the denominator of the term
  * @property {"rational"} kind - mathlify rational class kind
  * @property {"rational"|"rational-expression"} type - mathlify rational class type
  */
-export class RationalTerm {
-	/**
-	 * @constructor
-	 * Creates a Rational Term instance
-	 * @param {Expression|number|Fraction|string|Term|(number|Fraction|string|Term)[]} numerator - the numerator
-	 * @param {Expression|number|Fraction|string|Term|(number|Fraction|string|Term)[]} denominator - the denominator
-	 *
-	 *
-	 */
-	constructor(numerator, denominator) {
-		if (!(numerator instanceof Expression)) {
-			numerator = Array.isArray(numerator)
-				? new Expression(...numerator)
-				: new Expression(numerator);
-		}
-		if (!(denominator instanceof Expression)) {
-			denominator = Array.isArray(denominator)
-				? new Expression(...denominator)
-				: new Expression(denominator);
-		}
-		if (`${denominator}` === '0') {
-			throw new Error('denominator cannot be zero');
-		}
-		this.numerator = numerator;
-		this.denominator = denominator;
-		this.kind = 'rational';
-		this.type = `${denominator}` === '1' ? 'rational-expression' : 'rational';
-	}
+export class RationalTerm extends Term {
+  /**
+   * @constructor
+   * Creates a Rational Term instance
+   * @param {Expression|number|Fraction|string|Term|(number|Fraction|string|Term)[]} numerator - the numerator
+   * @param {Expression|number|Fraction|string|Term|(number|Fraction|string|Term)[]} [denominator=1] - the denominator
+   * @throws {Error} if denominator is zero
+   */
+  constructor(numerator, denominator = 1) {
+    if (!(numerator instanceof Expression)) {
+      numerator = Array.isArray(numerator)
+        ? new Expression(...numerator)
+        : new Expression(numerator);
+    }
+    if (!(denominator instanceof Expression)) {
+      denominator = Array.isArray(denominator)
+        ? new Expression(...denominator)
+        : new Expression(denominator);
+    }
+    if (`${denominator}` === "0") {
+      throw new Error("denominator cannot be zero");
+    }
+    // simplifies the expression if the denominator is constant
+    if (denominator.is.constant()) {
+      const coeffs = [denominator.cast.toFraction()];
+      numerator.terms.forEach((term) => {
+        coeffs.push(term.coeff);
+      });
+      const divisor = Fraction.gcd(...coeffs);
+      numerator = numerator.divide(divisor);
+      denominator = denominator.divide(divisor);
+    }
+    super(`(${numerator})`, [`(${denominator})`, -1]);
+    this.num = numerator;
+    this.den = denominator;
+    this.kind = "rational";
+    this.type = `${denominator}` === "1" ? "rational-expression" : "rational";
+  }
 
-	/** add terms to this Expression
-	 * @param {number|Fraction|string|Term} x - term to be added
-	 * @returns {Expression} - the new Expression
-	 */
-	plus(x) {
-		return new Expression(...this.terms, x);
-	}
+  /**
+   * multiplication
+   * @param {number|Fraction|string|Term|Expression|RationalTerm} x - the other term/expression to multiply with
+   * @returns {RationalTerm} the product of the two
+   */
+  times(x) {
+    // (this.num * x.num) / (this.den * x.den)
+    const xRational = x instanceof RationalTerm ? x : new RationalTerm(x);
+    return new RationalTerm(
+      this.num.times(xRational.num),
+      this.den.times(xRational.den)
+    );
+  }
 
-	/** subtract terms from this Expression
-	 * @param {number|Fraction|string|Term} x - term to be subtracted
-	 * @returns {Expression} - the new Expression
-	 */
-	minus(x) {
-		return new Expression(...this.terms, { term: x, addition: false });
-	}
+  /**
+   * division
+   * @param {number|Fraction|string|Term|Expression|RationalTerm} x - the other term/expression to divide with
+   * @returns {RationalTerm} the quotient of the two
+   */
+  divide(x) {
+    // (this.num * x.den) / (this.den * x.num)
+    const xRational = x instanceof RationalTerm ? x : new RationalTerm(x);
+    return new RationalTerm(
+      this.num.times(xRational.den),
+      this.den.times(xRational.num)
+    );
+  }
 
-	/**
-	 * expression multiplication
-	 * @param {number|Fraction|string|Term|Expression} x - term to be multiplied
-	 * @returns {Expression} - the new Expression
-	 */
-	times(x) {
-		if (x instanceof Expression) {
-			/** @type {Term[]} */
-			const newTerms = [];
-			this.terms.forEach((term) => {
-				x.terms.forEach((xTerm) => {
-					newTerms.push(term.times(xTerm));
-				});
-			});
-			return new Expression(...newTerms);
-		}
-		const newTerms = this.terms.map((term) => term.times(x));
-		return new Expression(...newTerms);
-	}
+  /**
+   * addition
+   * @param {number|Fraction|string|Term|Expression|RationalTerm} x - term/expression to be added
+   * @returns {RationalTerm} - the sum of the two
+   */
+  plus(x) {
+    // (this.num * x.den + this.den * x.num) / (this.den * x.den)
+    const xRational = x instanceof RationalTerm ? x : new RationalTerm(x);
+    const num = this.num
+      .times(xRational.den)
+      .plus(this.den.times(xRational.num));
+    const den = this.den.times(xRational.den);
+    return new RationalTerm(num, den);
+  }
 
-	/**
-	 * sub in a value for a variable
-	 * @param {{[key: string]: number|Fraction}|number|Fraction} variableToValue - the values to sub in with the key being the variable signature.
-	 * @returns {Expression} - the new Expression
-	 */
-	subIn(variableToValue) {
-		const newTerms = this.terms.map((term) => term.subIn(variableToValue));
-		return new Expression(...newTerms);
-	}
+  /**
+   * negative
+   * @returns {RationalTerm} the negative of the expression
+   */
+  negative() {
+    return new RationalTerm(this.num.negative(), this.den);
+  }
 
-	/** methods to cast this term to other types */
-	cast = {
-		/**
-		 * cast to Term type
-		 * @returns {Term} the term representation of this term
-		 */
-		toTerm: () => {
-			if (this.terms.length === 0) {
-				return new Term(0);
-			} else if (this.terms.length === 1) {
-				return this.terms[0];
-			}
-			throw new Error(`cannot cast ${this} to Term: more than 1 term detected`);
-		},
-		/**
-		 * cast to Fraction type
-		 * @returns {Fraction} the fraction representation of this term
-		 */
-		toFraction: () => {
-			if (this.terms.length === 0) {
-				return new Fraction(0);
-			} else if (this.terms.length === 1) {
-				return this.terms[0].cast.toFraction();
-			}
-			throw new Error(
-				`cannot cast ${this} to Fraction: more than 1 term detected`
-			);
-		},
-	};
+  /**
+   * subtraction
+   * @param {number|Fraction|string|Term|Expression|RationalTerm} x - term/expression to be subtracted
+   * @returns {RationalTerm} - the difference this minus x
+   */
+  minus(x) {
+    if (typeof x === "number" || typeof x === "string") {
+      x = new Term(x);
+    }
+    return this.plus(x.negative());
+  }
 
-	/** toString
-	 * @returns {string} - the LaTeX string representation of the Expression
-	 */
-	toString() {
-		if (this.terms.length === 0) {
-			return '0';
-		}
-		return this.terms.reduce((prev, term, i) => {
-			if (i !== 0 && term.coeff.is.positive()) {
-				return `${prev} + ${term}`;
-			}
-			const space = i === 0 ? '' : ' ';
-			return `${prev}${space}${term}`;
-		}, '');
-	}
+  /**
+   * sub in a value for a variable
+   * @param {{[key: string]: number|Fraction}|number|Fraction} variableToValue - the values to sub in with the key being the variable signature.
+   * @returns {RationalTerm} - the new RationalTerm
+   */
+  subIn(variableToValue) {
+    return new RationalTerm(
+      this.num.subIn(variableToValue),
+      this.den.subIn(variableToValue)
+    );
+  }
+
+  /** methods to cast this term to other types */
+  cast = {
+    /**
+     * cast to Expression type (denominator must be a constant)
+     * @returns {Expression} an Expression representation of this term
+     */
+    toExpression: () => {
+      if (this.den.is.constant()) {
+        return this.num.divide(this.den.cast.toFraction());
+      }
+      throw new Error(
+        `cannot cast ${this} to Term: non-constant denominator detected`
+      );
+    },
+    /**
+     * cast to Term type
+     * @returns {Term} the term representation of this term
+     */
+    toTerm: () => {
+      return this.cast.toExpression().cast.toTerm();
+    },
+    /**
+     * cast to Fraction type
+     * @returns {Fraction} the fraction representation of this term
+     */
+    toFraction: () => {
+      return this.cast.toExpression().cast.toFraction();
+    },
+  };
+
+  /**
+   * toString
+   * @returns {string} - the LaTeX string representation of the Expression
+   */
+  toString() {
+    if (`${this.den}` === "1") {
+      return `${this.num}`;
+    }
+    return `\\frac{${this.num}}{${this.den}}`;
+  }
 }

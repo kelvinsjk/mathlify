@@ -1,5 +1,7 @@
 import { test, expect } from "vitest";
-import { Fraction, Term, Expression } from "../../index.js";
+import { Fraction } from "../../fraction";
+import { Term } from "../term";
+import { Expression } from "./expression";
 
 const uExp1a = new Expression(2).plus(9);
 const uExp1b = new Expression(new Fraction(-2)).plus(9);

@@ -1,4 +1,5 @@
-import { Fraction, Term } from "../../index.js";
+import { Fraction } from "../../fraction";
+import { Term } from "./term";
 import { test, expect } from "vitest";
 
 test("Terms", () => {
@@ -38,7 +39,11 @@ test("Term Fractional Display", () => {
       variable: "y",
       power: -1,
     }).setFractionalDisplay()}`
-  ).to.equal("\\frac{- x}{5 y}");
+  ).to.equal("- \\frac{x}{5 y}");
+  const negativeOneOverX = new Term(-1).divide("x", {
+    fractionalDisplayMode: true,
+  });
+  expect(`${negativeOneOverX}`).to.equal("- \\frac{1}{x}");
 });
 
 const x = new Term("x");

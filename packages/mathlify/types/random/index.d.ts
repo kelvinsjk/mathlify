@@ -1,3 +1,3 @@
 export { getRandomInt, getRandomInts } from "./getRandomInt.js";
-export { getRandomFrac, getRandomFracs } from "./getRandomFrac.js";
+export { getRandomFraction, getRandomFractions } from "./getRandomFraction.js";
 //# sourceMappingURL=index.d.ts.map

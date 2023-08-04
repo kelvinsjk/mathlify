@@ -39,6 +39,14 @@ export class Term {
      */
     times(x: number | Fraction | string | Term): Term;
     /**
+     * reciprocal
+     * @param {{fractionalDisplayMode: boolean}} [options] - whether to display the term as a fraction (default: false) (3/5 x by default, 3x/5 if true)
+     * @returns {Term} the reciprocal of the term
+     */
+    reciprocal(options?: {
+        fractionalDisplayMode: boolean;
+    } | undefined): Term;
+    /**
      * term division
      * @param {number|Fraction|string|Term} x - the other term to divide with
      * @param {{fractionalDisplayMode: boolean}} [options] - whether to display the term as a fraction (default: false) (3/5 x by default, 3x/5 if true)
@@ -70,6 +78,15 @@ export class Term {
         toFraction: () => Fraction;
     };
     /**
+     * boolean methods for this term
+     */
+    is: {
+        /**
+         * whether this term is a constant (ie can be cast to Fraction class)
+         */
+        constant: () => boolean;
+    };
+    /**
      * change the fractional display to true
      * WARNING: changes the term in place
      * @returns {Term} reference to current term
@@ -87,5 +104,5 @@ export class Term {
      */
     toString(): string;
 }
-import { Fraction } from '../../fraction.js';
+import { Fraction } from "../../fraction.js";
 //# sourceMappingURL=term.d.ts.map

@@ -1,23 +1,21 @@
 <script lang="ts">
 	import Question from '$lib/components/Question.svelte';
 	import type { Part, Question as QuestionType } from '$lib/components/types';
-	import { UnsimplifiedExpression, Fraction, Term, Expression } from 'mathlify';
-	import { alignStar, display, math, newParagraph } from 'mathlifier';
+	import { RationalTerm, Fraction, Term, Expression } from 'mathlify';
+	import { math, newParagraph } from 'mathlifier';
 
 	const title = 'Basic algebraic concepts and notations';
-
-	const simplifyString = 'Simplify each of the following';
 
 	// TODO: Word problems: sum/subtract
 	// TODO: Sub in working
 	// TODO: Expansion: 9c, 10d
-	// TODO: RationalTerm: Q8c, 10c
+	// TODO: RationalTerm in an Expression: 10c
 	// TODO: Surds: Q8d, 9d
 	// TODO: powers: Q10b,d
 
-	//! Question 1
-	let x = 5,
-		y = -2;
+	//! Question 1 (6 in book)
+	let x = 5;
+	let y: number | Fraction = -2;
 	const exp1 = [
 		new Expression([4, 'x'], [9, 'y']),
 		new Expression([4, 'x'], [-9, 'y']),
@@ -27,7 +25,7 @@
 	const ans1 = exp1.map((exp) => exp.subIn({ x, y }));
 	const xys1 = { x, y };
 
-	//! Question 2
+	//! Question 2 (7 in book)
 	x = -4;
 	y = 7;
 	//! 2a construction
@@ -43,28 +41,42 @@
 		),
 		new Expression(new Term(['x', 2]), new Term(['y', 2]))
 	];
-	console.log(`${term2.subIn({ x, y })}`);
-	console.log(
-		`${new Expression(term1, [multiple, term2.subIn({ x, y }).cast.toFraction()]).subIn({ x, y })}`
-	);
 	const ans2 = exp2.map((exp, i) => {
 		if (i === 1) {
 			const exp = new Expression(term1, [multiple, term2.subIn({ x, y }).cast.toFraction()]).subIn({
 				x,
 				y
 			});
-			console.log(`${exp}`);
 			return exp;
 		}
 		return exp.subIn({ x, y });
 	});
 	const xys2 = { x, y };
 
+	//! Question 3 (8 in book)
+	(x = -5), (y = new Fraction(1, 4));
+	const exp3 = [
+		new Expression([3, 'y'], [-2, 'x']),
+		new Expression(
+			new Term(1).divide('y', { fractionalDisplayMode: true }),
+			new Term(-1).divide('x', { fractionalDisplayMode: true })
+		),
+		new RationalTerm(['x', new Term(-1, 'y')], ['x', 'y'])
+	];
+	const ans3 = exp3.map((exp, i) => {
+		let e: Fraction | Expression | RationalTerm = exp.subIn({ x, y });
+		if (i === 2) {
+			e = e.cast.toFraction();
+		}
+		return e;
+	});
+	const xys3 = { x, y };
+
 	//! Compiled questions
-	const qnArray = [exp1, exp2];
-	const ansArray = [ans1, ans2];
-	const xyArray = [xys1, xys2];
-	const preamble = (xys: { x: number; y: number }) => {
+	const qnArray = [exp1, exp2, exp3];
+	const ansArray = [ans1, ans2, ans3];
+	const xyArray = [xys1, xys2, xys3];
+	const preamble = (xys: { x: number | Fraction; y: number | Fraction }) => {
 		return `Given that ${math(`x=${xys.x}`)} and ${math(`y=${xys.y},`)}
 			find the value of each of the following expressions.
 		`;
