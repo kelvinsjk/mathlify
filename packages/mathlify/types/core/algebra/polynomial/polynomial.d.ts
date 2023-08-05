@@ -68,8 +68,8 @@ export class Polynomial extends Expression {
      * @param {Fraction} x - the values to sub in
      * @returns {Fraction} - Fraction
      */
-    subInX(x: Fraction): Fraction;
+    subInFraction(x: Fraction): Fraction;
 }
-import { Expression } from '../expression/index.js';
-import { Fraction } from '../../fraction.js';
+import { Expression } from "../expression/index.js";
+import { Fraction } from "../../fraction.js";
 //# sourceMappingURL=polynomial.d.ts.map
