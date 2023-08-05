@@ -135,6 +135,15 @@ export class RationalTerm extends Term {
 		);
 	}
 
+	/**
+	 * resets coeff
+	 * should not be used directly: only present to ensure compatibility with Expression class
+	 * @returns {RationalTerm} - reference to this RationalTerm
+	 */
+	resetCoeff() {
+		return this;
+	}
+
 	/** methods to cast this term to other types */
 	cast = {
 		/**

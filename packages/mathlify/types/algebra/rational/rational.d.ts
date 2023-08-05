@@ -55,6 +55,12 @@ export class RationalTerm extends Term {
     subIn(variableToValue: number | Fraction | {
         [key: string]: number | Fraction;
     }): RationalTerm;
+    /**
+     * resets coeff
+     * should not be used directly: only present to ensure compatibility with Expression class
+     * @returns {RationalTerm} - reference to this RationalTerm
+     */
+    resetCoeff(): RationalTerm;
     /** methods to cast this term to other types */
     cast: {
         /**

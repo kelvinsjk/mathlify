@@ -21,9 +21,8 @@ const xPlus1Over1 = new RationalTerm(xPlus1, 1);
 const twoOverXPlus1b = new RationalTerm(2, xPlus1);
 
 test('RationalTerm in Expression', () => {
-	//const exp = new Expression(twoOverXPlus1b, 3);
-	console.log(twoOverXPlus1b instanceof Term);
-	console.log(y instanceof RationalTerm);
+	const exp = new Expression(twoOverXPlus1b, 3);
+	expect(`${exp}`).to.equal(`\\frac{2}{x + 1} + 3`);
 });
 
 test('RationalTerm constructor', () => {
