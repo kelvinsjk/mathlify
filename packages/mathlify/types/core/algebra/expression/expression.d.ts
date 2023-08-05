@@ -1,10 +1,9 @@
 /** Expression class
  * @property {Map<string,Fraction>} termCoeffMap - the terms in the expression, where the key is the term signature and the value is the coefficient
- * @property {Map<string,Map<string,Fraction>>} termPowerMap - key: term signature, value: term's power map
- * @property {Map<string,boolean>} termFractionalDisplayMap - key: term signature, value: the fractionalDisplayMode of the term
+ * @property {Map<string,Term>} termAtomMap - the terms in the expression, with coefficient adjusted to 1
  * @property {Term[]} terms - array of terms in the expression
- * @property {"expression"} kind - mathlify expression class kind
- * @property {"expression"|"expression-term"} type - mathlify expression class type
+ * @property {"expression"|"polynomial"} kind - mathlify expression class kind
+ * @property {"expression"|"expression-term"|"polynomial"|"linear-polynomial"|"quadratic-polynomial"} type - mathlify expression class type
  */
 export class Expression {
     /**
@@ -20,11 +19,12 @@ export class Expression {
         addition?: boolean;
     } | (number | Fraction | string)[])[]);
     termCoeffMap: Map<string, Fraction>;
-    termPowerMap: Map<string, Map<string, Fraction>>;
-    termFractionalDisplayMap: Map<string, boolean>;
+    termAtomMap: Map<string, Term>;
     terms: Term[];
-    kind: string;
-    type: string;
+    /** @type {"expression"|"polynomial"} */
+    kind: "expression" | "polynomial";
+    /** @type {"expression"|"expression-term"|"polynomial"|"linear-polynomial"|"quadratic-polynomial"} */
+    type: "expression" | "expression-term" | "polynomial" | "linear-polynomial" | "quadratic-polynomial";
     /**
      * Expression addition
      * @param {number|Fraction|string|Term|Expression} x - term/expression to be added
@@ -50,11 +50,11 @@ export class Expression {
     /**
      * expression division
      * @param {number|Fraction|string|Term} x - term to be divided
-     * @param {{fractionalDisplayMode: boolean}} [options] - whether to display the term as a fraction (default: false) (3/5 x by default, 3x/5 if true)
+     * @param {{fractionalDisplayMode: "always"|"auto"|"never"}} [options] - whether to display the term as a fraction (default: false) (3/5 x by default, 3x/5 if true)
      * @returns {Expression} - the quotient
      */
     divide(x: number | Fraction | string | Term, options?: {
-        fractionalDisplayMode: boolean;
+        fractionalDisplayMode: "always" | "auto" | "never";
     } | undefined): Expression;
     /**
      * sub in a value for a variable
@@ -64,6 +64,11 @@ export class Expression {
     subIn(variableToValue: number | Fraction | {
         [key: string]: number | Fraction;
     }): Expression;
+    /**
+     * gcd of the expression (only supports Fractions at the moment)
+     * @return {Fraction} - the gcd of all the terms
+     */
+    gcd(): Fraction;
     /**
      * boolean methods for this expression
      */
@@ -95,6 +100,6 @@ export class Expression {
      */
     toString(): string;
 }
-import { Fraction } from "../../fraction.js";
-import { Term } from "../term/index.js";
+import { Fraction } from '../../fraction.js';
+import { Term } from '../term/index.js';
 //# sourceMappingURL=expression.d.ts.map

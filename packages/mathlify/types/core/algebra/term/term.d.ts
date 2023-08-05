@@ -6,12 +6,15 @@
  */
 export function powerMapToTerm(powerMap: Map<string, Fraction> | undefined, coeff: Fraction | null): Term;
 /** Term class
+ * @class
  * @property {Fraction} coeff - the coefficient of the term
  * @property {Map<string,Fraction>} powerMap - the key is the variable atom, the value is the power
  * @property {string} signature - a string representation of the (sorted) variables
- * @property {boolean} fractionalDisplayMode - whether to display the term as a fraction (default: false) (3/5 x by default, 3x/5 if true)
- * @property {"term"} kind - mathlify fraction class
- * @property {"term"|"term-frac"} kind - mathlify fraction class
+ * @property {string} fractionalDisplayMode - default: auto. typesets as coeff followed by fraction (eg 3/5 x) if no negative indices for the variable atoms, but
+ * as a fraction if negative indices encountered (eg 3x / 5y). "never" will also typeset as coeff followed by fraction, resorting to negative indices.
+ * "always" will always typeset as a fraction as long as the denominator is not 1
+ * @property {"term"|"rational"} kind - mathlify fraction class
+ * @property {"term"|"term-frac"|"rational"|"rational-expression"} kind - mathlify fraction class
  */
 export class Term {
     /**
@@ -29,31 +32,42 @@ export class Term {
     coeff: Fraction;
     powerMap: Map<string, Fraction>;
     signature: string;
-    kind: string;
-    type: string;
-    fractionalDisplayMode: boolean;
+    /** @type {"term"|"rational"} */
+    kind: "term" | "rational";
+    /** @type {"term"|"term-frac"|"rational"|"rational-expression"} */
+    type: "term" | "term-frac" | "rational" | "rational-expression";
+    /** @type {"never"|"auto"|"always"} */
+    fractionalDisplayMode: "never" | "auto" | "always";
     /**
      * term multiplication
      * @param {number|Fraction|string|Term} x - the other term to multiply with
+     * @param {{fractionalDisplayMode: "never"|"auto"|"always"}} [options] - the fractional display mode to set on the result (defaults to mode of this)
      * @returns {Term} the product of the two terms
      */
-    times(x: number | Fraction | string | Term): Term;
+    times(x: number | Fraction | string | Term, options?: {
+        fractionalDisplayMode: "never" | "auto" | "always";
+    } | undefined): Term;
+    /**
+     * reset coeff: changes the coefficient of the term to 1
+     * @returns {Term} the term with coefficient 1
+     */
+    resetCoeff(): Term;
     /**
      * reciprocal
-     * @param {{fractionalDisplayMode: boolean}} [options] - whether to display the term as a fraction (default: false) (3/5 x by default, 3x/5 if true)
+     * @param {{fractionalDisplayMode: "never"|"auto"|"always"}} [options] - the fractional display mode to set on the result (defaults to mode of this)
      * @returns {Term} the reciprocal of the term
      */
     reciprocal(options?: {
-        fractionalDisplayMode: boolean;
+        fractionalDisplayMode: "never" | "auto" | "always";
     } | undefined): Term;
     /**
      * term division
      * @param {number|Fraction|string|Term} x - the other term to divide with
-     * @param {{fractionalDisplayMode: boolean}} [options] - whether to display the term as a fraction (default: false) (3/5 x by default, 3x/5 if true)
+     * @param {{fractionalDisplayMode: "never"|"auto"|"always"}} [options] - the fractional display mode to set on the result (defaults to mode of this)
      * @returns {Term} the quotient of the two terms
      */
     divide(x: number | Fraction | string | Term, options?: {
-        fractionalDisplayMode: boolean;
+        fractionalDisplayMode: "never" | "auto" | "always";
     } | undefined): Term;
     /**
      * negative
@@ -87,22 +101,17 @@ export class Term {
         constant: () => boolean;
     };
     /**
-     * change the fractional display to true
+     * change the fractional display mode
      * WARNING: changes the term in place
+     * @param {"never"|"auto"|"always"} mode - the fractional handling mode
      * @returns {Term} reference to current term
      * */
-    setFractionalDisplay(): Term;
-    /**
-     * change the fractional display to false
-     * WARNING: changes the term in place
-     * @returns {Term} reference to current term
-     * */
-    setCoeffDisplay(): Term;
+    setDisplayMode(mode: "never" | "auto" | "always"): Term;
     /**
      * casts this term as a latex string
      * @returns {string} the latex string representation of this term
      */
     toString(): string;
 }
-import { Fraction } from "../../fraction.js";
+import { Fraction } from '../../fraction.js';
 //# sourceMappingURL=term.d.ts.map

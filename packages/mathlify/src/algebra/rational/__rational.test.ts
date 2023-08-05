@@ -1,5 +1,6 @@
 import { test, expect } from 'vitest';
-import { RationalTerm, Fraction, Expression, Term } from '../../index.js';
+import { Fraction, Expression, Term } from '../../index.js';
+import { RationalTerm } from './rational.js';
 
 const y = new Term('y');
 const xPlus1 = new Expression('x', 1);
@@ -17,7 +18,13 @@ const xOverTwo = new RationalTerm('x', 1);
 const xMinus1OverXPlus1 = new RationalTerm(['x', -1], xPlus1);
 const twoOverXPlus1a = new RationalTerm(two, xPlus1);
 const xPlus1Over1 = new RationalTerm(xPlus1, 1);
-//const twoOverXPlus1b = new RationalTerm(2, xPlus1);
+const twoOverXPlus1b = new RationalTerm(2, xPlus1);
+
+test('RationalTerm in Expression', () => {
+	//const exp = new Expression(twoOverXPlus1b, 3);
+	console.log(twoOverXPlus1b instanceof Term);
+	console.log(y instanceof RationalTerm);
+});
 
 test('RationalTerm constructor', () => {
 	expect(() => new RationalTerm(xPlus1, 0)).to.throw();

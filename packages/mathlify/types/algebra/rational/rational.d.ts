@@ -4,6 +4,7 @@
  * @property {Expression} den - the denominator of the term
  * @property {"rational"} kind - mathlify rational class kind
  * @property {"rational"|"rational-expression"} type - mathlify rational class type
+ * @extends Term
  */
 export class RationalTerm extends Term {
     /**
@@ -20,8 +21,9 @@ export class RationalTerm extends Term {
      * multiplication
      * @param {number|Fraction|string|Term|Expression|RationalTerm} x - the other term/expression to multiply with
      * @returns {RationalTerm} the product of the two
+     * @override
      */
-    times(x: number | Fraction | string | Term | Expression | RationalTerm): RationalTerm;
+    override times(x: number | Fraction | string | Term | Expression | RationalTerm): RationalTerm;
     /**
      * division
      * @param {number|Fraction|string|Term|Expression|RationalTerm} x - the other term/expression to divide with
@@ -72,7 +74,7 @@ export class RationalTerm extends Term {
         toFraction: () => Fraction;
     };
 }
-import { Term } from "../../core/index.js";
-import { Expression } from "../../core/index.js";
-import { Fraction } from "../../core/index.js";
+import { Term } from '../../core/index.js';
+import { Expression } from '../../core/index.js';
+import { Fraction } from '../../core/index.js';
 //# sourceMappingURL=rational.d.ts.map

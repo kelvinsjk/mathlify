@@ -17,6 +17,7 @@ import { Expression, Fraction, Term } from '../../core/index.js';
  * @property {Expression} den - the denominator of the term
  * @property {"rational"} kind - mathlify rational class kind
  * @property {"rational"|"rational-expression"} type - mathlify rational class type
+ * @extends Term
  */
 export class RationalTerm extends Term {
 	/**
@@ -52,7 +53,9 @@ export class RationalTerm extends Term {
 		super(`(${numerator})`, [`(${denominator})`, -1]);
 		this.num = numerator;
 		this.den = denominator;
+		/** @type {"rational"} */
 		this.kind = 'rational';
+		/** @type {"rational"|"rational-expression"} */
 		this.type = `${denominator}` === '1' ? 'rational-expression' : 'rational';
 	}
 
@@ -60,6 +63,7 @@ export class RationalTerm extends Term {
 	 * multiplication
 	 * @param {number|Fraction|string|Term|Expression|RationalTerm} x - the other term/expression to multiply with
 	 * @returns {RationalTerm} the product of the two
+	 * @override
 	 */
 	times(x) {
 		// (this.num * x.num) / (this.den * x.den)
