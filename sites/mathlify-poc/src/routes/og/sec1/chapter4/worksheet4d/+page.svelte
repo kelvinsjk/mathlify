@@ -6,7 +6,7 @@
 
 	const title = 'Linear expressions with fractional coefficients';
 
-	// TODO: Q3a,i: further simplification of RationalTerm
+	// COMPLETED: Implemented Q1, 3, 4
 
 	const questions: QuestionType[] = [];
 
@@ -48,7 +48,7 @@
 		});
 	});
 	questions.push({
-		body: `<span class="font-semibold mx-2">1.</span> ${preamble()}`,
+		body: `<span class="font-semibold mx-2">1.</span> Simplify each of the following.`,
 		parts: parts,
 	});
 
@@ -76,7 +76,7 @@
 		});
 	});
 	questions.push({
-		body: `<span class="font-semibold mx-2">2.</span> ${preamble()}`,
+		body: `<span class="font-semibold mx-2">2.</span> Express each of the following as a single fraction in its simplest form.`,
 		parts: parts,
 	});
 
@@ -129,7 +129,7 @@
 		`)}`,
 	});
 	questions.push({
-		body: `<span class="font-semibold mx-2">3.</span> ${preamble()}`,
+		body: `<span class="font-semibold mx-2">3.</span> Express each of the following as a single fraction in its simplest form.`,
 		parts: parts,
 	});
 

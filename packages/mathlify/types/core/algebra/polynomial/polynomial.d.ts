@@ -54,10 +54,10 @@ export class Polynomial extends Expression {
     divide(x: number | Fraction): Polynomial;
     /**
      * power
-     * @param {number} n - the power to raise the polynomial to
+     * @param {number|Fraction} n - the power to raise the polynomial to
      * @returns {Polynomial} - the polynomial raised to the power n
      */
-    pow(n: number): Polynomial;
+    pow(n: number | Fraction): Polynomial;
     /**
      * square
      * @returns {Polynomial} - the square of the polynomial
@@ -65,10 +65,10 @@ export class Polynomial extends Expression {
     square(): Polynomial;
     /**
      * sub in a Fraction
-     * @param {Fraction} x - the values to sub in
+     * @param {Fraction|number} x - the values to sub in
      * @returns {Fraction} - Fraction
      */
-    subInFraction(x: Fraction): Fraction;
+    subInFraction(x: Fraction | number): Fraction;
 }
 import { Expression } from "../expression/index.js";
 import { Fraction } from "../../fraction.js";

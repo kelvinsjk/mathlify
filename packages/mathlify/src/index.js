@@ -1,4 +1,4 @@
-export { Fraction, Term, Expression } from "./core/index.js";
+export { Fraction, Term, Expression, Polynomial } from "./core/index.js";
 export {
   getRandomInt,
   getRandomInts,
@@ -6,4 +6,9 @@ export {
   getRandomFractions,
 } from "./random/index.js";
 export { gcd, lcm, bracket } from "./utils/index.js";
-export { RationalTerm, UnsimplifiedExpression } from "./algebra/index.js";
+export {
+  RationalTerm,
+  UnsimplifiedExpression,
+  UnsimplifiedTerm,
+  solveLinear,
+} from "./algebra/index.js";

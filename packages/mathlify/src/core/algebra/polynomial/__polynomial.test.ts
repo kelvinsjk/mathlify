@@ -1,6 +1,5 @@
 import { test, expect } from "vitest";
 import { Fraction } from "../../fraction";
-import { Term } from "../term";
 import { Polynomial } from "./polynomial";
 
 const two = new Polynomial([2]);

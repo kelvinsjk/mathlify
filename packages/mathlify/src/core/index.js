@@ -1,2 +1,2 @@
-export { Fraction } from './fraction.js';
-export { Term, Expression } from './algebra/index.js';
+export { Fraction } from "./fraction.js";
+export { Term, Expression, Polynomial } from "./algebra/index.js";

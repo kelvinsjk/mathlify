@@ -2,7 +2,6 @@ import { Fraction, Term, Expression } from "../../core/index.js";
 import { bracket } from "../../utils";
 
 /** Unsimplified Expression class
- * TODO: convert Fraction type to Term/Unsimplified Term type
  * @property {{term: Term, brackets: 'off'|'auto'|'always', addition: boolean}[]} terms - the terms in the expression
  * @property {"unsimplified-expression"} kind - mathlify unsimplified expression class kind
  * @property {"unsimplified-expression"} type - mathlify unsimplified expression class type
@@ -59,12 +58,14 @@ export class UnsimplifiedExpression {
       parsedTerms.push(t);
     });
     this.terms = parsedTerms;
+    /** @type {"unsimplified-expression"} */
     this.kind = "unsimplified-expression";
+    /** @type {"unsimplified-expression"} */
     this.type = "unsimplified-expression";
   }
 
   /** add terms to this Expression
-   * @param {number|Fraction} x - term to be added
+   * @param {number|Fraction|Term|string} x - term to be added
    * @param {{brackets: 'off'|'auto'|'always'}} [options = {brackets: 'auto'}] - options for the brackets (defaults to auto)
    * @returns {UnsimplifiedExpression} - the new Unsimplified Expression
    */
@@ -77,7 +78,7 @@ export class UnsimplifiedExpression {
   }
 
   /** subtract terms from this Expression
-   * @param {number|Fraction} x - term to be subtracted
+   * @param {number|Fraction|Term|string} x - term to be subtracted
    * @param {{brackets: 'off'|'auto'|'always'}} [options = {brackets: 'auto'}] - options for the brackets (defaults to auto)
    * @returns {UnsimplifiedExpression} - the new Unsimplified Expression
    */

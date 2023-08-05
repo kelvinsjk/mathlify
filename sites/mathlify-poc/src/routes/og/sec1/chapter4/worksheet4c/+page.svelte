@@ -1,12 +1,11 @@
 <script lang="ts">
 	import Question from '$lib/components/Question.svelte';
 	import type { Part, Question as QuestionType } from '$lib/components/types';
-	import { Term, Expression } from 'mathlify';
+	import { Term, Expression, UnsimplifiedTerm } from 'mathlify';
 	import { math, newParagraph } from 'mathlifier';
 
 	const title = 'Expansion and factorisation of linear expressions';
 
-	// TODO: Repeated multiplication Q2
 	// TODO: Expand, and then simplify with other terms Q4
 	// TODO: Factorisation: Q8
 
@@ -31,8 +30,21 @@
 	];
 	const ans1 = exp1.map(([k, exp]) => new Expression(k).times(exp));
 
-	//! Question 2 (3 from book)
-	const exp2: [Term, Expression][] = [
+	//! Question 3
+	const exp2: UnsimplifiedTerm[] = [
+		new UnsimplifiedTerm(8, 'x', 'y'),
+		new UnsimplifiedTerm(11, 'x', 2, 'y'),
+		new UnsimplifiedTerm(3, 'x', -9, 'y'),
+		new UnsimplifiedTerm([4, 'x'], [10, 'y']),
+		new UnsimplifiedTerm([5, 'x'], [-6, 'y']),
+		new UnsimplifiedTerm({ termAtom: new Term(-12, 'x'), brackets: 'always' }, [-12, 'y']),
+		new UnsimplifiedTerm([6, 'x'], 'y', [7, 'z']),
+		new UnsimplifiedTerm({ termAtom: new Term(-3, 'x'), brackets: 'always' }, [8, 'y'], [-4, 'z']),
+	];
+	const ans2 = exp2.map((t) => t.simplify());
+
+	//! Question 3
+	const exp3: [Term, Expression][] = [
 		[new Term(2, 'a'), new Expression([9, 'x'], [4, 'y'])],
 		[new Term(7, 'a'), new Expression([8, 'x'], [-3, 'y'])],
 		[new Term(-1, 'a'), new Expression([5, 'x'], 'y')],
@@ -40,11 +52,11 @@
 		[new Term(4, 'b', 'c'), new Expression([6, 'y'], [-11, 'x'])],
 		[new Term(-5, 'b', 'c'), new Expression([3, 'y'], [16, 'x'])],
 	];
-	const ans2 = exp2.map(([k, exp]) => new Expression(k).times(exp));
+	const ans3 = exp3.map(([k, exp]) => new Expression(k).times(exp));
 
 	//! Compiled questions
-	const qnArray = [exp1, exp2];
-	const ansArray = [ans1, ans2];
+	const qnArray = [exp1, exp2, exp3];
+	const ansArray = [ans1, ans2, ans3];
 	const preamble = () => {
 		return `Expand each of the following expressions.`;
 	};
@@ -52,15 +64,28 @@
 	const questions: QuestionType[] = [];
 	qnArray.forEach((q, i) => {
 		const parts: Part[] = [];
-		q.forEach(([k, exp], j) => {
-			const qn = k instanceof Term ? k.times(`(${exp})`) : new Term(k, `(${exp})`);
-			parts.push({
-				body: `${math(`${qn}`)}
-					${newParagraph}
-					Answer: ${math(`${ansArray[i][j]}`)}
-				`,
+		if (i === 1) {
+			q.forEach((exp, j) => {
+				parts.push({
+					body: `${math(`${exp}`)}
+						${newParagraph}
+						Answer: ${math(`${ansArray[i][j]}`)}
+					`,
+				});
 			});
-		});
+		} else {
+			q.forEach((arr, j) => {
+				if (!Array.isArray(arr)) return;
+				const [k, exp] = arr;
+				const qn = k instanceof Term ? k.times(`(${exp})`) : new Term(k, `(${exp})`);
+				parts.push({
+					body: `${math(`${qn}`)}
+						${newParagraph}
+						Answer: ${math(`${ansArray[i][j]}`)}
+					`,
+				});
+			});
+		}
 		questions.push({
 			body: `<span class="font-semibold mx-2">${i + 1}.</span> ${preamble()}`,
 			parts: parts,

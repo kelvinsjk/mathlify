@@ -17,7 +17,7 @@
 		[new Term(8, 'x'), new Term(-3, 'x')],
 		[new Term(-6, 'x'), 'x'],
 		[new Term(-2, 'x'), new Term(9, 'x')],
-		[new Term(-4, 'x'), new Term(-5, 'x')]
+		[new Term(-4, 'x'), new Term(-5, 'x')],
 	];
 	const additionArray3 = [true, false, true, true, false, false];
 	const q1s: UnsimplifiedExpression[] = [];
@@ -38,38 +38,38 @@
 			new Term(3, 'x'),
 			10,
 			{ term: new Term(6, 'x'), addition: false },
-			5
+			5,
 		),
 		// b
 		new UnsimplifiedExpression(new Term(9, 'x'), { term: 4, addition: false }, new Term(-1, 'x'), {
 			term: -1,
-			addition: false
+			addition: false,
 		}),
 		// c
 		new UnsimplifiedExpression(new Term(5, 'x'), new Term(8, 'y'), new Term(7, 'x'), {
 			term: 'y',
-			addition: false
+			addition: false,
 		}),
 		// d
 		new UnsimplifiedExpression(
 			new Term(4, 'y'),
 			{ term: new Term(10, 'x'), addition: false },
 			{ term: new Term(3, 'y'), addition: false },
-			new Term(6, 'x')
+			new Term(6, 'x'),
 		),
 		// e
 		new UnsimplifiedExpression(
 			new Term(-9, 'x'),
 			{ term: new Term(2, 'y'), addition: false },
 			new Term(-1, 'x'),
-			{ term: new Term(-2, 'y'), addition: false }
+			{ term: new Term(-2, 'y'), addition: false },
 		),
 		// f
 		new UnsimplifiedExpression(
 			new Term(-8, 'y'),
 			new Term(-3, 'x'),
 			{ term: new Term(5, 'y'), addition: false },
-			new Term(-4, 'x')
+			new Term(-4, 'x'),
 		),
 		// g
 		new UnsimplifiedExpression(
@@ -78,7 +78,7 @@
 			12,
 			new Term(5, 'y'),
 			{ term: 9, addition: false },
-			{ term: new Term(9, 'x'), addition: false }
+			{ term: new Term(9, 'x'), addition: false },
 		),
 		// h
 		new UnsimplifiedExpression(
@@ -87,8 +87,8 @@
 			new Term(-2, 'x'),
 			{ term: 8, addition: false },
 			{ term: new Term(-7, 'y'), addition: false },
-			'x'
-		)
+			'x',
+		),
 	];
 	const w2s = [
 		,
@@ -97,7 +97,7 @@
 			new Term(9, 'x'),
 			{ term: 4, addition: false },
 			{ term: new Term(1, 'x'), addition: false },
-			1
+			1,
 		), // c,d
 		,
 		,
@@ -105,13 +105,13 @@
 			new Term(-9, 'x'),
 			{ term: new Term(2, 'y'), addition: false },
 			{ term: new Term(1, 'x'), addition: false },
-			new Term(2, 'y')
+			new Term(2, 'y'),
 		),
 		new UnsimplifiedExpression(
 			new Term(-8, 'y'),
 			{ term: new Term(3, 'x'), addition: false },
 			{ term: new Term(5, 'y'), addition: false },
-			{ term: new Term(4, 'x'), addition: false }
+			{ term: new Term(4, 'x'), addition: false },
 		), //g
 		,
 		new UnsimplifiedExpression(
@@ -120,8 +120,8 @@
 			{ term: new Term(2, 'x'), addition: false },
 			{ term: 8, addition: false },
 			new Term(7, 'y'),
-			'x'
-		)
+			'x',
+		),
 	];
 
 	//! Compiled questions
@@ -140,12 +140,12 @@
 					parts.push({
 						body: alignStar(`& ${q}
 							\\\\ &= ${wArray[i][j]}
-							\\\\ &= ${q.simplify()}`)
+							\\\\ &= ${q.simplify()}`),
 					});
 				} else {
 					parts.push({
 						body: alignStar(`${q} &= ${wArray[i][j]}
-							\\\\ &= ${q.simplify()}`)
+							\\\\ &= ${q.simplify()}`),
 					});
 				}
 			} else {
@@ -153,18 +153,18 @@
 					// multiline
 					parts.push({
 						body: alignStar(`& ${q}
-							\\\\ &= ${q.simplify()}`)
+							\\\\ &= ${q.simplify()}`),
 					});
 				} else {
 					parts.push({
-						body: display(`${q} = ${q.simplify()}`)
+						body: display(`${q} = ${q.simplify()}`),
 					});
 				}
 			}
 		});
 		questions.push({
 			body: `<span class="font-semibold mx-2">${i + 1}.</span> ${preamble[i]}`,
-			parts: parts
+			parts: parts,
 		});
 	});
 </script>
