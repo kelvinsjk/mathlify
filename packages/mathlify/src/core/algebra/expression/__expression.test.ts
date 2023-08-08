@@ -54,6 +54,7 @@ test("Expression", () => {
   expect(`${minusXPlus1}`).to.equal("- x + 1");
   expect(`${threeFifthXPlus1}`).to.equal("\\frac{3 x}{5} + 1");
   expect(`${threeFifthXPlus1.subIn(5)}`).to.equal("4");
+  expect(`${threeFifthXPlus1.negative()}`).to.equal("- \\frac{3 x}{5} - 1");
   expect(`${new Expression([2, "x"], 1)}`).to.be.equal("2 x + 1");
 });
 

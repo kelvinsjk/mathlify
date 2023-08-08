@@ -8,6 +8,7 @@ export {
 export { gcd, lcm, bracket } from "./utils/index.js";
 export {
   RationalTerm,
+  ExpansionTerm,
   UnsimplifiedExpression,
   UnsimplifiedTerm,
   solveLinear,

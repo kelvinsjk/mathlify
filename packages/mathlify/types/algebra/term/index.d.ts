@@ -1,2 +1,4 @@
-export { UnsimplifiedTerm } from "./unsimplified-term.js";
+export { UnsimplifiedTerm } from "./unsimplified-term/unsimplified-term.js";
+export { RationalTerm } from "./rational-term/rational.js";
+export { ExpansionTerm } from "./expansion-term/expansion.js";
 //# sourceMappingURL=index.d.ts.map

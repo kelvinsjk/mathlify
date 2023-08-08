@@ -1,5 +1,5 @@
 import { test, expect } from "vitest";
-import { UnsimplifiedTerm, Term } from "././../../index.js";
+import { UnsimplifiedTerm, Term } from "././../../../index.js";
 
 const uTerm1a = new UnsimplifiedTerm(7, 8);
 const uTerm1b = new UnsimplifiedTerm({ termAtom: -7, brackets: "always" }, 8);

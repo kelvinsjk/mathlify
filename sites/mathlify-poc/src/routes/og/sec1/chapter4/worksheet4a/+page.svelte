@@ -1,15 +1,14 @@
 <script lang="ts">
 	import Question from '$lib/components/Question.svelte';
 	import type { Part, Question as QuestionType } from '$lib/components/types';
-	import { RationalTerm, Fraction, Term, Expression } from 'mathlify';
+	import { RationalTerm, Fraction, Term, Expression, ExpansionTerm } from 'mathlify';
 	import { math, newParagraph } from 'mathlifier';
 
 	const title = 'Basic algebraic concepts and notations';
 
 	// TODO: Word problems: sum/subtract
 	// TODO: Sub in working
-	// TODO: Expansion: 9c, 10d
-	// TODO: negative RationalTerm in an Expression: 10c
+	// TODO: Expansion with first part expression and second part power term: 10d
 	// TODO: Surds: Q8d, 9d
 	// TODO: powers: Q10b,d
 
@@ -72,18 +71,36 @@
 	});
 	const xys3 = { x, y };
 
+	//! Question 4 (9 in book)
+	(x = new Fraction(1, 3)), (y = new Fraction(-1, 4));
+	const exp4 = [
+		new Expression(7, [-12, 'x', 'y']),
+		new Expression(new Term(3, ['x', -1]), new Term(4, ['y', -1]), -6),
+		new Expression(new ExpansionTerm(5, ['x', new Term(2, 'y')]), [-9, 'x']),
+	];
+	const ans4 = exp4.map((exp, i) => {
+		if (i === 2) {
+			exp = new Expression(...new ExpansionTerm(5, ['x', new Term(2, 'y')]).expand().terms, [
+				-9,
+				'x',
+			]);
+		}
+		return exp.subIn({ x, y });
+	});
+	const xys4 = { x, y };
+
 	//! Question 4 (10 in book)
 	//TODO: part b, d
 	x = new Fraction(-1, 2);
 	y = 0;
 	const z = 4;
-	const exp4 = [
+	const exp5 = [
 		new Expression([99, 'x', 'y', 'z']),
-		//new Expression(new Term(['x', 2], 'z').divide(5, { fractionalDisplayMode: 'always' })).minus(
-		//	new RationalTerm(new Expression([3, 'z'], [-1, 'y']), new Expression([2, 'x'], 'z')),
-		//),
+		// part b: power term
+		new Expression(new Term(['x', 2], 'z').divide(5, { fractionalDisplayMode: 'always' }),
+			new RationalTerm(new Expression([3, 'z'], [-1, 'y']), new Expression([2, 'x'], 'z'), new Fraction(-1))),
 	];
-	const ans4 = exp4.map((exp, i) => {
+	const ans5 = exp5.map((exp, i) => {
 		if (i === 1) {
 			const [t1, rational] = exp.subIn({ x, y, z }).terms;
 			const rational2 = rational.cast.toFraction();
@@ -91,12 +108,12 @@
 		}
 		return exp.subIn({ x, y, z });
 	});
-	const xys4 = { x, y, z };
+	const xys5 = { x, y, z };
 
 	//! Compiled questions
-	const qnArray = [exp1, exp2, exp3, exp4];
-	const ansArray = [ans1, ans2, ans3, ans4];
-	const xyArray = [xys1, xys2, xys3, xys4];
+	const qnArray = [exp1, exp2, exp3, exp4, exp5];
+	const ansArray = [ans1, ans2, ans3, ans4, ans5];
+	const xyArray = [xys1, xys2, xys3, xys4, xys5];
 	const preamble = (xys: { x: number | Fraction; y: number | Fraction; z?: number | Fraction }) => {
 		if (xys.z) {
 			return `Given that ${math(`x=${xys.x}`)}, ${math(`y=${xys.y}`)} and ${math(`z=${xys.z},`)}

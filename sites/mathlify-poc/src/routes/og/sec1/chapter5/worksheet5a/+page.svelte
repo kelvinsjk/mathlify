@@ -2,12 +2,11 @@
 	import Question from '$lib/components/Question.svelte';
 	import type { Part, Question as QuestionType } from '$lib/components/types';
 	import { math, newParagraph } from 'mathlifier';
-	import { Fraction, Polynomial, solveLinear } from 'mathlify';
+	import { ExpansionTerm, Fraction, Polynomial, solveLinear } from 'mathlify';
 
 	const title = 'Linear equations with integer coefficients';
 
-	// TODO: Q1p: float
-	// TODO: Q2g-p: expansion term
+	// TODO: Q1p, 2o-p: float
 
 	//! Question 1
 	const vars1 = [
@@ -47,7 +46,7 @@
 	const questions: QuestionType[] = [];
 	qnArray.forEach((q, i) => {
 		const parts: Part[] = [];
-		q.forEach((q, j) => {
+		q.forEach((q) => {
 			parts.push({
 				body: `${math(`${q[0]} = ${q[1]}`)}
 					${newParagraph}
@@ -59,6 +58,72 @@
 			body: `<span class="font-semibold mx-2">${i + 1}.</span> ${preamble()}`,
 			parts: parts,
 		});
+	});
+
+	//! Q2g-n
+	const lhsMultiples = [2, -6, 30, 14, 4, 1, 3, 7];
+	const lhsPolys = [
+		new Polynomial([4, 1]),
+		new Polynomial([1, -1]),
+		new Polynomial([1]),
+		new Polynomial([1]),
+		new Polynomial([9, 4]),
+		new Polynomial(21),
+		new Polynomial([1, 1]),
+		new Polynomial([7, new Fraction(1, 2)]),
+	];
+	const rhsMultiples = [16, 18, 5, -7, 1, 3, 8, 5];
+	const rhsPolys = [
+		new Polynomial([1]),
+		new Polynomial([1]),
+		new Polynomial([3, -2]),
+		new Polynomial([2, 7]),
+		new Polynomial([19, -1]),
+		new Polynomial([8, 5]),
+		new Polynomial([1, new Fraction(-1, 4)]),
+		new Polynomial([5, new Fraction(-1, 2)]),
+	];
+	const parts: Part[] = [];
+	lhsMultiples.forEach((lhsM, i) => {
+		const lhsPoly = lhsPolys[i];
+		const rhsM = rhsMultiples[i];
+		const rhsPoly = rhsPolys[i];
+		// qn. handle edge case q4n first
+		if (i === 7) {
+			const qn = `${new ExpansionTerm(lhsM, lhsPoly)} - ${new ExpansionTerm(rhsM, rhsPoly)} = 0`;
+			const ans = solveLinear(lhsPoly.times(lhsM), rhsPoly.times(rhsM));
+			parts.push({
+				body: `${math(`${qn}`)}
+					${newParagraph}
+					Answer: ${math(`${ans}`)}
+				`,
+			});
+		} else {
+			const lhs =
+				`${lhsPoly}` === '1'
+					? `${lhsM}`
+					: lhsM === 1
+					? `${lhsPoly}`
+					: `${new ExpansionTerm(lhsM, lhsPoly)}`;
+			const rhs =
+				`${rhsPoly}` === '1'
+					? `${rhsM}`
+					: rhsM === 1
+					? `${rhsPoly}`
+					: `${new ExpansionTerm(rhsM, rhsPoly)}`;
+			const qn = `${lhs} = ${rhs}`;
+			const ans = solveLinear(lhsPoly.times(lhsM), rhsPoly.times(rhsM));
+			parts.push({
+				body: `${math(`${qn}`)}
+					${newParagraph}
+					Answer: ${math(`${ans}`)}
+				`,
+			});
+		}
+	});
+	questions.push({
+		body: `<span class="font-semibold mx-2">3.</span> Solve each of the following equations.`,
+		parts: parts,
 	});
 </script>
 

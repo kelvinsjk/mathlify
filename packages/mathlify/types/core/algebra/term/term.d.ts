@@ -13,8 +13,8 @@ export function powerMapToTerm(powerMap: Map<string, Fraction> | undefined, coef
  * @property {string} fractionalDisplayMode - default: auto. typesets as coeff followed by fraction (eg 3/5 x) if no negative indices for the variable atoms, but
  * as a fraction if negative indices encountered (eg 3x / 5y). "never" will also typeset as coeff followed by fraction, resorting to negative indices.
  * "always" will always typeset as a fraction as long as the denominator is not 1
- * @property {"term"|"rational"} kind - mathlify fraction class
- * @property {"term"|"term-frac"|"rational"|"rational-expression"} kind - mathlify fraction class
+ * @property {"term"|"rational-term"|"expansion-term"} kind - mathlify fraction class
+ * @property {"term"|"term-frac"|"rational-term"|"rational-expression"|"expansion-term"} kind - mathlify fraction class
  */
 export class Term {
     /**
@@ -32,10 +32,10 @@ export class Term {
     coeff: Fraction;
     powerMap: Map<string, Fraction>;
     signature: string;
-    /** @type {"term"|"rational"} */
-    kind: "term" | "rational";
-    /** @type {"term"|"term-frac"|"rational"|"rational-expression"} */
-    type: "term" | "term-frac" | "rational" | "rational-expression";
+    /** @type {"term"|"rational-term"|"expansion-term"} */
+    kind: "term" | "rational-term" | "expansion-term";
+    /** @type {"term"|"term-frac"|"rational-term"|"rational-expression"|"expansion-term"} */
+    type: "term" | "term-frac" | "rational-term" | "rational-expression" | "expansion-term";
     /** @type {"never"|"auto"|"always"} */
     fractionalDisplayMode: "never" | "auto" | "always";
     /**
@@ -113,5 +113,5 @@ export class Term {
      */
     toString(): string;
 }
-import { Fraction } from '../../fraction.js';
+import { Fraction } from "../../fraction.js";
 //# sourceMappingURL=term.d.ts.map

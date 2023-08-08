@@ -1,12 +1,11 @@
 <script lang="ts">
 	import Question from '$lib/components/Question.svelte';
 	import type { Part, Question as QuestionType } from '$lib/components/types';
-	import { Term, Expression, UnsimplifiedTerm } from 'mathlify';
+	import { Term, Expression, UnsimplifiedTerm, ExpansionTerm } from 'mathlify';
 	import { math, newParagraph } from 'mathlifier';
 
 	const title = 'Expansion and factorisation of linear expressions';
 
-	// TODO: Expand, and then simplify with other terms Q4
 	// TODO: Factorisation: Q8
 
 	//! Question 1
@@ -30,7 +29,7 @@
 	];
 	const ans1 = exp1.map(([k, exp]) => new Expression(k).times(exp));
 
-	//! Question 3
+	//! Question 2
 	const exp2: UnsimplifiedTerm[] = [
 		new UnsimplifiedTerm(8, 'x', 'y'),
 		new UnsimplifiedTerm(11, 'x', 2, 'y'),
@@ -53,6 +52,30 @@
 		[new Term(-5, 'b', 'c'), new Expression([3, 'y'], [16, 'x'])],
 	];
 	const ans3 = exp3.map(([k, exp]) => new Expression(k).times(exp));
+
+	//! Question 4
+	const exp4: (ExpansionTerm | Term)[][] = [
+		[new ExpansionTerm(12, [new Term(3, 'x'), 'y']), new Term(-10, 'y')],
+		[new ExpansionTerm(-1, [new Term(5, 'x'), new Term(7, 'y')]), new Term(11, 'x')],
+		[new Term(8,'x'), new Term(3,'y'), new ExpansionTerm(-1, [new Term(3,'x'), new Term(8,'y')]) ],
+		[new ExpansionTerm(-1, [new Term(4, 'x'), new Term(-9, 'y')]), new Term(-9, 'y')],
+		[
+			new ExpansionTerm(6, [new Term(2, 'x'), new Term(-1, 'y')]),
+			new ExpansionTerm(4, ['x', new Term(-5, 'y')]),
+		],
+		[ new ExpansionTerm(3, [new Term(3,'x'), new Term(8, 'y')]), new ExpansionTerm(-2, [new Term(4,'x'), new Term(-9,'y')]) ],
+		[
+			new Term(6, 'x'),
+			new ExpansionTerm(2, ['x', new Term(-3, 'y'), new Term(2, 'z')]),
+			new Term(5, 'y'),
+		],
+		[
+			new Term(-4, 'x'),
+			new ExpansionTerm(-3, [new Term(2,'x'), new Term(12, 'y'), new Term(-3, 'z')]),
+			new Term(-9, 'z')
+		]
+	];
+	const ans4 = exp3.map(([k, exp]) => new Expression(k).times(exp));
 
 	//! Compiled questions
 	const qnArray = [exp1, exp2, exp3];
@@ -90,6 +113,30 @@
 			body: `<span class="font-semibold mx-2">${i + 1}.</span> ${preamble()}`,
 			parts: parts,
 		});
+	});
+	// handle q4
+	const parts: Part[] = [];
+	exp4.forEach((exps) => {
+		const qn = new Expression(...exps);
+		const ansAtoms: Term[] = [];
+		exps.forEach((exp) => {
+			if (exp instanceof ExpansionTerm) {
+				ansAtoms.push(...exp.expand().terms);
+			} else {
+				ansAtoms.push(exp);
+			}
+		});
+		const ans = new Expression(...ansAtoms);
+		parts.push({
+			body: `${math(`${qn}`)}
+				${newParagraph}
+				Answer: ${math(`${ans}`)}
+			`,
+		});
+	});
+	questions.push({
+		body: `<span class="font-semibold mx-2">4.</span> ${preamble()}`,
+		parts: parts,
 	});
 </script>
 

@@ -1,8 +1,8 @@
 // Unsimplified Term is a class that represents a collection
 // of "term atoms" under multiplication and division.
 
-import { Fraction, Term } from "../../core/index.js";
-import { bracket } from "../../utils/index.js";
+import { Fraction, Term } from "../../../core/index.js";
+import { bracket } from "../../../utils/index.js";
 
 /**
  * Unsimplified Term class
