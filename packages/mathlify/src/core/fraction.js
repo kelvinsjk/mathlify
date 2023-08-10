@@ -7,6 +7,14 @@ import { gcd, lcm, numberToFraction } from '../utils/index.js';
  * @property {"fraction"|"fraction-int"} type - mathlify fraction class type: whether it is an integer or a regular fraction
  */
 export class Fraction {
+	/** @type {number} */
+	num;
+	/** @type {number} */
+	den;
+	/** @type {"fraction"} */
+	kind;
+	/** @type {"fraction"|"fraction-int"} */
+	type;
 	/**
 	 * @constructor
 	 * Creates a Fraction instance, automatically hoisting any negatives to the
