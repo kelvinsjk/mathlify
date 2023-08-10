@@ -1,5 +1,5 @@
-import { Fraction, Term, Expression } from "../../core/index.js";
-import { bracket } from "../../utils";
+import { Fraction, Term, Expression } from "../../../core/index.js";
+import { bracket } from "../../../utils/index.js";
 
 /** Unsimplified Expression class
  * @property {{term: Term, brackets: 'off'|'auto'|'always', addition: boolean}[]} terms - the terms in the expression

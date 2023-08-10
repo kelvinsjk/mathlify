@@ -11,5 +11,7 @@ export {
   ExpansionTerm,
   UnsimplifiedExpression,
   UnsimplifiedTerm,
+  PowerTerm,
+  EquationWorking,
   solveLinear,
 } from "./algebra/index.js";

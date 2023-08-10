@@ -67,9 +67,9 @@ export class Term {
     this.coeff = coeff;
     this.powerMap = powerMap;
     this.signature = powerMapToString(sortedPowerMap);
-    /** @type {"term"|"rational-term"|"expansion-term"} */
+    /** @type {"term"|"rational-term"|"expansion-term"|"power-term"} */
     this.kind = "term";
-    /** @type {"term"|"term-frac"|"rational-term"|"rational-expression"|"expansion-term"} */
+    /** @type {"term"|"term-frac"|"rational-term"|"rational-expression"|"expansion-term"|"power-term"} */
     this.type = this.powerMap.size === 0 ? "term-frac" : "term";
     /** @type {"never"|"auto"|"always"} */
     this.fractionalDisplayMode = "auto";

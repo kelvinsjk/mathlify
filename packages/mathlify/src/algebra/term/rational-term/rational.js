@@ -20,19 +20,19 @@ export class RationalTerm extends Term {
    * Creates a Rational Term instance
    * @param {Expression|number|Fraction|string|Term|(number|Fraction|string|Term)[]} numerator - the numerator
    * @param {Expression|number|Fraction|string|Term|(number|Fraction|string|Term)[]} [denominator=1] - the denominator
-   * @param {Fraction|number} [coeff=1] - the coefficient (default 1). Only tested for 1 and -1, use with care
+   * @param {{coeff: Fraction|number}} [options] - options for coefficient (default {coeff: 1}). Only tested for 1 and -1, use with care
    * @throws {Error} if denominator is zero
    */
-  constructor(numerator, denominator = 1, coeff=1) {
-    coeff = numberToFraction(coeff);
+  constructor(numerator, denominator = 1, options) {
+    let coeff = numberToFraction(options?.coeff ?? 1);
     if (!(numerator instanceof Expression)) {
       numerator = Array.isArray(numerator)
         ? new Expression(...numerator)
         : new Expression(numerator);
     }
-    if (numerator.type === 'expression-term'){
-      const numeratorTerm = numerator.cast.toTerm()
-      if (numeratorTerm.coeff.is.negative()){
+    if (numerator.type === "expression-term") {
+      const numeratorTerm = numerator.cast.toTerm();
+      if (numeratorTerm.coeff.is.negative()) {
         numerator = numerator.times(-1);
         coeff = coeff.times(-1);
       }
@@ -47,7 +47,7 @@ export class RationalTerm extends Term {
     }
     // simplifies the expression by dividing by GCD
     // (k1 num / k2 num)
-    const k1 = numerator.gcd();
+    const k1 = `${numerator}` === "0" ? new Fraction(1) : numerator.gcd();
     const k2 = denominator.gcd();
     const divisor = k1.divide(k2);
     const numDivisor = k1.divide(divisor.num);
@@ -61,7 +61,8 @@ export class RationalTerm extends Term {
     /** @type {"rational-term"} */
     this.kind = "rational-term";
     /** @type {"rational-term"|"rational-expression"} */
-    this.type = `${denominator}` === "1" ? "rational-expression" : "rational-term";
+    this.type =
+      `${denominator}` === "1" ? "rational-expression" : "rational-term";
   }
 
   /**
@@ -76,7 +77,7 @@ export class RationalTerm extends Term {
     return new RationalTerm(
       this.num.times(xRational.num),
       this.den.times(xRational.den),
-      this.coeff.times(xRational.coeff)
+      { coeff: this.coeff.times(xRational.coeff) }
     );
   }
 
@@ -115,7 +116,9 @@ export class RationalTerm extends Term {
    * @returns {RationalTerm} the negative of the expression
    */
   negative() {
-    return new RationalTerm(this.num, this.den, this.coeff.negative());
+    return new RationalTerm(this.num, this.den, {
+      coeff: this.coeff.negative(),
+    });
   }
 
   /**
@@ -139,7 +142,7 @@ export class RationalTerm extends Term {
     return new RationalTerm(
       this.num.subIn(variableToValue),
       this.den.subIn(variableToValue),
-      this.coeff
+      { coeff: this.coeff }
     );
   }
 
@@ -147,9 +150,9 @@ export class RationalTerm extends Term {
    * resets coeff
    * should not be used directly: only present to ensure compatibility with Expression class
    * @returns {RationalTerm} - reference to this RationalTerm
-   * 
-  */
- resetCoeff() {
+   *
+   */
+  resetCoeff() {
     //! this method is a bit hacky to get compatibility: may need to rethink
     return this.coeff.is.negative() ? this.negative() : this;
   }

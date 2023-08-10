@@ -13,10 +13,12 @@ export class RationalTerm extends Term {
      * Creates a Rational Term instance
      * @param {Expression|number|Fraction|string|Term|(number|Fraction|string|Term)[]} numerator - the numerator
      * @param {Expression|number|Fraction|string|Term|(number|Fraction|string|Term)[]} [denominator=1] - the denominator
-     * @param {Fraction} [coeff=1] - the coefficient (default 1). Only tested for 1 and -1, use with care
+     * @param {{coeff: Fraction|number}} [options] - options for coefficient (default {coeff: 1}). Only tested for 1 and -1, use with care
      * @throws {Error} if denominator is zero
      */
-    constructor(numerator: Expression | number | Fraction | string | Term | (number | Fraction | string | Term)[], denominator?: string | number | Fraction | Term | Expression | (string | number | Fraction | Term)[] | undefined, coeff?: Fraction | undefined);
+    constructor(numerator: Expression | number | Fraction | string | Term | (number | Fraction | string | Term)[], denominator?: string | number | Fraction | Term | Expression | (string | number | Fraction | Term)[] | undefined, options?: {
+        coeff: Fraction | number;
+    } | undefined);
     num: Expression;
     den: Expression;
     /**
@@ -61,6 +63,7 @@ export class RationalTerm extends Term {
      * resets coeff
      * should not be used directly: only present to ensure compatibility with Expression class
      * @returns {RationalTerm} - reference to this RationalTerm
+     *
      */
     resetCoeff(): RationalTerm;
     /** methods to cast this term to other types */

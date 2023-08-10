@@ -1,7 +1,16 @@
 <script lang="ts">
 	import Question from '$lib/components/Question.svelte';
 	import type { Part, Question as QuestionType } from '$lib/components/types';
-	import { ExpansionTerm, Fraction, Term, Expression, Polynomial, solveLinear, UnsimplifiedTerm, RationalTerm } from 'mathlify';
+	import {
+		ExpansionTerm,
+		Fraction,
+		Term,
+		Expression,
+		Polynomial,
+		solveLinear,
+		UnsimplifiedTerm,
+		RationalTerm,
+	} from 'mathlify';
 	import { math, newParagraph } from 'mathlifier';
 
 	const title = 'Unit 1.5 Algebraic Expressions and Formulae';
@@ -18,11 +27,11 @@
 	const answers: QuestionType[] = [];
 
 	//! Question 1
-	(()=>{
+	(() => {
 		const qnNo = 1;
-		const term1 = new Term(4, ['a',2]).divide(new Term(3,'b'));
+		const term1 = new Term(4, ['a', 2]).divide(new Term(3, 'b'));
 		const term2 = new Term(10, 'a', 'b').divide(21).setDisplayMode('always');
-		const qn = new UnsimplifiedTerm(term1, {termAtom: term2, multiplication: false});
+		const qn = new UnsimplifiedTerm(term1, { termAtom: term2, multiplication: false });
 		const ans = qn.simplify();
 		questions.push({
 			body: `<span class="font-semibold mx-2">${qnNo}.</span> Simplify ${math(`${qn}`)}`,
@@ -33,13 +42,12 @@
 		});
 	})();
 
-
 	//! Question 4
 	//TODO: Handle denominators
-	(()=>{
+	(() => {
 		const qnNo = 4;
-		const term1 = new RationalTerm(1, new Expression([2,'x'],-3));
-		const term2 = new RationalTerm(3, new Expression([3,'x'],-1));
+		const term1 = new RationalTerm(1, new Expression([2, 'x'], -3));
+		const term2 = new RationalTerm(3, new Expression([3, 'x'], -1));
 		const addition = false;
 		const sign = addition ? '+' : '-';
 		const qn = `Write as a single fraction in its simplest form
@@ -57,11 +65,11 @@
 
 	//! Question 13
 	// TODO: Handle expansion terms
-	(()=>{
+	(() => {
 		const qnNo = 13;
-		const term1 = new RationalTerm(new Term(4,'x'), 3);
+		const term1 = new RationalTerm(new Term(4, 'x'), 3);
 		const k = 3;
-		const term2Fragment = new Polynomial([2,-5], {ascending: true});
+		const term2Fragment = new Polynomial([2, -5], { ascending: true });
 		const term2Num = new ExpansionTerm(k, term2Fragment);
 		const term2 = new RationalTerm(term2Num, 4);
 		const addition = false;
@@ -82,14 +90,13 @@
 			body: `<span class="font-semibold mx-2">${qnNo}.</span> ${math(`${ans}`)}`,
 		});
 	})();
-	
+
 	//! Question 16
-	// TODO: Handle expansion terms
-	(()=>{
+	(() => {
 		const qnNo = 16;
-		const term1 = new Term(5,'p');
-		const k = 3;
-		const term2Fragment = new Polynomial([1,-2], {variable: 'p', ascending: true});
+		const term1 = new Term(5, 'p');
+		const k = -3;
+		const term2Fragment = new Polynomial([1, -2], { variable: 'p' });
 		const term2 = new ExpansionTerm(k, term2Fragment);
 		const qnExp = new Expression(term1, term2);
 		const qn = `Simplify
@@ -106,6 +113,9 @@
 		});
 	})();
 
+	//!! Paper 2
+	const questions2: QuestionType[] = [];
+	const answers2: QuestionType[] = [];
 </script>
 
 <svelte:head>
@@ -113,13 +123,22 @@
 </svelte:head>
 
 <section aria-labelledby="title" class="prose mx-auto">
-	<h2 id="title">{title}</h2>
+	<h1 id="title">{title}</h1>
+	<h2>Paper 1</h2>
 	<h3>Questions</h3>
 	{#each questions as question}
 		<Question {question} />
 	{/each}
 	<h3>Answers</h3>
 	{#each answers as question}
+		<Question {question} />
+	{/each}
+	<h2>Paper 2</h2>
+	{#each questions2 as question}
+		<Question {question} />
+	{/each}
+	<h3>Answers</h3>
+	{#each answers2 as question}
 		<Question {question} />
 	{/each}
 </section>

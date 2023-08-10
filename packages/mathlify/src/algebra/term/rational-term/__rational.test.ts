@@ -22,11 +22,13 @@ const twoOverXPlus1b = new RationalTerm(2, xPlus1);
 
 test("RationalTerm in Expression", () => {
   const exp = new Expression(twoOverXPlus1b, 3);
-  const negRational = new RationalTerm([2,'x'],[3,'x'],-1);
+  const negRational = new RationalTerm([2, "x"], [3, "x"], { coeff: -1 });
   expect(`${exp}`).to.equal(`\\frac{2}{x + 1} + 3`);
   expect(`${negRational}`).to.equal(`- \\frac{2 + x}{3 + x}`);
-  expect(`${negRational.subIn({x: 2})}`).to.equal(`- \\frac{4}{5}`);
-  expect(`${negRational.subIn({x: 2}).cast.toFraction()}`).to.equal(`- \\frac{4}{5}`);
+  expect(`${negRational.subIn({ x: 2 })}`).to.equal(`- \\frac{4}{5}`);
+  expect(`${negRational.subIn({ x: 2 }).cast.toFraction()}`).to.equal(
+    `- \\frac{4}{5}`
+  );
   const exp2 = new Expression(negRational, 3);
   const exp3 = new Expression(3, negRational);
   expect(`${exp2}`).to.equal(`- \\frac{2 + x}{3 + x} + 3`);

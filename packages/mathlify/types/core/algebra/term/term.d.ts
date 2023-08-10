@@ -32,10 +32,10 @@ export class Term {
     coeff: Fraction;
     powerMap: Map<string, Fraction>;
     signature: string;
-    /** @type {"term"|"rational-term"|"expansion-term"} */
-    kind: "term" | "rational-term" | "expansion-term";
-    /** @type {"term"|"term-frac"|"rational-term"|"rational-expression"|"expansion-term"} */
-    type: "term" | "term-frac" | "rational-term" | "rational-expression" | "expansion-term";
+    /** @type {"term"|"rational-term"|"expansion-term"|"power-term"} */
+    kind: "term" | "rational-term" | "expansion-term" | "power-term";
+    /** @type {"term"|"term-frac"|"rational-term"|"rational-expression"|"expansion-term"|"power-term"} */
+    type: "term" | "term-frac" | "rational-term" | "rational-expression" | "expansion-term" | "power-term";
     /** @type {"never"|"auto"|"always"} */
     fractionalDisplayMode: "never" | "auto" | "always";
     /**

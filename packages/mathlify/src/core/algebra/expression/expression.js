@@ -2,13 +2,6 @@
 // the termPowerMap contains a map of all the terms that have appeared in the expression in order, but may contain terms with zero coefficients
 // the terms array removes any such terms with zero coefficients
 
-// notes: when using rationalTerm within an expression,
-// the rational term is lost because the expression constructor tries
-// to simplify the expression by combining like terms and reconstruct the
-// term afterwards. The reconstruction does not understanding the workings
-// of the RationalTerm class and typesetting is lost. TODO: fix this
-/** @see RationalTerm  */
-
 import { Fraction } from "../../fraction.js";
 import { Term } from "../term/index.js";
 
@@ -113,11 +106,11 @@ export class Expression {
         }
       }
     });
-    this.terms = termsArray;
+    this.terms = termsArray.length === 0 ? [new Term(0)] : termsArray;
     /** @type {"expression"|"polynomial"} */
     this.kind = "expression";
     /** @type {"expression"|"expression-term"|"polynomial"|"linear-polynomial"|"quadratic-polynomial"} */
-    this.type = this.terms.length <= 1 ? "expression-term" : "expression";
+    this.type = this.terms.length === 1 ? "expression-term" : "expression";
   }
 
   /**
@@ -126,6 +119,9 @@ export class Expression {
    * @returns {Expression} - the sum of the two
    */
   plus(x) {
+    if (`${this}` === "0") {
+      return x instanceof Expression ? x : new Expression(x);
+    }
     if (x instanceof Expression) {
       return new Expression(...this.terms, ...x.terms);
     }
@@ -185,12 +181,26 @@ export class Expression {
   }
 
   /**
-   * sub in a value for a variable
-   * @param {{[key: string]: number|Fraction}|number|Fraction} variableToValue - the values to sub in with the key being the variable signature.
+   * @overload
+   * @param {{[key: string]: number|Fraction}} x - the values to sub in with the key being the variable signature.
    * @returns {Expression} - the new Expression
    */
-  subIn(variableToValue) {
-    const newTerms = this.terms.map((term) => term.subIn(variableToValue));
+  /**
+   * @overload
+   * @param {number|Fraction} x - the value to sub in as "x"
+   * @return {Fraction} - the value of the expression cast to Fraction type (make sure to check that this is valid or an error will be thrown)
+   */
+  /**
+   * sub in a value for a variable
+   * @param {{[key: string]: number|Fraction}|number|Fraction} x - the values to sub in with the key being the variable signature.
+   * @returns {Expression|Fraction} - the new Expression
+   * @example new Expression(2,'x').subIn({x: 3}) returns new Expression(6)
+   */
+  subIn(x) {
+    if (typeof x === "number" || x instanceof Fraction) {
+      return this.subIn({ x: x }).cast.toFraction();
+    }
+    const newTerms = this.terms.map((term) => term.subIn(x));
     return new Expression(...newTerms);
   }
 
@@ -199,7 +209,7 @@ export class Expression {
    * @return {Fraction} - the gcd of all the terms
    */
   gcd() {
-    if (this.terms.length === 0) {
+    if (`${this}` === "0") {
       throw new Error(`gcd is not defined for the 0 expression`);
     }
     return Fraction.gcd(...this.terms.map((term) => term.coeff));
@@ -229,9 +239,7 @@ export class Expression {
      * @returns {Term} the term representation of this term
      */
     toTerm: () => {
-      if (this.terms.length === 0) {
-        return new Term(0);
-      } else if (this.terms.length === 1) {
+      if (this.terms.length === 1) {
         return this.terms[0];
       }
       throw new Error(`cannot cast ${this} to Term: more than 1 term detected`);
@@ -241,9 +249,7 @@ export class Expression {
      * @returns {Fraction} the fraction representation of this term
      */
     toFraction: () => {
-      if (this.terms.length === 0) {
-        return new Fraction(0);
-      } else if (this.terms.length === 1) {
+      if (this.terms.length === 1) {
         return this.terms[0].cast.toFraction();
       }
       throw new Error(
@@ -256,9 +262,6 @@ export class Expression {
    * @returns {string} - the LaTeX string representation of the Expression
    */
   toString() {
-    if (this.terms.length === 0) {
-      return "0";
-    }
     return this.terms.reduce((prev, term, i) => {
       if (i !== 0 && term.coeff.is.positive()) {
         return `${prev} + ${term}`;

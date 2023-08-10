@@ -27,7 +27,8 @@ test("Polynomial", () => {
   expect(`${twoXa.minus(twoXb)}`).to.equal("0");
   expect(`${xPlusThree.times(threePlusX)}`).to.equal(`x^2 + 6 x + 9`);
   expect(`${xPlusThree.square()}`).to.equal(`x^2 + 6 x + 9`);
-  expect(xPlusThree.subInFraction(2).is.equalTo(5)).to.be.true;
+  expect(xPlusThree.subIn(2).is.equalTo(5)).to.be.true;
+  expect(`${xPlusThree.subIn({ x: 3 })}`).to.be.equal("6");
   expect(`${y2MinusYPlusHalf.pow(0)}`).to.equal("1");
   expect(`${xPlusThree.minus(1).plus(2).divide(2)}`).to.equal(
     "\\frac{1}{2} x + 2"

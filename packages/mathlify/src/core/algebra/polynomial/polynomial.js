@@ -2,13 +2,6 @@
 // the termPowerMap contains a map of all the terms that have appeared in the expression in order, but may contain terms with zero coefficients
 // the terms array removes any such terms with zero coefficients
 
-// notes: when using rationalTerm within an expression,
-// the rational term is lost because the expression constructor tries
-// to simplify the expression by combining like terms and reconstruct the
-// term afterwards. The reconstruction does not understanding the workings
-// of the RationalTerm class and typesetting is lost. TODO: fix this
-/** @see RationalTerm  */
-
 import { numberToFraction } from "../../../utils/toFraction.js";
 import { Fraction } from "../../fraction.js";
 import { Expression } from "../expression/index.js";
@@ -187,14 +180,29 @@ export class Polynomial extends Expression {
 
   /**
    * sub in a Fraction
+   * @overload
    * @param {Fraction|number} x - the values to sub in
    * @returns {Fraction} - Fraction
    */
-  subInFraction(x) {
-    const xFrac = numberToFraction(x);
-    return this.coeffs.reduce((prev, coeff, i) => {
-      return prev.plus(coeff.times(xFrac.pow(i)));
-    });
+  /**
+   * @overload
+   * @param {{[key: string]: number|Fraction}} x - the values to sub in with the key being the variable signature.
+   * @returns {Expression} - the new Expression (WARNING: you are unlikely to want to use this method)
+   */
+  /**
+   * sub in a value for a variable
+   * @param {{[key: string]: number|Fraction}|number|Fraction} x - the value to sub in
+   * @returns {Expression|Fraction} - the new Expression
+   * @example new Expression(2,'x').subIn({x: 3}) returns new Expression(6)
+   */
+  subIn(x) {
+    if (typeof x === "number" || x instanceof Fraction) {
+      const xFrac = numberToFraction(x);
+      return this.coeffs.reduce((prev, coeff, i) => {
+        return prev.plus(coeff.times(xFrac.pow(i)));
+      });
+    }
+    return super.subIn(x);
   }
 }
 
