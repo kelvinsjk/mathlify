@@ -64,9 +64,10 @@ test('Term multiplication', () => {
 	expect(`${x.negative()}`).to.equal('- x');
 	expect(`${x.times(new Fraction(1, 2))}`).to.equal('\\frac{1}{2} x');
 	expect(`${x.times(y)}`).to.equal('x y');
-	expect(`${x.divide('y', { fractionalDisplayMode: 'never' })}`).to.equal(
-		'x y^{- 1}'
-	);
+	const xOverY = x.divide('y', { fractionalDisplayMode: 'never' });
+	expect(`${xOverY}`).to.equal('x y^{- 1}');
+	expect(xOverY.times(5).signature).to.be.equal('x y^{- 1}');
+	expect(new Term('x', ['y', -1]).signature).to.be.equal('x y^{- 1}');
 	expect(
 		`${x.negative().divide('y', { fractionalDisplayMode: 'never' })}`
 	).to.equal('- x y^{- 1}');

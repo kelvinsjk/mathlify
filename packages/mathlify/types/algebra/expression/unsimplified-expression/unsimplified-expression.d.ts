@@ -16,6 +16,7 @@ export class UnsimplifiedExpression {
         brackets?: 'off' | 'auto' | 'always';
         addition?: boolean;
     } | (number | Fraction | string)[])[]);
+    /** @type {{term: Term, brackets: 'off'|'auto'|'always', addition: boolean}[]} */
     terms: {
         term: Term;
         brackets: 'off' | 'auto' | 'always';
@@ -50,7 +51,7 @@ export class UnsimplifiedExpression {
      */
     toString(): string;
 }
-import { Term } from "../../../core/index.js";
-import { Fraction } from "../../../core/index.js";
-import { Expression } from "../../../core/index.js";
+import { Term } from '../../../core/index.js';
+import { Fraction } from '../../../core/index.js';
+import { Expression } from '../../../core/index.js';
 //# sourceMappingURL=unsimplified-expression.d.ts.map

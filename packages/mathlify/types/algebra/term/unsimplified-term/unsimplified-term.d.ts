@@ -19,11 +19,13 @@ export class UnsimplifiedTerm {
         brackets?: 'off' | 'auto' | 'always';
         multiplication?: boolean;
     } | (number | Fraction | string)[])[]);
+    /** @type {{termAtom: Term, brackets: 'off'|'auto'|'always', multiplication: boolean}[]} */
     termAtoms: {
         termAtom: Term;
         brackets: 'off' | 'auto' | 'always';
         multiplication: boolean;
     }[];
+    /** @type {boolean} */
     fractionalDisplayMode: boolean;
     /** @type {"unsimplified-term"} */
     kind: "unsimplified-term";
@@ -58,6 +60,6 @@ export class UnsimplifiedTerm {
      */
     toString(): string;
 }
-import { Term } from "../../../core/index.js";
-import { Fraction } from "../../../core/index.js";
+import { Term } from '../../../core/index.js';
+import { Fraction } from '../../../core/index.js';
 //# sourceMappingURL=unsimplified-term.d.ts.map

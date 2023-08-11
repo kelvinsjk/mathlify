@@ -16,8 +16,14 @@ export class ExpansionTerm extends Term {
      * @throws {Error} if denominator is zero
      */
     constructor(exp1: number | Fraction | string | Term, exp2: Expression | number | Fraction | string | Term | (number | Fraction | string | Term)[]);
+    /** @type {Term} exp1 - the first expression (currently only supports a single term) */
     exp1: Term;
+    /** @type {Expression} exp2 - the second expression */
     exp2: Expression;
+    /** @type {"expansion-term"} kind - mathlify rational class kind */
+    kind: "expansion-term";
+    /** @type {"expansion-term"} type - mathlify rational class type */
+    type: "expansion-term";
     /**
      * resets coeff
      * should not be used directly: only present to ensure compatibility with Expression class
@@ -37,7 +43,7 @@ export class ExpansionTerm extends Term {
      */
     expand(): Expression;
 }
-import { Term } from "../../../core/index.js";
-import { Expression } from "../../../core/index.js";
-import { Fraction } from "../../../core/index.js";
+import { Term } from '../../../core/index.js';
+import { Expression } from '../../../core/index.js';
+import { Fraction } from '../../../core/index.js';
 //# sourceMappingURL=expansion.d.ts.map

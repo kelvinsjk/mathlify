@@ -10,11 +10,11 @@ export function powerMapToTerm(powerMap: Map<string, Fraction> | undefined, coef
  * @property {Fraction} coeff - the coefficient of the term
  * @property {Map<string,Fraction>} powerMap - the key is the variable atom, the value is the power
  * @property {string} signature - a string representation of the (sorted) variables
- * @property {string} fractionalDisplayMode - default: auto. typesets as coeff followed by fraction (eg 3/5 x) if no negative indices for the variable atoms, but
+ * @property {"never"|"auto"|"always"} fractionalDisplayMode - default: auto. typesets as coeff followed by fraction (eg 3/5 x) if no negative indices for the variable atoms, but
  * as a fraction if negative indices encountered (eg 3x / 5y). "never" will also typeset as coeff followed by fraction, resorting to negative indices.
  * "always" will always typeset as a fraction as long as the denominator is not 1
- * @property {"term"|"rational-term"|"expansion-term"} kind - mathlify fraction class
- * @property {"term"|"term-frac"|"rational-term"|"rational-expression"|"expansion-term"} kind - mathlify fraction class
+ * @property {"term"|"rational-term"|"expansion-term"|"power-term"} kind - mathlify term class
+ * @property {"term"|"term-frac"|"rational-term"|"rational-expression"|"expansion-term"|"power-type"} type - mathlify term class
  */
 export class Term {
     /**
@@ -29,15 +29,18 @@ export class Term {
         variable: string;
         power: number | Fraction;
     } | [string, number | Fraction])[]);
+    /** @type {Fraction} */
     coeff: Fraction;
+    /** @type {Map<string,Fraction>} */
     powerMap: Map<string, Fraction>;
+    /** @type {string} */
     signature: string;
+    /** @type {"never"|"auto"|"always"} */
+    fractionalDisplayMode: "never" | "auto" | "always";
     /** @type {"term"|"rational-term"|"expansion-term"|"power-term"} */
     kind: "term" | "rational-term" | "expansion-term" | "power-term";
     /** @type {"term"|"term-frac"|"rational-term"|"rational-expression"|"expansion-term"|"power-term"} */
     type: "term" | "term-frac" | "rational-term" | "rational-expression" | "expansion-term" | "power-term";
-    /** @type {"never"|"auto"|"always"} */
-    fractionalDisplayMode: "never" | "auto" | "always";
     /**
      * term multiplication
      * @param {number|Fraction|string|Term} x - the other term to multiply with
@@ -113,5 +116,5 @@ export class Term {
      */
     toString(): string;
 }
-import { Fraction } from "../../fraction.js";
+import { Fraction } from '../../fraction.js';
 //# sourceMappingURL=term.d.ts.map

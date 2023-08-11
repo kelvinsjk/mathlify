@@ -20,8 +20,8 @@ import { powerMapToString } from '../utils/index.js';
  * @property {"never"|"auto"|"always"} fractionalDisplayMode - default: auto. typesets as coeff followed by fraction (eg 3/5 x) if no negative indices for the variable atoms, but
  * as a fraction if negative indices encountered (eg 3x / 5y). "never" will also typeset as coeff followed by fraction, resorting to negative indices.
  * "always" will always typeset as a fraction as long as the denominator is not 1
- * @property {"term"|"rational-term"|"expansion-term"} kind - mathlify term class
- * @property {"term"|"term-frac"|"rational-term"|"rational-expression"|"expansion-term"} type - mathlify term class
+ * @property {"term"|"rational-term"|"expansion-term"|"power-term"} kind - mathlify term class
+ * @property {"term"|"term-frac"|"rational-term"|"rational-expression"|"expansion-term"|"power-type"} type - mathlify term class
  */
 export class Term {
 	/** @type {Fraction} */
@@ -34,7 +34,7 @@ export class Term {
 	fractionalDisplayMode;
 	/** @type {"term"|"rational-term"|"expansion-term"|"power-term"} */
 	kind;
-	/** @type {"term"|"term-frac"|"rational-term"|"rational-expression"|"expansion-term"} */
+	/** @type {"term"|"term-frac"|"rational-term"|"rational-expression"|"expansion-term"|"power-term"} */
 	type;
 
 	/**
@@ -80,11 +80,8 @@ export class Term {
 		this.coeff = coeff;
 		this.powerMap = powerMap;
 		this.signature = powerMapToString(sortedPowerMap);
-		/** @type {"term"|"rational-term"|"expansion-term"|"power-term"} */
 		this.kind = 'term';
-		/** @type {"term"|"term-frac"|"rational-term"|"rational-expression"|"expansion-term"|"power-term"} */
 		this.type = this.powerMap.size === 0 ? 'term-frac' : 'term';
-		/** @type {"never"|"auto"|"always"} */
 		this.fractionalDisplayMode = 'auto';
 	}
 
@@ -222,6 +219,40 @@ export class Term {
 		 */
 		constant: () => {
 			return this.powerMap.size === 0;
+		},
+
+		/**
+		 * checks if two terms are equal (same signature and same coefficient)
+		 * @param {Term|number|Fraction|string} term2
+		 * @return {boolean}
+		 */
+		equal: (term2) => {
+			if (!(term2 instanceof Term)) {
+				term2 = new Term(term2);
+			}
+			return (
+				this.coeff.is.equalTo(term2.coeff) && this.signature === term2.signature
+			);
+		},
+
+		/**
+		 * checks if two terms are alike (same signature)
+		 * @param {Term|number|Fraction|string} term2
+		 * @return {boolean}
+		 */
+		like: (term2) => {
+			if (!(term2 instanceof Term)) {
+				term2 = new Term(term2);
+			}
+			return this.signature === term2.signature;
+		},
+
+		not: {
+			constant: () => !this.is.constant(),
+			/** @param {Term|number|Fraction|string} term2 */
+			equal: (term2) => !this.is.equal(term2),
+			/** @param {Term|number|Fraction|string} term2 */
+			like: (term2) => !this.is.like(term2),
 		},
 	};
 

@@ -18,8 +18,11 @@ export class Expression {
         term: number | Fraction | string | Term;
         addition?: boolean;
     } | (number | Fraction | string)[])[]);
+    /** @type {Map<string,Fraction>} */
     termCoeffMap: Map<string, Fraction>;
+    /** @type {Map<string,Term>} */
     termAtomMap: Map<string, Term>;
+    /** @type {Term[]} */
     terms: Term[];
     /** @type {"expression"|"polynomial"} */
     kind: "expression" | "polynomial";
@@ -56,14 +59,10 @@ export class Expression {
     divide(x: number | Fraction | string | Term, options?: {
         fractionalDisplayMode: "always" | "auto" | "never";
     } | undefined): Expression;
-    /**
-     * sub in a value for a variable
-     * @param {{[key: string]: number|Fraction}|number|Fraction} variableToValue - the values to sub in with the key being the variable signature.
-     * @returns {Expression} - the new Expression
-     */
-    subIn(variableToValue: number | Fraction | {
+    subIn(x: {
         [key: string]: number | Fraction;
     }): Expression;
+    subIn(x: number | Fraction): Fraction;
     /**
      * gcd of the expression (only supports Fractions at the moment)
      * @return {Fraction} - the gcd of all the terms
@@ -100,6 +99,6 @@ export class Expression {
      */
     toString(): string;
 }
-import { Fraction } from "../../fraction.js";
-import { Term } from "../term/index.js";
+import { Fraction } from '../../fraction.js';
+import { Term } from '../term/index.js';
 //# sourceMappingURL=expression.d.ts.map

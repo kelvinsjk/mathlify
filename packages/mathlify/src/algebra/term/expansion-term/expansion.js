@@ -1,4 +1,4 @@
-// ExpansionTerm represents k(exp)
+// ExpansionTerm represents (exp_1)^n1 (exp_2)^n2 ... (exp_n)^n3, where exp_i are expressions
 
 import { Expression, Fraction, Term } from '../../../core/index.js';
 
@@ -14,6 +14,10 @@ import { Expression, Fraction, Term } from '../../../core/index.js';
  * @extends Term
  */
 export class ExpansionTerm extends Term {
+	/** @type {Expression[]} */
+	expressions;
+	/** @type {Map<string,Fraction>} */
+	powerMap;
 	/** @type {Term} exp1 - the first expression (currently only supports a single term) */
 	exp1;
 	/** @type {Expression} exp2 - the second expression */

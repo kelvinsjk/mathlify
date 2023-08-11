@@ -48,14 +48,14 @@ export class Fraction {
      * @param {number} [den=1] - the denominator (a non-zero integer)
      */
     constructor(num: number, den?: number | undefined);
-    /**
-     * num
-     * @type {number}
-     */
+    /** @type {number} */
     num: number;
+    /** @type {number} */
     den: number;
-    kind: string;
-    type: string;
+    /** @type {"fraction"} */
+    kind: "fraction";
+    /** @type {"fraction"|"fraction-int"} */
+    type: "fraction" | "fraction-int";
     /**
      * casts this fraction as a float
      * @returns {number} this fraction in js number primitive type

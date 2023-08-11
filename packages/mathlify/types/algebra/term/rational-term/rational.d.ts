@@ -3,7 +3,7 @@
  * @property {Expression} num - the numerator of the term
  * @property {Expression} den - the denominator of the term
  * @property {Fraction} coeff - either 1 or -1 to indicate the sign of the term
- * @property {"rational"} kind - mathlify rational class kind
+ * @property {"rational-term"} kind - mathlify rational class kind
  * @property {"rational-term"|"rational-expression"} type - mathlify rational class type
  * @extends Term
  */
@@ -19,8 +19,14 @@ export class RationalTerm extends Term {
     constructor(numerator: Expression | number | Fraction | string | Term | (number | Fraction | string | Term)[], denominator?: string | number | Fraction | Term | Expression | (string | number | Fraction | Term)[] | undefined, options?: {
         coeff: Fraction | number;
     } | undefined);
+    /** @type {Expression} */
     num: Expression;
+    /** @type {Expression} */
     den: Expression;
+    /** @type {"rational-term"} */
+    kind: "rational-term";
+    /** @type {"rational-term"|"rational-expression"} */
+    type: "rational-term" | "rational-expression";
     /**
      * multiplication
      * @param {number|Fraction|string|Term|Expression|RationalTerm} x - the other term/expression to multiply with
@@ -53,10 +59,10 @@ export class RationalTerm extends Term {
     minus(x: number | Fraction | string | Term | Expression | RationalTerm): RationalTerm;
     /**
      * sub in a value for a variable
-     * @param {{[key: string]: number|Fraction}|number|Fraction} variableToValue - the values to sub in with the key being the variable signature.
+     * @param {{[key: string]: number|Fraction}} variableToValue - the values to sub in with the key being the variable signature.
      * @returns {RationalTerm} - the new RationalTerm
      */
-    subIn(variableToValue: number | Fraction | {
+    subIn(variableToValue: {
         [key: string]: number | Fraction;
     }): RationalTerm;
     /**
@@ -85,7 +91,7 @@ export class RationalTerm extends Term {
         toFraction: () => Fraction;
     };
 }
-import { Term } from "../../../core/index.js";
-import { Expression } from "../../../core/index.js";
-import { Fraction } from "../../../core/index.js";
+import { Term } from '../../../core/index.js';
+import { Expression } from '../../../core/index.js';
+import { Fraction } from '../../../core/index.js';
 //# sourceMappingURL=rational.d.ts.map

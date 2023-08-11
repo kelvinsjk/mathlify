@@ -1,2 +1,2 @@
-export { GeneralEquation } from "./general/general-equation.js";
+export { EquationWorking } from "./eqn/equation-working.js";
 //# sourceMappingURL=index.d.ts.map

@@ -4,9 +4,10 @@
  * @property {boolean} ascending - whether the polynomial is in ascending order
  * @property {number} degree - the degree of the polynomial
  * @property {"polynomial"} kind - mathlify expression class kind
- * @property {"linear-polynomial"|"quadratic-polynomial"} type - mathlify expression class type
+ * @property {"polynomial"|"linear-polynomial"|"quadratic-polynomial"} type - mathlify expression class type
  */
 export class Polynomial extends Expression {
+    /** @type {"polynomial"|"linear-polynomial"|"quadratic-polynomial"} */
     /**
      * @constructor
      * Creates a Polynomial instance
@@ -19,10 +20,16 @@ export class Polynomial extends Expression {
         ascending?: boolean | undefined;
         variable?: string | undefined;
     } | undefined);
+    /** @type {Fraction[]} */
     coeffs: Fraction[];
+    /** @type {string} */
     variable: string;
+    /** @type {boolean} */
     ascending: boolean;
+    /** @type {number} */
     degree: number;
+    /** @type {"polynomial"} */
+    kind: "polynomial";
     /**
      * Polynomial addition
      * @param {Polynomial|number|Fraction} x - the polynomial to be added
@@ -63,13 +70,11 @@ export class Polynomial extends Expression {
      * @returns {Polynomial} - the square of the polynomial
      */
     square(): Polynomial;
-    /**
-     * sub in a Fraction
-     * @param {Fraction|number} x - the values to sub in
-     * @returns {Fraction} - Fraction
-     */
-    subInFraction(x: Fraction | number): Fraction;
+    subIn(x: Fraction | number): Fraction;
+    subIn(x: {
+        [key: string]: number | Fraction;
+    }): Expression;
 }
-import { Expression } from "../expression/index.js";
-import { Fraction } from "../../fraction.js";
+import { Expression } from '../expression/index.js';
+import { Fraction } from '../../fraction.js';
 //# sourceMappingURL=polynomial.d.ts.map

@@ -19,8 +19,14 @@ export class PowerTerm extends Term {
     constructor(exp: Expression | number | Fraction | string | Term | (number | Fraction | string | Term)[], power: number | Fraction, options?: {
         coeff?: number | Fraction | undefined;
     } | undefined);
+    /** @type {Expression} */
     exp: Expression;
+    /** @type {Fraction} */
     power: Fraction;
+    /** @type {"power-term"} */
+    kind: "power-term";
+    /** @type {"power-term"} */
+    type: "power-term";
     /**
      * resets coeff
      * should not be used directly: only present to ensure compatibility with Expression class
@@ -40,7 +46,7 @@ export class PowerTerm extends Term {
      */
     expand(): Expression;
 }
-import { Term } from "../../../core/index.js";
-import { Expression } from "../../../core/index.js";
-import { Fraction } from "../../../core/index.js";
+import { Term } from '../../../core/index.js';
+import { Expression } from '../../../core/index.js';
+import { Fraction } from '../../../core/index.js';
 //# sourceMappingURL=power-term.d.ts.map
