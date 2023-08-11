@@ -51,6 +51,12 @@ export class Expression {
      */
     times(x: number | Fraction | string | Term | Expression): Expression;
     /**
+     * power
+     * @param {number|Fraction} x - the exponent (must be non-negative integer)
+     * @returns {Expression} - the expression raised to the power of x, fully expanded
+     */
+    pow(x: number | Fraction): Expression;
+    /**
      * expression division
      * @param {number|Fraction|string|Term} x - term to be divided
      * @param {{fractionalDisplayMode: "always"|"auto"|"never"}} [options] - whether to display the term as a fraction (default: false) (3/5 x by default, 3x/5 if true)
@@ -80,6 +86,18 @@ export class Expression {
          * @returns {boolean} - whether this expression is a constant (ie can be cast to Fraction class)
          * */
         constant: () => boolean;
+        /**
+         * checks if two expressions are equal
+         * @param {Expression|number|Fraction|string|Term} exp2 - the expression to compare to
+         * @returns {boolean} - whether the two expressions are equal
+         */
+        equalTo: (exp2: Expression | number | Fraction | string | Term) => boolean;
+        not: {
+            term: () => boolean;
+            constant: () => boolean;
+            /** @param {Expression|number|Fraction|string|Term} exp2 */
+            equalTo: (exp2: Expression | number | Fraction | string | Term) => boolean;
+        };
     };
     /** methods to cast this term to other types */
     cast: {
@@ -99,6 +117,6 @@ export class Expression {
      */
     toString(): string;
 }
-import { Fraction } from '../../fraction.js';
-import { Term } from '../term/index.js';
+import { Fraction } from "../../fraction.js";
+import { Term } from "../term/index.js";
 //# sourceMappingURL=expression.d.ts.map

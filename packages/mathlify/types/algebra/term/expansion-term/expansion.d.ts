@@ -1,5 +1,5 @@
 /**
- * RationalTerm class extending the Term class
+ * ExpansionTerm class extending the Term class
  * @property {Term} exp1 - the first expression (currently only supports a single term)
  * @property {Expression} exp2 - the second expression
  * @property {Fraction} coeff - either 1 or -1 to indicate the sign of the term
@@ -9,17 +9,23 @@
  */
 export class ExpansionTerm extends Term {
     /**
+     * lcm
+     * @static
+     * @param {(ExpansionTerm|Expression)[]} exps - the expansion terms
+     * @returns {ExpansionTerm} - the lcm of the expansion terms
+     */
+    static lcm(...exps: (ExpansionTerm | Expression)[]): ExpansionTerm;
+    /**
      * @constructor
      * Creates an Expansion Term instance
-     * @param {number|Fraction|string|Term} exp1 - the first expression (currently only supports a single term)
-     * @param {Expression|number|Fraction|string|Term|(number|Fraction|string|Term)[]} exp2 - the second expression
-     * @throws {Error} if denominator is zero
+     * @param {(number|Fraction|string|Term|Expression|{exp: Expression, power: number|Fraction}|[Expression, number|Fraction])[]} exps - the expression
      */
-    constructor(exp1: number | Fraction | string | Term, exp2: Expression | number | Fraction | string | Term | (number | Fraction | string | Term)[]);
-    /** @type {Term} exp1 - the first expression (currently only supports a single term) */
-    exp1: Term;
-    /** @type {Expression} exp2 - the second expression */
-    exp2: Expression;
+    constructor(...exps: (number | Fraction | string | Term | Expression | {
+        exp: Expression;
+        power: number | Fraction;
+    } | [Expression, number | Fraction])[]);
+    /** @type {Map<Expression,Fraction>} */
+    expPowerMap: Map<Expression, Fraction>;
     /** @type {"expansion-term"} kind - mathlify rational class kind */
     kind: "expansion-term";
     /** @type {"expansion-term"} type - mathlify rational class type */
@@ -27,23 +33,23 @@ export class ExpansionTerm extends Term {
     /**
      * resets coeff
      * should not be used directly: only present to ensure compatibility with Expression class
-     * @returns {ExpansionTerm} - the term with coeff multiplied in
+     * @returns {ExpansionTerm} - the Expansion Term but with coeff = 1
      */
     resetCoeff(): ExpansionTerm;
     /**
-     * multiplies to exp1.
-     * this method is mainly to ensure compatibility with Expression class
-     * and should not be used directly unless you know what you are doing
-     * @param {number|Fraction|string|Term} x - the other term to multiply with
+     * times (into coefficient)
+     * @param {number|Fraction} x - the multiplier
+     * @returns {ExpansionTerm} - the Expansion Term multiplied by x
      */
-    times(x: number | Fraction | string | Term): ExpansionTerm;
+    times(x: number | Fraction): ExpansionTerm;
     /**
      * expands the expression
      * @returns {Expression} - the expanded expression
+     * WARNING: only works for positive integral powers
      */
     expand(): Expression;
 }
-import { Term } from '../../../core/index.js';
-import { Expression } from '../../../core/index.js';
-import { Fraction } from '../../../core/index.js';
+import { Term } from "../../../core/index.js";
+import { Expression } from "../../../core/index.js";
+import { Fraction } from "../../../core/index.js";
 //# sourceMappingURL=expansion.d.ts.map

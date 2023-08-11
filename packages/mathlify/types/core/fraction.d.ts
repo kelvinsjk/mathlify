@@ -13,6 +13,11 @@ export class Fraction {
      */
     static gcd(...fractions: (Fraction | number)[]): Fraction;
     /**
+     * lcm of n fractions
+     * @param  {...(Fraction|number)} fractions
+     */
+    static lcm(...fractions: (Fraction | number)[]): Fraction;
+    /**
      * get back Fraction class instance from JSON object
      * @param {FractionJSON} f - fraction JSON object
      * @returns {Fraction} fraction class instance

@@ -16,10 +16,12 @@ test("ExpansionTerm constructor", () => {
   expect(`${halfXPlus1}`).to.equal(`\\frac{1}{2} \\left( x + 2 \\right)`);
   expect(`${xXPlus1}`).to.equal(`x \\left( x + 2 \\right)`);
   expect(`${threeY2XPlus1}`).to.equal(`3 y^2 \\left( x + 2 \\right)`);
-  expect(`${new ExpansionTerm(2, ["x", 2])}`).to.equal(
+  expect(`${new ExpansionTerm(2, new Expression("x", 2))}`).to.equal(
     `2 \\left( x + 2 \\right)`
   );
-  expect(`${new ExpansionTerm(2, "x")}`).to.equal(`2 \\left( x \\right)`);
+  expect(`${new ExpansionTerm(2, "x", "y")}`).to.equal(
+    `2 x \\left( y \\right)`
+  );
 });
 
 test("ExpansionTerm expansion", () => {
