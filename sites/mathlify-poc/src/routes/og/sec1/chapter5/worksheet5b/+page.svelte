@@ -10,7 +10,7 @@
 		solveLinear,
 		UnsimplifiedExpression,
 		RationalTerm,
-		GeneralEquation,
+		EquationWorking,
 	} from 'mathlify';
 	import { alignStar, math, newParagraph } from 'mathlifier';
 
@@ -143,7 +143,7 @@
 	(() => {
 		const term1 = new RationalTerm([new Term(4, 'x'), -1], 9);
 		const rhs = 3;
-		const eqn = new GeneralEquation(term1, rhs);
+		const eqn = new EquationWorking(term1, rhs);
 		let body = `${math(`${eqn}`)}`;
 		eqn.setAligned();
 		eqn.crossMultiply();
@@ -158,7 +158,7 @@
 	(() => {
 		const term1a = new RationalTerm([new Term(7, 'x'), 2], 6);
 		const lhs = new Expression(term1a, -4);
-		const eqn = new GeneralEquation(lhs);
+		const eqn = new EquationWorking(lhs);
 		let body = `${math(`${eqn}`)}`;
 		eqn.setAligned();
 		eqn.plus(4);
@@ -175,7 +175,7 @@
 		const term1a = new RationalTerm(new Term(5, 'x'), 6);
 		const term1b = new RationalTerm(['x', -1], 3);
 		const lhs = new Expression(term1a, term1b);
-		const eqn = new GeneralEquation(lhs);
+		const eqn = new EquationWorking(lhs);
 		let body = `${math(`${eqn}`)}`;
 		eqn.setAligned();
 		eqn.moveTerm(1);
@@ -196,7 +196,7 @@
 		const term1a = new RationalTerm([new Term(3, 'x'), 7], 8);
 		const term1b = new RationalTerm([new Term(2, 'x'), 1], 5, { coeff: -1 });
 		const lhs = new Expression(term1a, term1b);
-		const eqn = new GeneralEquation(lhs);
+		const eqn = new EquationWorking(lhs);
 		let body = `${math(`${eqn}`)}`;
 		eqn.setAligned();
 		eqn.moveTerm(1);
@@ -218,7 +218,7 @@
 		const term1b = new RationalTerm('x', 4, { coeff: -1 });
 		const lhs = new Expression(term1a, term1b);
 		const rhs = new RationalTerm(new Expression(new Term(5, 'x'), 8), 8);
-		const eqn = new GeneralEquation(lhs, rhs);
+		const eqn = new EquationWorking(lhs, rhs);
 		let body = `${math(`${eqn}`)}`;
 		eqn.setAligned();
 		eqn.combineRationalTerms();
@@ -239,7 +239,7 @@
 		const term2a = new RationalTerm([new Term(20, 'x'), -9], 6);
 		const term2b = 11;
 		const rhs = new Expression(term2a, term2b);
-		const eqn = new GeneralEquation(lhs, rhs);
+		const eqn = new EquationWorking(lhs, rhs);
 		let body = `${math(`${eqn}`)}`;
 		eqn.setAligned();
 		eqn.combineRationalTerms();
@@ -269,7 +269,7 @@
 	];
 	const q3RHS = [5, 8, -7, new RationalTerm(45, [1, new Term(-2, 'x')])];
 	q3LHS.forEach((lhs, i) => {
-		const eqn = new GeneralEquation(lhs, q3RHS[i]);
+		const eqn = new EquationWorking(lhs, q3RHS[i]);
 		let body = `${math(`${eqn}`)}`;
 		eqn.setAligned();
 		eqn.crossMultiply();
@@ -293,7 +293,7 @@
 		const term1b = -1;
 		const lhs = new Expression(term1a, term1b);
 		const rhs = new Fraction(3, 4);
-		const eqn = new GeneralEquation(lhs, rhs);
+		const eqn = new EquationWorking(lhs, rhs);
 		let body = `${math(`${eqn}`)}`;
 		eqn.setAligned();
 		eqn.moveTerm(1);
@@ -313,7 +313,7 @@
 		const term1b = 1;
 		const rhs = new Expression(term1a, term1b);
 		const lhs = new Fraction(6, 7);
-		const eqn = new GeneralEquation(lhs, rhs);
+		const eqn = new EquationWorking(lhs, rhs);
 		let body = `${math(`${eqn}`)}`;
 		eqn.setAligned();
 		eqn.moveTerm(1, { from: 'rhs' });
@@ -341,7 +341,7 @@
 		new RationalTerm(2, [new Term(2, 'x'), -11]),
 	];
 	q3LHS2.forEach((lhs, i) => {
-		const eqn = new GeneralEquation(lhs, q3RHS2[i]);
+		const eqn = new EquationWorking(lhs, q3RHS2[i]);
 		let body = `${math(`${eqn}`)}`;
 		eqn.setAligned();
 		eqn.crossMultiply();

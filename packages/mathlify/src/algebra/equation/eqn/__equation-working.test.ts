@@ -11,7 +11,7 @@ import { afterAll, vi } from "vitest";
 const y = new Term("y");
 const xPlus1 = new Expression("x", 1);
 const xPlus1Over2 = new RationalTerm(xPlus1, 2);
-const xPlus1OverXMinus1 = new RationalTerm(xPlus1, ["x", -1]);
+const xPlus1OverXMinus1 = new RationalTerm(xPlus1, new Expression("x", -1));
 
 test("General Equation", () => {
   const eqn = new EquationWorking(y);

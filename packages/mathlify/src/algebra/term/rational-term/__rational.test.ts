@@ -10,7 +10,7 @@ const xPlus1Over2a = new RationalTerm(xPlus1, 2);
 const xPlus1Over2b = new RationalTerm(xPlus1, two);
 const xPlus1OverX = new RationalTerm(xPlus1, "x");
 const xPlus1OverY = new RationalTerm(xPlus1, y);
-const xPlus1OverXMinus1a = new RationalTerm(xPlus1, ["x", -1]);
+const xPlus1OverXMinus1a = new RationalTerm(xPlus1, new Expression("x", -1));
 const xPlus1OverXMinus1b = new RationalTerm(xPlus1, xMinus1);
 const yOverXPlus1 = new RationalTerm(y, xPlus1);
 const xOverXPlus1 = new RationalTerm("x", xPlus1);
@@ -21,8 +21,13 @@ const xPlus1Over1 = new RationalTerm(xPlus1, 1);
 const twoOverXPlus1b = new RationalTerm(2, xPlus1);
 
 test("RationalTerm in Expression", () => {
+  expect(() => {
+    new RationalTerm(1, 0);
+  }).to.throw();
   const exp = new Expression(twoOverXPlus1b, 3);
-  const negRational = new RationalTerm([2, "x"], [3, "x"], { coeff: -1 });
+  const negRational = new RationalTerm([2, "x"], new Expression(3, "x"), {
+    coeff: -1,
+  });
   expect(`${exp}`).to.equal(`\\frac{2}{x + 1} + 3`);
   expect(`${negRational}`).to.equal(`- \\frac{2 + x}{3 + x}`);
   expect(`${negRational.subIn({ x: 2 })}`).to.equal(`- \\frac{4}{5}`);
@@ -48,11 +53,11 @@ test("Rational Arithmetic", () => {
   );
   expect(`${xPlus1Over1.times("y")}`).to.equal(`x y + y`);
   expect(`${xPlus1OverY.divide(xPlus1OverXMinus1a)}`).to.equal(
-    "\\frac{x^2 - 1}{y x + y}"
+    "\\frac{x^2 - 1}{y \\left( x + 1 \\right)}"
   );
   expect(`${twoOverXPlus1a.divide(2)}`).to.equal("\\frac{1}{x + 1}");
   expect(`${xPlus1OverXMinus1b.times(yOverXPlus1)}`).to.equal(
-    "\\frac{x y + y}{x^2 - 1}"
+    "\\frac{x y + y}{\\left( x - 1 \\right) \\left( x + 1 \\right)}"
   );
   expect(`${xOverXPlus1.minus(1)}`).to.equal("- \\frac{1}{x + 1}");
   expect(`${xMinus1OverXPlus1.subIn({ x: 2 })}`).to.equal("\\frac{1}{3}");

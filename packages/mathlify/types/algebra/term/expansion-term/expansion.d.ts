@@ -1,7 +1,6 @@
 /**
  * ExpansionTerm class extending the Term class
- * @property {Term} exp1 - the first expression (currently only supports a single term)
- * @property {Expression} exp2 - the second expression
+ * @property {Map<Expression,Fraction>} expPowerMap - map of all the expressions and their powers
  * @property {Fraction} coeff - either 1 or -1 to indicate the sign of the term
  * @property {"expansion-term"} kind - mathlify rational class kind
  * @property {"expansion-term"} type - mathlify rational class type

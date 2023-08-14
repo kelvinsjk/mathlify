@@ -1,12 +1,12 @@
 <script lang="ts">
 	import Question from '$lib/components/Question.svelte';
 	import type { Part, Question as QuestionType } from '$lib/components/types';
-	import { Term, Expression, UnsimplifiedTerm, ExpansionTerm } from 'mathlify';
+	import { Term, Expression, UnsimplifiedTerm, ExpansionTerm, factorizeExpression } from 'mathlify';
 	import { math, newParagraph } from 'mathlifier';
 
 	const title = 'Expansion and factorisation of linear expressions';
 
-	// TODO: Factorisation: Q8
+	// TODO: Factorisation of expansion term: q9
 
 	//! Question 1
 	const exp1: [number, Expression][] = [
@@ -55,25 +55,32 @@
 
 	//! Question 4
 	const exp4: (ExpansionTerm | Term)[][] = [
-		[new ExpansionTerm(12, [new Term(3, 'x'), 'y']), new Term(-10, 'y')],
-		[new ExpansionTerm(-1, [new Term(5, 'x'), new Term(7, 'y')]), new Term(11, 'x')],
-		[new Term(8,'x'), new Term(3,'y'), new ExpansionTerm(-1, [new Term(3,'x'), new Term(8,'y')]) ],
-		[new ExpansionTerm(-1, [new Term(4, 'x'), new Term(-9, 'y')]), new Term(-9, 'y')],
+		[new ExpansionTerm(12, new Expression(new Term(3, 'x'), 'y')), new Term(-10, 'y')],
+		[new ExpansionTerm(-1, new Expression(new Term(5, 'x'), new Term(7, 'y'))), new Term(11, 'x')],
 		[
-			new ExpansionTerm(6, [new Term(2, 'x'), new Term(-1, 'y')]),
-			new ExpansionTerm(4, ['x', new Term(-5, 'y')]),
+			new Term(8, 'x'),
+			new Term(3, 'y'),
+			new ExpansionTerm(-1, new Expression(new Term(3, 'x'), new Term(8, 'y'))),
 		],
-		[ new ExpansionTerm(3, [new Term(3,'x'), new Term(8, 'y')]), new ExpansionTerm(-2, [new Term(4,'x'), new Term(-9,'y')]) ],
+		[new ExpansionTerm(-1, new Expression(new Term(4, 'x'), new Term(-9, 'y'))), new Term(-9, 'y')],
+		[
+			new ExpansionTerm(6, new Expression(new Term(2, 'x'), new Term(-1, 'y'))),
+			new ExpansionTerm(4, new Expression('x', new Term(-5, 'y'))),
+		],
+		[
+			new ExpansionTerm(3, new Expression(new Term(3, 'x'), new Term(8, 'y'))),
+			new ExpansionTerm(-2, new Expression(new Term(4, 'x'), new Term(-9, 'y'))),
+		],
 		[
 			new Term(6, 'x'),
-			new ExpansionTerm(2, ['x', new Term(-3, 'y'), new Term(2, 'z')]),
+			new ExpansionTerm(2, new Expression('x', new Term(-3, 'y'), new Term(2, 'z'))),
 			new Term(5, 'y'),
 		],
 		[
 			new Term(-4, 'x'),
-			new ExpansionTerm(-3, [new Term(2,'x'), new Term(12, 'y'), new Term(-3, 'z')]),
-			new Term(-9, 'z')
-		]
+			new ExpansionTerm(-3, new Expression(new Term(2, 'x'), new Term(12, 'y'), new Term(-3, 'z'))),
+			new Term(-9, 'z'),
+		],
 	];
 	const ans4 = exp3.map(([k, exp]) => new Expression(k).times(exp));
 
@@ -138,6 +145,36 @@
 		body: `<span class="font-semibold mx-2">4.</span> ${preamble()}`,
 		parts: parts,
 	});
+
+	//! Question 5 (factorisation) Q8 from book
+	(() => {
+		const terms = [
+			[new Term(16, 'x'), 12],
+			[new Term(9, 'x'), -45],
+			[10, new Term(-15, 'x')],
+			[new Term(-33, 'x'), -44],
+			[new Term(14, 'a', 'x'), new Term(6, 'a', 'y')],
+			[new Term(-21, 'a', 'x'), new Term(56, 'a', 'y')],
+			[new Term(24, 'x'), new Term(-27, 'y'), new Term(3, 'z')],
+			[new Term(-8, 'a', 'x'), new Term(10, 'b', 'x'), new Term(12, 'c', 'x')],
+		];
+		const factors = [undefined, undefined, undefined, undefined, 'a', 'a', undefined, 'x'];
+		const parts: Part[] = [];
+		terms.forEach((termArr, i) => {
+			const qn = new Expression(...termArr);
+			const ans = factorizeExpression(qn, factors[i]);
+			parts.push({
+				body: `${math(`${qn}`)}
+				${newParagraph}
+				Answer: ${math(`${ans}.`)}
+			`,
+			});
+		});
+		questions.push({
+			body: `<span class="font-semibold mx-2">5.</span> Factorise each of the following completely.`,
+			parts: parts,
+		});
+	})();
 </script>
 
 <svelte:head>

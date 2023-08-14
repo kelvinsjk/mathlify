@@ -6,13 +6,13 @@ const threeY2 = new Term(3, ["y", 2]);
 const xPlus2 = new Expression("x", 2);
 const half = new Fraction(1, 2);
 
-const twoXPlus1 = new ExpansionTerm(2, xPlus2);
+const twoTimesXPlus2 = new ExpansionTerm(2, xPlus2);
 const halfXPlus1 = new ExpansionTerm(half, xPlus2);
 const xXPlus1 = new ExpansionTerm("x", xPlus2);
 const threeY2XPlus1 = new ExpansionTerm(threeY2, xPlus2);
 
 test("ExpansionTerm constructor", () => {
-  expect(`${twoXPlus1}`).to.equal(`2 \\left( x + 2 \\right)`);
+  expect(`${twoTimesXPlus2}`).to.equal(`2 \\left( x + 2 \\right)`);
   expect(`${halfXPlus1}`).to.equal(`\\frac{1}{2} \\left( x + 2 \\right)`);
   expect(`${xXPlus1}`).to.equal(`x \\left( x + 2 \\right)`);
   expect(`${threeY2XPlus1}`).to.equal(`3 y^2 \\left( x + 2 \\right)`);
@@ -22,17 +22,20 @@ test("ExpansionTerm constructor", () => {
   expect(`${new ExpansionTerm(2, "x", "y")}`).to.equal(
     `2 x \\left( y \\right)`
   );
+  expect(`${new ExpansionTerm(3, [xPlus2, 4], xPlus2)}`).to.equal(
+    `3 \\left( x + 2 \\right)^5`
+  );
 });
 
 test("ExpansionTerm expansion", () => {
-  expect(`${twoXPlus1.expand()}`).to.equal(`2 x + 4`);
+  expect(`${twoTimesXPlus2.expand()}`).to.equal(`2 x + 4`);
   expect(`${halfXPlus1.expand()}`).to.equal(`\\frac{1}{2} x + 1`);
   expect(`${xXPlus1.expand()}`).to.equal(`x^2 + 2 x`);
   expect(`${threeY2XPlus1.expand()}`).to.equal(`3 y^2 x + 6 y^2`);
 });
 
 test("ExpansionTerm in Expression", () => {
-  const exp = new Expression(twoXPlus1, 3);
+  const exp = new Expression(twoTimesXPlus2, 3);
   expect(`${exp}`).to.equal(`2 \\left( x + 2 \\right) + 3`);
 });
 
@@ -42,7 +45,7 @@ test("negative ExpansionTerm", () => {
   const exp3 = new ExpansionTerm(1, xPlus2);
   expect(`${exp}`).to.equal(`- \\left( x + 2 \\right)`);
   expect(`${exp2}`).to.equal(`- 2 \\left( x + 2 \\right)`);
-  expect(`${exp3}`).to.equal(`\\left( x + 2 \\right)`);
+  expect(`${exp3}`).to.equal(`x + 2`);
   const expression = new Expression(5, exp);
   expect(`${expression}`).to.equal(`5 - \\left( x + 2 \\right)`);
 });

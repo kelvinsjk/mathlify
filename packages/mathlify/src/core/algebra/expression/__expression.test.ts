@@ -79,3 +79,17 @@ test("Expression casting", () => {
     new Expression(2, "x").cast.toTerm();
   }).to.throw();
 });
+
+test("Expression arithmetic", () => {
+  const xPlus1 = new Expression("x", 1);
+  expect(xPlus1.pow(2).toString()).toBe("x^2 + 2 x + 1");
+  expect(() => {
+    xPlus1.pow(-1);
+  }).to.throw();
+  expect(() => {
+    xPlus1.pow(1.5);
+  }).to.throw();
+  const onePlusX = new Expression(1, "x");
+  expect(onePlusX.is.equalTo(xPlus1)).toBe(true);
+  expect(onePlusX.minus("x").is.equalTo(1)).toBe(true);
+});

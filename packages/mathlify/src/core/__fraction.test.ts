@@ -1,3 +1,4 @@
+import { gcd, lcm } from "../utils";
 import { Fraction } from "./fraction";
 import { test, expect } from "vitest";
 test("fraction throws on invalid constructor inputs", () => {
@@ -91,6 +92,13 @@ test("static methods/props", () => {
   ).toBe(true);
   expect(Fraction.ONE.num).toBe(1);
   expect(Fraction.ZERO.num).toBe(0);
+  expect(
+    Fraction.lcm(
+      new Fraction(5, 8),
+      new Fraction(3, 4),
+      new Fraction(1, 2)
+    ).is.equalTo(new Fraction(15, 2))
+  ).toBe(true);
 });
 
 test("fraction kind and type", () => {

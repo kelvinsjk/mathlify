@@ -134,7 +134,7 @@ export class EquationWorking {
      */
     toString(): string | Expression;
 }
-import { Expression } from '../../../core/index.js';
-import { Fraction } from '../../../core/index.js';
-import { Term } from '../../../core/index.js';
+import { Expression } from "../../../core/index.js";
+import { Fraction } from "../../../core/index.js";
+import { Term } from "../../../core/index.js";
 //# sourceMappingURL=equation-working.d.ts.map

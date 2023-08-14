@@ -10,7 +10,7 @@
 		solveLinear,
 		UnsimplifiedExpression,
 		RationalTerm,
-		GeneralEquation,
+		EquationWorking,
 	} from 'mathlify';
 	import { alignStar, math, newParagraph } from 'mathlifier';
 
@@ -44,7 +44,7 @@
 			body,
 			parts: [{ body: partA }, { body: partB }],
 		});
-		const ansI = poly.subInFraction(vars[i].x);
+		const ansI = poly.subIn(vars[i].x);
 		const ansII = solveLinear(poly, vars[i].y);
 		answers.push({
 			body: `<span class="font-semibold mx-2">${i + 1}.</span>`,

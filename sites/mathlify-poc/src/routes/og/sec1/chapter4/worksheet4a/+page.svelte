@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Question from '$lib/components/Question.svelte';
 	import type { Part, Question as QuestionType } from '$lib/components/types';
-	import { RationalTerm, Fraction, Term, Expression, ExpansionTerm, PowerTerm } from 'mathlify';
+	import { RationalTerm, Fraction, Term, Expression, ExpansionTerm } from 'mathlify';
 	import { math, newParagraph } from 'mathlifier';
 
 	const title = 'Basic algebraic concepts and notations';
@@ -9,6 +9,7 @@
 	// TODO: Word problems: sum/subtract
 	// TODO: Sub in working
 	// TODO: Expansion with first part expression and second part power term: 10d
+	// TODO: 8d, 9d surds
 
 	//! Question 1 (6 in book)
 	let x: number | Fraction = 5;
@@ -59,16 +60,11 @@
 			new Term(-1).divide('x', { fractionalDisplayMode: 'always' }),
 		),
 		new RationalTerm(['x', new Term(-1, 'y')], ['x', 'y']),
-		new PowerTerm(new Term(-5,'x','y'), new Fraction(1,2))
 	];
 	const ans3 = exp3.map((exp, i) => {
 		let e: Expression | Term = exp.subIn({ x, y });
 		if (i === 2) {
 			return e.cast.toFraction();
-		}
-		if (i === 3 && exp instanceof PowerTerm) {
-			const radicand = exp.exp.subIn({ x, y }).cast.toFraction().valueOf();
-			return Math.sqrt(radicand);
 		}
 		return e;
 	});
@@ -79,26 +75,14 @@
 	const exp4 = [
 		new Expression(7, [-12, 'x', 'y']),
 		new Expression(new Term(3, ['x', -1]), new Term(4, ['y', -1]), -6),
-		new Expression(new ExpansionTerm(5, ['x', new Term(2, 'y')]), [-9, 'x']),
-		new Expression(new PowerTerm(new Term('y').divide(2, {fractionalDisplayMode: 'always'}), new Fraction(1,3)), new Term(3, 'x').divide(2, {fractionalDisplayMode: 'always'})),
+		new Expression(new ExpansionTerm(5, new Expression('x', new Term(2, 'y')), new Term(-9, 'x'))),
 	];
 	const ans4 = exp4.map((exp, i) => {
 		if (i === 2) {
-			exp = new Expression(...new ExpansionTerm(5, ['x', new Term(2, 'y')]).expand().terms, [
-				-9,
-				'x',
-			]);
-		} else if (i===3){
-			const [t1, t2] = exp.terms;
-			if (t1 instanceof PowerTerm) {
-				const radicand = t1.exp.subIn({ x, y }).cast.toFraction();
-				const firstTermNum = Math.pow(radicand.abs().num.valueOf(), 1/3) * radicand.sign();
-				const firstTermDen = Math.pow(radicand.den, 1/3);
-				const firstTerm = new Fraction(firstTermNum, firstTermDen);
-				exp = new Expression(firstTerm, t2);
-			} else {
-				throw new Error('Expected first term to be a power term');
-			}
+			exp = new Expression(
+				...new ExpansionTerm(5, new Expression('x', new Term(2, 'y'))).expand().terms,
+				[-9, 'x'],
+			);
 		}
 		return exp.subIn({ x, y });
 	});
@@ -111,14 +95,21 @@
 	const z = 4;
 	const exp5 = [
 		new Expression([99, 'x', 'y', 'z']),
-		new PowerTerm(new Expression(new Term(['x', 2]), new Term(-1,'y','z')), 3),
-		new Expression(new Term(['x', 2], 'z').divide(5, { fractionalDisplayMode: 'always' }),
-			new RationalTerm(new Expression([3, 'z'], [-1, 'y']), new Expression([2, 'x'], 'z'), new Fraction(-1))),
+		new ExpansionTerm({
+			exp: new Expression(new Term(['x', 2]), new Term(-1, 'y', 'z')),
+			power: 3,
+		}),
+		new Expression(
+			new Term(['x', 2], 'z').divide(5, { fractionalDisplayMode: 'always' }),
+			new RationalTerm(new Expression([3, 'z'], [-1, 'y']), new Expression([2, 'x'], 'z'), {
+				coeff: new Fraction(-1),
+			}),
+		),
 	];
 	const ans5 = exp5.map((exp, i) => {
-		if (i===1 && exp instanceof PowerTerm){
-			const inner = exp.exp.subIn({ x, y, z }).cast.toFraction();
-			return inner.pow(exp.power.valueOf()).times(exp.coeff);
+		if (i === 1 && exp instanceof ExpansionTerm) {
+			const inner = exp.expand().subIn({ x, y, z }).cast.toFraction();
+			return inner;
 		}
 		if (i === 2 && exp instanceof Expression) {
 			const [t1, rational] = exp.subIn({ x, y, z }).terms;
