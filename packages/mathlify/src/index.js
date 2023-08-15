@@ -7,6 +7,7 @@ export {
   UnsimplifiedTerm,
   EquationWorking,
   SLE,
+  SLENumerical,
   solveLinear,
   factorizeExpression,
   castExpression,

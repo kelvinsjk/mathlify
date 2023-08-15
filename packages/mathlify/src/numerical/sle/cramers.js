@@ -64,7 +64,7 @@ export function cramersRule(
       );
     }
     return [detX.divide(det), detY.divide(det)];
-  } else if (coeffs1.length === 3 && coeffs3 && val3) {
+  } else if (coeffs1.length === 3 && coeffs3 && val3 !== undefined) {
     const det = determinant(...coeffs1, ...coeffs2, ...coeffs3);
     const detX = determinant(
       val1,
@@ -105,7 +105,13 @@ export function cramersRule(
       );
     }
     return [detX.divide(det), detY.divide(det), detZ.divide(det)];
-  } else if (coeffs1.length === 4 && coeffs3 && val3 && coeffs4 && val4) {
+  } else if (
+    coeffs1.length === 4 &&
+    coeffs3 &&
+    val3 !== undefined &&
+    coeffs4 &&
+    val4 !== undefined
+  ) {
     const det = determinant(...coeffs1, ...coeffs2, ...coeffs3, ...coeffs4);
     const detX = determinant(
       val1,
@@ -252,7 +258,7 @@ export function cramersRuleNumerical(
     const detX = determinantNumerical(val1, coeffs1[1], val2, coeffs2[1]);
     const detY = determinantNumerical(coeffs1[0], val1, coeffs2[0], val2);
     return [detX / det, detY / det];
-  } else if (coeffs1.length === 3 && coeffs3 && val3) {
+  } else if (coeffs1.length === 3 && coeffs3 && val3 !== undefined) {
     const det = determinantNumerical(...coeffs1, ...coeffs2, ...coeffs3);
     const detX = determinantNumerical(
       val1,
@@ -260,7 +266,7 @@ export function cramersRuleNumerical(
       coeffs1[2],
       val2,
       coeffs2[1],
-      coeffs2[1],
+      coeffs2[2],
       val3,
       coeffs3[1],
       coeffs3[2]
@@ -288,7 +294,13 @@ export function cramersRuleNumerical(
       val3
     );
     return [detX / det, detY / det, detZ / det];
-  } else if (coeffs1.length === 4 && coeffs3 && val3 && coeffs4 && val4) {
+  } else if (
+    coeffs1.length === 4 &&
+    coeffs3 &&
+    val3 !== undefined &&
+    coeffs4 &&
+    val4 !== undefined
+  ) {
     const det = determinantNumerical(
       ...coeffs1,
       ...coeffs2,

@@ -144,9 +144,11 @@
 
 <section aria-labelledby="title" class="prose mx-auto">
 	<h2 id="title">{title}</h2>
+	<h3>Questions</h3>
 	{#each questions as question}
 		<Question {question} />
 	{/each}
+	<h3>Answers</h3>
 	{#each answers as question}
 		<Question {question} />
 	{/each}
