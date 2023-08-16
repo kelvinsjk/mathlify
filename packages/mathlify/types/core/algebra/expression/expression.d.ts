@@ -57,6 +57,11 @@ export class Expression {
      */
     pow(x: number | Fraction): Expression;
     /**
+     * square
+     * @returns {Expression} - the expression squared (expanded)
+     */
+    square(): Expression;
+    /**
      * expression division
      * @param {number|Fraction|string|Term} x - term to be divided
      * @param {{fractionalDisplayMode: "always"|"auto"|"never"}} [options] - whether to display the term as a fraction (default: false) (3/5 x by default, 3x/5 if true)
@@ -117,6 +122,6 @@ export class Expression {
      */
     toString(): string;
 }
-import { Fraction } from "../../fraction.js";
-import { Term } from "../term/index.js";
+import { Fraction } from '../../fraction.js';
+import { Term } from '../term/index.js';
 //# sourceMappingURL=expression.d.ts.map
