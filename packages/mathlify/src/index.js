@@ -9,9 +9,13 @@ export {
   SLE,
   SLENumerical,
   solveLinear,
+  solveQuadratic,
+  solveQuadraticSurd,
+  factorizeQuadratic,
   factorizeExpression,
   castExpression,
 } from "./algebra/index.js";
+export { SquareRoot } from "./surds/index.js";
 export {
   determinant,
   determinantNumerical,

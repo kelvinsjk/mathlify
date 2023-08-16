@@ -1,6 +1,6 @@
 import { Polynomial } from "../../core/algebra/polynomial/polynomial.js";
 import { Expression } from "../../core/algebra/expression/expression.js";
-import { castExpression } from "../expression/cast/cast-expression.js";
+import { castToPoly } from "./utils/castToPoly.js";
 /**
  * @typedef {import('../../core/fraction.js').Fraction} Fraction
  */
@@ -11,18 +11,8 @@ import { castExpression } from "../expression/cast/cast-expression.js";
  * @returns {Fraction} - the solution
  */
 export function solveLinear(poly, rhs = 0) {
-  const lhsPoly =
-    poly instanceof Polynomial
-      ? poly
-      : poly instanceof Expression
-      ? castExpression.toPolynomial(poly)
-      : new Polynomial([poly]);
-  const rhsPoly =
-    rhs instanceof Polynomial
-      ? rhs
-      : rhs instanceof Expression
-      ? castExpression.toPolynomial(rhs)
-      : new Polynomial([rhs]);
+  const lhsPoly = castToPoly(poly);
+  const rhsPoly = castToPoly(rhs);
   const newPoly = lhsPoly.minus(rhsPoly);
   if (newPoly.degree !== 1) {
     throw new Error(
