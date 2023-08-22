@@ -81,6 +81,7 @@ export class SquareRoot extends Term {
      */
     is: {
         constant: () => boolean;
+        /** @type {(term2: string|number|Fraction|Term)=>boolean} */
         like: (term2: string | number | Fraction | Term) => boolean;
         /**
          * checks if two square roots are equal
@@ -101,6 +102,7 @@ export class SquareRoot extends Term {
              */
             equalTo: (term2: SquareRoot | number | Fraction | Term | string) => boolean;
             constant: () => boolean;
+            /** @type {(term2: string|number|Fraction|Term)=>boolean} */
             like: (term2: string | number | Fraction | Term) => boolean;
         };
     };

@@ -1,3 +1,3 @@
-export { solveLinear } from "./linear.js";
-export { solveQuadraticSurd, solveQuadraticRational } from "./quadratic.js";
+export { solveLinear, solveLinearInequality } from "./linear.js";
+export { solveQuadraticSurd, solveQuadratic, factorizeQuadratic } from "./quadratic.js";
 //# sourceMappingURL=index.d.ts.map

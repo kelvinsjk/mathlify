@@ -1,6 +1,6 @@
-export { solveLinear } from "./linear.js";
+export { solveLinear, solveLinearInequality } from './linear.js';
 export {
-  solveQuadraticSurd,
-  solveQuadratic,
-  factorizeQuadratic,
-} from "./quadratic.js";
+	solveQuadraticSurd,
+	solveQuadratic,
+	factorizeQuadratic,
+} from './quadratic.js';
