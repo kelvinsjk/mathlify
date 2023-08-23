@@ -217,6 +217,43 @@ export class ExpansionTerm extends Term {
 			...expPowerMapToConstructorObj(expPowerMap)
 		);
 	}
+
+	/**
+	 * gcd
+	 * @static
+	 * @param {(ExpansionTerm|Expression)[]} exps - the expansion terms
+	 * @returns {ExpansionTerm} - the lcm of the expansion terms
+	 */
+	static gcd(...exps) {
+		/** @type {Map<Expression,Fraction>} */
+		let expPowerMap = new Map();
+		/** @type {Fraction} */
+		let coeff = new Fraction(1);
+		exps.forEach((exp) => {
+			const expression =
+				exp instanceof ExpansionTerm ? exp : new ExpansionTerm(exp);
+			expPowerMap = expPowerMapMinPower(expPowerMap, expression.expPowerMap);
+			coeff = Fraction.gcd(coeff, expression.coeff);
+		});
+		return new ExpansionTerm(
+			coeff,
+			...expPowerMapToConstructorObj(expPowerMap)
+		);
+	}
+
+	/**
+	 * factorize
+	 * @static
+	 * @param {ExpansionTerm} exp1 - expansion term 1
+	 * @param {ExpansionTerm} exp2 - expansion term 2
+	 * @returns {ExpansionTerm} factorized expression (...)(gcd)
+	 */
+	static factorize(exp1, exp2) {
+		const gcd = ExpansionTerm.gcd(exp1, exp2);
+		const remainder1 = exp1.divide(gcd).expand();
+		const remainder2 = exp2.divide(gcd).expand();
+		return new ExpansionTerm(remainder1.plus(remainder2), gcd);
+	}
 }
 
 /**
@@ -251,8 +288,34 @@ function expPowerMapMaxPower(expPowerMap1, expPowerMap2) {
 				break;
 			}
 		}
+		// exp in expPowerMap2 not in expPowerMap
 		if (!expExists) {
 			expPowerMap.set(exp, power);
+		}
+	}
+	return expPowerMap;
+}
+
+/**
+ * given two expPowerMaps, return a new expPowerMap that is the "gcd" of the two
+ * @param {Map<Expression,Fraction>} expPowerMap1
+ * @param {Map<Expression,Fraction>} expPowerMap2
+ */
+function expPowerMapMinPower(expPowerMap1, expPowerMap2) {
+	const expPowerMap = new Map(expPowerMap1);
+	for (let [exp, power] of expPowerMap.entries()) {
+		let expExists = false;
+		for (let [exp2, power2] of expPowerMap2.entries()) {
+			if (exp2.is.equalTo(exp)) {
+				if (power2.is.lessThan(power)) {
+					expPowerMap.set(exp, power2);
+				}
+				expExists = true;
+				break;
+			}
+		}
+		if (!expExists) {
+			expPowerMap.delete(exp);
 		}
 	}
 	return expPowerMap;
