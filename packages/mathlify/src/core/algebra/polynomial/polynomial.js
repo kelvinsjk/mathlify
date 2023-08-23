@@ -48,9 +48,7 @@ export class Polynomial extends Expression {
 			coeffsFrac.reverse();
 		}
 		const coeffsCleaned = removeTrailingZeroes(coeffsFrac);
-		const terms = coeffsCleaned.map(
-			(coeff, i) => new Term(coeff, { variable, power: i })
-		);
+		const terms = coeffsCleaned.map((coeff, i) => new Term(coeff, { variable, power: i }));
 		if (!ascending) {
 			terms.reverse();
 		}
@@ -117,11 +115,31 @@ export class Polynomial extends Expression {
 	}
 
 	/**
+	 * @overload
 	 * Polynomial multiplication
-	 * @param {Polynomial|number|Fraction} x - polynomial to be multiplied
-	 * @returns {Polynomial} - the product
+	 * @param {Term|Expression|string} x - polynomial to be multiplied
+	 * @returns {Expression} - the product
+	 */
+	/**
+  /**
+   * @overload
+   * Polynomial multiplication
+   * @param {Polynomial|number|Fraction} x - polynomial to be multiplied
+   * @returns {Polynomial} - the product
+   */
+	/**
+	 * Polynomial multiplication
+	 * @param {Polynomial|number|Fraction|Term|Expression|string} x - polynomial to be multiplied
+	 * @returns {Polynomial|Expression} - the product
 	 */
 	times(x) {
+		if (
+			x instanceof Term ||
+			typeof x === 'string' ||
+			(x instanceof Expression && !(x instanceof Polynomial))
+		) {
+			return super.times(x);
+		}
 		const xPoly = x instanceof Polynomial ? x : new Polynomial([x]);
 		/** @type {Fraction[]} */
 		let newCoeffs = [];
@@ -176,7 +194,7 @@ export class Polynomial extends Expression {
 			ascending: this.ascending,
 		});
 		for (let i = 0; i < n; i++) {
-			result = result.times(this);
+			result = /**@type{Polynomial}*/ (result.times(this));
 		}
 		return result;
 	}
@@ -215,6 +233,14 @@ export class Polynomial extends Expression {
 		}
 		return super.subIn(x);
 	}
+
+	/**
+	 * leading coefficient
+	 * @returns {Fraction} - the leading coefficient
+	 */
+	leadingCoefficient() {
+		return this.coeffs[this.coeffs.length - 1];
+	}
 }
 
 /**
@@ -238,13 +264,7 @@ function removeTrailingZeroes(arr) {
  */
 function addArrays(arr1, arr2) {
 	const maxLength = Math.max(arr1.length, arr2.length);
-	const arr1Padded = [
-		...arr1,
-		...Array(maxLength - arr1.length).fill(new Fraction(0)),
-	];
-	const arr2Padded = [
-		...arr2,
-		...Array(maxLength - arr2.length).fill(new Fraction(0)),
-	];
+	const arr1Padded = [...arr1, ...Array(maxLength - arr1.length).fill(new Fraction(0))];
+	const arr2Padded = [...arr2, ...Array(maxLength - arr2.length).fill(new Fraction(0))];
 	return arr1Padded.map((x, i) => x.plus(arr2Padded[i]));
 }

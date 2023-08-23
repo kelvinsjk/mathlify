@@ -15,6 +15,21 @@ export class ExpansionTerm extends Term {
      */
     static lcm(...exps: (ExpansionTerm | Expression)[]): ExpansionTerm;
     /**
+     * gcd
+     * @static
+     * @param {(ExpansionTerm|Expression)[]} exps - the expansion terms
+     * @returns {ExpansionTerm} - the lcm of the expansion terms
+     */
+    static gcd(...exps: (ExpansionTerm | Expression)[]): ExpansionTerm;
+    /**
+     * factorize
+     * @static
+     * @param {ExpansionTerm} exp1 - expansion term 1
+     * @param {ExpansionTerm} exp2 - expansion term 2
+     * @returns {ExpansionTerm} factorized expression (...)(gcd)
+     */
+    static factorize(exp1: ExpansionTerm, exp2: ExpansionTerm): ExpansionTerm;
+    /**
      * @constructor
      * Creates an Expansion Term instance
      * @param {(number|Fraction|string|Term|Expression|{exp: Expression, power: number|Fraction}|[Expression, number|Fraction])[]} exps - the expression
@@ -42,13 +57,19 @@ export class ExpansionTerm extends Term {
      */
     times(x: number | Fraction): ExpansionTerm;
     /**
+     * divide expansion terms
+     * @param {ExpansionTerm} x - the divisor
+     * @returns {ExpansionTerm} - the Expansion Term divided by x
+     */
+    divide(x: ExpansionTerm): ExpansionTerm;
+    /**
      * expands the expression
      * @returns {Expression} - the expanded expression
      * WARNING: only works for positive integral powers
      */
     expand(): Expression;
 }
-import { Term } from "../../../core/index.js";
-import { Expression } from "../../../core/index.js";
-import { Fraction } from "../../../core/index.js";
+import { Term } from '../../../core/index.js';
+import { Expression } from '../../../core/index.js';
+import { Fraction } from '../../../core/index.js';
 //# sourceMappingURL=expansion.d.ts.map

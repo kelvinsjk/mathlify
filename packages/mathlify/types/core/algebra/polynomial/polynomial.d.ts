@@ -74,7 +74,12 @@ export class Polynomial extends Expression {
     subIn(x: {
         [key: string]: number | Fraction;
     }): Expression;
+    /**
+     * leading coefficient
+     * @returns {Fraction} - the leading coefficient
+     */
+    leadingCoefficient(): Fraction;
 }
-import { Expression } from '../expression/index.js';
-import { Fraction } from '../../fraction.js';
+import { Expression } from "../expression/index.js";
+import { Fraction } from "../../fraction.js";
 //# sourceMappingURL=polynomial.d.ts.map

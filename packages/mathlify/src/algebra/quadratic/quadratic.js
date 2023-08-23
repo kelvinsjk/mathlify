@@ -2,7 +2,7 @@ import { Polynomial } from "../../core/algebra/polynomial/polynomial.js";
 import { Expression } from "../../core/algebra/expression/expression.js";
 import { numberToFraction } from "../../utils/toFraction.js";
 import { SquareRoot } from "../../surds/square-roots.js";
-import { castToPoly } from "./utils/castToPoly.js";
+import { castToPoly } from "../utils/castToPoly.js";
 import { ExpansionTerm } from "../term/index.js";
 /**
  * @typedef {import('../../core/fraction.js').Fraction} Fraction

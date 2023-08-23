@@ -1,5 +1,5 @@
 import { test, expect } from "vitest";
-import { SLE, Fraction } from "../../../";
+import { SLE, Fraction } from "../../..";
 import { SLENumerical } from "./system-of-linear-equations";
 
 const twoX2 = new SLE(
