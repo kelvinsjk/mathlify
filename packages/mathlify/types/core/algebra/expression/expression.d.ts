@@ -24,10 +24,10 @@ export class Expression {
     termAtomMap: Map<string, Term>;
     /** @type {Term[]} */
     terms: Term[];
-    /** @type {"expression"|"polynomial"} */
-    kind: "expression" | "polynomial";
-    /** @type {"expression"|"expression-term"|"polynomial"|"linear-polynomial"|"quadratic-polynomial"} */
-    type: "expression" | "expression-term" | "polynomial" | "linear-polynomial" | "quadratic-polynomial";
+    /** @type {"expression"|"polynomial"|"extended-polynomial"} */
+    kind: "expression" | "polynomial" | "extended-polynomial";
+    /** @type {"expression"|"expression-term"|"polynomial"|"linear-polynomial"|"quadratic-polynomial"|"extended-polynomial"|"extended-linear-polynomial"|"extended-quadratic-polynomial"} */
+    type: "expression" | "expression-term" | "polynomial" | "linear-polynomial" | "quadratic-polynomial" | "extended-polynomial" | "extended-linear-polynomial" | "extended-quadratic-polynomial";
     /**
      * Expression addition
      * @param {number|Fraction|string|Term|Expression} x - term/expression to be added

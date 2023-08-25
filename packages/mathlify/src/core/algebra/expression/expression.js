@@ -19,9 +19,9 @@ export class Expression {
 	termAtomMap;
 	/** @type {Term[]} */
 	terms;
-	/** @type {"expression"|"polynomial"} */
+	/** @type {"expression"|"polynomial"|"extended-polynomial"} */
 	kind;
-	/** @type {"expression"|"expression-term"|"polynomial"|"linear-polynomial"|"quadratic-polynomial"} */
+	/** @type {"expression"|"expression-term"|"polynomial"|"linear-polynomial"|"quadratic-polynomial"|"extended-polynomial"|"extended-linear-polynomial"|"extended-quadratic-polynomial"} */
 	type;
 	/**
 	 * @constructor

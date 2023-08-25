@@ -88,7 +88,11 @@ export class ExpansionTerm extends Term {
 		/** @type {string[]} */
 		const expStrings = [];
 		for (let [exp, power] of expPowerMap.entries()) {
-			expStrings.push(`(${exp})^{${power}}`);
+			if (power.is.equalTo(0)) {
+				expPowerMap.delete(exp);
+			} else {
+				expStrings.push(`(${exp})^{${power}}`);
+			}
 		}
 		super(coeff, ...expStrings);
 		this.expPowerMap = expPowerMap;
@@ -165,31 +169,54 @@ export class ExpansionTerm extends Term {
 	toString() {
 		/** @type {string[]} */
 		const expStrings = [];
-		let firstTerm = true;
-		for (let [exp, power] of this.expPowerMap.entries()) {
-			if (firstTerm) {
-				firstTerm = false;
-				if (exp.terms.length === 1 && power.is.equalTo(1)) {
-					if (`${exp}` !== '1') {
-						expStrings.push(`${exp}`);
-					}
-				} else {
-					const powerBrackets =
-						`${power}`.length > 1 ? `{${power}}` : `${power}`;
-					const expString = power.is.equalTo(1)
-						? this.expPowerMap.size === 1 && this.coeff.is.equalTo(1)
-							? `${exp}`
-							: `\\left( ${exp} \\right)`
-						: `\\left( ${exp} \\right)^${powerBrackets}`;
-					expStrings.push(expString);
-				}
+		if (this.expPowerMap.size === 1) {
+			const [exp, power] = Array.from(this.expPowerMap)[0];
+			if (this.coeff.is.equalTo(1) && power.is.equalTo(1)) {
+				expStrings.push(`${exp}`);
 			} else {
 				const powerBrackets = `${power}`.length > 1 ? `{${power}}` : `${power}`;
+				const bracketString =
+					exp.terms.length === 1 ? `${exp}` : `\\left( ${exp} \\right)`;
 				const expString = power.is.equalTo(1)
-					? `\\left( ${exp} \\right)`
-					: `\\left( ${exp} \\right)^${powerBrackets}`;
+					? bracketString
+					: `${bracketString}^${powerBrackets}`;
 				expStrings.push(expString);
 			}
+		} else {
+			for (let [exp, power] of this.expPowerMap.entries()) {
+				const bracketString =
+					exp.terms.length === 1 ? `${exp}` : `\\left( ${exp} \\right)`;
+				const powerBrackets = `${power}`.length > 1 ? `{${power}}` : `${power}`;
+				const expString = power.is.equalTo(1)
+					? bracketString
+					: `${bracketString}^${powerBrackets}`;
+				expStrings.push(expString);
+			}
+
+			//if (firstTerm) {
+			//	firstTerm = false;
+			//	if (exp.terms.length === 1 && power.is.equalTo(1)) {
+			//		if (`${exp}` !== '1') {
+			//			expStrings.push(`${exp}`);
+			//		}
+			//	} else {
+			//		const powerBrackets =
+			//			`${power}`.length > 1 ? `{${power}}` : `${power}`;
+			//		const expString = power.is.equalTo(1)
+			//			? this.expPowerMap.size === 1 && this.coeff.is.equalTo(1)
+			//				? `${exp}`
+			//				: `\\left( ${exp} \\right)`
+			//			: `\\left( ${exp} \\right)^${powerBrackets}`;
+			//		expStrings.push(expString);
+			//	}
+			//} else {
+			//	const powerBrackets = `${power}`.length > 1 ? `{${power}}` : `${power}`;
+			//	const bracketString =
+			//	const expString = power.is.equalTo(1)
+			//		? `\\left( ${exp} \\right)`
+			//		: `\\left( ${exp} \\right)^${powerBrackets}`;
+			//	expStrings.push(expString);
+			//}
 		}
 		return `${new Term(this.coeff, ...expStrings)}`;
 	}

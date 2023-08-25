@@ -19,9 +19,7 @@ test('ExpansionTerm constructor', () => {
 	expect(`${new ExpansionTerm(2, new Expression('x', 2))}`).to.equal(
 		`2 \\left( x + 2 \\right)`
 	);
-	expect(`${new ExpansionTerm(2, 'x', 'y')}`).to.equal(
-		`2 x \\left( y \\right)`
-	);
+	expect(`${new ExpansionTerm(2, 'x', 'y')}`).to.equal(`2 x y`);
 	expect(`${new ExpansionTerm(3, [xPlus2, 4], xPlus2)}`).to.equal(
 		`3 \\left( x + 2 \\right)^5`
 	);
@@ -52,11 +50,11 @@ test('negative ExpansionTerm', () => {
 
 test('lcm, division', () => {
 	const lcm = ExpansionTerm.lcm(xXPlus2, threeY2XPlus2);
-	expect(`${lcm}`).to.equal(`3 x \\left( x + 2 \\right) \\left( y^2 \\right)`);
+	expect(`${lcm}`).to.equal(`3 x \\left( x + 2 \\right) y^2`);
 	expect(`${lcm.divide(xXPlus2)}`).to.equal(`3 y^2`);
 	const xPlus2Square = new ExpansionTerm([xPlus2, 2]);
 	const lcm2 = ExpansionTerm.lcm(xPlus2Square, threeY2XPlus2);
-	expect(`${lcm2}`).to.equal(`3 \\left( x + 2 \\right)^2 \\left( y^2 \\right)`);
+	expect(`${lcm2}`).to.equal(`3 \\left( x + 2 \\right)^2 y^2`);
 	expect(`${lcm2.divide(threeY2XPlus2)}`).to.equal(`x + 2`);
 	expect(`${lcm2.divide(xPlus2Square)}`).to.equal(`3 y^2`);
 });

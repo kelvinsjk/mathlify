@@ -47,11 +47,7 @@ export class Polynomial extends Expression {
      * @returns {Polynomial} - the difference this minus x
      */
     minus(x: Polynomial | number | Fraction): Polynomial;
-    /**
-     * Polynomial multiplication
-     * @param {Polynomial|number|Fraction} x - polynomial to be multiplied
-     * @returns {Polynomial} - the product
-     */
+    times(x: Term | Expression | string): Expression;
     times(x: Polynomial | number | Fraction): Polynomial;
     /**
      * Polynomial division (by a constant)
@@ -80,6 +76,7 @@ export class Polynomial extends Expression {
      */
     leadingCoefficient(): Fraction;
 }
-import { Expression } from "../expression/index.js";
-import { Fraction } from "../../fraction.js";
+import { Expression } from '../expression/index.js';
+import { Fraction } from '../../fraction.js';
+import { Term } from '../term/index.js';
 //# sourceMappingURL=polynomial.d.ts.map
