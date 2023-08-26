@@ -2,10 +2,16 @@ import {
 	RationalTerm,
 	castExpression,
 	solveLinear,
-	solveLinearInequality,
 	solveQuadratic,
 	discriminant,
 } from '../../algebra/index.js';
+import {
+	oppositeSign,
+	twoRoots,
+	threeRoots,
+	fourRoots,
+} from './utils/index.js';
+import { solveLinearInequality } from './solveInequality.js';
 
 /** @typedef {import("../../core/index.js").Fraction} Fraction */
 
@@ -27,7 +33,7 @@ export function solveRationalInequality(lhs, rhs = 0, sign = '<') {
 			if (den.leadingCoefficient().is.negative()) {
 				sign = oppositeSign(sign);
 			}
-			return [solveLinearInequality(num, { sign })];
+			return [solveLinearInequality(num, sign)];
 		}
 	} else if (numDegree === 1 && denDegree === 1) {
 		let x1 = solveLinear(num);
@@ -61,7 +67,7 @@ export function solveRationalInequality(lhs, rhs = 0, sign = '<') {
 			sign = oppositeSign(sign);
 		}
 		if (disc.is.negative()) {
-			return [solveLinearInequality(linear, { sign })];
+			return [solveLinearInequality(linear, sign)];
 		}
 		const [x1, x2] = solveQuadratic(quadratic);
 		const x3 = solveLinear(linear);
@@ -98,77 +104,4 @@ export function solveRationalInequality(lhs, rhs = 0, sign = '<') {
 		}
 	}
 	throw new Error('no supported solution');
-}
-
-/**
- * opposite sign
- * @param {'<'|'>'} sign
- * @returns {'>'|'<'}
- */
-function oppositeSign(sign) {
-	return sign === '<' ? '>' : '<';
-}
-
-/**
- * @param {Fraction} x1
- * @param {Fraction} x2
- * @param {'<'|'>'} sign
- * @return {string[]}
- */
-function twoRoots(x1, x2, sign) {
-	if (x1.is.equalTo(x2)) {
-		throw new Error('no supported solution: repeated roots found');
-	}
-	[x1, x2] = [x1, x2].sort((a, b) => a.minus(b).sign());
-	if (sign === '<') {
-		return [`${x1} < x < ${x2}`];
-	} else {
-		return [`x < ${x1}`, `x > ${x2}`];
-	}
-}
-
-/**
- * @param {Fraction} x1
- * @param {Fraction} x2
- * @param {Fraction} x3
- * @param {'<'|'>'} sign
- * @return {string[]}
- */
-function threeRoots(x1, x2, x3, sign) {
-	if (x1.is.equalTo(x2) || x1.is.equalTo(x3) || x2.is.equalTo(x3)) {
-		throw new Error('no supported solution: repeated roots found');
-	}
-	[x1, x2, x3] = [x1, x2, x3].sort((a, b) => a.minus(b).sign());
-	if (sign === '<') {
-		return [`x < ${x1}`, `${x2} < x < ${x3}`];
-	} else {
-		return [`${x1} < x < ${x2}`, `x > ${x3}`];
-	}
-}
-
-/**
- * @param {Fraction} x1
- * @param {Fraction} x2
- * @param {Fraction} x3
- * @param {Fraction} x4
- * @param {'<'|'>'} sign
- * @return {string[]}
- */
-function fourRoots(x1, x2, x3, x4, sign) {
-	if (
-		x1.is.equalTo(x2) ||
-		x1.is.equalTo(x3) ||
-		x1.is.equalTo(x4) ||
-		x2.is.equalTo(x3) ||
-		x2.is.equalTo(x4) ||
-		x3.is.equalTo(x4)
-	) {
-		throw new Error('no supported solution: repeated roots found');
-	}
-	[x1, x2, x3, x4] = [x1, x2, x3, x4].sort((a, b) => a.minus(b).sign());
-	if (sign === '<') {
-		return [`${x1} < x < ${x2}`, `${x3} < x < ${x4}`];
-	} else {
-		return [`x < ${x1}`, `${x2} < x < ${x3}`, `x > ${x4}`];
-	}
 }

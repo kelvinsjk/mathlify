@@ -1,0 +1,1 @@
+{"version":3,"file":"solveInequality.d.ts","sourceRoot":"","sources":["../../../src/working/inequality/solveInequality.js"],"names":[],"mappings":"AAQA,iEAAiE;AACjE,qEAAqE;AAErE;;;;;;GAMG;AACH,2CALW,UAAU,GAAC,UAAU,mMAGnB,MAAM,CAMlB;AAED;;;;;;GAMG;AACH,8CALW,UAAU,GAAC,UAAU,mMAGnB,MAAM,EAAE,CAMpB;uBA3Ba,OAAO,qBAAqB,EAAE,QAAQ;yBACtC,OAAO,qBAAqB,EAAE,UAAU;2BAJ3B,qBAAqB"}

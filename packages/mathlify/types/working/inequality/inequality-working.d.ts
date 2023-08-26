@@ -18,7 +18,7 @@ export class InequalityWorking {
      */
     constructor(lhs: Expression | number | Fraction | string | Term | (number | Fraction | string | Term)[], rhs?: string | number | Fraction | Term | Expression | (string | number | Fraction | Term)[] | undefined, options?: {
         aligned?: boolean | undefined;
-        sign?: "<" | ">" | "leq" | "geq" | "\\leq" | "\\geq" | undefined;
+        sign?: "<" | ">" | "\\geq" | "\\leq" | "geq" | "leq" | undefined;
     } | undefined);
     /** @type {Expression} */
     lhs: Expression;
@@ -140,6 +140,18 @@ export class InequalityWorking {
         intertext: string;
     } | undefined): InequalityWorking;
     /**
+     * expand (only if there is lhs/rhs has singleton expression that is an expansion term)
+     * @param {{intertext?: string, side?: 'lhs'|'rhs'|'both'}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
+     * defaults to try to expand both
+     * the equal sign will be push to the right by the length of the intertext
+     * @returns {InequalityWorking} - a reference to this equation
+     * WARNING: mutates current instance
+     */
+    expand(options?: {
+        intertext?: string | undefined;
+        side?: "both" | "lhs" | "rhs" | undefined;
+    } | undefined): InequalityWorking;
+    /**
      * sets the aligned state
      * @param {boolean} [aligned] - whether or not the steps are to be aligned. if not provided, defaults to toggling between states
      * @returns {InequalityWorking} - a reference to this equation
@@ -155,7 +167,7 @@ export class InequalityWorking {
      * WARNING: mutates current instance
      */
     moveTerm(i: number, options?: {
-        from?: "rhs" | "lhs" | undefined;
+        from?: "lhs" | "rhs" | undefined;
         intertext?: string | undefined;
     } | undefined): InequalityWorking;
     /**

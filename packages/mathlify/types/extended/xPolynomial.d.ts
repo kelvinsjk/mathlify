@@ -48,8 +48,8 @@ export class xPolynomial extends Expression {
      * @returns {xPolynomial} - the difference this minus x
      */
     minus(x: xPolynomial | Polynomial | number | Fraction): xPolynomial;
-    times(x: Term | Expression | string): Expression;
     times(x: xPolynomial | Polynomial | number | Fraction): xPolynomial;
+    times(x: Term | Expression | string): Expression;
     /**
      * Polynomial division (by a constant)
      * @param {number|Fraction} x - the constant to divided by
@@ -79,6 +79,16 @@ export class xPolynomial extends Expression {
      * @returns {Expression} - the new Expression
      */
     subIntoVariable(x: number | Fraction): Expression;
+    /**
+     * replace x with a polynomial
+     * @param {xPolynomial|Polynomial|string|(number|Fraction)[]} x - polynomial to replace x with
+     * @param {{ascending?: boolean, variable?: string}} [options] - options for when a coefficient array is given default to {ascending: false, variable: "x"}
+     * @returns {xPolynomial}
+     */
+    replaceXWith(x: xPolynomial | Polynomial | string | (number | Fraction)[], options?: {
+        ascending?: boolean | undefined;
+        variable?: string | undefined;
+    } | undefined): xPolynomial;
     /**
      * quadratic discriminant
      * @returns {Expression} - the discriminant as an expression

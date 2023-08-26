@@ -8,5 +8,5 @@
  */
 export function solveRationalInequality(lhs: RationalTerm, rhs?: number | import("../../core/fraction.js").Fraction | RationalTerm | undefined, sign?: "<" | ">" | undefined): string[];
 export type Fraction = import("../../core/index.js").Fraction;
-import { RationalTerm } from "../../algebra/index.js";
+import { RationalTerm } from '../../algebra/index.js';
 //# sourceMappingURL=solveRationalInequality.d.ts.map

@@ -71,6 +71,16 @@ export class Polynomial extends Expression {
         [key: string]: number | Fraction;
     }): Expression;
     /**
+     * replace x with a polynomial
+     * @param {Polynomial|string|(number|Fraction)[]} x - polynomial to replace x with
+     * @param {{ascending?: boolean, variable?: string}} [options] - options for when a coefficient array is given default to {ascending: false, variable: "x"}
+     * @returns {Polynomial}
+     */
+    replaceXWith(x: Polynomial | string | (number | Fraction)[], options?: {
+        ascending?: boolean | undefined;
+        variable?: string | undefined;
+    } | undefined): Polynomial;
+    /**
      * leading coefficient
      * @returns {Fraction} - the leading coefficient
      */

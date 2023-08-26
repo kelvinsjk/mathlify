@@ -12,12 +12,13 @@ import { ExpansionTerm } from '../term/index.js';
  * solve quadratic polynomial/equations
  * @param {Polynomial|number|Fraction|Expression} poly - the polynomial to be solved/left hand side of the equation
  * @param {Polynomial|number|Fraction|Expression} [rhs] - the right hand side of the equation (defaults to 0)
+ * @param {{variable?: string}} [options] - options to specify the variable
  * @returns {[Fraction, Fraction]} - the solution [x1, x2], where x1 \\leq x2
  * WARNING: only works for rational roots. use solveQuadraticSurd or solveQuadraticComplex for other cases
  */
-export function solveQuadratic(poly, rhs = 0) {
-	const lhsPoly = castToPoly(poly);
-	const rhsPoly = castToPoly(rhs);
+export function solveQuadratic(poly, rhs = 0, options) {
+	const lhsPoly = castToPoly(poly, options);
+	const rhsPoly = castToPoly(rhs, options);
 	const newPoly = lhsPoly.minus(rhsPoly);
 	if (newPoly.degree !== 2) {
 		throw new Error(
@@ -46,15 +47,16 @@ export function solveQuadratic(poly, rhs = 0) {
 /**
  * factorize quadratic
  * @param {Polynomial|Expression} poly
+ * @param {{variable?: string}} [options] - options to specify the variable
  * @returns {ExpansionTerm} - the factorized form
  */
-export function factorizeQuadratic(poly) {
-	const newPoly = castToPoly(poly);
+export function factorizeQuadratic(poly, options) {
+	const newPoly = castToPoly(poly, options);
 	if (newPoly.degree !== 2) {
 		throw new Error(`${poly} is not a quadratic polynomial`);
 	}
 	try {
-		const [x1, x2] = solveQuadratic(newPoly);
+		const [x1, x2] = solveQuadratic(newPoly, 0, options);
 		// (a1 x - b1)(a2 x - b2)
 		const a1 = x1.den;
 		const b1 = x1.negative().num;

@@ -116,16 +116,16 @@ export class xPolynomial extends Expression {
 	/**
 	 * @overload
 	 * Polynomial multiplication
+	 * @param {xPolynomial|Polynomial|number|Fraction} x - polynomial to be multiplied
+	 * @returns {xPolynomial} - the product
+	 */
+	/**
+	 * @overload
+	 * Polynomial multiplication
 	 * @param {Term|Expression|string} x - polynomial to be multiplied
 	 * @returns {Expression} - the product
 	 */
 	/**
-  /**
-   * @overload
-   * Polynomial multiplication
-   * @param {xPolynomial|Polynomial|number|Fraction} x - polynomial to be multiplied
-   * @returns {xPolynomial} - the product
-   */
 	/**
 	 * Polynomial multiplication
 	 * @param {xPolynomial|Polynomial|number|Fraction|Term|Expression|string} x - polynomial to be multiplied
@@ -238,6 +238,46 @@ export class xPolynomial extends Expression {
 		return this.coeffs.reduce((prev, coeff, i) => {
 			return prev.plus(coeff.times(xFrac.pow(i)));
 		}, new Expression(0));
+	}
+
+	/**
+	 * replace x with a polynomial
+	 * @param {xPolynomial|Polynomial|string|(number|Fraction)[]} x - polynomial to replace x with
+	 * @param {{ascending?: boolean, variable?: string}} [options] - options for when a coefficient array is given default to {ascending: false, variable: "x"}
+	 * @returns {xPolynomial}
+	 */
+	replaceXWith(x, options) {
+		/** @type {xPolynomial} */
+		let xPoly;
+		if (typeof x === 'string') {
+			xPoly = new xPolynomial(1, { variable: x });
+		} else if (Array.isArray(x)) {
+			xPoly = new xPolynomial(x, options);
+		} else if (x instanceof Polynomial) {
+			const newCoeffs = [...x.coeffs];
+			if (!x.ascending) {
+				newCoeffs.reverse();
+			}
+			xPoly = new xPolynomial(x, {
+				ascending: x.ascending,
+				variable: x.variable,
+			});
+		} else {
+			xPoly = x;
+		}
+		/** @type {Expression[]} */
+		const startingArray = [];
+		const finalArray = this.coeffs.reduce((prev, coeff, i) => {
+			const coeffPoly = new xPolynomial([coeff]);
+			return addArrays(prev, xPoly.pow(i).times(coeffPoly).coeffs);
+		}, startingArray);
+		if (!this.ascending) {
+			finalArray.reverse();
+		}
+		return new xPolynomial(finalArray, {
+			variable: xPoly.variable,
+			ascending: this.ascending,
+		});
 	}
 
 	/**

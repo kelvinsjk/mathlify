@@ -192,15 +192,17 @@ export class EquationWorking {
 
 	/**
 	 * factorize the lhs
-	 * @param {{intertext: string}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
+	 * @param {{intertext?: string, variable?: string}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
+	 * variable defaults to 'x'
 	 * @returns {[Fraction, Fraction]} - the roots of the equation
 	 * WARNING: mutates the current instance. the lhs/rhs is the latest after the method
 	 *
 	 */
 	factorizeQuadratic(options) {
 		insertIntertext(this, options);
-		const roots = solveQuadratic(this.lhs, this.rhs);
-		this.lhs = new Expression(factorizeQuadratic(this.lhs));
+		const x = options?.variable ?? 'x';
+		const roots = solveQuadratic(this.lhs, this.rhs, { variable: x });
+		this.lhs = new Expression(factorizeQuadratic(this.lhs, { variable: x }));
 		this.lhsArray.push(this.lhs);
 		this.rhsArray.push(this.rhs);
 		return roots;

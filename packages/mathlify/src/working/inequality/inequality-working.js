@@ -5,14 +5,14 @@
 
 import { Fraction, Term, Expression } from '../../core/index.js';
 import {
+	ExpansionTerm,
 	RationalTerm,
 	// TODO: handle PowerTerm and ExpansionTerm
 	// PowerTerm, ExpansionTerm
 } from '../../algebra/term/index.js';
-import { factorizeQuadratic, solveQuadratic } from '../../algebra/index.js';
-
-//TODO: move all x's to right method
-//TODO: make rhs 0 method
+import { factorizeQuadratic } from '../../algebra/index.js';
+import { oppositeSign } from './utils/oppositeSign.js';
+import { solveQuadraticInequality } from './solveInequality.js';
 
 /**
  * General Equation class representing LHS = RHS, with typesetting to output a series of steps to
@@ -214,18 +214,18 @@ export class InequalityWorking {
 	/**
 	 * factorize the lhs
 	 * @param {{intertext: string}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
-	 * @returns {[Fraction, Fraction]} - the roots of the equation
+	 * @returns {string[]} - the roots of the equation
 	 * WARNING: mutates the current instance. the lhs/rhs is the latest after the method
 	 *
 	 */
 	factorizeQuadratic(options) {
 		//TODO: return quadratic inequality solution
 		insertIntertext(this, options);
-		const roots = solveQuadratic(this.lhs, this.rhs);
+		const intervals = solveQuadraticInequality(this.lhs, this.sign, this.rhs);
 		this.lhs = new Expression(factorizeQuadratic(this.lhs));
 		this.lhsArray.push(this.lhs);
 		this.rhsArray.push(this.rhs);
-		return roots;
+		return intervals;
 	}
 
 	//! Methods for RationalTerm
@@ -345,6 +345,37 @@ export class InequalityWorking {
 	}
 
 	/**
+	 * expand (only if there is lhs/rhs has singleton expression that is an expansion term)
+	 * @param {{intertext?: string, side?: 'lhs'|'rhs'|'both'}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
+	 * defaults to try to expand both
+	 * the equal sign will be push to the right by the length of the intertext
+	 * @returns {InequalityWorking} - a reference to this equation
+	 * WARNING: mutates current instance
+	 */
+	expand(options) {
+		insertIntertext(this, options);
+		if (options?.side !== 'rhs') {
+			const expansionTerm = this.lhs.terms[0];
+			if (expansionTerm instanceof ExpansionTerm) {
+				this.lhs = expansionTerm.expand();
+				this.lhsArray.push(this.lhs);
+			}
+		} else {
+			this.lhsArray.push(this.lhs);
+		}
+		if (options?.side !== 'lhs') {
+			const expansionTerm = this.rhs.terms[0];
+			if (expansionTerm instanceof ExpansionTerm) {
+				this.rhs = expansionTerm.expand();
+				this.rhsArray.push(this.rhs);
+			}
+		} else {
+			this.rhsArray.push(this.rhs);
+		}
+		return this;
+	}
+
+	/**
 	 * sets the aligned state
 	 * @param {boolean} [aligned] - whether or not the steps are to be aligned. if not provided, defaults to toggling between states
 	 * @returns {InequalityWorking} - a reference to this equation
@@ -444,21 +475,4 @@ function insertIntertext(equation, options) {
 	if (!intertext) return;
 	equation.lhsArray.push(intertext);
 	equation.rhsArray.push('');
-}
-
-/**
- * opposite sign
- * @param {'<'|'>'|'\\geq'|'\\leq'} sign
- * @returns {'<'|'>'|'\\geq'|'\\leq'}
- */
-function oppositeSign(sign) {
-	/** @type {Map<'<'|'>'|'\\geq'|'\\leq', '<'|'>'|'\\geq'|'\\leq'>}} */
-	const signMap = new Map([
-		['<', '>'],
-		['>', '<'],
-		['\\geq', '\\leq'],
-		['\\leq', '\\geq'],
-	]);
-	const oppSign = /**@type {'<'|'>'|'\\geq'|'\\leq'} */ (signMap.get(sign));
-	return oppSign;
 }

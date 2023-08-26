@@ -8,7 +8,6 @@ export {
 	SLE,
 	SLENumerical,
 	solveLinear,
-	solveLinearInequality,
 	//! Quadratics
 	discriminant,
 	solveQuadratic,
@@ -43,4 +42,6 @@ export {
 	InequalityWorking,
 	RationalInequalityWorking,
 	solveRationalInequality,
+	solveLinearInequality,
+	solveQuadraticInequality,
 } from './working/index.js';

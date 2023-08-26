@@ -5,16 +5,22 @@
  * solve quadratic polynomial/equations
  * @param {Polynomial|number|Fraction|Expression} poly - the polynomial to be solved/left hand side of the equation
  * @param {Polynomial|number|Fraction|Expression} [rhs] - the right hand side of the equation (defaults to 0)
+ * @param {{variable?: string}} [options] - options to specify the variable
  * @returns {[Fraction, Fraction]} - the solution [x1, x2], where x1 \\leq x2
  * WARNING: only works for rational roots. use solveQuadraticSurd or solveQuadraticComplex for other cases
  */
-export function solveQuadratic(poly: Polynomial | number | Fraction | Expression, rhs?: number | import("../../core/fraction.js").Fraction | Expression | Polynomial | undefined): [Fraction, Fraction];
+export function solveQuadratic(poly: Polynomial | number | Fraction | Expression, rhs?: number | import("../../core/fraction.js").Fraction | Expression | Polynomial | undefined, options?: {
+    variable?: string | undefined;
+} | undefined): [Fraction, Fraction];
 /**
  * factorize quadratic
  * @param {Polynomial|Expression} poly
+ * @param {{variable?: string}} [options] - options to specify the variable
  * @returns {ExpansionTerm} - the factorized form
  */
-export function factorizeQuadratic(poly: Polynomial | Expression): ExpansionTerm;
+export function factorizeQuadratic(poly: Polynomial | Expression, options?: {
+    variable?: string | undefined;
+} | undefined): ExpansionTerm;
 /**
  * solve quadratic polynomial/equations
  * @param {Polynomial|number|Fraction|Expression} poly - the polynomial to be solved/left hand side of the equation
