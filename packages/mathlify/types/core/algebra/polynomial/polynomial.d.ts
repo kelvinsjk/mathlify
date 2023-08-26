@@ -30,11 +30,6 @@ export class Polynomial extends Expression {
     degree: number;
     /** @type {"polynomial"} */
     kind: "polynomial";
-    /**
-     * Polynomial addition
-     * @param {Polynomial|number|Fraction} x - the polynomial to be added
-     * @returns {Polynomial} - the sum of the two
-     */
     plus(x: Polynomial | number | Fraction): Polynomial;
     /**
      * negative
@@ -86,7 +81,7 @@ export class Polynomial extends Expression {
      */
     leadingCoefficient(): Fraction;
 }
-import { Expression } from '../expression/index.js';
-import { Fraction } from '../../fraction.js';
-import { Term } from '../term/index.js';
+import { Expression } from "../expression/index.js";
+import { Fraction } from "../../fraction.js";
+import { Term } from "../term/index.js";
 //# sourceMappingURL=polynomial.d.ts.map

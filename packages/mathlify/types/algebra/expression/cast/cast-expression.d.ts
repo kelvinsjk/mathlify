@@ -4,6 +4,6 @@ export namespace castExpression {
         variable?: string | undefined;
     } | undefined): Polynomial;
 }
-import { Expression } from "../../../core/index.js";
-import { Polynomial } from "../../../core/index.js";
+import { Expression } from '../../../core/index.js';
+import { Polynomial } from '../../../core/index.js';
 //# sourceMappingURL=cast-expression.d.ts.map

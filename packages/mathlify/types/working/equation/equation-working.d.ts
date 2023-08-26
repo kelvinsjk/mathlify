@@ -31,75 +31,82 @@ export class EquationWorking {
     /**
      * addition
      * @param {number|Fraction|string|Term|Expression} x - the term/expression to be added to both sides
-     * @param {{intertext: string}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
+     * @param {{intertext?: string, show?: boolean}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
      * the equal sign will be push to the right by the length of the intertext
      * @returns {EquationWorking} - a reference to this equation
      * WARNING: mutates the current instance. the lhs/rhs is the latest after the method
      */
     plus(x: number | Fraction | string | Term | Expression, options?: {
-        intertext: string;
+        intertext?: string | undefined;
+        show?: boolean | undefined;
     } | undefined): EquationWorking;
     /**
      * subtraction
      * @param {number|Fraction|string|Term|Expression} x - the term/expression to be subtracted from both sides
-     * @param {{intertext: string}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
+     * @param {{intertext?: string, show?: boolean}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
      * the equal sign will be push to the right by the length of the intertext
      * @returns {EquationWorking} - a reference to this equation
      * WARNING: mutates the current instance. the lhs/rhs is the latest after the method
      */
     minus(x: number | Fraction | string | Term | Expression, options?: {
-        intertext: string;
+        intertext?: string | undefined;
+        show?: boolean | undefined;
     } | undefined): EquationWorking;
     /**
      * multiplication
      * @param {number|Fraction|string|Term|Expression} x - the term/expression to be multiplied from both sides
-     * @param {{intertext: string}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
+     * @param {{intertext?: string, show?: boolean}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
      * the equal sign will be push to the right by the length of the intertext
      * @returns {EquationWorking} - a reference to this equation
      * WARNING: mutates the current instance. the lhs/rhs is the latest after the method
      */
     times(x: number | Fraction | string | Term | Expression, options?: {
-        intertext: string;
+        intertext?: string | undefined;
+        show?: boolean | undefined;
     } | undefined): EquationWorking;
     /**
      * negative
-     * @param {{intertext: string}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
+     * @param {{intertext?: string, show?: boolean}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
      * the equal sign will be push to the right by the length of the intertext
      * @returns {EquationWorking} - a reference to this equation
      * WARNING: mutates the current instance. the lhs/rhs is the latest after the method
      */
     negative(options?: {
-        intertext: string;
+        intertext?: string | undefined;
+        show?: boolean | undefined;
     } | undefined): EquationWorking;
     /**
      * division
      * @param {number|Fraction|string|Term} x - the term to be divided from both sides
-     * @param {{intertext: string}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
+     * @param {{intertext?: string, show?: boolean}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
      * the equal sign will be push to the right by the length of the intertext
      * @returns {EquationWorking} - a reference to this equation
      * WARNING: mutates the current instance. the lhs/rhs is the latest after the method
      */
     divide(x: number | Fraction | string | Term, options?: {
-        intertext: string;
+        intertext?: string | undefined;
+        show?: boolean | undefined;
     } | undefined): EquationWorking;
     /**
      * swaps lhs and rhs
-     * @param {{intertext: string}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
+     * @param {{intertext?: string, show?: boolean}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
      * the equal sign will be push to the right by the length of the intertext
      * @returns {EquationWorking} - a reference to this equation
      */
     swap(options?: {
-        intertext: string;
+        intertext?: string | undefined;
+        show?: boolean | undefined;
     } | undefined): EquationWorking;
     /**
      * make rhs 0
-     * @param {{intertext?: string, working?: boolean}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
+     * @param {{intertext?: string, working?: boolean, show?: boolean}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
      * @returns {EquationWorking} - a reference to this equation
      * WARNING: mutates the current instance. the lhs/rhs is the latest after the method
      */
     rhsZero(options?: {
         intertext?: string | undefined;
         working?: boolean | undefined;
+        show?: boolean | undefined;
     } | undefined): EquationWorking;
     /**
      * factorize the lhs
@@ -157,11 +164,25 @@ export class EquationWorking {
         intertext?: string | undefined;
     } | undefined): EquationWorking;
     /**
+     * @param {{side?: 'lhs'|'rhs'|'both', intertext?: string, variable?: string}} [options] - options object defaulting to `{side: "lhs"}`. intertext for inserting text between steps.
+     */
+    castToPoly(options?: {
+        side?: "both" | "lhs" | "rhs" | undefined;
+        intertext?: string | undefined;
+        variable?: string | undefined;
+    } | undefined): void;
+    /**
      * returns a string representation of the sequence of steps to be fed into a LaTeX align/align* / gather/gather* environment
      */
     toString(): string | Expression;
+    /**
+     * clears the arrays, leaving just the final line
+     * @returns {EquationWorking} - a reference to this equation
+     * WARNING: mutates current instance
+     */
+    clear(): EquationWorking;
 }
-import { Expression } from '../../core/index.js';
-import { Fraction } from '../../core/index.js';
-import { Term } from '../../core/index.js';
+import { Expression } from "../../core/index.js";
+import { Fraction } from "../../core/index.js";
+import { Term } from "../../core/index.js";
 //# sourceMappingURL=equation-working.d.ts.map

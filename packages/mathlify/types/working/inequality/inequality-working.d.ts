@@ -110,14 +110,15 @@ export class InequalityWorking {
     } | undefined): InequalityWorking;
     /**
      * factorize the lhs
-     * @param {{intertext: string}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
-     * @returns {[Fraction, Fraction]} - the roots of the equation
+     * @param {{intertext?: string, variable?: string}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
+     * @returns {string[]} - the roots of the equation
      * WARNING: mutates the current instance. the lhs/rhs is the latest after the method
      *
      */
     factorizeQuadratic(options?: {
-        intertext: string;
-    } | undefined): [Fraction, Fraction];
+        intertext?: string | undefined;
+        variable?: string | undefined;
+    } | undefined): string[];
     /**
      * combines rational terms into a single rational term
      * @param {{intertext: string}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
@@ -175,7 +176,7 @@ export class InequalityWorking {
      */
     toString(): string | Expression;
 }
-import { Expression } from '../../core/index.js';
-import { Fraction } from '../../core/index.js';
-import { Term } from '../../core/index.js';
+import { Expression } from "../../core/index.js";
+import { Fraction } from "../../core/index.js";
+import { Term } from "../../core/index.js";
 //# sourceMappingURL=inequality-working.d.ts.map
