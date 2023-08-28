@@ -122,6 +122,6 @@ export class Expression {
      */
     toString(): string;
 }
-import { Fraction } from '../../fraction.js';
-import { Term } from '../term/index.js';
+import { Fraction } from "../../fraction.js";
+import { Term } from "../term/index.js";
 //# sourceMappingURL=expression.d.ts.map

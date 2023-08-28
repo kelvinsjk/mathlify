@@ -78,6 +78,11 @@ export class Term {
      * */
     negative(): Term;
     /**
+     * absolute value
+     * @returns {Term} the absolute value of the term
+     */
+    abs(): Term;
+    /**
      * sub in many
      * @param {{[key: string]: number|Fraction}|number|Fraction} variableToValue - the values to sub in with the key being the variable signature.
      * If a number of Fraction is received, we assume that the variable is 'x'

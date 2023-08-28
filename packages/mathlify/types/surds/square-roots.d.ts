@@ -38,22 +38,14 @@ export class SquareRoot extends Term {
      * @returns {SquareRoot} - the Expansion Term but with coeff = 1
      */
     resetCoeff(): SquareRoot;
-    /**
-     * product
-     * @param {number|Fraction|SquareRoot} x - the multiplicand
-     * @returns {SquareRoot} - the product
-     */
+    times(x: string | Term): Term;
     times(x: number | Fraction | SquareRoot): SquareRoot;
     /**
      * reciprocal
      * @returns {SquareRoot} - the reciprocal
      */
     reciprocal(): SquareRoot;
-    /**
-     * quotient
-     * @param {number|Fraction|SquareRoot} x - the divisor
-     * @returns {SquareRoot} - the quotient this divided by x
-     */
+    divide(x: string | Term): Term;
     divide(x: number | Fraction | SquareRoot): SquareRoot;
     /**
      * power

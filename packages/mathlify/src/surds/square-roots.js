@@ -67,11 +67,29 @@ export class SquareRoot extends Term {
   }
 
   /**
+   * @overload
+   * product
+   * @param {string|Term} x - the multiplicand
+   * @returns {Term} - the product
+   */
+  /**
+   * @overload
    * product
    * @param {number|Fraction|SquareRoot} x - the multiplicand
    * @returns {SquareRoot} - the product
    */
+  /**
+   * product
+   * @param {number|Fraction|SquareRoot|string|Term} x - the other term to multiply with
+   * @returns {Term|SquareRoot} the product of the two terms
+   */
   times(x) {
+    if (
+      typeof x === "string" ||
+      (x instanceof Term && !(x instanceof SquareRoot))
+    ) {
+      return super.times(x);
+    }
     const newRadicand =
       x instanceof SquareRoot ? this.radicand.times(x.radicand) : this.radicand;
     const coeff =
@@ -90,11 +108,29 @@ export class SquareRoot extends Term {
   }
 
   /**
-   * quotient
-   * @param {number|Fraction|SquareRoot} x - the divisor
-   * @returns {SquareRoot} - the quotient this divided by x
+   * @overload
+   * division
+   * @param {string|Term} x - the other term to divide with
+   * @returns {Term} - the quotient
+   */
+  /**
+   * @overload
+   * division
+   * @param {number|Fraction|SquareRoot} x - the other term to divide with
+   * @returns {SquareRoot} - the quotient
+   */
+  /**
+   * term division
+   * @param {number|Fraction|string|Term} x - the other term to divide with
+   * @returns {Term|SquareRoot} the quotient of the two terms
    */
   divide(x) {
+    if (
+      typeof x === "string" ||
+      (x instanceof Term && !(x instanceof SquareRoot))
+    ) {
+      return super.times(x);
+    }
     if (!(x instanceof SquareRoot)) {
       x = new SquareRoot(1, { coeff: x });
     }

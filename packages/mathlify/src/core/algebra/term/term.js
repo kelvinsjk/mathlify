@@ -169,6 +169,17 @@ export class Term {
   }
 
   /**
+   * absolute value
+   * @returns {Term} the absolute value of the term
+   */
+  abs() {
+    if (this.coeff.is.negative()) {
+      return this.negative();
+    }
+    return this;
+  }
+
+  /**
    * sub in many
    * @param {{[key: string]: number|Fraction}|number|Fraction} variableToValue - the values to sub in with the key being the variable signature.
    * If a number of Fraction is received, we assume that the variable is 'x'
