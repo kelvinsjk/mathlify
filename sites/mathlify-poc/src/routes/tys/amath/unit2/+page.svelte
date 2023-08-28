@@ -17,8 +17,9 @@
 		ExpressionWorking,
 		RationalTerm,
 		solveLinear,
+		factorizeExpression,
 	} from 'mathlify';
-	import { align, alignStar, display, eqn, gatherStar, math, strong } from 'mathlifier';
+	import { align, alignStar, display, eqn, gatherStar, math, newline, strong } from 'mathlifier';
 
 	const title = 'Unit 2: Surds';
 
@@ -142,7 +143,7 @@
 		// part a
 		(() => {
 			const root = new Expression(3, sqrt5.times(2));
-			const body = `Given that ${root} is a roots
+			const body = `Given that ${math(`${root}`)} is a root
 				of the equation ${math(`x^2 + ax + b = 0,`)}
 				where ${math(`a`)} and ${math(`b`)} are integers,
 				find the value of ${math(`a`)} and ${math(`b.`)}
@@ -207,113 +208,70 @@
 			parts.push({ body });
 			solParts.push({ body: solB });
 		})();
-		// part c
-		(() => {
-			// question
-			const line = new xPolynomial([m, c1]);
-			const body = `Find the other value of ${math(`a`)}
-				for which the line ${math(`y = ${line}`)}
-				is a tangent to the curve.
-			`;
-			const working1 = new EquationWorking(curve, line);
-			working1.rhsZero();
-			const poly = working1.lhs as xPolynomial;
-			const [c, b, a] = poly.coeffs;
-			const discriminant = poly.quadraticDiscriminant();
-			const working2 = new EquationWorking(discriminant);
-			working2.divide(-4, { show: false });
-			working2.castToPoly({ variable: 'a' });
-			const [ans1, ans2] = working2.factorizeQuadratic({ variable: 'a' });
-			const sol = `Equating the equations of the line and curve,
-				${gatherStar(`${working1}`)}
-				For the line to be a tangent to the curve,
-				${gatherStar(`\\textrm{Discriminant = 0}
-					\\\\ \\left(${b}\\right)^2 - 4 \\left(${a}\\right) \\left(${c}\\right) = 0
-					\\\\ ${working2}
-					\\\\ a = ${ans1} \\; \\blacksquare \\; \\textrm{ or } \\; a = ${ans2} \\textrm{ (rejected)} \\; \\blacksquare
-				`)}
-			`;
-			parts.push({ body });
-			solParts.push({ body: sol });
-		})();
 		questions.push({ body, parts });
 		answers.push({ parts: solParts });
 	})();
 
-	//! Question 5: 2018 P2 Q9
+	//! Question 5: 2017 P1 Q7
 	(() => {
 		const parts: QuestionType['parts'] = [];
 		const solParts: QuestionType['parts'] = [];
+		const sqrt3 = new SquareRoot(3);
+		const areaExp  = new Expression(9, sqrt3);
+		const quarter = new Fraction(1,4);
+		const area = new ExpansionTerm(quarter, areaExp);
+		const AB = new Expression(sqrt3, 1);
+		const angle = `60^{\\circ}`;
 		const k = 'k';
-		const a = 2,
-			b = new Expression(k, 2),
-			c = k;
-		const curve = new xPolynomial([a, b, c]);
-		const body = `The equation of a curve is
-			${math(`y = ${curve},`)} where ${math(k)} is
-			a constant.
+		const body = `The triangle
+			${math(`ABC`)} is such that the area is ${math(`${area} \\textrm{cm}^2,`)}
+			the length of ${math(`AB`)} is
+			${math(`\\left(${AB}\\right) \\textrm{cm}`)}
+			and angle ${math(`BAC`)}
+			is ${math(`${angle}.`)}
+			${strong(`Without using a calculator,`)}
+			find
 		`;
+		let AC: Expression;
 		// part a
 		(() => {
-			const m = 19,
-				c1 = -13;
-			const k = 5;
-			const line = new Polynomial([m, c1]);
-			const quadratic = curve.subIntoCoeffs({ k });
-			const body = `In the case where ${math(`k = ${k},`)}
-				show that the line
-				${math(`y=${line}`)}
-				is a tangent to the curve
-				and find the coordinates of the point of contact.
+			const body = `the length, in cm, of
+				${math(`AC`)} in the form
+				${math(`a + b${sqrt3},`)}
+				where ${math(`a`)} and ${math(`b`)} are integers,
 			`;
-			const working = new EquationWorking(quadratic, line);
-			working.rhsZero();
-			working.divide(2);
-			const poly = working.lhs as Polynomial;
-			const [c, b, a] = poly.coeffs;
-
-			let sol = `Substituting ${math(`k = ${k}`)}
-				and equating the equations of the line and curve,
-				${gatherStar(`${working}`)}
-				${alignStar(`& \\textrm{Discriminant}
-					\\\\ & = b^2 - 4 ac 
-					\\\\ &= ${b}^2 - 4(${a})(${c})
-					\\\\ &= ${b.square()} - ${a.times(4).times(c)}
-					\\\\ &= 0
-				`)}
-				Hence the line is a tangent to the curve. ${math(`\\blacksquare`)}
-			`;
-			working.clear();
-			const [x] = working.factorizeQuadratic();
-			sol += gatherStar(`${working} \\\\ x = ${x}`);
-			const y = line.subIn(x);
-			sol += `When ${math(`x=${x},`)}
-				${alignStar(`y &= ${m}(${x}) ${c1}
-					\\\\ &= ${y}
-				`)}
-				Coordinates of point of contact: ${math(`(${x}, ${y}) \\; \\blacksquare`)}
-			`;
+			const half = new Fraction(1,2);
+			const divisor = AB.times(sqrt3);
+			let sol = `${gatherStar(`${half} ab \\sin C = \\textrm{Area}
+				\\\\ ${half} \\left( ${AB} \\right) AC \\sin ${angle} = ${area}
+				\\\\ ${half} \\left( ${AB} \\right) AC \\sin \\frac{${sqrt3}}{2} = ${area}
+				\\\\ ${quarter} \\left( ${AB} \\right) ${sqrt3} \\; AC = ${area}
+				\\\\ \\left( ${divisor} \\right) AC = ${areaExp}
+			`)}`;
+			const working = new ExpressionWorking(new RationalTerm(areaExp, divisor), {equalStart: true});
+			working.rationalize();
+			sol += `${alignStar(`AC ${working}
+			`)}`;
+			AC = working.exp as Expression;
 			parts.push({ body });
 			solParts.push({ body: sol });
 		})();
 		// part b
 		(() => {
-			const body = `Explain why there is only one value of
-				${math(k)} for which ${math(`y`)}
-				cannot be negative and state this value.
+			const body = `an expression, in ${math(`\\textrm{cm}^2`)} for
+				${math(`BC^2`)} in the form
+				${math(`c + d${sqrt3},`)}
+				where ${math(`c`)} and ${math(`d`)} are integers.
 			`;
-			const d = curve.quadraticDiscriminant();
-			const [kAns] = solveQuadratic(d, 0, { variable: k });
-			const sol = `${alignStar(`& \\textrm{Discriminant}
-					\\\\ & = b^2 - 4 ac
-					\\\\ &= (${b})^2 - 4(${a})(${c})
-					\\\\ &= ${b.square()} - ${new Term(a).times(4).times(c)}
-					\\\\ &= ${d}
-					\\\\ &= ${factorizeQuadratic(d, { variable: 'k' })}
+			const answer = AB.square().plus(AC.square()).minus(AB.times(AC));
+			let sol = `By the cosine rule,
+				${alignStar(`& BC^2
+					\\\\ &= AB^2 + AC^2 - 2 AB \\cdot AC \\cos \\angle BAC
+					\\\\ &= \\left(${AB}\\right)^2 + \\left(${AC}\\right)^2 - 2 \\left(${AB}\\right)\\left(${AC}\\right) \\cos ${angle}
+					\\\\ &= \\left(3 + 2${sqrt3} + 1 \\right) + (16 - 8${sqrt3} + 3) - 2 \\left( ${AB.times(AC)} \\right) \\frac{1}{2}
+					\\\\ &= ${AB.square()} + ${AC.square()} - \\left(${AB.times(AC)}\\right)
+					\\\\ &= ${answer} \\; \\blacksquare
 				`)}
-				If ${math(`k=${kAns}, \\blacksquare`)} then discriminant will be ${math(`0`)}
-				which means that the curve will touch the ${math(`x`)}-axis
-				so ${math(`y`)} cannot be negative. ${math(`\\blacksquare`)}
 			`;
 			parts.push({ body });
 			solParts.push({ body: sol });
@@ -322,104 +280,83 @@
 		answers.push({ parts: solParts });
 	})();
 
-	//! Question 6: 2017 P2 Q6
+	//! Question 6: 2015 P2 Q5
 	(() => {
 		const parts: QuestionType['parts'] = [];
 		const solParts: QuestionType['parts'] = [];
-		const a = 9,
-			b = new Expression([2, 'm'], 1),
-			c1 = new Expression(1, 'c');
-		const m = 'm',
-			c = 'c';
-		const curve = new xPolynomial([a, b, c1]);
-		const line = new xPolynomial([m, c]);
-		const body = `The equation of a curve is
-			${math(`y = ${curve},`)} where ${math(m)} and
-			${math(c)} are
-			constants. The line ${math(`y = ${line}`)}
-			is a tangent to the curve at the point ${math(`P.`)}
-		`;
-		// part a, b
+		const sqrt3 = new SquareRoot(3);
+		let AC: Expression;
+		let qn: RationalTerm;
 		(() => {
 			// part a
-			const body = `Find the positive value of ${math(m)}.`;
-			const workingA = new EquationWorking(curve, line);
-			workingA.rhsZero({ show: false });
-			let solA = `Equating the equations of the line and curve,
-				${display(`${workingA}`)}
-				${eqn(`\\qquad ${workingA.lhs} = 0`, { leqno: true })}
-				Since the line is a tangent to the curve,
+			const num = sqrt3.times(11);
+			const den = new Expression(sqrt3.times(2), 1);
+			qn = new RationalTerm(num, den);
+			const body = `Express ${math(`\\displaystyle ${qn}`)}
+				in the form ${math(`a + b${sqrt3},`)}
+				where ${math(`a`)} and ${math(`b`)} are integers.
 			`;
-			const poly = workingA.lhs as xPolynomial;
-			const [c, b, a] = poly.coeffs;
-			const discriminant = poly.quadraticDiscriminant();
-			const workingB = new EquationWorking(discriminant, 0, { aligned: true });
-			const [m1, m2] = workingB.factorizeQuadratic({ variable: 'm' });
-			solA += `${alignStar(`\\textrm{Discriminant} &= 0
-					\\\\ (${b})^2 - 4(${a})(${c}) &= 0
-					\\\\ ${b.square()} - ${a.times(4).times(c)} &= 0
-					\\\\ ${workingB}
-				`)}
-				${gatherStar(`m = ${m1} \\textrm{ (rejected)} 
-					\\\\ \\textrm{ or } \\quad m = ${m2} \\; \\blacksquare`)}
-			`;
+			const working = new ExpressionWorking(qn);
+			working.rationalize();
+			AC = working.exp as Expression;
+			const sol = alignStar(`${working} \\; \\blacksquare`)
 			parts.push({ body });
-			solParts.push({ body: solA });
+			solParts.push({ body: sol });
+		})();
+		let BC2: Expression;
+		const AB = new Expression(sqrt3, 1);
+		(() => {
 			// part b
-			const x = -2,
-				y = 19;
-			const bodyB = `Using this value of ${math(`m,`)}
-				and given that the curve passes through
-				${math(`(${x}, ${y}),`)}
-				find the coordinates of
-				${math(`P.`)}
+			const uplevel = `The diagram shows a cuboid with a
+				square base. The height ${math(`AB`)}
+				of the cuboid is
+				${math(`\\left( ${AB} \\right) \\textrm{cm}.`)}
+				Given that the length of the diagonal
+				${math(`AC`)} is
+				${math(`\\displaystyle ${qn} \\textrm{ cm},`)}
+			`
+			const body = `Find an expression for
+				${math(`BC^2`)} in the form
+				in the form ${math(`c + d${sqrt3},`)}
+				where ${math(`c`)} and ${math(`d`)} are integers,
 			`;
-			const curveRHS = curve.subIntoVariable(x).subIn({ m: m2 });
-			const workingC = new EquationWorking(curveRHS, y, { aligned: true });
-			workingC.moveTerm(0);
-			const cVal = workingC.rhs.cast.toFraction();
-			const poly2 = poly.subIntoCoeffs({ m: m2 });
-			const workingD = new EquationWorking(poly2, 0, { aligned: true });
-			const [xP] = workingD.factorizeQuadratic();
-			const yP = new Polynomial([m2, cVal]).subIn(xP);
-			const solB = `Substituting ${math(`m = ${m2}`)} 
-				and ${math(`(${x}, ${y})`)} into the equation of the curve,
-				${display(`${y} = 9 (${x})^2 + (2(${m2}) + 1) (${x}) + c`)}
-				${alignStar(`${workingC}`)}
-				Substituting ${math(`m = ${m2}`)} 
-				into ${math(`(1),`)}
-				${alignStar(`${workingD} \\\\ x = ${xP}`)}
-				Substituting ${math(`x = ${xP}`)} into the equation of the line,
-				${alignStar(`y &= ${m2}\\left(${xP}\\right) + ${cVal}
-					\\\\ &= ${yP}
-				`)}
-				Coordinates of ${math(`P \\left(${xP}, ${yP}\\right) \\; \\blacksquare`)}
-			`;
-			parts.push({ body: bodyB });
-			solParts.push({ body: solB });
+			const BC2Working = new Expression(new ExpansionTerm([AC, 2]), new ExpansionTerm(-1, [AB,2]));
+			const working = new ExpressionWorking(BC2Working, {equalStart: true});
+			working.expand({intertext: `= 36 - 12 ${sqrt3} + 3 - \\left(3 + 2${sqrt3} + 1\\right)`});
+			BC2 = working.exp as Expression;
+			const sol = 'By Pythagoras Theorem,' + alignStar(`&BC^2
+				\\\\ &= AC^2 - AB^2
+				\\\\ ${working} \\; \\blacksquare`)
+			parts.push({ uplevel, body });
+			solParts.push({ body: sol });
 		})();
 		(() => {
 			// part c
-			const body = `Given that ${math(`L`)} is
-				${strong('not')} a tangent to the
-				curve, what can be deduced about
-				${math(`L.`)}
+			const vol = new ExpansionTerm(new Fraction(7,2), new Expression(sqrt3.times(3), 'k'))
+			const body = `express the volume of the cuboid in the form
+				${math(`\\displaystyle ${vol} \\textrm{cm}^3,`)}
+				where ${math('k')} is an integer.
 			`;
-			const uplevel = `The straight line ${math(`L`)}
-				meets the curve at one point only.
+			const x2 = factorizeExpression(BC2.divide(2));
+			const x2Surd = x2.times(x2.coeff.reciprocal()).expand();
+			const volume = new ExpansionTerm(x2.coeff, x2Surd.times(AB))
+			const sol = `Let ${math(`x`)} be the length of each side of the square base.${newline}
+				By Pythagoras Theorem,
+				${alignStar(`x^2 + x^2 &= BC^2
+					\\\\ 2x^2 &= ${BC2}	
+					\\\\ x^2 &= ${factorizeExpression(BC2.divide(2))}	
+				`)}
+				${alignStar(`& \\textrm{Volume of cuboid}
+					\\\\ &= x^2 \\cdot AB
+					\\\\ &= ${x2} \\left(${AB}\\right)
+					\\\\ &= ${x2.coeff} \\left( 5${sqrt3} + 5 - 2(3) - 2${sqrt3} \\right)
+					\\\\ &= ${volume}	
+				`)}
 			`;
-			const solC = `${math(`L`)} is a vertical line parallel to the 
-				${math(`y`)}-axis.
-			`;
-			parts.push({ body, uplevel });
-			solParts.push({ body: solC });
+			parts.push({ body });
+			solParts.push({ body: sol });
 		})();
-		// part c
-		(() => {
-			//parts.push({ body });
-			//solParts.push({ body: sol });
-		})();
-		questions.push({ body, parts });
+		questions.push({ parts });
 		answers.push({ parts: solParts });
 	})();
 
