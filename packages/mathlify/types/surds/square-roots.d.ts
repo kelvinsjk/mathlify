@@ -38,7 +38,7 @@ export class SquareRoot extends Term {
      * @returns {SquareRoot} - the Expansion Term but with coeff = 1
      */
     resetCoeff(): SquareRoot;
-    times(x: string | Term): Term;
+    times(x: string | Term): Term | SquareRoot;
     times(x: number | Fraction | SquareRoot): SquareRoot;
     /**
      * reciprocal
@@ -99,6 +99,6 @@ export class SquareRoot extends Term {
         };
     };
 }
-import { Term } from "../core/index.js";
-import { Fraction } from "../core/index.js";
+import { Term } from '../core/index.js';
+import { Fraction } from '../core/index.js';
 //# sourceMappingURL=square-roots.d.ts.map

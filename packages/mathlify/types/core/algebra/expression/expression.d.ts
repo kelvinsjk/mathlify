@@ -75,6 +75,12 @@ export class Expression {
     }): Expression;
     subIn(x: number | Fraction): Fraction;
     /**
+     * changes order of terms
+     * @param {number[]} args - the index of the terms to be simplified (0-indexed)
+     * @return {Expression}
+     */
+    changeOrder(args: number[]): Expression;
+    /**
      * gcd of the expression (only supports Fractions at the moment)
      * @return {Fraction} - the gcd of all the terms
      */

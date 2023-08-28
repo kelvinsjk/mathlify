@@ -104,9 +104,13 @@ export class Term {
      */
     is: {
         /**
-         * whether this term is a constant (ie can be cast to Fraction class)
+         * whether this term is a constant (no variables)
          */
         constant: () => boolean;
+        /**
+         * whether this term is rational (ie can be cast to Fraction class)
+         */
+        rational: () => boolean;
         /**
          * checks if two terms are equal (same signature and same coefficient)
          * @param {Term|number|Fraction|string} term2
@@ -121,6 +125,7 @@ export class Term {
         like: (term2: Term | number | Fraction | string) => boolean;
         not: {
             constant: () => boolean;
+            rational: () => boolean;
             /** @param {Term|number|Fraction|string} term2 */
             equalTo: (term2: Term | number | Fraction | string) => boolean;
             /** @param {Term|number|Fraction|string} term2 */

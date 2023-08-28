@@ -4,22 +4,16 @@
 	import {
 		ExpansionTerm,
 		Fraction,
-		Term,
 		Expression,
 		Polynomial,
 		xPolynomial,
-		EquationWorking,
-		InequalityWorking,
-		discriminant,
-		factorizeQuadratic,
-		solveQuadratic,
 		SquareRoot,
 		ExpressionWorking,
 		RationalTerm,
 		solveLinear,
 		factorizeExpression,
 	} from 'mathlify';
-	import { align, alignStar, display, eqn, gatherStar, math, newline, strong } from 'mathlifier';
+	import { align, alignStar, display, gatherStar, math, newline, strong } from 'mathlifier';
 
 	const title = 'Unit 2: Surds';
 
@@ -123,7 +117,7 @@
 		answers.push({ body: sol });
 	})();
 
-	//! Question 4: 2014 P1 Q9
+	//! Question 4: 2018 P1 Q4
 	(() => {
 		const parts: QuestionType['parts'] = [];
 		const solParts: QuestionType['parts'] = [];
@@ -217,8 +211,8 @@
 		const parts: QuestionType['parts'] = [];
 		const solParts: QuestionType['parts'] = [];
 		const sqrt3 = new SquareRoot(3);
-		const areaExp  = new Expression(9, sqrt3);
-		const quarter = new Fraction(1,4);
+		const areaExp = new Expression(9, sqrt3);
+		const quarter = new Fraction(1, 4);
 		const area = new ExpansionTerm(quarter, areaExp);
 		const AB = new Expression(sqrt3, 1);
 		const angle = `60^{\\circ}`;
@@ -240,7 +234,7 @@
 				${math(`a + b${sqrt3},`)}
 				where ${math(`a`)} and ${math(`b`)} are integers,
 			`;
-			const half = new Fraction(1,2);
+			const half = new Fraction(1, 2);
 			const divisor = AB.times(sqrt3);
 			let sol = `${gatherStar(`${half} ab \\sin C = \\textrm{Area}
 				\\\\ ${half} \\left( ${AB} \\right) AC \\sin ${angle} = ${area}
@@ -248,7 +242,9 @@
 				\\\\ ${quarter} \\left( ${AB} \\right) ${sqrt3} \\; AC = ${area}
 				\\\\ \\left( ${divisor} \\right) AC = ${areaExp}
 			`)}`;
-			const working = new ExpressionWorking(new RationalTerm(areaExp, divisor), {equalStart: true});
+			const working = new ExpressionWorking(new RationalTerm(areaExp, divisor), {
+				equalStart: true,
+			});
 			working.rationalize();
 			sol += `${alignStar(`AC ${working}
 			`)}`;
@@ -268,7 +264,9 @@
 				${alignStar(`& BC^2
 					\\\\ &= AB^2 + AC^2 - 2 AB \\cdot AC \\cos \\angle BAC
 					\\\\ &= \\left(${AB}\\right)^2 + \\left(${AC}\\right)^2 - 2 \\left(${AB}\\right)\\left(${AC}\\right) \\cos ${angle}
-					\\\\ &= \\left(3 + 2${sqrt3} + 1 \\right) + (16 - 8${sqrt3} + 3) - 2 \\left( ${AB.times(AC)} \\right) \\frac{1}{2}
+					\\\\ &= \\left(3 + 2${sqrt3} + 1 \\right) + (16 - 8${sqrt3} + 3) - 2 \\left( ${AB.times(
+					AC,
+				)} \\right) \\frac{1}{2}
 					\\\\ &= ${AB.square()} + ${AC.square()} - \\left(${AB.times(AC)}\\right)
 					\\\\ &= ${answer} \\; \\blacksquare
 				`)}
@@ -299,7 +297,7 @@
 			const working = new ExpressionWorking(qn);
 			working.rationalize();
 			AC = working.exp as Expression;
-			const sol = alignStar(`${working} \\; \\blacksquare`)
+			const sol = alignStar(`${working} \\; \\blacksquare`);
 			parts.push({ body });
 			solParts.push({ body: sol });
 		})();
@@ -314,32 +312,34 @@
 				Given that the length of the diagonal
 				${math(`AC`)} is
 				${math(`\\displaystyle ${qn} \\textrm{ cm},`)}
-			`
+			`;
 			const body = `Find an expression for
 				${math(`BC^2`)} in the form
 				in the form ${math(`c + d${sqrt3},`)}
 				where ${math(`c`)} and ${math(`d`)} are integers,
 			`;
-			const BC2Working = new Expression(new ExpansionTerm([AC, 2]), new ExpansionTerm(-1, [AB,2]));
-			const working = new ExpressionWorking(BC2Working, {equalStart: true});
-			working.expand({intertext: `= 36 - 12 ${sqrt3} + 3 - \\left(3 + 2${sqrt3} + 1\\right)`});
+			const BC2Working = new Expression(new ExpansionTerm([AC, 2]), new ExpansionTerm(-1, [AB, 2]));
+			const working = new ExpressionWorking(BC2Working, { equalStart: true });
+			working.expand({ intertext: `= 36 - 12 ${sqrt3} + 3 - \\left(3 + 2${sqrt3} + 1\\right)` });
 			BC2 = working.exp as Expression;
-			const sol = 'By Pythagoras Theorem,' + alignStar(`&BC^2
+			const sol =
+				'By Pythagoras Theorem,' +
+				alignStar(`&BC^2
 				\\\\ &= AC^2 - AB^2
-				\\\\ ${working} \\; \\blacksquare`)
+				\\\\ ${working} \\; \\blacksquare`);
 			parts.push({ uplevel, body });
 			solParts.push({ body: sol });
 		})();
 		(() => {
 			// part c
-			const vol = new ExpansionTerm(new Fraction(7,2), new Expression(sqrt3.times(3), 'k'))
+			const vol = new ExpansionTerm(new Fraction(7, 2), new Expression(sqrt3.times(3), 'k'));
 			const body = `express the volume of the cuboid in the form
 				${math(`\\displaystyle ${vol} \\textrm{cm}^3,`)}
 				where ${math('k')} is an integer.
 			`;
 			const x2 = factorizeExpression(BC2.divide(2));
 			const x2Surd = x2.times(x2.coeff.reciprocal()).expand();
-			const volume = new ExpansionTerm(x2.coeff, x2Surd.times(AB))
+			const volume = new ExpansionTerm(x2.coeff, x2Surd.times(AB));
 			const sol = `Let ${math(`x`)} be the length of each side of the square base.${newline}
 				By Pythagoras Theorem,
 				${alignStar(`x^2 + x^2 &= BC^2
@@ -364,71 +364,57 @@
 	(() => {
 		const parts: QuestionType['parts'] = [];
 		const solParts: QuestionType['parts'] = [];
-		const k = 'k';
-		const a = 2,
-			b = new Term(-1, k),
-			c = -4;
-		const curve = new xPolynomial([a, b, c]);
-		const m = -2,
-			c1 = 12;
-		const l1 = `${new Expression('y', [-m, 'x'])} = ${c1}`;
-		const line = new Polynomial([m, c1]);
-		const body = `The equation of a curve is
-			${math(`y = ${curve},`)} where ${math(k)} is
-			a constant, and the equation of a line is
-			${math(`${l1}.`)}
+		const sqrt3 = new SquareRoot(3);
+		const area = new Expression(13, new SquareRoot(48).negative());
+		const areaString = `13 - \\sqrt{48}`;
+		const body = `The area of a quadrilateral is
+			${math(`\\left(${areaString}\\right) \\textrm{cm}^2.`)}
 		`;
 		// part a
 		(() => {
-			const k = 6;
-			const body = `In the case where ${math(`k = ${k},`)}
-				find the coordinates of the point of intersection
-				of the curve and the line.
+			const width = new Expression(3, sqrt3.negative());
+			const body = `In the case where the quadrilateral is a rectangle
+				with width ${math(`\\left( ${width} \\right) \\textrm{cm,}`)}
+				find, without using a calculator, the length of the
+				rectangle in the form ${math(`\\left(a + b${sqrt3}\\right)\\textrm{cm}.`)}
 			`;
-			const working = new EquationWorking(curve.subIntoCoeffs({ k }), line);
-			working.rhsZero();
-			working.divide(2);
-			const [x1, x2] = working.factorizeQuadratic();
-			const y1 = line.subIn(x1);
-			const y2 = line.subIn(x2);
-			let sol = `Substituting ${math(`k = ${k}`)}
-				and equating the equations of the line and curve,
-				${gatherStar(`${working}
-					\\\\ x = ${x1} \\; \\textrm{ or } \\; x = ${x2}
-				`)}
-				When ${math(`x = ${x1},`)}
-				${alignStar(`y &= ${m}\\left(${x1}\\right) ${c}
-					\\\\ &= ${y1}
-				`)}
-				When ${math(`x = ${x2},`)}
-				${alignStar(`y &= ${m}\\left(${x2}\\right) ${c}
-					\\\\ &= ${y2}
-				`)}
-				Coordinates of the points of intersection:
-				${math(`(${x1}, ${y1}) \\; \\blacksquare`)}
-				and 
-				${math(`(${x2}, ${y2}) \\; \\blacksquare`)}
-			`;
+			const working = new ExpressionWorking(new RationalTerm(area, width), { equalStart: true });
+			working.rationalize();
+			const sol = `${alignStar(`& \\textrm{Length}
+				\\\\ &= \\frac{${areaString}}{${width}}
+				\\\\ ${working} \\; \\blacksquare
+			`)}`;
 			parts.push({ body });
 			solParts.push({ body: sol });
 		})();
 		// part b
 		(() => {
-			const body = `Show that, for all values of
-				${math(`k,`)} the line intersects the curve
-				at two distinct points.
+			const side = new Expression(sqrt3.times(2), 'c');
+			const area2 = new ExpansionTerm([side, 2]);
+			const body = `In the case where the
+				quadrilateral is a square with side
+				${math(`\\left( ${side} \\right) \\textrm{cm,}`)}
+				find, without using a calculator, the value of
+				the constant c.
 			`;
-			const d = curve.quadraticDiscriminant();
-			const [c, b, a] = curve.coeffs;
-			const sol = `${alignStar(`& \\textrm{Discriminant}
-					\\\\ & = b^2 - 4 ac
-					\\\\ &= (${b})^2 - 4(${a})(${c})
-					\\\\ &= ${b.square()} + ${a.times(-4).times(c)}
-					\\\\ &> 0 \\; \\textrm{ for all values of } k \\in \\mathbb{R}
+			const area3 = area2.expand();
+
+			const sol = `${alignStar(`&\\textrm{Area}
+					\\\\ &= ${area2}
+					\\\\ &= ${area3}
 				`)}
-				Since the discriminant is ${math(`> 0,`)}
-				the line intersects the curve at two distinct points for
-				all values of ${math(`k. \\; \\blacksquare`)}
+				${gatherStar(`${area3} = ${area}
+					\\\\ ${area3.changeOrder([2, 1, 0]).minus(area)} = 0
+					\\\\ c^2 + c + 4${sqrt3}c - c + 4${sqrt3} - 1 = 0
+					\\\\ c(c+1) + c\\left(4${sqrt3}-1\\right) + 4${sqrt3} - 1 = 0
+					\\\\ c(c+1) + \\left(4${sqrt3}-1\\right)\\left(c+1\\right) = 0
+					\\\\ (c+1) \\left( c + 4${sqrt3} - 1 \\right) = 0
+				`)}
+				Hence ${math(`c=-1`)} or ${math(`c = 1 - 4${sqrt3}`)}
+				${newline}
+				However, ${math(`c > -2${sqrt3}`)} since the side must be of positive length. Hence ${math(`c`)}
+				cannot be ${math(`1 - 4${sqrt3}`)} so the value of the constant ${math(`c`)} is
+				${display(`c=-1 \\; \\blacksquare`)}
 			`;
 			parts.push({ body });
 			solParts.push({ body: sol });
