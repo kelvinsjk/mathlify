@@ -23,17 +23,17 @@ export class RationalTerm extends Term {
     num: Expression;
     /** @type {ExpansionTerm} */
     den: ExpansionTerm;
-    /** @type {"rational-term"} */
-    kind: "rational-term";
-    /** @type {"rational-term"|"rational-expression"} */
-    type: "rational-term" | "rational-expression";
+    /** @type {"rational-term"|"rational-fn"} */
+    kind: "rational-term" | "rational-fn";
+    /** @type {"rational-term"|"rational-expression"|"rational-fn"} */
+    type: "rational-term" | "rational-expression" | "rational-fn";
     /**
      * multiplication
-     * @param {number|Fraction|string|Term|Expression|RationalTerm} x - the other term/expression to multiply with
+     * @param {number|Fraction|string|Term|RationalTerm} x - the other term/expression to multiply with
      * @returns {RationalTerm} the product of the two
      * @override
      */
-    override times(x: number | Fraction | string | Term | Expression | RationalTerm): RationalTerm;
+    override times(x: number | Fraction | string | Term | RationalTerm): RationalTerm;
     /**
      * division
      * @param {number|Fraction|string|Term|Expression|RationalTerm} x - the other term/expression to divide with

@@ -32,11 +32,12 @@ export class SLE {
      * returns a string representation of the SLE to be fed into a LaTeX align/align* / gather/gather* environment
      */
     toString(): string;
-    /**
-     * solves the system of linear equations, returning an array of strings "x = ..."
-     * @returns {string[]} array of strings representing the solutions of the system of linear equations
-     */
-    solve(): string[];
+    solve(options: {
+        returnFraction: true;
+    }): Fraction[];
+    solve(options?: {
+        returnFraction: false;
+    } | undefined): string[];
 }
 /**
  * SLE class representing a system of linear equations
@@ -76,11 +77,12 @@ export class SLENumerical {
      * returns a string representation of the SLE to be fed into a LaTeX align/align* / gather/gather* environment
      */
     toString(): string;
-    /**
-     * solves the system of linear equations, returning an array of strings "x = ..."
-     * @returns {string[]} array of strings representing the solutions of the system of linear equations
-     */
-    solve(): string[];
+    solve(options: {
+        returnNumber: true;
+    }): number[];
+    solve(options?: {
+        returnNumber: false;
+    } | undefined): string[];
 }
 import { Fraction } from "../../../core/index.js";
 //# sourceMappingURL=system-of-linear-equations.d.ts.map

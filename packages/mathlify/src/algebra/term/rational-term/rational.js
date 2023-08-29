@@ -22,9 +22,9 @@ export class RationalTerm extends Term {
   den;
   /** @type {Fraction} */
   coeff;
-  /** @type {"rational-term"} */
+  /** @type {"rational-term"|"rational-fn"} */
   kind;
-  /** @type {"rational-term"|"rational-expression"} */
+  /** @type {"rational-term"|"rational-expression"|"rational-fn"} */
   type;
   /**
    * @constructor
@@ -68,28 +68,37 @@ export class RationalTerm extends Term {
     this.num = numerator;
     this.den = den;
     this.coeff = coeff;
-    /** @type {"rational-term"} */
     this.kind = "rational-term";
-    /** @type {"rational-term"|"rational-expression"} */
     this.type =
       `${denominator}` === "1" ? "rational-expression" : "rational-term";
   }
 
   /**
    * multiplication
-   * @param {number|Fraction|string|Term|Expression|RationalTerm} x - the other term/expression to multiply with
+   * @param {number|Fraction|string|Term|RationalTerm} x - the other term/expression to multiply with
    * @returns {RationalTerm} the product of the two
    * @override
    */
   times(x) {
     // (this.num * x.num) / (this.den * x.den)
-    const xRational = x instanceof RationalTerm ? x : new RationalTerm(x);
-    const product = new RationalTerm(
-      this.num.times(xRational.num),
-      new ExpansionTerm(this.den, xRational.den),
-      { coeff: this.coeff.times(xRational.coeff) }
-    );
-    return product;
+    if (x instanceof RationalTerm) {
+      return new RationalTerm(
+        this.num.times(x.num),
+        new ExpansionTerm(this.den, x.den),
+        { coeff: this.coeff.times(x.coeff) }
+      );
+    }
+    if (x instanceof Fraction && x.is.not.integer()) {
+      return new RationalTerm(this.num.times(x.num), this.den.times(x.den), {
+        coeff: this.coeff,
+      });
+    }
+    if (x instanceof Fraction && x.is.negative()) {
+      return new RationalTerm(this.num.times(x.abs()), this.den, {
+        coeff: this.coeff.negative(),
+      });
+    }
+    return new RationalTerm(this.num.times(x), this.den, { coeff: this.coeff });
   }
 
   /**

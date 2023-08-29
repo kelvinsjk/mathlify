@@ -130,16 +130,16 @@ export class Polynomial extends Expression {
   /**
    * @overload
    * Polynomial multiplication
+   * @param {Polynomial|number|Fraction} x - polynomial to be multiplied
+   * @returns {Polynomial} - the product
+   */
+  /**
+   * @overload
+   * Polynomial multiplication
    * @param {Term|Expression|string} x - polynomial to be multiplied
    * @returns {Expression} - the product
    */
   /**
-  /**
-   * @overload
-   * Polynomial multiplication
-   * @param {Polynomial|number|Fraction} x - polynomial to be multiplied
-   * @returns {Polynomial} - the product
-   */
   /**
    * Polynomial multiplication
    * @param {Polynomial|number|Fraction|Term|Expression|string} x - polynomial to be multiplied
@@ -302,6 +302,50 @@ export class Polynomial extends Expression {
    */
   leadingCoefficient() {
     return this.coeffs[this.coeffs.length - 1];
+  }
+
+  isZero() {
+    return this.coeffs.length === 1 && this.coeffs[0].is.zero();
+  }
+
+  /**
+   * sub in working
+   * @param {number|Fraction} x - the value to sub in
+   * @returns {string}
+   */
+  subInWorking(x) {
+    const coeffs = [...this.coeffs];
+    if (!this.ascending) {
+      coeffs.reverse();
+    }
+    /** @type {{term: string, addition: boolean}[]} */
+    return coeffs.reduce((prev, coeff, i) => {
+      if (coeff.is.zero()) {
+        return prev;
+      }
+      const power = this.ascending ? i : this.degree - i;
+      const addition = coeff.is.positive();
+      let term = "";
+      if (power === 0) {
+        term = `${coeff.abs()}`;
+      } else if (power === 1) {
+        const xBrackets =
+          `${x}`.length === 1 && coeff.abs().is.one()
+            ? `${x}`
+            : `\\left(${x}\\right)`;
+        term = `${new Term(coeff.abs(), xBrackets)}`;
+      } else {
+        const xBrackets =
+          `${x}`.length === 1 && coeff.abs().is.one()
+            ? `${x}`
+            : `\\left(${x}\\right)`;
+        term = `${new Term(coeff.abs(), [xBrackets, power])}`;
+      }
+      if (i === 0) {
+        return addition ? term : `- ${term}`;
+      }
+      return prev + (addition ? ` + ${term}` : ` - ${term}`);
+    }, "");
   }
 }
 

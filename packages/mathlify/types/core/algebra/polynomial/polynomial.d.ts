@@ -42,8 +42,8 @@ export class Polynomial extends Expression {
      * @returns {Polynomial} - the difference this minus x
      */
     minus(x: Polynomial | number | Fraction): Polynomial;
-    times(x: Term | Expression | string): Expression;
     times(x: Polynomial | number | Fraction): Polynomial;
+    times(x: Term | Expression | string): Expression;
     /**
      * Polynomial division (by a constant)
      * @param {number|Fraction} x - the constant to divided by
@@ -76,10 +76,23 @@ export class Polynomial extends Expression {
         variable?: string | undefined;
     } | undefined): Polynomial;
     /**
+     * slice
+     * @param {number} end - the ending index (non-inclusive)
+     * @return {Polynomial} - the sliced polynomial
+     */
+    slice(end: number): Polynomial;
+    /**
      * leading coefficient
      * @returns {Fraction} - the leading coefficient
      */
     leadingCoefficient(): Fraction;
+    isZero(): boolean;
+    /**
+     * sub in working
+     * @param {number|Fraction} x - the value to sub in
+     * @returns {string}
+     */
+    subInWorking(x: number | Fraction): string;
 }
 import { Expression } from "../expression/index.js";
 import { Fraction } from "../../fraction.js";

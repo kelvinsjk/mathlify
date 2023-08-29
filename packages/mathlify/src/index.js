@@ -22,6 +22,7 @@ export {
   //TODO: move these 3 below to "working" module
   UnsimplifiedExpression,
   UnsimplifiedTerm,
+  longDivision,
 } from "./algebra/index.js";
 export { SquareRoot } from "./surds/index.js";
 export { xPolynomial } from "./extended/index.js";
@@ -48,4 +49,6 @@ export {
   solveQuadraticInequality,
   ExpressionWorking,
   BinomialGeneralTerm,
+  partialFraction,
 } from "./working/index.js";
+export { RationalFn } from "./calculus/index.js";

@@ -35,7 +35,7 @@ export function solveQuadraticSurd(poly: Polynomial | number | Fraction | Expres
  */
 export function discriminant(poly: Polynomial | [number | Fraction, number | Fraction, number | Fraction]): Fraction;
 export type Fraction = import('../../core/fraction.js').Fraction;
-import { Polynomial } from '../../core/algebra/polynomial/polynomial.js';
-import { Expression } from '../../core/algebra/expression/expression.js';
-import { ExpansionTerm } from '../term/index.js';
+import { Polynomial } from "../../core/algebra/polynomial/polynomial.js";
+import { Expression } from "../../core/algebra/expression/expression.js";
+import { ExpansionTerm } from "../term/index.js";
 //# sourceMappingURL=quadratic.d.ts.map

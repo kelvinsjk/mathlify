@@ -150,6 +150,19 @@ export class ExpansionTerm extends Term {
   }
 
   /**
+   * to expression power array
+   * @returns {{exp: Expression, power: Fraction}[]} - the expression power array
+   */
+  toExpPowerArray() {
+    /** @type {{exp: Expression, power: Fraction}[]} */
+    const expPowerArray = [];
+    for (let [exp, power] of this.expPowerMap.entries()) {
+      expPowerArray.push({ exp, power });
+    }
+    return expPowerArray;
+  }
+
+  /**
    * expands the expression
    * @returns {Expression} - the expanded expression
    * WARNING: only works for positive integral powers
@@ -288,6 +301,25 @@ export class ExpansionTerm extends Term {
     const remainder1 = exp1.divide(gcd).expand();
     const remainder2 = exp2.divide(gcd).expand();
     return new ExpansionTerm(remainder1.plus(remainder2), gcd);
+  }
+
+  /**
+   * product
+   * @static
+   * @param {(ExpansionTerm|Expression)[]} exps - the expansion terms
+   * @returns {ExpansionTerm} - the product of the expansion terms
+   */
+  static product(...exps) {
+    /** @type {(Expression|{exp: Expression, power: Fraction})[]} */
+    const expPowerArray = [];
+    exps.forEach((exp) => {
+      if (exp instanceof ExpansionTerm) {
+        expPowerArray.push(...exp.toExpPowerArray());
+      } else {
+        expPowerArray.push(exp);
+      }
+    });
+    return new ExpansionTerm(...expPowerArray);
   }
 }
 

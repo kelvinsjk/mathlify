@@ -84,10 +84,21 @@ export class SLE {
   }
 
   /**
-   * solves the system of linear equations, returning an array of strings "x = ..."
-   * @returns {string[]} array of strings representing the solutions of the system of linear equations
+   * @overload
+   * @param {{returnFraction: true}} options - options object defaulting to `{returnFraction: false}`
+   * @returns {Fraction[]}
    */
-  solve() {
+  /**
+   * @overload
+   * @param {{returnFraction: false}} [options] - options object defaulting to `{returnFraction: false}`
+   * @returns {string[]}
+   */
+  /**
+   * solves the system of linear equations, returning an array of strings "x = ..."
+   * @param {{returnFraction?: boolean}} [options] - options object defaulting to `{returnFraction: false}`
+   * @returns {string[]|Fraction[]} array of strings representing the solutions of the system of linear equations
+   */
+  solve(options) {
     if (this.coeffs.length === 2) {
       const [x, y] = cramersRule(
         [this.coeffs[0][0], this.coeffs[0][1]],
@@ -95,6 +106,7 @@ export class SLE {
         [this.coeffs[1][0], this.coeffs[1][1]],
         this.values[1]
       );
+      if (options?.returnFraction) return [x, y];
       return [`${this.variables[0]} = ${x}`, `${this.variables[1]} = ${y}`];
     } else if (this.coeffs.length === 3) {
       const [x, y, z] = cramersRule(
@@ -105,6 +117,7 @@ export class SLE {
         [this.coeffs[2][0], this.coeffs[2][1], this.coeffs[2][2]],
         this.values[2]
       );
+      if (options?.returnFraction) return [x, y, z];
       return [
         `${this.variables[0]} = ${x}`,
         `${this.variables[1]} = ${y}`,
@@ -141,6 +154,7 @@ export class SLE {
         ],
         this.values[3]
       );
+      if (options?.returnFraction) return [x, y, z, w];
       return [
         `${this.variables[0]} = ${x}`,
         `${this.variables[1]} = ${y}`,
@@ -246,10 +260,21 @@ export class SLENumerical {
   }
 
   /**
-   * solves the system of linear equations, returning an array of strings "x = ..."
-   * @returns {string[]} array of strings representing the solutions of the system of linear equations
+   * @overload
+   * @param {{returnNumber: true}} options - options object defaulting to `{returnFraction: false}`
+   * @returns {number[]}
    */
-  solve() {
+  /**
+   * @overload
+   * @param {{returnNumber: false}} [options] - options object defaulting to `{returnFraction: false}`
+   * @returns {string[]}
+   */
+  /**
+   * solves the system of linear equations, returning an array of strings "x = ..."
+   * @param {{returnNumber?: boolean}} [options] - options object defaulting to `{returnFraction: false}`
+   * @returns {string[]|number[]} array of strings representing the solutions of the system of linear equations
+   */
+  solve(options) {
     if (this.coeffs.length === 2) {
       const [x, y] = cramersRuleNumerical(
         [this.coeffs[0][0], this.coeffs[0][1]],
@@ -257,6 +282,7 @@ export class SLENumerical {
         [this.coeffs[1][0], this.coeffs[1][1]],
         this.values[1]
       );
+      if (options?.returnNumber) return [x, y];
       return [
         `${this.variables[0]} = ${x.toFixed(this.toFixed)}`,
         `${this.variables[1]} = ${y.toFixed(this.toFixed)}`,
@@ -270,6 +296,7 @@ export class SLENumerical {
         [this.coeffs[2][0], this.coeffs[2][1], this.coeffs[2][2]],
         this.values[2]
       );
+      if (options?.returnNumber) return [x, y, z];
       return [
         `${this.variables[0]} = ${x.toFixed(this.toFixed)}`,
         `${this.variables[1]} = ${y.toFixed(this.toFixed)}`,
@@ -306,6 +333,7 @@ export class SLENumerical {
         ],
         this.values[3]
       );
+      if (options?.returnNumber) return [x, y, z, w];
       return [
         `${this.variables[0]} = ${x.toFixed(this.toFixed)}`,
         `${this.variables[1]} = ${y.toFixed(this.toFixed)}`,

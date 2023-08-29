@@ -30,6 +30,13 @@ export class ExpansionTerm extends Term {
      */
     static factorize(exp1: ExpansionTerm, exp2: ExpansionTerm): ExpansionTerm;
     /**
+     * product
+     * @static
+     * @param {(ExpansionTerm|Expression)[]} exps - the expansion terms
+     * @returns {ExpansionTerm} - the product of the expansion terms
+     */
+    static product(...exps: (ExpansionTerm | Expression)[]): ExpansionTerm;
+    /**
      * @constructor
      * Creates an Expansion Term instance
      * @param {(number|Fraction|string|Term|Expression|{exp: Expression, power: number|Fraction}|[Expression, number|Fraction])[]} exps - the expression
@@ -62,6 +69,14 @@ export class ExpansionTerm extends Term {
      * @returns {ExpansionTerm} - the Expansion Term divided by x
      */
     divide(x: ExpansionTerm): ExpansionTerm;
+    /**
+     * to expression power array
+     * @returns {{exp: Expression, power: Fraction}[]} - the expression power array
+     */
+    toExpPowerArray(): {
+        exp: Expression;
+        power: Fraction;
+    }[];
     /**
      * expands the expression
      * @returns {Expression} - the expanded expression
