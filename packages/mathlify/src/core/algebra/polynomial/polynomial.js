@@ -281,6 +281,22 @@ export class Polynomial extends Expression {
   }
 
   /**
+   * slice
+   * @param {number} end - the ending index (non-inclusive)
+   * @return {Polynomial} - the sliced polynomial
+   */
+  slice(end) {
+    const newCoeffs = this.coeffs.slice(0, end);
+    if (!this.ascending) {
+      newCoeffs.reverse();
+    }
+    return new Polynomial(newCoeffs, {
+      variable: this.variable,
+      ascending: this.ascending,
+    });
+  }
+
+  /**
    * leading coefficient
    * @returns {Fraction} - the leading coefficient
    */

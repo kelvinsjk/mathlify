@@ -121,6 +121,17 @@ export class EquationWorking {
         variable?: string | undefined;
     } | undefined): [Fraction, Fraction];
     /**
+     * solves linear
+      @param {{intertext?: string, variable?: string}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
+     * variable defaults to 'x'
+     * @returns {Fraction} - the roots of the equation
+     * WARNING: mutates the current instance. the lhs/rhs is the latest after the method
+     */
+    solveLinear(options?: {
+        intertext?: string | undefined;
+        variable?: string | undefined;
+    } | undefined): Fraction;
+    /**
      * solves the quadratic (for rational roots)
      * @returns {[Fraction, Fraction]}
      */

@@ -81,6 +81,12 @@ export class Expression {
      */
     changeOrder(args: number[]): Expression;
     /**
+     * slice
+     * @param {number} end - the end index (not inclusive)
+     * @return {Expression}
+     */
+    slice(end: number): Expression;
+    /**
      * gcd of the expression (only supports Fractions at the moment)
      * @return {Fraction} - the gcd of all the terms
      */

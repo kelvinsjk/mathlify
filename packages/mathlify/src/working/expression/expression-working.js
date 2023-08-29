@@ -57,6 +57,21 @@ export class ExpressionWorking {
   }
 
   /**
+   * sub in
+   * @param {{[key: string]: number|Fraction}} x - the values to sub in with the key being the variable signature.
+   * @param {{intertext?: string}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
+   * @returns {ExpressionWorking} - reference to this ExpressionWorking
+   * WARNING: mutates the current instance. the lhs/rhs is the latest after the method
+   */
+  subIn(x, options) {
+    insertIntertext(this, options);
+    const exp = this.exp instanceof Expression ? this.exp : this.exp.simplify();
+    this.exp = exp.subIn(x);
+    this.expArray.push(this.exp);
+    return this;
+  }
+
+  /**
    * factorize
    * @param {{intertext?: string, variable?: string}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
    * variable defaults to 'x'

@@ -26,6 +26,18 @@ export class ExpressionWorking {
     /** @type {boolean} */
     equalStart: boolean;
     /**
+     * sub in
+     * @param {{[key: string]: number|Fraction}} x - the values to sub in with the key being the variable signature.
+     * @param {{intertext?: string}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
+     * @returns {ExpressionWorking} - reference to this ExpressionWorking
+     * WARNING: mutates the current instance. the lhs/rhs is the latest after the method
+     */
+    subIn(x: {
+        [key: string]: number | Fraction;
+    }, options?: {
+        intertext?: string | undefined;
+    } | undefined): ExpressionWorking;
+    /**
      * factorize
      * @param {{intertext?: string, variable?: string}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
      * variable defaults to 'x'

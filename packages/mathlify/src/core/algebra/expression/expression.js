@@ -273,6 +273,15 @@ export class Expression {
   }
 
   /**
+   * slice
+   * @param {number} end - the end index (not inclusive)
+   * @return {Expression}
+   */
+  slice(end) {
+    return new Expression(...this.terms.slice(0, end));
+  }
+
+  /**
    * gcd of the expression (only supports Fractions at the moment)
    * @return {Fraction} - the gcd of all the terms
    */

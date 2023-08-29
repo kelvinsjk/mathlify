@@ -3,7 +3,7 @@
 // each time we apply a method on the equation,
 // we will slowly build up the steps as an array of lhs=rhs strings
 
-import { Fraction, Term, Expression } from "../../core/index.js";
+import { Fraction, Term, Expression, Polynomial } from "../../core/index.js";
 import {
   RationalTerm,
   // TODO: handle PowerTerm and ExpansionTerm
@@ -12,6 +12,7 @@ import {
 import {
   castToPoly,
   factorizeQuadratic,
+  solveLinear,
   solveQuadratic,
 } from "../../algebra/index.js";
 
@@ -224,6 +225,38 @@ export class EquationWorking {
     this.lhsArray.push(this.lhs);
     this.rhsArray.push(this.rhs);
     return roots;
+  }
+
+  /**
+   * solves linear
+    @param {{intertext?: string, variable?: string}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
+   * variable defaults to 'x'
+   * @returns {Fraction} - the roots of the equation
+   * WARNING: mutates the current instance. the lhs/rhs is the latest after the method
+   */
+  solveLinear(options) {
+    insertIntertext(this, options);
+    const x = options?.variable ?? "x";
+    const root = solveLinear(this.lhs, this.rhs, { variable: x });
+    const lhs = castToPoly(this.lhs, { variable: x });
+    const rhs = castToPoly(this.rhs, { variable: x });
+    if (`${lhs}` !== x) {
+      const [a] = lhs.coeffs;
+      const [_, d] = rhs.coeffs;
+      const offset = new Polynomial([d ?? 0, a ?? 0]);
+      const lhsWorking = lhs.minus(offset);
+      const rhsWorking = rhs.minus(offset);
+      this.lhsArray.push(lhsWorking);
+      this.rhsArray.push(rhsWorking);
+      const leadingCoeff = lhsWorking.leadingCoefficient();
+      if (leadingCoeff.is.not.one()) {
+        this.lhs = lhsWorking.divide(leadingCoeff);
+        this.rhs = rhsWorking.divide(leadingCoeff);
+        this.lhsArray.push(this.lhs);
+        this.rhsArray.push(this.rhs);
+      }
+    }
+    return root;
   }
 
   /**

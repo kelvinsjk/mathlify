@@ -30,7 +30,9 @@ export {
   determinantNumerical,
   cramersRule,
   cramersRuleNumerical,
-} from "./numerical/sle/index.js";
+  factorial,
+  nCr,
+} from "./numerical/index.js";
 export {
   getRandomInt,
   getRandomInts,
@@ -45,4 +47,5 @@ export {
   solveLinearInequality,
   solveQuadraticInequality,
   ExpressionWorking,
+  BinomialGeneralTerm,
 } from "./working/index.js";

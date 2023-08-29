@@ -63,6 +63,10 @@ export class xPolynomial extends Expression {
      */
     pow(n: number | Fraction): xPolynomial;
     /**
+     * @return {xPolynomial}
+     */
+    changeAscending(): xPolynomial;
+    /**
      * square
      * @returns {xPolynomial} - the square of the polynomial
      */
@@ -90,13 +94,19 @@ export class xPolynomial extends Expression {
         variable?: string | undefined;
     } | undefined): xPolynomial;
     /**
+     * slice
+     * @param {number} end - the ending index (non-inclusive)
+     * @return {xPolynomial} - the sliced polynomial
+     */
+    slice(end: number): xPolynomial;
+    /**
      * quadratic discriminant
      * @returns {Expression} - the discriminant as an expression
      */
     quadraticDiscriminant(): Expression;
 }
-import { Expression } from '../core/index.js';
-import { Polynomial } from '../core/index.js';
-import { Fraction } from '../core/index.js';
-import { Term } from '../core/index.js';
+import { Expression } from "../core/index.js";
+import { Polynomial } from "../core/index.js";
+import { Fraction } from "../core/index.js";
+import { Term } from "../core/index.js";
 //# sourceMappingURL=xPolynomial.d.ts.map
