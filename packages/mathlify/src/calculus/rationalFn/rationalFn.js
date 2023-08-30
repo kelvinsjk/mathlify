@@ -4,6 +4,7 @@ import { Polynomial, Fraction } from "../../core/index.js";
 import {
   ExpansionTerm,
   RationalTerm,
+  castToPoly,
   longDivision,
 } from "../../algebra/index.js";
 
@@ -142,17 +143,36 @@ export class RationalFn extends RationalTerm {
 
   /**
    * differentiate
+   * @param {{divisor?: Polynomial}} [options] - options to take out common divisor from both numerator and denominator
    * @returns {RationalTerm} the derivative of the expression
    */
-  differentiate() {
+  differentiate(options) {
     const num = this.numFn.times(this.coeff);
-    return new RationalTerm(
-      num
-        .differentiate()
-        .times(this.denFn)
-        .minus(num.times(this.denFn.differentiate())),
-      new ExpansionTerm([this.denFn, 2])
-    );
+    let numResult = num
+      .differentiate()
+      .times(this.denFn)
+      .minus(num.times(this.denFn.differentiate()));
+    let denResult =
+      this.denFn.terms.length === 1
+        ? this.denFn.square()
+        : new ExpansionTerm([this.denFn, 2]);
+    if (options?.divisor) {
+      numResult = castToPoly(longDivision(numResult, options.divisor));
+      denResult = castToPoly(
+        longDivision(this.denFn.square(), options.divisor)
+      );
+    }
+    return new RationalTerm(numResult, denResult);
+  }
+
+  /**
+   * differentiate
+   * @param {{divisor?: Polynomial}} [options] - options to take out common divisor from both numerator and denominator
+   * @returns {RationalFn} the derivative of the expression
+   */
+  differentiateToFn(options) {
+    const rational = this.differentiate(options);
+    return castToRationalFn(rational);
   }
 
   ///**
@@ -235,4 +255,15 @@ export class RationalFn extends RationalTerm {
   //    return this.cast.toExpression().cast.toFraction();
   //  },
   //};
+}
+
+/**
+ * @param {RationalTerm} x
+ * @returns {RationalFn}
+ * */
+function castToRationalFn(x) {
+  return new RationalFn(
+    castToPoly(x.num.times(x.coeff)),
+    castToPoly(x.den.expand())
+  );
 }

@@ -24,6 +24,12 @@
 			<!--parts-->
 			{#if answer['parts'] !== undefined}
 				{#each answer.parts as part, j}
+					{#if part['uplevel'] !== undefined}
+						<div class="spacer-part" />
+						<div class="col-span-2">
+							{@html part.uplevel}
+						</div>
+					{/if}
 					{#if part['body'] !== undefined}
 						{#if j !== 0 || answer['body'] !== undefined}
 							<div class="spacer-part" />

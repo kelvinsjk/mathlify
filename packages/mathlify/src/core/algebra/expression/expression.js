@@ -9,8 +9,8 @@ import { Term } from "../term/index.js";
  * @property {Map<string,Fraction>} termCoeffMap - the terms in the expression, where the key is the term signature and the value is the coefficient
  * @property {Map<string,Term>} termAtomMap - the terms in the expression, with coefficient adjusted to 1
  * @property {Term[]} terms - array of terms in the expression
- * @property {"expression"|"polynomial"} kind - mathlify expression class kind
- * @property {"expression"|"expression-term"|"polynomial"|"linear-polynomial"|"quadratic-polynomial"} type - mathlify expression class type
+ * @property {"expression"|"polynomial"|"general-fn"} kind - mathlify expression class kind
+ * @property {"expression"|"expression-term"|"polynomial"|"linear-polynomial"|"quadratic-polynomial"|"general-fn"} type - mathlify expression class type
  */
 export class Expression {
   /** @type {Map<string,Fraction>} */
@@ -19,9 +19,9 @@ export class Expression {
   termAtomMap;
   /** @type {Term[]} */
   terms;
-  /** @type {"expression"|"polynomial"|"extended-polynomial"} */
+  /** @type {"expression"|"polynomial"|"extended-polynomial"|"general-fn"} */
   kind;
-  /** @type {"expression"|"expression-term"|"polynomial"|"linear-polynomial"|"quadratic-polynomial"|"extended-polynomial"|"extended-linear-polynomial"|"extended-quadratic-polynomial"} */
+  /** @type {"expression"|"expression-term"|"polynomial"|"linear-polynomial"|"quadratic-polynomial"|"extended-polynomial"|"extended-linear-polynomial"|"extended-quadratic-polynomial"|"general-fn"} */
   type;
   /**
    * @constructor

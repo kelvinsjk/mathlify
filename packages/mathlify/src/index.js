@@ -51,4 +51,4 @@ export {
   BinomialGeneralTerm,
   partialFraction,
 } from "./working/index.js";
-export { RationalFn } from "./calculus/index.js";
+export { RationalFn, GeneralFn, dydx, d2ydx2 } from "./calculus/index.js";

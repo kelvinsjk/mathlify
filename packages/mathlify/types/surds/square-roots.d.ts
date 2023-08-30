@@ -98,7 +98,12 @@ export class SquareRoot extends Term {
             like: (term2: string | number | Fraction | Term) => boolean;
         };
     };
+    /**
+     * value of
+     * @returns {number} - the numerical value of the term
+     */
+    valueOf(): number;
 }
-import { Term } from '../core/index.js';
-import { Fraction } from '../core/index.js';
+import { Term } from "../core/index.js";
+import { Fraction } from "../core/index.js";
 //# sourceMappingURL=square-roots.d.ts.map

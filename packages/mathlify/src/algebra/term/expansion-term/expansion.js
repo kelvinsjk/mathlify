@@ -312,14 +312,16 @@ export class ExpansionTerm extends Term {
   static product(...exps) {
     /** @type {(Expression|{exp: Expression, power: Fraction})[]} */
     const expPowerArray = [];
+    let coeff = new Fraction(1);
     exps.forEach((exp) => {
       if (exp instanceof ExpansionTerm) {
+        coeff = coeff.times(exp.coeff);
         expPowerArray.push(...exp.toExpPowerArray());
       } else {
         expPowerArray.push(exp);
       }
     });
-    return new ExpansionTerm(...expPowerArray);
+    return new ExpansionTerm(coeff, ...expPowerArray);
   }
 }
 

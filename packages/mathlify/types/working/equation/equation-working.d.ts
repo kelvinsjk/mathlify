@@ -148,12 +148,13 @@ export class EquationWorking {
     } | undefined): EquationWorking;
     /**
      * cross multiplication (only if there is a rational term on either/both sides)
-     * @param {{intertext: string}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
+     * @param {{intertext?: string, show?: boolean}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
      * the equal sign will be push to the right by the length of the intertext
      * @returns {EquationWorking} - a reference to this equation
      */
     crossMultiply(options?: {
-        intertext: string;
+        intertext?: string | undefined;
+        show?: boolean | undefined;
     } | undefined): EquationWorking;
     /**
      * sets the aligned state
@@ -165,7 +166,7 @@ export class EquationWorking {
     /**
      * move term i from (lhs/rhs) to (rhs/lhs)
      * @param {number} i - the index of the term to be moved (note: 0-indexed)
-     * @param {{from?: "lhs"|"rhs", intertext?: string}} [options] - options object defaulting to `{from: "lhs"}`. intertext for inserting text between steps.
+     * @param {{from?: "lhs"|"rhs", intertext?: string, show?: boolean}} [options] - options object defaulting to `{from: "lhs"}`. intertext for inserting text between steps.
      * it is recommended we would in the non-aligned environment for this as the equal sign will be push to the right by the length of the intertext for aligned environments
      * @returns {EquationWorking} - a reference to this equation
      * WARNING: mutates current instance
@@ -173,6 +174,7 @@ export class EquationWorking {
     moveTerm(i: number, options?: {
         from?: "lhs" | "rhs" | undefined;
         intertext?: string | undefined;
+        show?: boolean | undefined;
     } | undefined): EquationWorking;
     /**
      * @param {{side?: 'lhs'|'rhs'|'both', intertext?: string, variable?: string}} [options] - options object defaulting to `{side: "lhs"}`. intertext for inserting text between steps.

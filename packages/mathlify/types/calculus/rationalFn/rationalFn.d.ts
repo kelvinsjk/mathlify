@@ -38,9 +38,20 @@ export class RationalFn extends RationalTerm {
     longDivide(): Expression;
     /**
      * differentiate
+     * @param {{divisor?: Polynomial}} [options] - options to take out common divisor from both numerator and denominator
      * @returns {RationalTerm} the derivative of the expression
      */
-    differentiate(): RationalTerm;
+    differentiate(options?: {
+        divisor?: Polynomial | undefined;
+    } | undefined): RationalTerm;
+    /**
+     * differentiate
+     * @param {{divisor?: Polynomial}} [options] - options to take out common divisor from both numerator and denominator
+     * @returns {RationalFn} the derivative of the expression
+     */
+    differentiateToFn(options?: {
+        divisor?: Polynomial | undefined;
+    } | undefined): RationalFn;
     /**
      * negative
      * @returns {RationalFn} the negative of the expression

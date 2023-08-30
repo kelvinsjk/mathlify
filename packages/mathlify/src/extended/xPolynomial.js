@@ -47,9 +47,15 @@ export class xPolynomial extends Expression {
       coeffsExp.reverse();
     }
     const coeffsCleaned = removeTrailingZeroes(coeffsExp);
-    const terms = coeffsCleaned.map(
-      (coeff, i) => new ExpansionTerm(coeff, [new Expression(variable), i])
-    );
+    const terms = coeffsCleaned.map((coeff, i) => {
+      if (coeff.terms.length === 1 && coeff.terms[0] instanceof ExpansionTerm) {
+        return ExpansionTerm.product(
+          coeff.terms[0],
+          new ExpansionTerm([new Expression(variable), i])
+        );
+      }
+      return new ExpansionTerm(coeff, [new Expression(variable), i]);
+    });
     if (!ascending) {
       terms.reverse();
     }

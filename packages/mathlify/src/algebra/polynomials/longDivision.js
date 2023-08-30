@@ -36,7 +36,7 @@ export function longDivision(poly, divisor, accumulator = []) {
   });
   accumulator.push(divisorCoeff);
   const quotient = poly.minus(divisor.times(subtractionPoly));
-  for (let i = 1; i < poly.degree - quotient.degree; i++) {
+  for (let i = 0; i < poly.degree - quotient.degree - divisor.degree; i++) {
     accumulator.push(new Fraction(0));
   }
   return longDivision(quotient, divisor, accumulator);

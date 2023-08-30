@@ -304,7 +304,7 @@ export class EquationWorking {
   }
   /**
    * cross multiplication (only if there is a rational term on either/both sides)
-   * @param {{intertext: string}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
+   * @param {{intertext?: string, show?: boolean}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
    * the equal sign will be push to the right by the length of the intertext
    * @returns {EquationWorking} - a reference to this equation
    */
@@ -320,8 +320,10 @@ export class EquationWorking {
           .times(simplifiedRHS.coeff)
           .times(simplifiedLHS.den.expand());
         insertIntertext(this, options);
-        this.lhsArray.push(newLHS);
-        this.rhsArray.push(newRHS);
+        if (options?.show ?? true) {
+          this.lhsArray.push(newLHS);
+          this.rhsArray.push(newRHS);
+        }
         this.lhs = newLHS;
         this.rhs = newRHS;
         return this;
@@ -332,8 +334,10 @@ export class EquationWorking {
           .times(rhs.den);
         const newRHS = simplifiedLHS.den.expand().times(rhs.num);
         insertIntertext(this, options);
-        this.lhsArray.push(newLHS);
-        this.rhsArray.push(newRHS);
+        if (options?.show ?? true) {
+          this.lhsArray.push(newLHS);
+          this.rhsArray.push(newRHS);
+        }
         this.lhs = newLHS;
         this.rhs = newRHS;
         return this;
@@ -341,8 +345,10 @@ export class EquationWorking {
         const newLHS = simplifiedLHS.num.times(simplifiedLHS.coeff);
         const newRHS = simplifiedRHS.times(simplifiedLHS.den.expand());
         insertIntertext(this, options);
-        this.lhsArray.push(newLHS);
-        this.rhsArray.push(newRHS);
+        if (options?.show ?? true) {
+          this.lhsArray.push(newLHS);
+          this.rhsArray.push(newRHS);
+        }
         this.lhs = newLHS;
         this.rhs = newRHS;
         return this;
@@ -357,8 +363,10 @@ export class EquationWorking {
             .times(lhs.den)
             .times(simplifiedRHS.coeff);
           insertIntertext(this, options);
-          this.lhsArray.push(newLHS);
-          this.rhsArray.push(newRHS);
+          if (options?.show ?? true) {
+            this.lhsArray.push(newLHS);
+            this.rhsArray.push(newRHS);
+          }
           this.lhs = newLHS;
           this.rhs = newRHS;
           return this;
@@ -366,8 +374,10 @@ export class EquationWorking {
           const newLHS = simplifiedLHS.times(simplifiedRHS.den.expand());
           const newRHS = simplifiedRHS.num.times(simplifiedRHS.coeff);
           insertIntertext(this, options);
-          this.lhsArray.push(newLHS);
-          this.rhsArray.push(newRHS);
+          if (options?.show ?? true) {
+            this.lhsArray.push(newLHS);
+            this.rhsArray.push(newRHS);
+          }
           this.lhs = newLHS;
           this.rhs = newRHS;
           return this;
@@ -399,7 +409,7 @@ export class EquationWorking {
   /**
    * move term i from (lhs/rhs) to (rhs/lhs)
    * @param {number} i - the index of the term to be moved (note: 0-indexed)
-   * @param {{from?: "lhs"|"rhs", intertext?: string}} [options] - options object defaulting to `{from: "lhs"}`. intertext for inserting text between steps.
+   * @param {{from?: "lhs"|"rhs", intertext?: string, show?: boolean}} [options] - options object defaulting to `{from: "lhs"}`. intertext for inserting text between steps.
    * it is recommended we would in the non-aligned environment for this as the equal sign will be push to the right by the length of the intertext for aligned environments
    * @returns {EquationWorking} - a reference to this equation
    * WARNING: mutates current instance
@@ -418,8 +428,10 @@ export class EquationWorking {
       newLHS = this.lhs.minus(this.rhs.terms[i]);
     }
     insertIntertext(this, options);
-    this.lhsArray.push(newLHS);
-    this.rhsArray.push(newRHS);
+    if (options?.show ?? true) {
+      this.lhsArray.push(newLHS);
+      this.rhsArray.push(newRHS);
+    }
     this.lhs = newLHS;
     this.rhs = newRHS;
     return this;

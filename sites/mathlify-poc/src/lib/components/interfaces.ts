@@ -6,6 +6,7 @@ export interface AnswerObject {
 
 export interface AnswerPart extends AnswerObject {
 	partNo?: number;
+	uplevel?: string;
 }
 
 export type NumberArray6 = [number, number, number, number, number, number];

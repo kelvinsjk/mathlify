@@ -41,7 +41,7 @@ export class RationalTerm extends Term {
         ? new Expression(...numerator)
         : new Expression(numerator);
     }
-    if (numerator.type === "expression-term") {
+    if (numerator.terms.length <= 1) {
       const numeratorTerm = numerator.cast.toTerm();
       if (numeratorTerm.coeff.is.negative()) {
         numerator = numerator.times(-1);

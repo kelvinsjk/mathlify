@@ -319,6 +319,9 @@ export class Polynomial extends Expression {
     if (!this.ascending) {
       newCoeffs.reverse();
     }
+    if (newCoeffs.length === 0) {
+      newCoeffs.push(new Fraction(0));
+    }
     return new Polynomial(newCoeffs, {
       variable: this.variable,
       ascending: this.ascending,
@@ -365,6 +368,8 @@ export class Polynomial extends Expression {
     if (!this.ascending) {
       coeffs.reverse();
     }
+    /** @type {boolean} */
+    let first = true;
     /** @type {{term: string, addition: boolean}[]} */
     return coeffs.reduce((prev, coeff, i) => {
       if (coeff.is.zero()) {
@@ -388,7 +393,8 @@ export class Polynomial extends Expression {
             : `\\left(${x}\\right)`;
         term = `${new Term(coeff.abs(), [xBrackets, power])}`;
       }
-      if (i === 0) {
+      if (first) {
+        first = false;
         return addition ? term : `- ${term}`;
       }
       return prev + (addition ? ` + ${term}` : ` - ${term}`);
