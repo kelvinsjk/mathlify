@@ -37,6 +37,11 @@ export class RationalFn extends RationalTerm {
      */
     longDivide(): Expression;
     /**
+     * differentiate
+     * @returns {RationalTerm} the derivative of the expression
+     */
+    differentiate(): RationalTerm;
+    /**
      * negative
      * @returns {RationalFn} the negative of the expression
      */

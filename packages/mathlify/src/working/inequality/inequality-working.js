@@ -20,7 +20,8 @@ import { solveQuadraticInequality } from "./solveInequality.js";
  * @class
  * @property {Expression} lhs - the left hand side of the equation
  * @property {Expression} rhs - the right hand side of the equation
- * @property {"<"|">"|"\\geq"|"\\leq"} sign - the sign
+ * @property {("<"|">"|"\\geq"|"\\leq")[]} signArray - the sign
+ * @property {("<"|">"|"\\geq"|"\\leq")} sign
  * @property {(Expression|string)[]} lhsArray - a collection of lhs expressions from the first step to the last
  * @property {(Expression|string)[]} rhsArray - a collection of rhs expressions from the first step to the last
  * @property {boolean} aligned - whether or not the steps are to be aligned
@@ -30,8 +31,10 @@ export class InequalityWorking {
   lhs;
   /** @type {Expression} */
   rhs;
-  /** @type {"<"|">"|"\\geq"|"\\leq"} */
+  /** @type {("<"|">"|"\\geq"|"\\leq")} sign */
   sign;
+  /** @type {("<"|">"|"\\geq"|"\\leq")[]} signArray */
+  signArray;
   /** @type {(Expression|string)[]} */
   lhsArray;
   /** @type {(Expression|string)[]} */
@@ -58,6 +61,7 @@ export class InequalityWorking {
     } else {
       this.sign = sign;
     }
+    this.signArray = [this.sign];
     this.lhs = lhs;
     this.rhs = rhs;
     this.lhsArray = [lhs];
@@ -74,11 +78,12 @@ export class InequalityWorking {
    * WARNING: mutates the current instance. the lhs/rhs is the latest after the method
    */
   plus(x, options) {
+    insertIntertext(this, options);
     const newLHS = this.lhs.plus(x);
     const newRHS = this.rhs.plus(x);
-    insertIntertext(this, options);
     this.lhsArray.push(newLHS);
     this.rhsArray.push(newRHS);
+    this.signArray.push(this.sign);
     this.lhs = newLHS;
     this.rhs = newRHS;
     return this;
@@ -92,11 +97,12 @@ export class InequalityWorking {
    * WARNING: mutates the current instance. the lhs/rhs is the latest after the method
    */
   minus(x, options) {
+    insertIntertext(this, options);
     const newLHS = this.lhs.minus(x);
     const newRHS = this.rhs.minus(x);
-    insertIntertext(this, options);
     this.lhsArray.push(newLHS);
     this.rhsArray.push(newRHS);
+    this.signArray.push(this.sign);
     this.lhs = newLHS;
     this.rhs = newRHS;
     return this;
@@ -111,9 +117,9 @@ export class InequalityWorking {
    * WARNING: only checks if number/Fractions are negative. for all others, may need to toggle the sign manually
    */
   times(x, options) {
+    insertIntertext(this, options);
     const newLHS = this.lhs.times(x);
     const newRHS = this.rhs.times(x);
-    insertIntertext(this, options);
     this.lhsArray.push(newLHS);
     this.rhsArray.push(newRHS);
     this.lhs = newLHS;
@@ -124,6 +130,7 @@ export class InequalityWorking {
     ) {
       this.sign = oppositeSign(this.sign);
     }
+    this.signArray.push(this.sign);
     return this;
   }
   /**
@@ -135,14 +142,15 @@ export class InequalityWorking {
    * WARNING: only checks if number/Fractions are negative. for all others, may need to toggle the sign manually
    */
   negative(options) {
+    insertIntertext(this, options);
     const newLHS = this.lhs.negative();
     const newRHS = this.rhs.negative();
-    insertIntertext(this, options);
     this.lhsArray.push(newLHS);
     this.rhsArray.push(newRHS);
     this.lhs = newLHS;
     this.rhs = newRHS;
     this.sign = oppositeSign(this.sign);
+    this.signArray.push(this.sign);
     return this;
   }
   /**
@@ -168,6 +176,7 @@ export class InequalityWorking {
     ) {
       this.sign = oppositeSign(this.sign);
     }
+    this.signArray.push(this.sign);
     return this;
   }
   /**
@@ -185,6 +194,7 @@ export class InequalityWorking {
     this.lhs = newLHS;
     this.rhs = newRHS;
     this.sign = oppositeSign(this.sign);
+    this.signArray.push(this.sign);
     return this;
   }
 
@@ -200,6 +210,7 @@ export class InequalityWorking {
     if (options?.working) {
       this.lhsArray.push(`${this.lhs} - (${this.rhs})`);
       this.rhsArray.push(`0`);
+      this.signArray.push(this.sign);
     }
     // final
     const newLHS = this.lhs.minus(this.rhs);
@@ -208,6 +219,7 @@ export class InequalityWorking {
     this.rhsArray.push(newRHS);
     this.lhs = newLHS;
     this.rhs = newRHS;
+    this.signArray.push(this.sign);
     return this;
   }
 
@@ -229,6 +241,7 @@ export class InequalityWorking {
     this.lhs = new Expression(factorizeQuadratic(this.lhs, options));
     this.lhsArray.push(this.lhs);
     this.rhsArray.push(this.rhs);
+    this.signArray.push(this.sign);
     return intervals;
   }
 
@@ -258,6 +271,7 @@ export class InequalityWorking {
       insertIntertext(this, options);
       this.lhsArray.push(newLHS);
       this.rhsArray.push(newRHS);
+      this.signArray.push(this.sign);
       this.lhs = newLHS;
       this.rhs = newRHS;
       return this;
@@ -291,6 +305,7 @@ export class InequalityWorking {
         this.rhsArray.push(newRHS);
         this.lhs = newLHS;
         this.rhs = newRHS;
+        this.signArray.push(this.sign);
         return this;
       } else if (simplifiedRHS.is.constant()) {
         const rhs = simplifiedRHS.cast.toFraction();
@@ -301,6 +316,7 @@ export class InequalityWorking {
         insertIntertext(this, options);
         this.lhsArray.push(newLHS);
         this.rhsArray.push(newRHS);
+        this.signArray.push(this.sign);
         this.lhs = newLHS;
         this.rhs = newRHS;
         return this;
@@ -310,6 +326,7 @@ export class InequalityWorking {
         insertIntertext(this, options);
         this.lhsArray.push(newLHS);
         this.rhsArray.push(newRHS);
+        this.signArray.push(this.sign);
         this.lhs = newLHS;
         this.rhs = newRHS;
         return this;
@@ -326,6 +343,7 @@ export class InequalityWorking {
           insertIntertext(this, options);
           this.lhsArray.push(newLHS);
           this.rhsArray.push(newRHS);
+          this.signArray.push(this.sign);
           this.lhs = newLHS;
           this.rhs = newRHS;
           return this;
@@ -335,6 +353,7 @@ export class InequalityWorking {
           insertIntertext(this, options);
           this.lhsArray.push(newLHS);
           this.rhsArray.push(newRHS);
+          this.signArray.push(this.sign);
           this.lhs = newLHS;
           this.rhs = newRHS;
           return this;
@@ -376,6 +395,7 @@ export class InequalityWorking {
     } else {
       this.rhsArray.push(this.rhs);
     }
+    this.signArray.push(this.sign);
     return this;
   }
 
@@ -418,6 +438,7 @@ export class InequalityWorking {
     insertIntertext(this, options);
     this.lhsArray.push(newLHS);
     this.rhsArray.push(newRHS);
+    this.signArray.push(this.sign);
     this.lhs = newLHS;
     this.rhs = newRHS;
     return this;
@@ -427,8 +448,10 @@ export class InequalityWorking {
    * returns a string representation of the sequence of steps to be fed into a LaTeX align/align* / gather/gather* environment
    */
   toString() {
-    const equal = this.aligned ? ` &${this.sign} ` : ` ${this.sign} `;
     return this.lhsArray.reduce((prev, lhs, i) => {
+      const equal = this.aligned
+        ? ` &${this.signArray[i]} `
+        : ` ${this.signArray[i]} `;
       const newLine = i === 0 ? "" : "\n\t\\\\ ";
       const equalSign =
         typeof lhs === "string" && this.rhsArray[i] === ""

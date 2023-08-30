@@ -335,6 +335,55 @@ export class xPolynomial extends Expression {
     const [c, b, a] = this.coeffs;
     return b.square().minus(a.times(c).times(4));
   }
+
+  /**
+   * differentiate
+   * @returns {xPolynomial} - the derivative
+   */
+  differentiate() {
+    const newCoeffs = this.coeffs
+      .slice(1)
+      .map((coeff, i) => coeff.times(i + 1));
+    if (!this.ascending) {
+      newCoeffs.reverse();
+    }
+    return new xPolynomial(newCoeffs, {
+      variable: this.variable,
+      ascending: this.ascending,
+    });
+  }
+
+  /**
+   * integrate
+   * @param {number|Fraction} [c=0] - the constant of integration
+   * @returns {xPolynomial} - the integral
+   */
+  integrate(c = 0) {
+    const newCoeffs = [
+      c,
+      ...this.coeffs.map((coeff, i) => coeff.divide(i + 1)),
+    ];
+    if (!this.ascending) {
+      newCoeffs.reverse();
+    }
+    return new xPolynomial(newCoeffs, {
+      variable: this.variable,
+      ascending: this.ascending,
+    });
+  }
+
+  /**
+   * definite integral
+   * @param {number|Fraction} lower - the lower limit
+   * @param {number|Fraction} upper - the upper limit
+   * @returns {Expression} - the definite integral
+   */
+  definiteIntegral(lower, upper) {
+    const integral = this.integrate();
+    return integral
+      .subIntoVariable(lower)
+      .minus(integral.subIntoVariable(upper));
+  }
 }
 
 /**

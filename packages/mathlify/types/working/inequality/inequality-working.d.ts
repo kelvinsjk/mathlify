@@ -4,7 +4,8 @@
  * @class
  * @property {Expression} lhs - the left hand side of the equation
  * @property {Expression} rhs - the right hand side of the equation
- * @property {"<"|">"|"\\geq"|"\\leq"} sign - the sign
+ * @property {("<"|">"|"\\geq"|"\\leq")[]} signArray - the sign
+ * @property {("<"|">"|"\\geq"|"\\leq")} sign
  * @property {(Expression|string)[]} lhsArray - a collection of lhs expressions from the first step to the last
  * @property {(Expression|string)[]} rhsArray - a collection of rhs expressions from the first step to the last
  * @property {boolean} aligned - whether or not the steps are to be aligned
@@ -24,8 +25,10 @@ export class InequalityWorking {
     lhs: Expression;
     /** @type {Expression} */
     rhs: Expression;
-    /** @type {"<"|">"|"\\geq"|"\\leq"} */
-    sign: "<" | ">" | "\\geq" | "\\leq";
+    /** @type {("<"|">"|"\\geq"|"\\leq")} sign */
+    sign: ("<" | ">" | "\\geq" | "\\leq");
+    /** @type {("<"|">"|"\\geq"|"\\leq")[]} signArray */
+    signArray: ("<" | ">" | "\\geq" | "\\leq")[];
     /** @type {(Expression|string)[]} */
     lhsArray: (Expression | string)[];
     /** @type {(Expression|string)[]} */

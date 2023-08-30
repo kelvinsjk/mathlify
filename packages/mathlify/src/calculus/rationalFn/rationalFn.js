@@ -1,7 +1,11 @@
 // rationalTerm represents ( num / den ), where both are expression types
 
 import { Polynomial, Fraction } from "../../core/index.js";
-import { RationalTerm, longDivision } from "../../algebra/index.js";
+import {
+  ExpansionTerm,
+  RationalTerm,
+  longDivision,
+} from "../../algebra/index.js";
 
 /**
  * @typedef {import('../../core/index.js').Term} Term
@@ -134,6 +138,21 @@ export class RationalFn extends RationalTerm {
    */
   longDivide() {
     return longDivision(this.numFn.times(this.coeff), this.denFn);
+  }
+
+  /**
+   * differentiate
+   * @returns {RationalTerm} the derivative of the expression
+   */
+  differentiate() {
+    const num = this.numFn.times(this.coeff);
+    return new RationalTerm(
+      num
+        .differentiate()
+        .times(this.denFn)
+        .minus(num.times(this.denFn.differentiate())),
+      new ExpansionTerm([this.denFn, 2])
+    );
   }
 
   ///**

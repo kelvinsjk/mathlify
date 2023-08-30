@@ -104,6 +104,24 @@ export class xPolynomial extends Expression {
      * @returns {Expression} - the discriminant as an expression
      */
     quadraticDiscriminant(): Expression;
+    /**
+     * differentiate
+     * @returns {xPolynomial} - the derivative
+     */
+    differentiate(): xPolynomial;
+    /**
+     * integrate
+     * @param {number|Fraction} [c=0] - the constant of integration
+     * @returns {xPolynomial} - the integral
+     */
+    integrate(c?: number | Fraction | undefined): xPolynomial;
+    /**
+     * definite integral
+     * @param {number|Fraction} lower - the lower limit
+     * @param {number|Fraction} upper - the upper limit
+     * @returns {Expression} - the definite integral
+     */
+    definiteIntegral(lower: number | Fraction, upper: number | Fraction): Expression;
 }
 import { Expression } from "../core/index.js";
 import { Polynomial } from "../core/index.js";

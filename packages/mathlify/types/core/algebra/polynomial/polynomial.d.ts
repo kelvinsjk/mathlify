@@ -88,6 +88,24 @@ export class Polynomial extends Expression {
     leadingCoefficient(): Fraction;
     isZero(): boolean;
     /**
+     * differentiate
+     * @returns {Polynomial} - the derivative
+     */
+    differentiate(): Polynomial;
+    /**
+     * integrate
+     * @param {number|Fraction} [c=0] - the constant of integration
+     * @returns {Polynomial} - the integral
+     */
+    integrate(c?: number | Fraction | undefined): Polynomial;
+    /**
+     * definite integral
+     * @param {number|Fraction} lower - the lower limit
+     * @param {number|Fraction} upper - the upper limit
+     * @returns {Fraction} - the definite integral
+     */
+    definiteIntegral(lower: number | Fraction, upper: number | Fraction): Fraction;
+    /**
      * sub in working
      * @param {number|Fraction} x - the value to sub in
      * @returns {string}

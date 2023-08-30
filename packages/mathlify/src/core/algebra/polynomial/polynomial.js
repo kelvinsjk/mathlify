@@ -309,6 +309,53 @@ export class Polynomial extends Expression {
   }
 
   /**
+   * differentiate
+   * @returns {Polynomial} - the derivative
+   */
+  differentiate() {
+    const newCoeffs = this.coeffs
+      .slice(1)
+      .map((coeff, i) => coeff.times(i + 1));
+    if (!this.ascending) {
+      newCoeffs.reverse();
+    }
+    return new Polynomial(newCoeffs, {
+      variable: this.variable,
+      ascending: this.ascending,
+    });
+  }
+
+  /**
+   * integrate
+   * @param {number|Fraction} [c=0] - the constant of integration
+   * @returns {Polynomial} - the integral
+   */
+  integrate(c = 0) {
+    const newCoeffs = [
+      c,
+      ...this.coeffs.map((coeff, i) => coeff.divide(i + 1)),
+    ];
+    if (!this.ascending) {
+      newCoeffs.reverse();
+    }
+    return new Polynomial(newCoeffs, {
+      variable: this.variable,
+      ascending: this.ascending,
+    });
+  }
+
+  /**
+   * definite integral
+   * @param {number|Fraction} lower - the lower limit
+   * @param {number|Fraction} upper - the upper limit
+   * @returns {Fraction} - the definite integral
+   */
+  definiteIntegral(lower, upper) {
+    const integral = this.integrate();
+    return integral.subIn(lower).minus(integral.subIn(upper));
+  }
+
+  /**
    * sub in working
    * @param {number|Fraction} x - the value to sub in
    * @returns {string}
