@@ -103,6 +103,12 @@ export class SquareRoot extends Term {
      * @returns {number} - the numerical value of the term
      */
     valueOf(): number;
+    /**
+     *
+     * @param {number} precision
+     * @returns {string}
+     */
+    toPrecision(precision: number): string;
 }
 import { Term } from "../core/index.js";
 import { Fraction } from "../core/index.js";

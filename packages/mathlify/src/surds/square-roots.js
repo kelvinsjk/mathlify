@@ -244,6 +244,15 @@ export class SquareRoot extends Term {
   valueOf() {
     return this.coeff.valueOf() * Math.sqrt(this.radicand.valueOf());
   }
+
+  /**
+   *
+   * @param {number} precision
+   * @returns {string}
+   */
+  toPrecision(precision) {
+    return this.valueOf().toPrecision(precision);
+  }
 }
 
 /**

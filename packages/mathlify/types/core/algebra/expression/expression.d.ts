@@ -24,10 +24,10 @@ export class Expression {
     termAtomMap: Map<string, Term>;
     /** @type {Term[]} */
     terms: Term[];
-    /** @type {"expression"|"polynomial"|"extended-polynomial"|"general-fn"} */
-    kind: "expression" | "polynomial" | "extended-polynomial" | "general-fn";
-    /** @type {"expression"|"expression-term"|"polynomial"|"linear-polynomial"|"quadratic-polynomial"|"extended-polynomial"|"extended-linear-polynomial"|"extended-quadratic-polynomial"|"general-fn"} */
-    type: "expression" | "expression-term" | "polynomial" | "linear-polynomial" | "quadratic-polynomial" | "extended-polynomial" | "extended-linear-polynomial" | "extended-quadratic-polynomial" | "general-fn";
+    /** @type {"expression"|"polynomial"|"extended-polynomial"|"general-fn"|"polynomial-like"} */
+    kind: "expression" | "polynomial" | "extended-polynomial" | "general-fn" | "polynomial-like";
+    /** @type {"expression"|"expression-term"|"polynomial"|"linear-polynomial"|"quadratic-polynomial"|"extended-polynomial"|"extended-linear-polynomial"|"extended-quadratic-polynomial"|"general-fn"|"polynomial-like"} */
+    type: "expression" | "expression-term" | "polynomial" | "linear-polynomial" | "quadratic-polynomial" | "extended-polynomial" | "extended-linear-polynomial" | "extended-quadratic-polynomial" | "general-fn" | "polynomial-like";
     /**
      * Expression addition
      * @param {number|Fraction|string|Term|Expression} x - term/expression to be added

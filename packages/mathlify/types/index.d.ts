@@ -6,5 +6,5 @@ export { RationalTerm, ExpansionTerm, SLE, SLENumerical, solveLinear, discrimina
 export { determinant, determinantNumerical, cramersRule, cramersRuleNumerical, factorial, nCr } from "./numerical/index.js";
 export { getRandomInt, getRandomInts, getRandomFraction, getRandomFractions } from "./random/index.js";
 export { EquationWorking, InequalityWorking, RationalInequalityWorking, solveRationalInequality, solveLinearInequality, solveQuadraticInequality, ExpressionWorking, BinomialGeneralTerm, partialFraction } from "./working/index.js";
-export { RationalFn, GeneralFn, dydx, d2ydx2 } from "./calculus/index.js";
+export { RationalFn, GeneralFn, PowerFn, dydx, d2ydx2, PolynomialLike } from "./calculus/index.js";
 //# sourceMappingURL=index.d.ts.map

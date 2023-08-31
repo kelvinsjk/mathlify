@@ -1,5 +1,5 @@
 /** GeneralFn class
- * @property {(Polynomial|RationalFn)[]} fnTerms - collection of Polynomials and RationalFns
+ * @property {(Polynomial|RationalFn|PowerFn)[]} fnTerms - collection of Polynomials and RationalFns
  * @property {"general-fn"} kind - mathlify expression class kind
  * @property {"general-fn"} type - mathlify expression class type
  */
@@ -7,11 +7,11 @@ export class GeneralFn extends Expression {
     /**
      * @constructor
      * Creates a GeneralFn instance
-     * @param {(Polynomial|RationalFn)[]} terms - terms of the general expression
+     * @param {(Polynomial|RationalFn|PowerFn)[]} terms - terms of the general expression
      */
-    constructor(...terms: (Polynomial | RationalFn)[]);
-    /** @type {(Polynomial|RationalFn)[]} */
-    fnTerms: (Polynomial | RationalFn)[];
+    constructor(...terms: (Polynomial | RationalFn | PowerFn)[]);
+    /** @type {(Polynomial|RationalFn|PowerFn)[]} */
+    fnTerms: (Polynomial | RationalFn | PowerFn)[];
     /** @type {"general-fn"} */
     kind: "general-fn";
     /** @type {"general-fn"} */
@@ -36,4 +36,5 @@ export class GeneralFn extends Expression {
 import { Expression } from "../../core/index.js";
 import { Polynomial } from "../../core/index.js";
 import { RationalFn } from "../rationalFn/rationalFn.js";
+import { PowerFn } from "../powerFn/powerFn.js";
 //# sourceMappingURL=generalFn.d.ts.map

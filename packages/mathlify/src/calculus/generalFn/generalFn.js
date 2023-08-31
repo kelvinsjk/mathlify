@@ -1,13 +1,14 @@
-import { Expression, Polynomial, Term } from "../../core/index.js";
+import { Expression, Polynomial, Term, Fraction } from "../../core/index.js";
+import { PowerFn } from "../powerFn/powerFn.js";
 import { RationalFn } from "../rationalFn/rationalFn.js";
 
 /** GeneralFn class
- * @property {(Polynomial|RationalFn)[]} fnTerms - collection of Polynomials and RationalFns
+ * @property {(Polynomial|RationalFn|PowerFn)[]} fnTerms - collection of Polynomials and RationalFns
  * @property {"general-fn"} kind - mathlify expression class kind
  * @property {"general-fn"} type - mathlify expression class type
  */
 export class GeneralFn extends Expression {
-  /** @type {(Polynomial|RationalFn)[]} */
+  /** @type {(Polynomial|RationalFn|PowerFn)[]} */
   fnTerms;
   /** @type {"general-fn"} */
   kind;
@@ -16,14 +17,20 @@ export class GeneralFn extends Expression {
   /**
    * @constructor
    * Creates a GeneralFn instance
-   * @param {(Polynomial|RationalFn)[]} terms - terms of the general expression
+   * @param {(Polynomial|RationalFn|PowerFn)[]} terms - terms of the general expression
    */
   constructor(...terms) {
     if (terms.length === 0) {
       throw new Error("Expression must have at least one term");
     }
     super(...toTerms(terms));
-    this.fnTerms = terms;
+    const filteredTerms = terms.filter((term) => {
+      if (`${term}` === "0") {
+        return false;
+      }
+      return true;
+    });
+    this.fnTerms = filteredTerms;
     this.kind = "general-fn";
     this.type = "general-fn";
   }
@@ -47,6 +54,15 @@ export class GeneralFn extends Expression {
     const derivatives = this.fnTerms.map((term) => {
       if (term instanceof Polynomial) {
         return term.differentiate();
+      } else if (term instanceof PowerFn) {
+        const derivative = term.differentiate();
+        if (!(derivative instanceof PowerFn)) {
+          throw new Error(
+            "derivative of PowerFn only works in GeneralFn if fx is linear"
+          );
+        } else {
+          return derivative;
+        }
       } else {
         // RationalFn
         return term.differentiateToFn(options);
@@ -164,29 +180,32 @@ export class GeneralFn extends Expression {
   //   return this.times(x.reciprocal(options));
   // }
 
-  // /**
-  //  * @overload
-  //  * @param {{[key: string]: number|Fraction}} x - the values to sub in with the key being the variable signature.
-  //  * @returns {Expression} - the new Expression
-  //  */
-  // /**
-  //  * @overload
-  //  * @param {number|Fraction} x - the value to sub in as "x"
-  //  * @return {Fraction} - the value of the expression cast to Fraction type (make sure to check that this is valid or an error will be thrown)
-  //  */
-  // /**
-  //  * sub in a value for a variable
-  //  * @param {{[key: string]: number|Fraction}|number|Fraction} x - the values to sub in with the key being the variable signature.
-  //  * @returns {Expression|Fraction} - the new Expression
-  //  * @example new Expression(2,'x').subIn({x: 3}) returns new Expression(6)
-  //  */
-  // subIn(x) {
-  //   if (typeof x === "number" || x instanceof Fraction) {
-  //     return this.subIn({ x: x }).cast.toFraction();
-  //   }
-  //   const newTerms = this.terms.map((term) => term.subIn(x));
-  //   return new Expression(...newTerms);
-  // }
+  /**
+   * @overload
+   * @param {{[key: string]: number|Fraction}} x - the values to sub in with the key being the variable signature.
+   * @returns {Expression} - the new Expression
+   */
+  /**
+   * @overload
+   * @param {number|Fraction} x - the value to sub in as "x"
+   * @return {Fraction} - the value of the expression cast to Fraction type (make sure to check that this is valid or an error will be thrown)
+   */
+  /**
+   * sub in a value for a variable
+   * @param {{[key: string]: number|Fraction}|number|Fraction} x - the values to sub in with the key being the variable signature.
+   * @returns {Expression|Fraction} - the new Expression
+   * @example new Expression(2,'x').subIn({x: 3}) returns new Expression(6)
+   */
+  subIn(x) {
+    if (typeof x === "number" || x instanceof Fraction) {
+      return this.fnTerms.reduce(
+        (prev, term) => prev.plus(term.subIn({ x }).cast.toFraction()),
+        new Fraction(0)
+      );
+    }
+    const newTerms = this.terms.map((term) => term.subIn(x));
+    return new Expression(...newTerms);
+  }
 
   // /**
   //  * changes order of terms
