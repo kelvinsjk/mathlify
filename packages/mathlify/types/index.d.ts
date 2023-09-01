@@ -7,4 +7,5 @@ export { determinant, determinantNumerical, cramersRule, cramersRuleNumerical, f
 export { getRandomInt, getRandomInts, getRandomFraction, getRandomFractions } from "./random/index.js";
 export { EquationWorking, InequalityWorking, RationalInequalityWorking, solveRationalInequality, solveLinearInequality, solveQuadraticInequality, ExpressionWorking, BinomialGeneralTerm, partialFraction } from "./working/index.js";
 export { RationalFn, GeneralFn, PowerFn, dydx, d2ydx2, PolynomialLike } from "./calculus/index.js";
+export { Circle, Point } from "./coordinate-geometry/index.js";
 //# sourceMappingURL=index.d.ts.map

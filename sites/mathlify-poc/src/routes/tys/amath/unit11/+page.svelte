@@ -21,6 +21,7 @@
 		PolynomialLike,
 		PowerFn,
 		solveLinear,
+		Point,
 	} from 'mathlify';
 	import {
 		align,
@@ -1189,59 +1190,105 @@
 	})();
 
 	//! Question 16: 2015 P2 Q3
-	//TODO: Equation of line (coordinate geometry)
 	(() => {
 		const parts: QuestionType['parts'] = [];
 		const solParts: QuestionType['parts'] = [];
-		const A = new Polynomial([0, 216, new Fraction(-9, 2)], { ascending: true });
-		const length = 288;
-		const body = `A tennis club makes three equally sized tennis courts, positioned
-			next to each other as shown in the diagram below. Each tennis court is rectangular
-			and has side length ${math(`x \\textrm{ m}`)} and ${math(`y \\textrm{ m}.`)}
-			The lines in the diagram represent wire netting. The total length of wire
-			netting used is ${math(`${length} \\textrm{ m}.`)}
+		const y = new Polynomial([-1, 4, -6]);
+		const x = 1;
+		const body = `The equation of a curve is ${math(`y=${y}.`)}
+			The point ${math(`P`)}
+			lies on the curve and has an
+			${math(`x`)}-coordinate of
+			${math(`${x}.`)}
+			The tangent to the curve
+			at ${math(`P`)}
+			meets the ${math(`x`)}-axis at ${math(`A`)}
+			and the ${math(`y`)}-axis at ${math(`B.`)}
 		`;
-		let num: Polynomial;
+		let gradientP: Fraction;
+		let derivative: Polynomial;
 		// part a
 		(() => {
-			const body = `Show that the total area, ${math(`A \\textrm{m}^2,`)}
-				of the three tennis courts is given by
-				${display(`A = ${A}.`)}
+			const body = `Find the area of triangle ${math(`AOB,`)}
+				where ${math(`O`)} is the origin.
 			`;
-			num = new Polynomial([length, -6], { ascending: true });
-			let sol = gatherStar(`4y + 6x = ${length}`);
-			sol += eqn(`y = \\frac{${num}}{4}`, { leqno: true });
-			sol += alignStar(`A &= 3xy
-				\\\\ &= 3x \\left( \\frac{${num}}{4} \\right)
-				\\\\ &= ${num.times(new Polynomial(3)).divide(4)} \\; \\blacksquare
+			const yVal = y.subIn(x);
+			const P = new Point(x, yVal, { name: 'P' });
+			let sol = `When ${math(`x=${x},`)}
+				${alignStar(`y &= ${y}
+					\\\\ &= ${y.subInWorking(x)}
+					\\\\ &= ${yVal}
+				`)}
+				${display(`${P}`)}
+			`;
+			derivative = y.differentiate();
+			sol += alignStar(`y &= ${y}
+			\\\\ ${dydx()} &= ${derivative}
+			`);
+			gradientP = derivative.subIn(x);
+			sol += `${alignStar(`&\\textrm{Gradient of tangent at } P
+					\\\\ &= \\left.${dydx()}\\right|_{x=${x}}
+					\\\\ &= ${derivative.subInWorking(x)}
+					\\\\ &= ${gradientP}
+				`)}
+			`;
+			const tangent = P.lineWithGradient(gradientP);
+			sol += `Equation of tangent at ${math(`P:`)}
+				${alignStar(`y - (${P.y}) &= ${gradientP} \\left( x - ${P.x} \\right)
+					\\\\ y &= ${tangent}`)}
+			`;
+			const xB = 0;
+			const yB = tangent.subIn(xB);
+			const B = new Point(xB, yB, { name: 'B' });
+			sol += `At point ${math(`B,`)} ${math(`x=${xB}`)}
+				${alignStar(`y &= ${tangent.subInWorking(xB)}
+					\\\\ &= ${yB}
+				`)}
+				${display(`${B}`)}
+			`;
+			const yA = 0;
+			const workingA = new EquationWorking(tangent, yA, { aligned: true });
+			const xA = workingA.solveLinear();
+			const A = new Point(xA, yA, { name: 'A' });
+			sol += `At point ${math(`A,`)} ${math(`y=${yA}`)}
+				${alignStar(`${workingA}
+				`)}
+				${display(`${A}`)}
+			`;
+			const area = A.x.times(B.y.abs()).divide(2);
+			sol += alignStar(`& \\textrm{Area of triangle } AOB
+				\\\\ &= \\frac{1}{2} \\left(${A.x}\\right) \\left(${B.y.abs()}\\right)
+				\\\\ &= ${area} \\textrm{ units}^2 \\; \\blacksquare
 			`);
 			parts.push({ body });
 			solParts.push({ body: sol });
 		})();
 		// part b
 		(() => {
-			const body = `Given that ${math(`x`)} can vary, find the dimensions of each
-				tennis court that make ${math(`A`)} a maximum.
-				${newline}
-				(You are not required to show that ${math(`A`)} is a maximum.)
+			const QString = math(`Q`);
+			const uplevel = `The point ${QString} also lies on the curve.
+				The normal to the curve at ${QString} is parallel to the
+				tangent to the curve at ${math(`P.`)}
 			`;
-			const dAdx = dydx({ y: 'A' });
-			const derivative = A.differentiate();
-			let sol = alignStar(`A &= ${A}
-				\\\\ ${dAdx} &= ${derivative}
-			`);
-			const working = new EquationWorking(derivative, 0, { aligned: true });
-			const x = working.solveLinear();
-			const y = num.subIn(x).divide(4);
-			sol += `At maximum value of ${math(`A,`)} ${math(`\\displaystyle ${dAdx} = 0`)}
-				${alignStar(`${working}`)}
-				Substituting ${math(`x=${x}`)} into ${math(`(1),`)}
-				${alignStar(`y &= \\frac{${num.subInWorking(x)}}{4}
-					\\\\ &= ${y}
+			const body = `Find the coordinates of ${math(`Q.`)}`;
+			const working = new EquationWorking(derivative, gradientP.negative().reciprocal(), {
+				aligned: true,
+			});
+			const xQ = working.solveLinear();
+			let sol = `Since the normal to the curve at ${QString} is parallel to the
+				tangent to the curve at ${math(`P,`)}
+				${alignStar(`${dydx()} &= - \\frac{1}{${gradientP}}
+					\\\\ ${working}
 				`)}
-				Hence the dimensions of each tennis court is ${math(
-					`${y} \\textrm{ m by } ${x} \\textrm{ m} \\; \\blacksquare`,
-				)}
+			`;
+			const yQ = y.subIn(xQ);
+			const Q = new Point(xQ, yQ, { name: 'Q' });
+			sol += `When ${math(`x=${xQ},`)}
+				${alignStar(`y &= ${y}
+					\\\\ &= ${y.subInWorking(xQ)}
+					\\\\ &= ${yQ}
+				`)}
+				${display(`${Q} \\; \\blacksquare`)}
 			`;
 			parts.push({ body });
 			solParts.push({ body: sol });
@@ -1523,7 +1570,6 @@
 	})();
 
 	//! Question 20: 2017 P2 Q4
-	//TODO: part b: coordinate geometry
 	(() => {
 		const parts: QuestionType['parts'] = [];
 		const solParts: QuestionType['parts'] = [];
@@ -1531,17 +1577,17 @@
 			[6, new Fraction(-1, 2)],
 			[1, 1],
 		]);
-		let l: Expression;
 		const body = `The curve ${math(`\\displaystyle y=${y}`)}
 			has a minimum point ${math(`M.`)}
 		`;
+		let derivative: PolynomialLike;
 		// part a
 		(() => {
 			const body = `Show that the ${math(`x`)}-coordinate of
 				${math(`M`)} satisfies the equation
 				${math(`x^3 = 9.`)}
 			`;
-			const derivative = y.differentiate();
+			derivative = y.differentiate();
 			let sol = alignStar(`y &= ${y}
 				\\\\ &= 6x^{-\\frac{1}{2}} + x
 				\\\\ ${dydx()} &= -3x^{-\\frac{3}{2}} + 1
@@ -1566,10 +1612,10 @@
 				yA = 7,
 				xB = 4,
 				yB = 7;
-			const A = `\\left(${xA}, ${yA}\\right)`;
-			const B = `\\left(${xB}, ${yB}\\right)`;
-			const uplevel = `Points ${math(`A${A}`)}
-				and ${math(`B${B}`)} lie on the curve ${math(`\\displaystyle y = ${y}.`)}
+			const A = new Point(xA, yA, { name: 'A' });
+			const B = new Point(xB, yB, { name: 'B' });
+			const uplevel = `Points ${math(`${A}`)}
+				and ${math(`${B}`)} lie on the curve ${math(`\\displaystyle y = ${y}.`)}
 				The tangents to the curve at ${math(`A`)} and
 				${math(`B`)} meet at the point ${math(`P.`)}
 			`;
@@ -1577,8 +1623,39 @@
 				${math(`x`)}-coordinate of ${math(`P`)} is greater or less than
 				the ${math(`x`)}-coordinate of ${math(`M.`)}
 			`;
-			let sol = alignStar(`V &= 
+			const gradientA = new Fraction(-3).divide(new Fraction(Math.sqrt(xA)).pow(3)).plus(1);
+			const gradientB = new Fraction(-3).divide(new Fraction(Math.sqrt(xB)).pow(3)).plus(1);
+			let sol = alignStar(`\\left. ${dydx()} \\right|_{x=${xA}} &= -\\frac{3}{\\sqrt{${xA}^3}} + 1
+				\\\\ &= ${gradientA}
+				\\\\ \\left. ${dydx()} \\right|_{x=${xB}} &= -\\frac{3}{\\sqrt{${xA}^B}} + 1
+				\\\\ &= ${gradientB} 
 			`);
+			const tangent1 = A.lineWithGradient(gradientA);
+			const tangent2 = B.lineWithGradient(gradientB);
+			sol += `Equation of tangent at ${math(`A`)}
+				${alignStar(`y - ${yA} &= ${gradientA} \\left( x - ${xA} \\right)
+					\\\\ y &= ${tangent1}
+				`)}
+				Equation of tangent at ${math(`B`)}
+				${alignStar(`y - ${yB} &= ${gradientB} \\left( x - ${xB} \\right)
+					\\\\ y &= ${tangent2}
+				`)}
+			`;
+			const working = new EquationWorking(tangent1, tangent2, { aligned: true });
+			const xP = working.solveLinear();
+			sol += `At the intersection of the tangents, ${math(`P`)}`;
+			sol += alignStar(`${working}`);
+			sol += `Hence the ${math(`x`)}-coordinate of ${math(`P`)} is ${math(
+				`${xP} \\approx ${xP.toPrecision(3)}`,
+			)}
+				${newline}
+				From (i), the ${math(`x`)}-coordinate of ${math(`M`)} is ${math(
+				`\\sqrt[3]{9} \\approx ${Math.pow(9, 1 / 3).toPrecision(3)}`,
+			)}
+				${newline}
+				Hence the ${math(`x`)}-coordinate of ${math(`P`)} is
+				${strong(`greater`)} than the ${math(`x`)}-coordinate of ${math(`M \\; \\blacksquare`)}
+			`;
 			parts.push({ uplevel, body });
 			solParts.push({ body: sol });
 		})();

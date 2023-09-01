@@ -59,3 +59,4 @@ export {
   d2ydx2,
   PolynomialLike,
 } from "./calculus/index.js";
+export { Circle, Point } from "./coordinate-geometry/index.js";
