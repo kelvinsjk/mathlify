@@ -32,9 +32,16 @@ export class Circle {
      * @returns {Expression}
      */
     toGeneralForm(): Expression;
+    /**
+     *
+     * @param {Point} point
+     * @returns {Polynomial}
+     */
+    tangentTo(point: Point): Polynomial;
 }
 export type Fraction = import('../../core/index.js').Fraction;
 import { Point } from "../point/index.js";
 import { SquareRoot } from "../../surds/index.js";
 import { Expression } from "../../core/index.js";
+import { Polynomial } from "../../core/index.js";
 //# sourceMappingURL=index.d.ts.map

@@ -59,7 +59,22 @@ export class Circle {
       .square()
       .plus(this.center.y.square())
       .minus(this.radius.square());
-    return new Expression(["x", "x"], ["y", "y"], xTerm, yTerm, constantTerm);
+    return new Expression(
+      new Term(["x", 2]),
+      new Term(["y", 2]),
+      xTerm,
+      yTerm,
+      constantTerm
+    );
+  }
+
+  /**
+   *
+   * @param {Point} point
+   * @returns {Polynomial}
+   */
+  tangentTo(point) {
+    return point.normalTo(this.center);
   }
 
   /**
@@ -73,7 +88,7 @@ export class Circle {
     const y = numberToFraction(yCoeff).divide(2).negative();
     const center = new Point(x, y);
     const radius = new SquareRoot(
-      x.square().plus(y.square()).minus(constantTerm).negative()
+      x.square().plus(y.square()).negative().plus(constantTerm).negative()
     );
     return new Circle(center, radius);
   }

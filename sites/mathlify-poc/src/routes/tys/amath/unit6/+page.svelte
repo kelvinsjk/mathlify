@@ -22,6 +22,8 @@
 		PowerFn,
 		solveLinear,
 		Point,
+		Circle,
+		completeSquare,
 	} from 'mathlify';
 	import {
 		alignStar,
@@ -36,7 +38,7 @@
 	} from 'mathlifier';
 	import Answer2 from '$lib/components/Answer2.svelte';
 
-	const title = 'Unit 11: Applications of Differentiation';
+	const title = 'Unit 6: Coordinate Geometry';
 
 	const questions: QuestionType[] = [];
 	const answers: QuestionType[] = [];
@@ -82,96 +84,166 @@
 
 	//! Question 1: 2020 P1 Q6
 	(() => {
-		const x2 = new Polynomial([1, 0, 0]);
-		//const rational = new RationalFn(4, x2);
-		//const y = new GeneralFn(x2, rational);
-		const y = new PolynomialLike([
-			[1, 2],
-			[4, -2],
-		]);
-		const body = `Find the coordinates of the stationary points
-			of the curve ${math(`\\displaystyle y = ${y}`)}
-			and determine the nature of each stationary point.
+		const parts: QuestionType['parts'] = [];
+		const solParts: QuestionType['parts'] = [];
+		const a = 4,
+			b = -6,
+			c = -12;
+		const circle = Circle.fromGeneralForm(a, b, c);
+		const body = `The equation of a circle is
+			${display(`${circle.toGeneralForm()} = 0.`)}
 		`;
-		//const derivative = y.differentiateToFn({ divisor: new Polynomial(1) });
-		const derivative = y.differentiate();
-		let sol = `${alignStar(`y &= ${y}
-			\\\\ &= ${y.flatten()}
-			\\\\ ${dydx()} &= ${derivative.flatten()}
-			\\\\ &= ${derivative}
-		`)}
-		`;
-		const working = new EquationWorking(derivative, 0, { aligned: true });
-		working.moveTerm(1);
-		working.crossMultiply();
-		working.divide(2);
-		sol +=
-			`At stationary points,` +
-			alignStar(`${dydx()} &= 0
-			\\\\ ${working}
-		`);
-		const sqrt2 = new SquareRoot(2);
-		const yVal = 4;
-		sol += `Since ${math(`x^2 \\geq 0,`)}
-			${alignStar(`x^2 &= 2
-				\\\\ x &= \\pm ${sqrt2}
-				\\\\ y &= ${y}
-				\\\\ &= 2 + \\frac{4}{2}
-				\\\\ &= ${yVal}
-				`)}
-		`;
-		//const d2 = derivative.differentiate({ divisor: x2 });
-		const d2 = derivative.differentiate();
-		sol += `${alignStar(`${dydx()} &= ${derivative.flatten()}
-			\\\\ ${d2ydx2()} &= ${d2.flatten()}
-			\\\\ &= ${d2}
-			\\\\ &> 0 \\; \\Rightarrow \\text{minimum points}
-		`)}
-			Hence the stationary points are ${math(
-				`\\left(${sqrt2}, ${yVal}\\right) \\; \\blacksquare`,
-			)} and ${math(`\\left(-${sqrt2}, ${yVal}\\right) \\blacksquare`)}
-			and both are ${strong('minimum')} points ${math(`\\; \\blacksquare`)}
-		`;
-		questions.push({ body });
-		answers.push({ body: sol });
+		// part a
+		(() => {
+			const body = `Find the radius of the circle and the coordinates of its centre.`;
+			const xPoly = new Polynomial([1, a, 0]);
+			const yPoly = new Polynomial([1, b, 0], { variable: 'y' });
+			const sqEqn = completeSquare(xPoly)
+				.plus(completeSquare(yPoly))
+				.plus(c)
+				.changeOrder([0, 2, 1]);
+			const working = new EquationWorking(sqEqn, 0);
+			working.moveTerm(2);
+			const sol =
+				gatherStar(`${circle.toGeneralForm()} = 0
+				\\\\ ${xPoly} + ${yPoly} ${c} = 0
+				\\\\ ${completeSquare(xPoly)} + ${completeSquare(yPoly)} ${c} = 0
+				\\\\ ${working}
+			`) +
+				`Hence the radius of the circle is ${math(
+					`${circle.radius} \\textrm{ units} \\; \\blacksquare`,
+				)}
+					and the coordinates of its centre is ${math(`${circle.center} \\; \\blacksquare`)}
+				`;
+			parts.push({ body });
+			solParts.push({ body: sol });
+		})();
+		// part b
+		(() => {
+			const pt = new Point(1, 7);
+			const body = `Find the equation of the tangent to the circle at the point ${math(`${pt}.`)}`;
+			const m = pt.gradient(circle.center);
+			const m2 = m.negative().reciprocal();
+			const tangent = circle.tangentTo(pt);
+			let sol = `Let the center of the circle be denoted by ${math(`C`)}
+				and the point ${math(`${pt}`)} be
+				denoted by ${math(`P`)}
+			`;
+			sol += alignStar(`& \\textrm{Gradient of } CP
+				\\\\ &= \\frac{${pt.y} - ${circle.center.y}}{${pt.x} - (${circle.center.x})}
+				\\\\ &= ${m}
+			`);
+			sol += `Hence the gradient of the tangent to the circle at ${math(`P`)} is ${math(`${m2}`)}
+				${newParagraph}
+				Equation of tangent to the circle at ${math(`P`)} is
+			`;
+			sol += alignStar(`y - ${pt.y} &= ${m2} \\left( x - ${pt.x} \\right)
+				\\\\ y &= ${tangent} \\; \\blacksquare
+			`);
+			parts.push({ body });
+			solParts.push({ body: sol });
+		})();
+		questions.push({ body, parts });
+		answers.push({ parts: solParts });
 	})();
 
-	//! Question 2: 2019 P1 Q4
+	//! Question 2: 2019 P1 Q9
+	//TODO: diagram
 	(() => {
-		const x = 10;
-		const rate = 48;
-		const body = `An ice cube of side ${math(`x \\textrm{ cm}`)}
-			is melting in such a way that the total surface area,
-			${math(`A \\textrm{ cm}^2,`)}
-			is decreasing at a constant rate of
-			${math(`${rate} \\textrm{ cm}^2\\textrm{/s}.`)}
-			Assuming that the cube retains its shape, calculate the rate of change
-			of ${math(`x`)}
-			when ${math(`x=${x}.`)}
+		const parts: QuestionType['parts'] = [];
+		const solParts: QuestionType['parts'] = [];
+		const A = new Point(0, 2);
+		const body = `The diagram shows a kite
+			${math(`ABCD`)} in which ${math(`AB=BC`)}
+			and ${math(`AD=DC.`)}
+			The points ${math(`${A}`)}
+			and ${math(`B`)} lie on the
+			${math(`y\\textrm{-axis}.`)}
+			The diagonals ${math(`AC`)}
+			and ${math(`BD`)} intersect at the point ${math(`P`)}
+			on the ${math(`x\\textrm{-axis}.`)}
+			${newParagraph}
+			Given that the length of ${math(`AB`)}
+			is ${math(`4 \\textrm{ units},`)}
 		`;
-		const A = new Polynomial([6, 0, 0]);
-		const dAdx = A.differentiate();
-		let sol = `${alignStar(`A &= ${A}
-			\\\\ ${dydx({ y: 'A' })} &= ${dAdx}
-		`)}
-		`;
-		const ans = new Fraction(-rate).divide(dAdx.subIn(x));
-		sol +=
-			alignStar(
-				`${dydx({ y: 'A', x: 't' })} &= ${dydx({ y: 'A', x: 'x' })} \\times ${dydx({
-					y: 'x',
-					x: 't',
-				})}
-			\\\\ -48 &= ${dAdx} \\times ${dydx({ y: 'x', x: 't' })}
-			\\\\ -48 &= ${dAdx.subInWorking(x)} \\times ${dydx({ y: 'x', x: 't' })}
-		`,
-			) +
-			alignStar(`
-			${dydx({ y: 'x', x: 't' })} &= \\frac{-48}{${dAdx.subIn(x)}}
-			\\\\ &= ${ans} \\textrm{cm/s} \\; \\blacksquare
-			`);
-		questions.push({ body });
-		answers.push({ body: sol });
+		// part a
+		let B = new Point(0, -2);
+		(() => {
+			const body = `explain why ${math(`BC`)} is
+				parallel to the ${math(`x\\textrm{-axis}.`)}
+			`;
+			const sol = `Since the length of ${math(`AB`)}
+				is ${math(`4 \\textrm{ units}`)}
+				and ${math(`A`)} has coordinates ${math(`\\left(0, 2\\right),`)}
+				${math(`B`)} has coordinates ${math(`\\left(0, -2\\right).`)}
+				${newline}
+				Hence ${math(`OA = OB`)}
+				${newParagraph}
+				Considering the triangles ${math(`AOP`)} and ${math(`BOP,`)}
+				${gatherStar(`OA = OB
+					\\\\ OP \\textrm{ is common}
+					\\\\ \\angle AOP = \\angle BOP = 90^\\circ
+				`)}
+				By the ${math(`SAS`)} property, ${math(`\\triangle AOP \\equiv \\triangle BOP,`)}
+				so ${math(`AP=BP`)}
+				${newParagraph}
+				Hence ${math(`\\triangle ABP`)} is an isosceles right angle triangle (${math(
+				`\\angle APB = 90^\\circ`,
+			)}
+				since ${math(`ABCD`)} is a kite)
+				${newline}
+				Hence ${math(`\\angle ABP = 45^\\circ`)}
+				${newParagraph}
+				Since the diagonal ${math(`BD`)} bisects ${math(`\\angle ABC,`)} (property of kites),
+				${math(`\\angle PBC = 45^\\circ,`)} so ${math(`\\angle ABC = 90^\\circ`)}
+				${newParagraph}
+				Since ${math(`AB`)} is parallel to the ${math(`y\\textrm{-axis}`)}
+				and ${math(`\\angle ABC = 90^\\circ,`)} ${math(`BC`)} is parallel to the
+				${math(`x\\textrm{-axis} \\; \\blacksquare`)}
+			`;
+			parts.push({ body });
+			solParts.push({ body: sol });
+		})();
+		// part b
+		let C: Point;
+		(() => {
+			const body = `find the coordinates of ${math(`C.`)}`;
+			C = new Point(4, B.y);
+			let sol = `Since ${math(`AB=BC=4,`)} ${math(`${B}`)} and ${math(`BC`)}
+				is parallel to the ${math(`x\\textrm{-axis},`)}
+				coordinates of ${math(`${C} \\; \\blacksquare`)}
+			`;
+			parts.push({ body });
+			solParts.push({ body: sol });
+		})();
+		// part c
+		(() => {
+			const uplevel = `Given further that the area of the kit is ${math(`28 \\textrm{ units}^2,`)}`;
+			const body = `find the coordinates of ${math(`D.`)}`;
+			const sol = `Area of triangle ${math(`ABD = 14 \\textrm{ units}^2`)}
+				${newline}
+				By using ${math(`AB = 4`)} as the base of the triangle,
+				${alignStar(`&\\textrm{Horizontal distance from } D \\textrm{ to } x\\textrm{-axis}
+					\\\\ &= \\textrm{height of } \\triangle ABD
+					\\\\ &= \\frac{14}{\\frac{1}{2} (4)}
+					\\\\ &= 7 \\textrm{ units}
+				`)}
+				Hence the ${math(`x`)}-coordinate of ${math(`D`)} is ${math(`7`)}
+				${newParagraph}
+				Similarly, vertical distance from ${math(`D`)} to ${math(`BC`)} extended is ${math(
+				`7 \\textrm{ units}`,
+			)}
+				${newline}
+				Since the ${math(`y`)}-coordinate of ${math(`C`)} is ${math(`-2,`)}
+				the ${math(`y`)}-coordinate of ${math(`D`)} is ${math(`-2 + 7 = 5`)}
+				${newParagraph}
+				Hence the coordinates of ${math(`D`)} is ${math(`\\left(7, 5\\right) \\; \\blacksquare`)}
+			`;
+			parts.push({ uplevel, body });
+			solParts.push({ body: sol });
+		})();
+		questions.push({ body, parts });
+		answers.push({ parts: solParts });
 	})();
 
 	//! Question 3: 2019 P1 Q8
@@ -1181,480 +1253,6 @@
 			`;
 
 			parts.push({ body });
-			solParts.push({ body: sol });
-		})();
-		questions.push({ body, parts });
-		answers.push({ parts: solParts });
-	})();
-
-	//! Question 16: 2015 P2 Q3
-	(() => {
-		const parts: QuestionType['parts'] = [];
-		const solParts: QuestionType['parts'] = [];
-		const y = new Polynomial([-1, 4, -6]);
-		const x = 1;
-		const body = `The equation of a curve is ${math(`y=${y}.`)}
-			The point ${math(`P`)}
-			lies on the curve and has an
-			${math(`x`)}-coordinate of
-			${math(`${x}.`)}
-			The tangent to the curve
-			at ${math(`P`)}
-			meets the ${math(`x`)}-axis at ${math(`A`)}
-			and the ${math(`y`)}-axis at ${math(`B.`)}
-		`;
-		let gradientP: Fraction;
-		let derivative: Polynomial;
-		// part a
-		(() => {
-			const body = `Find the area of triangle ${math(`AOB,`)}
-				where ${math(`O`)} is the origin.
-			`;
-			const yVal = y.subIn(x);
-			const P = new Point(x, yVal, { name: 'P' });
-			let sol = `When ${math(`x=${x},`)}
-				${alignStar(`y &= ${y}
-					\\\\ &= ${y.subInWorking(x)}
-					\\\\ &= ${yVal}
-				`)}
-				${display(`${P}`)}
-			`;
-			derivative = y.differentiate();
-			sol += alignStar(`y &= ${y}
-			\\\\ ${dydx()} &= ${derivative}
-			`);
-			gradientP = derivative.subIn(x);
-			sol += `${alignStar(`&\\textrm{Gradient of tangent at } P
-					\\\\ &= \\left.${dydx()}\\right|_{x=${x}}
-					\\\\ &= ${derivative.subInWorking(x)}
-					\\\\ &= ${gradientP}
-				`)}
-			`;
-			const tangent = P.lineWithGradient(gradientP);
-			sol += `Equation of tangent at ${math(`P:`)}
-				${alignStar(`y - (${P.y}) &= ${gradientP} \\left( x - ${P.x} \\right)
-					\\\\ y &= ${tangent}`)}
-			`;
-			const xB = 0;
-			const yB = tangent.subIn(xB);
-			const B = new Point(xB, yB, { name: 'B' });
-			sol += `At point ${math(`B,`)} ${math(`x=${xB}`)}
-				${alignStar(`y &= ${tangent.subInWorking(xB)}
-					\\\\ &= ${yB}
-				`)}
-				${display(`${B}`)}
-			`;
-			const yA = 0;
-			const workingA = new EquationWorking(tangent, yA, { aligned: true });
-			const xA = workingA.solveLinear();
-			const A = new Point(xA, yA, { name: 'A' });
-			sol += `At point ${math(`A,`)} ${math(`y=${yA}`)}
-				${alignStar(`${workingA}
-				`)}
-				${display(`${A}`)}
-			`;
-			const area = A.x.times(B.y.abs()).divide(2);
-			sol += alignStar(`& \\textrm{Area of triangle } AOB
-				\\\\ &= \\frac{1}{2} \\left(${A.x}\\right) \\left(${B.y.abs()}\\right)
-				\\\\ &= ${area} \\textrm{ units}^2 \\; \\blacksquare
-			`);
-			parts.push({ body });
-			solParts.push({ body: sol });
-		})();
-		// part b
-		(() => {
-			const QString = math(`Q`);
-			const uplevel = `The point ${QString} also lies on the curve.
-				The normal to the curve at ${QString} is parallel to the
-				tangent to the curve at ${math(`P.`)}
-			`;
-			const body = `Find the coordinates of ${math(`Q.`)}`;
-			const working = new EquationWorking(derivative, gradientP.negative().reciprocal(), {
-				aligned: true,
-			});
-			const xQ = working.solveLinear();
-			let sol = `Since the normal to the curve at ${QString} is parallel to the
-				tangent to the curve at ${math(`P,`)}
-				${alignStar(`${dydx()} &= - \\frac{1}{${gradientP}}
-					\\\\ ${working}
-				`)}
-			`;
-			const yQ = y.subIn(xQ);
-			const Q = new Point(xQ, yQ, { name: 'Q' });
-			sol += `When ${math(`x=${xQ},`)}
-				${alignStar(`y &= ${y}
-					\\\\ &= ${y.subInWorking(xQ)}
-					\\\\ &= ${yQ}
-				`)}
-				${display(`${Q} \\; \\blacksquare`)}
-			`;
-			parts.push({ body });
-			solParts.push({ body: sol });
-		})();
-		questions.push({ body, parts });
-		answers.push({ parts: solParts });
-	})();
-
-	//! Question 17: 2014 P1 Q10
-	//TODO: diagram
-	(() => {
-		const parts: QuestionType['parts'] = [];
-		const solParts: QuestionType['parts'] = [];
-		const sqrt3 = new SquareRoot(3);
-		const surdExpression = new Expression(4, sqrt3.negative());
-		const xPoly = new xPolynomial(
-			[0, 130, new Expression(new ExpansionTerm(surdExpression).times(-1))],
-			{ ascending: true },
-		);
-		const length = 130;
-		const dAdx = dydx({ y: 'A' });
-		let derivative: xPolynomial;
-		const body = `A gardener uses ${math(`${length} \\textrm{ m}`)}
-			of fencing to enclose a plot of the shape shown above. The shape consists of two equilateral
-			triangles of side ${math(`x \\textrm{ m}`)} and a rectangle with sides
-			${math(`x \\textrm{ m}`)} and ${math(`l \\textrm{ m}.`)}
-		`;
-		// part a
-		(() => {
-			const body = `Show that the area of the plot is
-				${display(`\\frac{${xPoly}}{2} \\textrm{ m}^2.`)}
-			`;
-			let sol = gatherStar(`2l + 4x = ${length} \\\\ l + 2x = ${length / 2}`);
-			const l = new Polynomial([length / 2, -2], { ascending: true });
-			sol += eqn(`l = ${l}`, { leqno: true });
-			const half = new Fraction(1, 2);
-			const sqrt3 = new SquareRoot(3);
-			sol += alignStar(`& \\textrm{Area of plot,} A
-				\\\\ &= 2 \\left( ${half} x^2 \\sin 60^\\circ \\right) + lx
-				\\\\ &= \\frac{${sqrt3}x^2}{2} + \\left(${l}\\right)x
-				\\\\ &= \\frac{${sqrt3}x^2 + ${l.times(2).times(new Polynomial(1))}}{2}
-				\\\\ &= \\frac{${xPoly}}{2} \\textrm{ m}^2 \\; \\blacksquare
-			`);
-			parts.push({ body });
-			solParts.push({ body: sol });
-		})();
-		// part b
-		(() => {
-			const body = `Given that ${math(`x`)} can vary, find the value of ${math(`x`)}
-				for which the area of the plot is stationary.
-			`;
-			const derivative1 = xPoly.differentiate();
-			derivative = derivative1.divide(2);
-			let sol = alignStar(`A &= \\frac{${xPoly}}{2}
-				\\\\ ${dAdx} &= \\frac{${derivative1}}{2}
-				\\\\ &= ${derivative}
-			`);
-			const [val, t1] = derivative.terms;
-			const working = new ExpressionWorking(
-				new RationalTerm(val.cast.toFraction().divide(2), surdExpression),
-				{ aligned: true, equalStart: true },
-			);
-			working.rationalize();
-			sol += `When the area of the plot is stationary, ${math(`\\displaystyle ${dAdx} = 0`)}
-				${alignStar(`${derivative} &= 0
-					\\\\ ${t1.times(-1)} &= ${val}
-				`)}
-				${alignStar(`x ${working}
-					\\\\ &\\approx ${(20 + 5 * sqrt3.valueOf()).toPrecision(3)}
-				`)}
-			`;
-			parts.push({ body });
-			solParts.push({ body: sol });
-		})();
-		// part c
-		(() => {
-			const body = `Explain why this value of ${math(`x`)}
-				gives the gardener the largest area possible.
-			`;
-			const d2 = d2ydx2({ y: 'A' });
-			let sol = alignStar(`${dAdx} &= ${derivative}
-				\\\\ ${d2} &= ${derivative.differentiate()}
-				\\\\ &< 0 \\; \\Rightarrow \\; \\textrm{Maximum}
-			`);
-			sol += `Hence this value of ${math(`x`)} gives the gardener the largest area possible ${math(
-				`\\blacksquare`,
-			)}`;
-			parts.push({ body });
-			solParts.push({ body: sol });
-		})();
-		questions.push({ body, parts });
-		answers.push({ parts: solParts });
-	})();
-
-	//! Question 18: 2014 P2 Q7
-	(() => {
-		const parts: QuestionType['parts'] = [];
-		const solParts: QuestionType['parts'] = [];
-		const fx = new Polynomial([3, -1], { ascending: true });
-		const powerFn = new PowerFn(fx, 4, { coeff: -1 });
-		const constant = new Polynomial([2]);
-		const y = new GeneralFn(constant, powerFn);
-		const body = `A curve has the equation ${math(`\\displaystyle ${y}.`)}
-			The point ${math(`(p,q)`)} is the stationary point on the curve.
-		`;
-		let p: Fraction;
-		let q: Fraction;
-		// part a
-		(() => {
-			const body = `Determine the value of ${math(`p`)}
-				and of ${math(`q.`)}
-			`;
-			const derivative = y.differentiate();
-			let sol = alignStar(`y &= ${y}
-				\\\\ ${dydx()} &= ${powerFn.coeff.times(powerFn.power)}\\left(${fx}\\right)^{${
-				powerFn.power
-			}} (${powerFn.fx.differentiate()})
-				\\\\ &= ${derivative}	
-			`);
-			const x = solveLinear(fx);
-			sol += `At stationary points, ${math(`\\displaystyle ${dydx()} = 0`)}
-				${alignStar(`${derivative} &= 0
-					\\\\ ${derivative.divide(4)} &= 0
-					\\\\ ${fx} &= 0
-					\\\\ x &= ${x}
-				`)}
-			`;
-			const yVal = constant.cast.toFraction().minus(fx.subIn(x).pow(4));
-			sol += `When ${math(`x=${x},`)}
-				${alignStar(
-					`y &= ${constant} - \\left(${fx.subInWorking(x)}\\right)^{${
-						powerFn.power
-					}} \\\\ &= ${yVal}`,
-				)} 
-				Hence ${math(`p = ${x}`)}
-				and ${math(`q = ${yVal} \\; \\blacksquare`)}
-			`;
-			(p = x), (q = yVal);
-			parts.push({ body });
-			solParts.push({ body: sol });
-		})();
-		// part b
-		(() => {
-			const body = `Determine whether ${math(`y`)} is increasing or decreasing`;
-			const sol = `${math(`\\displaystyle ${dydx()} = ${y.differentiate()}`)}`;
-			const partA = `for values of ${math(`x`)} less than ${math(`p,`)}`;
-			const partB = `for values of ${math(`x`)} greater than ${math(`p.`)}`;
-			const solA = `When ${math(`x < ${p},`)}
-				${math(`\\displaystyle ${dydx()} > 0`)}
-				so ${math(`y`)} is increasing ${math(`\\blacksquare`)}
-			`;
-			const solB = `When ${math(`x > ${p},`)}
-				${math(`\\displaystyle ${dydx()} < 0`)}
-				so ${math(`y`)} is decreasing ${math(`\\blacksquare`)}
-			`;
-			parts.push({ body, parts: [{ body: partA }, { body: partB }] });
-			solParts.push({ body: sol, parts: [{ body: solA }, { body: solB }] });
-		})();
-		// part c
-		(() => {
-			const body = `What do the results of part (ii) imply about the stationary point?`;
-			const sol = `The stationary point is a maximum ${math(`\\blacksquare`)}`;
-			parts.push({ body });
-			solParts.push({ body: sol });
-		})();
-		// part d
-		(() => {
-			const body = `What is the value of ${math(
-				`\\displaystyle ${d2ydx2()}`,
-			)} at the stationary point?`;
-			const derivative = y.differentiateToFn();
-			const d2 = derivative.differentiate();
-			let sol = alignStar(`${dydx()} &= ${derivative}
-				\\\\ ${d2ydx2()} &= ${d2}
-			`);
-			sol += `When ${math(`x=${p},`)}
-				${alignStar(`${d2ydx2()} &= -12\\left(${fx.subInWorking(p)}\\right)^2
-					\\\\ &= 0 \\; \\blacksquare
-				`)}
-			`;
-			parts.push({ body });
-			solParts.push({ body: sol });
-		})();
-
-		questions.push({ body, parts });
-		answers.push({ parts: solParts });
-	})();
-
-	//! Question 19: 2013 P2 Q7
-	//TODO: diagram
-	(() => {
-		const parts: QuestionType['parts'] = [];
-		const solParts: QuestionType['parts'] = [];
-		const sqrt3 = new SquareRoot(3);
-		const term1 = new xPolynomial([0, 0, 1], { ascending: true, variable: 'r' });
-		const term2a = new xPolynomial([300, -2], {
-			ascending: true,
-			variable: 'r',
-		});
-		const term2b = new xPolynomial([0, new Term(-2, '\\pi')], {
-			ascending: true,
-			variable: 'r',
-		});
-		const VFactorized = new ExpansionTerm(
-			'\\pi',
-			term1,
-			new Expression(...term2a.terms, ...term2b.terms),
-		);
-		const length = 600;
-		let l: Expression;
-		const body = `The diagram shows a roll of material, in the shape of a cylinder of radius
-			${math(`r \\textrm{ cm}`)} and length ${math(`l \\textrm{ cm}.`)}
-			The roll is held together by three pieces of adhesive tape whose width and thickness
-			may be ignored. One piece of tape is in the shape of a rectangle, the other pieces are in
-			the shape of circles. The total length of tap is ${math(`${length} \\textrm{ cm}.`)}
-		`;
-		// part a
-		(() => {
-			const body = `Show that the volume, ${math(`V \\textrm{ cm}^3,`)} of the cylinder
-				is given by
-				${display(`V = ${VFactorized}.`)}
-			`;
-			const working = new EquationWorking(
-				new Expression([2, 'l'], [4, 'r'], [4, '\\pi', 'r']),
-				length,
-			);
-			working.divide(2);
-			working.moveTerm(1, { show: false });
-			working.moveTerm(1);
-			l = working.rhs;
-			let sol = gatherStar(`2l + 4r + 2(2\\pi r) = ${length}
-				\\\\ ${working}
-			`);
-			sol += alignStar(`V &= \\pi r^2 l
-				\\\\ &= ${VFactorized} \\; \\blacksquare
-			`);
-			parts.push({ body });
-			solParts.push({ body: sol });
-		})();
-		// part b
-		(() => {
-			const one_plus_pi = new Expression(1, '\\pi');
-			const body = `Given that ${math(`r`)} can vary, show that
-				${math(`V`)}
-				has a stationary value when ${math(`\\displaystyle r = \\frac{k}{${one_plus_pi}}`)}
-				where ${math(`k`)} is a constant to be found, and find the
-				corresponding value of ${math(`l.`)}
-			`;
-			const V1 = term1.times(term2a);
-			const V2 = term1.times(term2b);
-			const V = `${V1} ${V2}`;
-			const derivative = `${V1.differentiate()} ${V2.differentiate()}`;
-			const dVdr = dydx({ y: 'V', x: 'r' });
-			let sol = alignStar(`V &= ${VFactorized}
-				\\\\ &= \\pi \\left(${V}\\right)
-				\\\\ ${dVdr} &= \\pi \\left( ${derivative} \\right)
-			`);
-			sol += `At stationary value of ${math(`V,`)} ${math(`\\displaystyle ${dVdr} = 0`)}`;
-			sol += gatherStar(`${derivative} = 0
-				\\\\ 6r \\left( 100 - r - \\pi r \\right) = 0
-			`);
-			sol += `Since ${math(`r \\neq 0,`)}`;
-			sol += gatherStar(`100 - r - \\pi r = 0
-				\\\\ r + \\pi r = 100
-				\\\\ r (1 + \\pi) = 100
-				\\\\ r = \\frac{100}{1 + \\pi} \\; \\blacksquare
-			`);
-			sol += alignStar(`l &= ${l}
-				\\\\ &= 300 - 2r \\left( ${one_plus_pi}\\right)
-				\\\\ &= 300 - 2 \\left( \\frac{100}{${one_plus_pi}} \\right) \\left( ${one_plus_pi}\\right)
-				\\\\ &= 300 - 200
-				\\\\ &= 100 \\; \\blacksquare
-			`);
-			parts.push({ body });
-			solParts.push({ body: sol });
-		})();
-		questions.push({ body, parts });
-		answers.push({ parts: solParts });
-	})();
-
-	//! Question 20: 2017 P2 Q4
-	(() => {
-		const parts: QuestionType['parts'] = [];
-		const solParts: QuestionType['parts'] = [];
-		const y = new PolynomialLike([
-			[6, new Fraction(-1, 2)],
-			[1, 1],
-		]);
-		const body = `The curve ${math(`\\displaystyle y=${y}`)}
-			has a minimum point ${math(`M.`)}
-		`;
-		let derivative: PolynomialLike;
-		// part a
-		(() => {
-			const body = `Show that the ${math(`x`)}-coordinate of
-				${math(`M`)} satisfies the equation
-				${math(`x^3 = 9.`)}
-			`;
-			derivative = y.differentiate();
-			let sol = alignStar(`y &= ${y}
-				\\\\ &= 6x^{-\\frac{1}{2}} + x
-				\\\\ ${dydx()} &= -3x^{-\\frac{3}{2}} + 1
-				\\\\ &= ${derivative}
-			`);
-			const working = new EquationWorking(derivative);
-			working.moveTerm(0, { show: false });
-			working.swap();
-			working.crossMultiply({ show: false });
-			working.swap();
-			sol += `At minimum point ${math(`M,`)} ${math(`\\displaystyle ${dydx()} = 0`)}
-				${alignStar(`${working}
-					\\\\ x^3 = 9 \\; \\blacksquare
-				`)}
-			`;
-			parts.push({ body });
-			solParts.push({ body: sol });
-		})();
-		// part b
-		(() => {
-			const xA = 1,
-				yA = 7,
-				xB = 4,
-				yB = 7;
-			const A = new Point(xA, yA, { name: 'A' });
-			const B = new Point(xB, yB, { name: 'B' });
-			const uplevel = `Points ${math(`${A}`)}
-				and ${math(`${B}`)} lie on the curve ${math(`\\displaystyle y = ${y}.`)}
-				The tangents to the curve at ${math(`A`)} and
-				${math(`B`)} meet at the point ${math(`P.`)}
-			`;
-			const body = `Determine, with working, whether the
-				${math(`x`)}-coordinate of ${math(`P`)} is greater or less than
-				the ${math(`x`)}-coordinate of ${math(`M.`)}
-			`;
-			const gradientA = new Fraction(-3).divide(new Fraction(Math.sqrt(xA)).pow(3)).plus(1);
-			const gradientB = new Fraction(-3).divide(new Fraction(Math.sqrt(xB)).pow(3)).plus(1);
-			let sol = alignStar(`\\left. ${dydx()} \\right|_{x=${xA}} &= -\\frac{3}{\\sqrt{${xA}^3}} + 1
-				\\\\ &= ${gradientA}
-				\\\\ \\left. ${dydx()} \\right|_{x=${xB}} &= -\\frac{3}{\\sqrt{${xA}^B}} + 1
-				\\\\ &= ${gradientB} 
-			`);
-			const tangent1 = A.lineWithGradient(gradientA);
-			const tangent2 = B.lineWithGradient(gradientB);
-			sol += `Equation of tangent at ${math(`A`)}
-				${alignStar(`y - ${yA} &= ${gradientA} \\left( x - ${xA} \\right)
-					\\\\ y &= ${tangent1}
-				`)}
-				Equation of tangent at ${math(`B`)}
-				${alignStar(`y - ${yB} &= ${gradientB} \\left( x - ${xB} \\right)
-					\\\\ y &= ${tangent2}
-				`)}
-			`;
-			const working = new EquationWorking(tangent1, tangent2, { aligned: true });
-			const xP = working.solveLinear();
-			sol += `At the intersection of the tangents, ${math(`P`)}`;
-			sol += alignStar(`${working}`);
-			sol += `Hence the ${math(`x`)}-coordinate of ${math(`P`)} is ${math(
-				`${xP} \\approx ${xP.toPrecision(3)}`,
-			)}
-				${newline}
-				From (i), the ${math(`x`)}-coordinate of ${math(`M`)} is ${math(
-				`\\sqrt[3]{9} \\approx ${Math.pow(9, 1 / 3).toPrecision(3)}`,
-			)}
-				${newline}
-				Hence the ${math(`x`)}-coordinate of ${math(`P`)} is
-				${strong(`greater`)} than the ${math(`x`)}-coordinate of ${math(`M \\; \\blacksquare`)}
-			`;
-			parts.push({ uplevel, body });
 			solParts.push({ body: sol });
 		})();
 		questions.push({ body, parts });
