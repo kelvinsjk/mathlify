@@ -24,8 +24,10 @@
 		Point,
 		Circle,
 		completeSquare,
+		UnsimplifiedExpression,
 	} from 'mathlify';
 	import {
+	align,
 		alignStar,
 		alignatStar,
 		display,
@@ -45,6 +47,43 @@
 
 	const f = `\\operatorname{f}`;
 	const fxString = `\\operatorname{f}(x)`;
+
+	function area(...points:Point[]): Fraction {
+		return points.reduce((prev,point,i)=>{
+			const nextPt = i === points.length - 1 ? points[0] : points[i+1]
+			return prev.plus(point.x.times(nextPt.y)).minus(point.y.times(nextPt.x));
+		}, new Fraction(0)).abs().divide(2);
+	}
+
+	function areaWorking(...points:Point[]): string {
+		let arrayArg = '';
+		let xs = '';
+		let ys = '';
+		let plusTerms: Fraction[] = [];
+		let minusTerms: Fraction[] = [];
+		points.forEach((point,i)=>{
+			arrayArg += 'c';
+			xs += `${point.x} &`;
+			ys += `${point.y} &`;
+			if (i === points.length - 1){
+				plusTerms.push(point.x.times(points[0].y));
+				minusTerms.push(point.y.times(points[0].x));
+			} else {
+				plusTerms.push(point.x.times(points[i+1].y));
+				minusTerms.push(point.y.times(points[i+1].x));
+			}
+		});
+		arrayArg += 'c';
+		xs += `${points[0].x}`;
+		ys += `${points[0].y}`;
+		return `&= \\frac{1}{2} \\left| \\begin{array}{${arrayArg}}
+			${xs} \\\\
+			${ys}
+		\\end{array} \\right|
+		\\\\ &= \\frac{1}{2} \\Bigl| \\left({\\textstyle ${new UnsimplifiedExpression(...plusTerms)}} \\right) - \\left( {\\textstyle ${new UnsimplifiedExpression(...minusTerms)}} \\right) \\Bigr|
+		\\\\ &= ${area(...points)}
+		`;
+	}
 
 	function quotientRuleWorking(rational: RationalFn): string {
 		const f = rational.numFn;
@@ -247,201 +286,317 @@
 	})();
 
 	//! Question 3: 2019 P1 Q8
+	//TODO: diagram
 	(() => {
 		const parts: QuestionType['parts'] = [];
 		const solParts: QuestionType['parts'] = [];
-		const x = new Polynomial(1);
-		const num = new Polynomial([2, 5]);
-		const den = new Polynomial([1, -2]);
-		const rational = new RationalFn(num, den);
-		const y = new GeneralFn(x, rational);
-		const derivative = y.differentiate();
-		const d2 = new RationalTerm(18, new ExpansionTerm([den, 3]));
-		let x1: Fraction, x2: Fraction;
-		const body = `The equation of a curve is ${math(`\\displaystyle y= ${y}.`)}`;
+		const A = new Point(5,0);
+		const C = new Point(0,10);
+		const body = `The diagram shows a kite
+			${math(`OABC`)} in which ${math(`OA=AB`)}
+			and ${math(`OC=BC.`)} Given that the coordinates
+			of ${math(`A`)} and ${math(`C`)}
+			are ${math(`${A}`)} and
+			${math(`${C}`)} respectively, find
+		`;
+		let OB: Polynomial;
+		let m: Fraction;
 		// part a
 		(() => {
-			const body = `Find ${math(`\\displaystyle ${dydx()}`)}
-				and ${math(`\\displaystyle ${d2ydx2()}.`)}
+			const body = `the equation of ${math(`OB,`)}
 			`;
-			const sol =
-				alignStar(`y &= ${y}
-				\\\\ ${dydx()} &= 1 + ${quotientRuleWorking(rational)}
-				\\\\ &= ${derivative} \\; \\blacksquare
-			`) +
-				alignStar(`${dydx()} &= 1 - 9\\left(x-2\\right)^{-2}
-				\\\\ ${d2ydx2()} &= 18 \\left(x-2\\right)^{-3}
-				\\\\ &= ${d2} \\; \\blacksquare
+			m = A.gradient(C);
+			let sol = alignStar(`&\\textrm{Gradient of } AC
+				\\\\ &= \\frac{${C.y}-${A.y}}{${C.x}-${A.x}}
+				\\\\ &= ${m}
 			`);
+			const mOB = m.negative().reciprocal();
+			OB = new Polynomial(mOB);
+			sol += alignStar(`\\textrm{Gradient of OB} &= -\\frac{1}{${m}}
+				\\\\ &= ${mOB}
+			`);
+			sol += `Since the line ${math(`OB`)}
+				passes through the origin,
+				equation of ${math(`OB`)}
+				${alignStar(`y = ${OB} \\; \\blacksquare`)}
+			`;
 			parts.push({ body });
 			solParts.push({ body: sol });
 		})();
 		// part b
 		(() => {
-			const body = `Find the ${math(`x`)}-coordinate
-				of each of the stationary points of the curve.
-			`;
-			const working = new EquationWorking(derivative);
-			working.moveTerm(1);
-			working.crossMultiply();
-			working.rhsZero();
-			[x1, x2] = working.factorizeQuadratic();
-			const sol = `At stationary points, ${math(`\\displaystyle ${dydx()} = 0`)} 
-				${gatherStar(`${working}
-					\\\\ x = ${x1} \\; \\textrm{ or } \\; ${x2} \\; \\blacksquare
+			const body = `the coordinates of ${math(`B.`)}`;
+			const AC = A.lineWithGradient(m);
+			let sol = `Equation of line AC
+				${alignStar(`y - ${C.y} &= ${m}\\left(x-${C.x}\\right)
+					\\\\ y &= ${AC}
 				`)}
 			`;
+			const working = new EquationWorking(OB, AC, {aligned: true});
+			const xM = working.solveLinear();
+			const yM = OB.subIn(xM);
+			sol += `At intersection of lines ${math(`OB`)} and
+				${math(`AC`)}
+			`;
+			sol += alignStar(`${working}`);
+			const xB = xM.times(2);
+			const yB = yM.times(2);
+			const B = new Point(xB,yB);
+			sol += `When ${math(`x=${xM},`)}
+				${alignStar(`y &= ${OB.subInWorking(xM)}
+					\\\\ &= ${yM}
+				`)}
+				Let the coordinates of ${math(`B`)} be ${math(`(x, y)`)}
+				and denote the intersection between ${math(`OB`)}
+				and ${math(`AC`)} be ${math(`P`)}
+				${newParagraph}
+				Mid point between ${math(`O`)}
+				and ${math(`B`)} is ${math(`P`)}
+				${alignStar(`\\frac{x+0}{2} &= ${xM}
+					\\\\ x &= ${xB}
+					\\\\ \\frac{y+0}{2} &= ${yM}
+					\\\\ y &= ${yB}
+				`)}
+				Coordinates of ${math(`${B} \\; \\blacksquare`)}
+			`
+			parts.push({ body });
+			solParts.push({ body: sol });
+		})();
+		questions.push({ body, parts });
+		answers.push({ parts: solParts });
+	})();
+
+	//! Question 4: 2018 P2 Q11
+	(() => {
+		const parts: QuestionType['parts'] = [];
+		const solParts: QuestionType['parts'] = [];
+		const A = new Point(1, 4, {name: 'A'});
+		const B = new Point(9,8, {name: 'B'})
+		const C = new Point(7,12,{name: 'C'});
+		const body = `Three points are given by
+			${math(`${A},`)} ${math(`${B}`)} and
+			${math(`${C}.`)}
+		`;
+		// part a
+		(() => {
+			const body = `Show that angle ${math('ABC')}
+				is ${math(`90^\\circ.`)}
+			`;
+			const m1 = B.gradient(A);
+			const m2 = B.gradient(C);
+			let sol = alignStar(`&\\textrm{Gradient of } AB
+				\\\\ &= \\frac{${B.y}-${A.y}}{${B.x}-${A.x}}
+				\\\\ &= ${m1}
+			`);
+			sol += alignStar(`&\\textrm{Gradient of } BC
+				\\\\ &= \\frac{${B.y}-${C.y}}{${B.x}-${C.x}}
+				\\\\ &= ${m2}
+			`);
+			sol += alignStar(`& m_{AB} \\times m_{BC}
+				\\\\ &= ${m1} \\times ${m2}
+				\\\\ &= -1
+			`)
+			sol += `Hence ${math(`AB`)}
+				is perpendicular to ${math(`BC`)}
+				so ${math(`\\angle ABC = 90^\\circ \\; \\blacksquare`)}
+			`;
+			parts.push({ body });
+			solParts.push({ body: sol });
+		})();
+		// part b
+		(() => {
+			const body = `Explain why ${math(`A,B`)}
+				and ${math(`C`)} lie on a circle with diameter
+				${math(`AC.`)}
+			`;
+			let sol = `Since ${math(`\\angle ABC = 90^\\circ,`)}
+				by the right angle in semicircle circle property,
+				${math(`AC`)} is a diameter of a circle passing
+				through point ${math(`B.`)}
+				${newline}
+				Hence ${math(`A,B`)}
+				and ${math(`C`)} lie on a circle with diameter
+				${math(`AC \\; \\blacksquare`)}
+			`;
+			parts.push({ body });
+			solParts.push({ body: sol });
+		})();
+		let M: Point;
+		let circle: Circle;
+		// part c
+		(() => {
+			const body = `Find the equation of the circle.
+			`;
+			let sol = `Let the center of the circle be denoted by
+			${math(`M.`)} ${math(`M`)} is the mid point of ${math(`AC`)}
+			`;
+			M = A.midPoint(C);
+			sol += alignStar(`&\\textrm{Coordinates of } M
+				\\\\ & = \\left( \\frac{${A.x} + ${C.x}}{2}, \\frac{${A.y} + ${C.y}}{2} \\right)
+				\\\\ &= ${M}
+			`);
+			const radius = M.distanceTo(A);
+			sol += alignStar(`&\\textrm{Radius of circle }
+				\\\\ & = \\sqrt{ \\left( ${M.x} - ${A.x} \\right)^2 + \\left( ${M.y} - ${A.y} \\right)^2 }
+				\\\\ &= ${radius}
+			`);
+			circle = new Circle(M, radius);
+			sol += `Hence the equation of the circle is
+				${display(`${circle} \\; \\blacksquare`)}
+			`;
+			parts.push({ body });
+			solParts.push({ body: sol });
+		})();
+		// part d
+		(() => {
+			const body = `Explain why the tangent to the circle
+				at ${math(`B`)} is parallel to the
+				${math(`y\\textrm{axis}.`)}
+			`;
+			let sol = alignStar(`&\\textrm{Gradient of } MB
+				\\\\ &= \\frac{${B.y}-${M.y}}{${B.x}-${M.x}}
+				\\\\ &= 0
+			`);
+			sol += `Hence the radius ${math(`MB`)} is
+				parallel to the ${math(`x\\textrm{-axis}`)}
+				${newParagraph}
+				By the tangent perpendicular to radius circle property,
+				the tangent to the circle at ${math(`B`)}
+				is parallel to the ${math(`y\\textrm{-axis} \\; \\blacksquare`)}
+			`;
+			parts.push({ body });
+			solParts.push({ body: sol });
+		})();
+		// part e
+		(() => {
+			const body = `Find the equation of the tangent to
+				the circle at ${math(`C.`)}
+			`;
+			const m1 = M.gradient(C);
+			let sol = alignStar(`&\\textrm{Gradient of } MC
+				\\\\ &= \\frac{${M.y}-${C.y}}{${M.x}-${C.x}}
+				\\\\ &= ${m1}
+			`);
+			const m2 = m1.reciprocal().negative();
+			const tangent = circle.tangentTo(C);
+			sol += `Hence the gradient of the tangent at ${math(`C`)} is
+				${math(`${m2}`)}
+				${newParagraph}
+				Equation of tangent at ${math(`C`)}
+				${alignStar(`y - ${C.y} &= ${m2} \\left( x - ${C.x} \\right)
+					\\\\ y &= ${tangent} \\; \\blacksquare
+				`)}
+			`;
+			parts.push({ body });
+			solParts.push({ body: sol });
+		})();
+		questions.push({ body, parts });
+		answers.push({ parts: solParts });
+	})();
+
+	//! Question 5: 2017 P2 Q9
+	//TODO: Diagram
+	(() => {
+		const parts: QuestionType['parts'] = [];
+		const solParts: QuestionType['parts'] = [];
+		const A = new Point(-2,1,{name: 'A'});
+		const BUnknown = `B\\left(0,p\\right)`;
+		const C = new Point(1,3,{name: 'C'});
+		let B: Point;
+		let D: Point;
+		const body = `The diagram shows a trapezium
+			with vertices ${math(`${A},`)}
+			${math(`${BUnknown},`)}
+			${math(`${C}`)} and ${math(`D.`)}
+			The sides ${math(`AB`)} and
+			${math(`DC`)} are parallel and the angle
+			${math(`DAB`)} is ${math(`90^\\circ.`)}
+			Angle ${math(`ABO`)} is equal to angle ${math(`CBO.`)}
+		`;
+		// part a
+		let mAB: RationalFn;
+		(() => {
+			const body = `Express the gradients of the lines
+				${math(`AB`)} and ${math(`BC`)} in terms of
+				${math(`p`)} and hence, or otherwise, show that
+				${math(`p=5.`)}
+			`;
+			mAB = new RationalFn(new Polynomial([1,-1],{variable:'p'}),2);
+			let sol = alignStar(`&\\textrm{Gradient of } AB
+				\\\\ &= \\frac{p - ${A.y}}{0 - (${A.x})}
+				\\\\ &= ${mAB} \\; \\blacksquare
+			`);
+			const mCB = new Polynomial([3,-1],{variable:'p',ascending:true});
+			//const mBC = new RationalFn()
+			sol += alignStar(`&\\textrm{Gradient of } CB
+				\\\\ &= \\frac{${C.y}-p}{${C.x}-0}
+				\\\\ &= ${mCB} \\; \\blacksquare
+			`);
+			const rhs = new ExpansionTerm(-1,mCB);
+			const working = new EquationWorking(mAB, rhs.expand());
+			working.crossMultiply();
+			const p = working.solveLinear({variable: 'p'});
+			sol += `Since ${math(`\\angle ABO = \\angle CBO,`)}
+				${gatherStar(`${mAB} = ${rhs}
+					\\\\ ${working} \\; \\blacksquare
+				`)}
+			`;
+			B = new Point(0,p);
+			parts.push({ body });
+			solParts.push({ body: sol });
+		})();
+		// part b
+		(() => {
+			const body = `Find the coordinates of the point
+				${math(`D.`)}
+			`;
+			let sol = alignStar(`&\\textrm{Gradient of AB}
+				\\\\ &= \\frac{5-1}{2}
+				\\\\ &= 2
+			`);
+			sol += `Let the coordinates of ${math(`D`)}
+				be ${math(`(x,y)`)}
+				${newParagraph}
+				Since ${math(`AB`)}
+				and ${math(`DC`)}
+				are parallel,
+			`;
+			sol += alignStar(`m_{AB} &= m_{DC}
+				\\\\ 2 &= \\frac{y-${C.y}}{x-${C.x}}
+				\\\\ y - 3 &= 2(x-1)
+			`);
+			const y1 = new Polynomial([1,-1]).times(2).plus(3);
+			sol += eqn(`y = ${y1}`, {leqno: true});
+			sol += `Since ${math(`\\angle DAB = 90^\\circ,`)}`;
+			sol += alignStar(`m_{AB} \\cdot m_{AD} &= -1
+				\\\\ 2 \\frac{y-${A.y}}{x-(${A.x})} &= -1
+			`);
+			sol += eqn(`2(y-1) = -x -2`, {leqno: true});
+			sol += `Substituting ${math(`(1)`)} into ${math(`(2),`)}`;
+			const rhs = new Polynomial([-1,-2]);
+			sol += gatherStar(`2\\left(${y1}-1\\right) = ${rhs}`);
+			const working = new EquationWorking(y1.minus(1).times(2), rhs);
+			const xD = working.solveLinear();
+			sol += gatherStar(`${working}`);
+			const yD = y1.subIn(xD);
+			sol += `When ${math(`x=${xD},`)}
+				${alignStar(`y &= ${y1.subInWorking(xD)}
+					\\\\ &= ${yD}
+				`)}
+			`;
+			D = new Point(xD,yD,{name:'D'});
+			sol += `Coordinates of ${math(`\\displaystyle ${D} \\; \\blacksquare`)}`
 			parts.push({ body });
 			solParts.push({ body: sol });
 		})();
 		// part c
 		(() => {
-			const body = `Find the nature of the stationary point.
+			const body = `Find the area of the trapezium
+				${math(`ABCD.`)}
 			`;
-			const sol = `When ${math(`x=${x1},`)}
-				${alignStar(`${d2ydx2()} &= \\frac{18}{(${x1}-2)^3}
-					\\\\ &= ${d2.subIn({ x: x1 }).cast.toFraction()}
-					\\\\ &< 0 \\; \\Rightarrow \\text{maximum point}
-				`)}
-				Hence it is a ${strong('maximum')} point at ${math(`x=${x1} \\; \\blacksquare`)}
-				${newParagraph}
-				When ${math(`x=${x2},`)}
-				${alignStar(`${d2ydx2()} &= \\frac{18}{(${x2}-2)^3}
-					\\\\ &= ${d2.subIn({ x: x2 }).cast.toFraction()}
-					\\\\ &> 0 \\; \\Rightarrow \\text{minimum point}
-				`)}
-				Hence it is a ${strong('minimum')} point at ${math(`x=${x2} \\; \\blacksquare`)}
-			`;
-			parts.push({ body });
-			solParts.push({ body: sol });
-		})();
-		questions.push({ body, parts });
-		answers.push({ parts: solParts });
-	})();
-
-	//! Question 4: 2017 P2 Q8b
-	(() => {
-		const parts: QuestionType['parts'] = [];
-		const solParts: QuestionType['parts'] = [];
-		const fx = new Polynomial([2, 1]);
-		const powerFn = new PowerFn(fx, 3, { coeff: -1 });
-		const constant = new Polynomial([8]);
-		const y = new GeneralFn(constant, powerFn);
-		const body = `The equation of a curve is ${math(`\\displaystyle ${y}.`)}`;
-		let x: Fraction;
-		// part a
-		(() => {
-			const body = `Explain why the curve has only one stationary point and why this is
-				a point of inflexion.
-			`;
-			const derivative = y.differentiate();
-			let sol = alignStar(`y &= ${y}
-				\\\\ ${dydx()} &= -3\\left(${fx}\\right)^2 (2)
-				\\\\ &= ${derivative}	
-			`);
-			x = solveLinear(fx);
-			sol += `At stationary points, ${math(`\\displaystyle ${dydx()} = 0`)}
-				${gatherStar(`${derivative} = 0
-					\\\\ \\left(${fx}\\right)^2 = 0
-					\\\\ x = ${x}
-				`)}
-				Since ${math(`x=${x}`)} is the only solution of ${math(`\\displaystyle ${dydx()} = 0,`)}
-				the curve has only one stationary point ${math(`\\blacksquare`)}
-				${newParagraph}
-				For both ${math(`x < ${x}`)} and ${math(`x > ${x},`)}
-				${math(`${dydx()} < 0`)}
-				since ${math(`\\left(${fx}\\right) > 0`)} for all ${math(`x \\in \\mathbb{R},`)} ${math(
-				`x \\neq ${x}`,
-			)}
-				${newline}
-				Hence the stationary point is a point of inflexion ${math(`\\blacksquare`)}
-			`;
-			parts.push({ body });
-			solParts.push({ body: sol });
-		})();
-		// part b
-		(() => {
-			const body = `Write down the coordinates of the stationary point.
-			`;
-			const yVal = y.subIn(x);
-			const sol = `When ${math(`x=${x},`)}
-				${alignStar(`y &= 8 - 0^3 \\\\ &= ${y.subIn(x)}`)} 
-				Hence the coordinates of the stationary point is ${math(
-					`\\left(${x}, ${yVal}\\right) \\; \\blacksquare`,
-				)}
-			`;
-			parts.push({ body });
-			solParts.push({ body: sol });
-		})();
-
-		questions.push({ body, parts });
-		answers.push({ parts: solParts });
-	})();
-
-	//! Question 5: 2016 P1 Q9
-	(() => {
-		const parts: QuestionType['parts'] = [];
-		const solParts: QuestionType['parts'] = [];
-		const poly = new Polynomial([2, 0, -1], { ascending: true });
-		const num = -16;
-		const xSquare = new Polynomial([1, 0, 0]);
-		const rational = new RationalFn(num, xSquare);
-		const y = new GeneralFn(poly, rational);
-		const derivative = y.differentiate({ divisor: new Polynomial(1) });
-		const derivativeFn = y.differentiateToFn({ divisor: new Polynomial(1) });
-		const d2 = derivativeFn.differentiate({ divisor: xSquare });
-		const x1 = 2,
-			x2 = -2;
-		let y1: Fraction, y2: Fraction;
-		const body = `The equation of a curve is ${math(`\\displaystyle y=${y}.`)}`;
-		// part a
-		(() => {
-			const body = `Find the coordinates of
-				the stationary points of the curve.
-			`;
-			let sol = alignStar(`y &= ${y}
-				\\\\ &= ${poly} - 16x^{-2}
-				\\\\ ${dydx()} &= ${poly.differentiate()} + 32x^{-3}
-				\\\\ &= ${derivative} \\; \\blacksquare
-			`);
-			const working = new EquationWorking(derivative, 0, { aligned: true });
-			working.moveTerm(0);
-			working.crossMultiply({ show: false });
-			working.swap();
-			working.divide(2);
-			sol += `At stationary points, ${math(`\\displaystyle ${dydx()} = 0`)} 
-				${alignStar(`${working}
-					\\\\ x &= \\pm 2
-				`)}
-			`;
-			y1 = poly.subIn(x1).plus(rational.subIn({ x: x1 }).cast.toFraction());
-			y2 = poly.subIn(x2).plus(rational.subIn({ x: x2 }).cast.toFraction());
-			sol += `${alignStar(`y&= ${y}
-					\\\\ &= 2 - 4 - \\frac{16}{4}
-					\\\\ &= ${y1}
-				`)}
-				Hence the stationary points are ${math(`\\left(${x1}, ${y1}\\right)`)} and ${math(
-				`\\left(${x2}, ${y2}\\right) \\; \\blacksquare`,
-			)}
-			`;
-			parts.push({ body });
-			solParts.push({ body: sol });
-		})();
-		// part b
-		(() => {
-			const body = `Use the second derivative test to determine the nature
-				of each of these points.
-			`;
-			const sol = `${alignStar(`${dydx()} &= ${derivative}
-				\\\\ &= -2x + 32x^{-3}
-				\\\\ ${d2ydx2()} &= -2 -96x^{-4}
-				\\\\ &= ${d2}
-				\\\\ &< 0 \\; \\Rightarrow \\text{maximum point}
-			`)}
-			Hence both ${math(`\\left(${x1}, ${y1}\\right)`)} and ${math(
-				`\\left(${x2}, ${y2}\\right)`,
-			)} are ${strong('maximum')} points ${math(`\\blacksquare`)}
-			`;
+			const sol = `${alignStar(`&\\textrm{Area}
+				\\\\ ${areaWorking(B,A,D,C)} \\textrm{ units}^2 \\; \\blacksquare
+			`)}`;
 			parts.push({ body });
 			solParts.push({ body: sol });
 		})();
