@@ -5,6 +5,7 @@
 
 import { Fraction, Term, Expression, Polynomial } from "../../core/index.js";
 import {
+  ExpansionTerm,
   RationalTerm,
   // TODO: handle PowerTerm and ExpansionTerm
   // PowerTerm, ExpansionTerm
@@ -391,6 +392,24 @@ export class EquationWorking {
     }
   }
 
+  //! Methods for ExpansionTerm
+  /**
+   * @param {{intertext?: string, show?: boolean}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
+   * @returns {EquationWorking} - a reference to this equation
+   */
+  expand(options) {
+    insertIntertext(this, options);
+    const newLHS = expandExpansionTerm(this.lhs);
+    const newRHS = expandExpansionTerm(this.rhs);
+    if (options?.show ?? true) {
+      this.lhsArray.push(newLHS);
+      this.rhsArray.push(newRHS);
+    }
+    this.lhs = newLHS;
+    this.rhs = newRHS;
+    return this;
+  }
+
   /**
    * sets the aligned state
    * @param {boolean} [aligned] - whether or not the steps are to be aligned. if not provided, defaults to toggling between states
@@ -507,6 +526,25 @@ function simplifyRationalTerm(expression) {
     return finalRational;
   }
   return expression;
+}
+
+/**
+ * searches expression for an ExpansionTerm, and expands it
+ * otherwise returns the original expression
+ * @param {Expression} expression - the expression to be searched
+ * @return {Expression} - the simplified expression
+ */
+function expandExpansionTerm(expression) {
+  /** @type {Term[]} */
+  const terms = [];
+  expression.terms.forEach((term) => {
+    if (term instanceof ExpansionTerm) {
+      terms.push(...term.expand().terms);
+    } else {
+      terms.push(term);
+    }
+  });
+  return new Expression(...terms);
 }
 
 /**

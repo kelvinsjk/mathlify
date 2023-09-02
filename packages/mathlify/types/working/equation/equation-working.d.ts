@@ -157,6 +157,14 @@ export class EquationWorking {
         show?: boolean | undefined;
     } | undefined): EquationWorking;
     /**
+     * @param {{intertext?: string, show?: boolean}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
+     * @returns {EquationWorking} - a reference to this equation
+     */
+    expand(options?: {
+        intertext?: string | undefined;
+        show?: boolean | undefined;
+    } | undefined): EquationWorking;
+    /**
      * sets the aligned state
      * @param {boolean} [aligned] - whether or not the steps are to be aligned. if not provided, defaults to toggling between states
      * @returns {EquationWorking} - a reference to this equation

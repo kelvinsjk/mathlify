@@ -195,6 +195,10 @@ export class Fraction {
      */
     negative(): Fraction;
     /**
+     * @returns {Fraction}
+     */
+    negativeReciprocal(): Fraction;
+    /**
      * fraction subtraction
      * @param {number|Fraction} x
      * @returns {Fraction} this minus x

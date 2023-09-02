@@ -42,7 +42,7 @@ export class Circle {
       2,
     ]);
     const ySquare = new ExpansionTerm([
-      new Polynomial([1, this.center.y.negative()]),
+      new Polynomial([1, this.center.y.negative()], { variable: "y" }),
       2,
     ]);
     return `${xSquare} + ${ySquare} = ${this.radius.pow(2)}`;
