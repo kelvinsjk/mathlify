@@ -217,10 +217,10 @@ export class Fraction {
     divide(x: number | Fraction): Fraction;
     /**
      * fraction exponentiation
-     * @param {number} n - power/index
+     * @param {number|Fraction} n - power/index
      * @returns {Fraction} this power n
      */
-    pow(n: number): Fraction;
+    pow(n: number | Fraction): Fraction;
     /**
      * squares this fraction
      * @returns {Fraction} this^n

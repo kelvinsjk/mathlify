@@ -88,6 +88,11 @@ export class Polynomial extends Expression {
     leadingCoefficient(): Fraction;
     isZero(): boolean;
     /**
+     * @param {number|Fraction} [x]
+     * @returns {boolean}
+     */
+    isConstant(x?: number | Fraction | undefined): boolean;
+    /**
      * differentiate
      * @returns {Polynomial} - the derivative
      */

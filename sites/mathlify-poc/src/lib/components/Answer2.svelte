@@ -51,7 +51,7 @@
 					<!--subparts-->
 					{#if part['parts'] !== undefined}
 						{#each part.parts as subpart, k}
-							{#if j !== 0 || k !== 0}
+							{#if j !== 0 || k !== 0 || part['body'] !== undefined}
 								<div class="spacer-subpart" />
 							{/if}
 							<a

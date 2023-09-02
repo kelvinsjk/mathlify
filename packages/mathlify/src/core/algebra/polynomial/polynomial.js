@@ -309,6 +309,20 @@ export class Polynomial extends Expression {
   }
 
   /**
+   * @param {number|Fraction} [x]
+   * @returns {boolean}
+   */
+  isConstant(x) {
+    if (this.coeffs.length === 1) {
+      if (x === undefined) {
+        return true;
+      }
+      return this.coeffs[0].is.equalTo(x);
+    }
+    return false;
+  }
+
+  /**
    * differentiate
    * @returns {Polynomial} - the derivative
    */

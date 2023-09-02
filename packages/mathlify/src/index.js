@@ -55,6 +55,8 @@ export {
   RationalFn,
   GeneralFn,
   PowerFn,
+  ExpFn,
+  LnFn,
   dydx,
   d2ydx2,
   PolynomialLike,
