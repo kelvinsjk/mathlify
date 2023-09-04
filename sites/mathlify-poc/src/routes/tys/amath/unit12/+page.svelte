@@ -1,10 +1,38 @@
 <script lang="ts">
 	import type { AnswerObject as QuestionType } from '$lib/components/interfaces';
-	import { Polynomial, Expression, CosFn, SinFn } from 'mathlify';
-	import { alignStar, display, gatherStar, math, newline } from 'mathlifier';
+	import {
+		ExpansionTerm,
+		Polynomial,
+		castToPoly,
+		RationalFn,
+		EquationWorking,
+		Fraction,
+		Expression,
+		Term,
+		Point,
+		cramersRule,
+		ExpFn,
+		LnFn,
+		xPolynomial,
+		RationalTerm,
+		InequalityWorking,
+		CosFn,
+		SinFn,
+	} from 'mathlify';
+	import {
+		align,
+		alignStar,
+		alignatStar,
+		display,
+		eqn,
+		gatherStar,
+		math,
+		newline,
+	} from 'mathlifier';
 	import Answer2 from '$lib/components/Answer2.svelte';
 
-	const title = 'Unit 8: Trigonometric Functions and Equations';
+	const title =
+		'Unit 12: Differentiation of Trigonometric, Exponential and Logarithmic Functions and their Applications';
 
 	const questions: QuestionType[] = [];
 	const answers: QuestionType[] = [];
@@ -14,7 +42,7 @@
 	const gx = `${g}(x)`;
 	const degree = `^\\circ`;
 
-	//! Question 1: 2019 P1 Q1
+	//! Question 1: 2017 P2 Q8a
 	//TODO: diagram (right angle triangle)
 	(() => {
 		const theta = '\\theta';

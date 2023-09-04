@@ -143,6 +143,39 @@ export class ExpFn extends Term {
   }
 
   /**
+   * differentiate
+   * @returns {ExpFn} the derivative of the term
+   * Only works for linear fx
+   */
+  differentiate() {
+    if (this.fx.degree !== 1) {
+      throw new Error(`Differentiation only supported for linear fx. ${this}`);
+    }
+    if (this.base !== "\\operatorname{e}") {
+      throw new Error(`Differentiation only supported for base e. ${this}`);
+    }
+    return new ExpFn(this.fx, { coeff: this.coeff.times(this.fx.coeffs[1]) });
+  }
+
+  /**
+   * integrate
+   * @returns {ExpFn} the integral of the term
+   * Only works for linear fx. for non-linear fx, we assume an f'(x) term is already present
+   * only works for base e
+   */
+  integrate() {
+    if (this.base !== "\\operatorname{e}") {
+      throw new Error(`Differentiation only supported for base e. ${this}`);
+    }
+    if (this.fx.degree === 1) {
+      return new ExpFn(this.fx, {
+        coeff: this.coeff.divide(this.fx.coeffs[1]),
+      });
+    }
+    return new ExpFn(this.fx, { coeff: this.coeff });
+  }
+
+  /**
    * sub in many
    * @param {number|Fraction} variableToValue - the values to sub in with the key being the variable signature.
    * If a number of Fraction is received, we assume that the variable is 'x'
@@ -405,6 +438,14 @@ export class LnFn extends Term {
     throw new Error(
       `Cannot solve ${this} = ${rhs} because the exponent is not of the form nx`
     );
+  }
+
+  /**
+   * differentiate
+   * @returns {RationalFn} the derivative of the term
+   */
+  differentiate() {
+    return new RationalFn(this.fx.differentiate().times(this.coeff), this.fx);
   }
 
   /** methods to cast this term to other types */
