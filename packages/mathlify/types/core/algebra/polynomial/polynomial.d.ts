@@ -11,12 +11,12 @@ export class Polynomial extends Expression {
     /**
      * @constructor
      * Creates a Polynomial instance
-     * @param {(number|Fraction)[]|number|Fraction} coeffs - the coefficients.
+     * @param {(number|Fraction)[]|number|Fraction|string} coeffs - the coefficients.
      * @param {{ascending?: boolean, variable?: string}} [options] - options. default to {ascending: false, variable: "x"}
      *
      * Note that new Polynomial([2]) creates the constant polynomial "2" while new Polynomial(2) creates the linear polynomial "2x"
      */
-    constructor(coeffs: (number | Fraction)[] | number | Fraction, options?: {
+    constructor(coeffs: (number | Fraction)[] | number | Fraction | string, options?: {
         ascending?: boolean | undefined;
         variable?: string | undefined;
     } | undefined);
@@ -87,6 +87,7 @@ export class Polynomial extends Expression {
      */
     leadingCoefficient(): Fraction;
     isZero(): boolean;
+    quadraticDiscriminant(): Fraction;
     /**
      * @param {number|Fraction} [x]
      * @returns {boolean}

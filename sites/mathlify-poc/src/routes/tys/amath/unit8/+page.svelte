@@ -20,7 +20,7 @@
 	import { align, alignStar, alignatStar, display, eqn, gatherStar, math } from 'mathlifier';
 	import Answer2 from '$lib/components/Answer2.svelte';
 
-	const title = 'Unit 5: Exponential and Logarithmic Functions';
+	const title = 'Unit 8: Trigonometric Functions and Equations';
 
 	const questions: QuestionType[] = [];
 	const answers: QuestionType[] = [];

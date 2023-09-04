@@ -30,15 +30,19 @@ export class Polynomial extends Expression {
   /**
    * @constructor
    * Creates a Polynomial instance
-   * @param {(number|Fraction)[]|number|Fraction} coeffs - the coefficients.
+   * @param {(number|Fraction)[]|number|Fraction|string} coeffs - the coefficients.
    * @param {{ascending?: boolean, variable?: string}} [options] - options. default to {ascending: false, variable: "x"}
    *
    * Note that new Polynomial([2]) creates the constant polynomial "2" while new Polynomial(2) creates the linear polynomial "2x"
    */
   constructor(coeffs, options) {
-    const { ascending = false, variable = "x" } = options ?? {};
+    const ascending = options?.ascending ?? false;
+    let variable = options?.variable ?? "x";
     if (typeof coeffs === "number" || coeffs instanceof Fraction) {
       coeffs = ascending ? [0, coeffs] : [coeffs, 0];
+    } else if (typeof coeffs === "string") {
+      variable = coeffs;
+      coeffs = ascending ? [0, 1] : [1, 0];
     }
     const coeffsFrac = [
       numberToFraction(coeffs[0]),
@@ -306,6 +310,14 @@ export class Polynomial extends Expression {
 
   isZero() {
     return this.coeffs.length === 1 && this.coeffs[0].is.zero();
+  }
+
+  quadraticDiscriminant() {
+    if (this.degree !== 2) {
+      throw new Error(`${this} is not a quadratic`);
+    }
+    const [c, b, a] = this.coeffs;
+    return b.square().minus(a.times(c).times(4));
   }
 
   /**

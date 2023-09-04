@@ -1,14 +1,14 @@
-/** ExpFn class representing k exp( f(x) )
+/** SinFn class representing k sin( f(x) )
  * @class
  * @property {Polynomial} fx - the coefficient of the term
  * @property {string|number} base
- * @property {"exp-fn"} kind - mathlify kind
- * @property {"exp-fn"} type - mathlify type
+ * @property {"sin-fn"} kind - mathlify kind
+ * @property {"sin-fn"} type - mathlify type
  */
-export class ExpFn extends Term {
+export class SinFn extends Term {
     /**
      * @constructor
-     * @param {number|Fraction|string|Polynomial} [fx='x'] - f(x) in k exp( f(x) )
+     * @param {number|Fraction|string|Polynomial} [fx='x'] - f(x) in k sin( f(x) )
      * @param {{base?: string|number, coeff?: number|Fraction}} [options] - the base and coefficient of the term
      */
     constructor(fx?: string | number | Fraction | Polynomial | undefined, options?: {
@@ -19,42 +19,47 @@ export class ExpFn extends Term {
     fx: Polynomial;
     /** @type {number|string} */
     base: number | string;
-    /** @type {"exp-fn"} */
-    kind: "exp-fn";
-    /** @type {"exp-fn"} */
-    type: "exp-fn";
-    times(x: number | Fraction | ExpFn): ExpFn;
+    /** @type {"sin-fn"} */
+    kind: "sin-fn";
+    /** @type {"sin-fn"} */
+    type: "sin-fn";
+    times(x: number | Fraction | SinFn): SinFn;
     times(x: string | Term): Term;
-    /**
-     * reciprocal
-     * @returns {ExpFn} the reciprocal of the term
-     */
-    reciprocal(): ExpFn;
-    divide(x: number | Fraction | ExpFn): ExpFn;
+    divide(x: number | Fraction | SinFn): SinFn;
     divide(x: string | Term): Term;
+    /**
+     * negative
+     * @returns {SinFn} the negative of the term
+     * */
+    negative(): SinFn;
+    /**
+     * absolute value
+     * @returns {SinFn} the absolute value of the term
+     */
+    abs(): SinFn;
     /**
      * sub in many
      * @param {number|Fraction} variableToValue - the values to sub in with the key being the variable signature.
      * If a number of Fraction is received, we assume that the variable is 'x'
-     * @returns {ExpFn} the term with the values subbed in
+     * @returns {SinFn} the term with the values subbed in
      */
-    subIn(variableToValue: number | Fraction): ExpFn;
+    subIn(variableToValue: number | Fraction): SinFn;
     /**
      * solves k exp(f(x)) = rhs, where f(x) is of the form nx
      * @param {number|Fraction} rhs - the rhs
-     * @return {LnFn} the solution
+     * @return {CosFn} the solution
      */
-    solve(rhs: number | Fraction): LnFn;
+    solve(rhs: number | Fraction): CosFn;
 }
 /** LnFn class representing k ln( f(x) )
  * @class
  * @property {string} log - the long string
  * @property {Polynomial} fx
  * @property {string|number} base
- * @property {"ln-fn"} kind - mathlify kind
- * @property {"ln-fn"} type - mathlify type
+ * @property {"cos-fn"} kind - mathlify kind
+ * @property {"cos-fn"} type - mathlify type
  */
-export class LnFn extends Term {
+export class CosFn extends Term {
     /**
      * @constructor
      * @param {number|Fraction|string|Polynomial} [fx='x'] - f(x) in k exp( f(x) )
@@ -70,55 +75,48 @@ export class LnFn extends Term {
     fx: Polynomial;
     /** @type {number|string} */
     base: number | string;
-    /** @type {"ln-fn"} */
-    kind: "ln-fn";
-    /** @type {"ln-fn"} */
-    type: "ln-fn";
+    /** @type {"cos-fn"} */
+    kind: "cos-fn";
+    /** @type {"cos-fn"} */
+    type: "cos-fn";
     /**
      * move the coeff up to f(x)
      */
-    coeffToPower(): LnFn;
+    coeffToPower(): CosFn;
     /**
-     * @param {LnFn} x - the other term to add with
-     * @returns {LnFn} the sum of the two terms
+     * @param {CosFn} x - the other term to add with
+     * @returns {CosFn} the sum of the two terms
      */
-    plus(x: LnFn): LnFn;
+    plus(x: CosFn): CosFn;
     /**
-     * @param {LnFn} x -
+     * @param {CosFn} x -
      * @returns {string}
      */
-    minus(x: LnFn): string;
-    /**
-     * change base
-     * @param {number|string} newBase - the new base
-     * @returns {[LnFn, LnFn, RationalTerm]} the new numerator and denominator, as well as the fraction in RationalTerm class
-     */
-    changeBase(newBase: number | string): [LnFn, LnFn, RationalTerm];
-    times(x: number | Fraction): LnFn;
+    minus(x: CosFn): string;
+    times(x: number | Fraction): CosFn;
     times(x: string | Term): Term;
-    divide(x: number | Fraction): LnFn;
+    divide(x: number | Fraction): CosFn;
     divide(x: string | Term): Term;
     /**
      * negative
-     * @returns {LnFn} the negative of the term
+     * @returns {CosFn} the negative of the term
      * */
-    negative(): LnFn;
+    negative(): CosFn;
     /**
      * sub in many
      * @param {number|Fraction} variableToValue - the values to sub in with the key being the variable signature.
      * If a number of Fraction is received, we assume that the variable is 'x'
-     * @returns {LnFn} the term with the values subbed in
+     * @returns {CosFn} the term with the values subbed in
      */
-    subIn(variableToValue: number | Fraction): LnFn;
+    subIn(variableToValue: number | Fraction): CosFn;
     /**
      * solves k ln(f(x)) = rhs, where f(x) is of the form nx
      * @param {number|Fraction} rhs - the rhs
-     * @return {ExpFn} the solution
+     * @return {SinFn} the solution
      */
-    solve(rhs: number | Fraction): ExpFn;
+    solve(rhs: number | Fraction): SinFn;
 }
 import { Term } from "../../core";
 import { Polynomial } from "../../core";
 import { Fraction } from "../../core";
-import { RationalTerm } from "../../algebra";
-//# sourceMappingURL=expLog.d.ts.map
+//# sourceMappingURL=sinCos.d.ts.map

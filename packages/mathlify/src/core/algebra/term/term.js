@@ -2,11 +2,9 @@
 // and a collection of symbols (which we will call atoms)
 // under exponentiation and multiplication
 //
-// TODO: handle surds and functions
 // - surds (eg sqrt{2}) (TODO)
 // - functions (eg sin(x)) (TODO)
 // we will perform automatic simplification
-// TODO: refactor fractionalDisplayMode handling
 
 import { Fraction } from "../../fraction.js";
 import { numberToFraction } from "../../../utils/toFraction.js";
@@ -20,8 +18,8 @@ import { powerMapToString } from "../utils/index.js";
  * @property {"never"|"auto"|"always"} fractionalDisplayMode - default: auto. typesets as coeff followed by fraction (eg 3/5 x) if no negative indices for the variable atoms, but
  * as a fraction if negative indices encountered (eg 3x / 5y). "never" will also typeset as coeff followed by fraction, resorting to negative indices.
  * "always" will always typeset as a fraction as long as the denominator is not 1
- * @property {"term"|"rational-term"|"expansion-term"|"sqrt"|"rational-fn"|"power-fn"|"exp-fn"|"ln-fn"} kind - mathlify term class
- * @property {"term"|"term-frac"|"rational-term"|"rational-expression"|"expansion-term"|"sqrt"|"sqrt-rational"|"rational-fn"|"power-fn"|"exp-fn"|"ln-fn"} type - mathlify term class
+ * @property {"term"|"rational-term"|"expansion-term"|"sqrt"|"rational-fn"|"power-fn"|"exp-fn"|"ln-fn"|"sin-fn"|"cos-fn"} kind - mathlify term class
+ * @property {"term"|"term-frac"|"rational-term"|"rational-expression"|"expansion-term"|"sqrt"|"sqrt-rational"|"rational-fn"|"power-fn"|"exp-fn"|"ln-fn"|"sin-fn"|"cos-fn"} type - mathlify term class
  */
 export class Term {
   /** @type {Fraction} */
@@ -32,9 +30,9 @@ export class Term {
   signature;
   /** @type {"never"|"auto"|"always"} */
   fractionalDisplayMode;
-  /** @type {"term"|"rational-term"|"expansion-term"|"sqrt"|"rational-fn"|"power-fn"|"exp-fn"|"ln-fn"} */
+  /** @type {"term"|"rational-term"|"expansion-term"|"sqrt"|"rational-fn"|"power-fn"|"exp-fn"|"ln-fn"|"sin-fn"|"cos-fn"} */
   kind;
-  /** @type {"term"|"term-frac"|"rational-term"|"rational-expression"|"expansion-term"|"sqrt"|"sqrt-rational"|"rational-fn"|"power-fn"|"exp-fn"|"ln-fn"} */
+  /** @type {"term"|"term-frac"|"rational-term"|"rational-expression"|"expansion-term"|"sqrt"|"sqrt-rational"|"rational-fn"|"power-fn"|"exp-fn"|"ln-fn"|"sin-fn"|"cos-fn"} */
   type;
 
   /**

@@ -1,28 +1,27 @@
-import { RationalTerm } from "../../algebra";
 import { Fraction, Polynomial, Term } from "../../core";
 import { numberToFraction } from "../../utils";
 import { RationalFn } from "../rationalFn/rationalFn";
 
-/** ExpFn class representing k exp( f(x) )
+/** SinFn class representing k sin( f(x) )
  * @class
  * @property {Polynomial} fx - the coefficient of the term
  * @property {string|number} base
- * @property {"exp-fn"} kind - mathlify kind
- * @property {"exp-fn"} type - mathlify type
+ * @property {"sin-fn"} kind - mathlify kind
+ * @property {"sin-fn"} type - mathlify type
  */
-export class ExpFn extends Term {
+export class SinFn extends Term {
   /** @type {Polynomial} */
   fx;
   /** @type {number|string} */
   base;
-  /** @type {"exp-fn"} */
+  /** @type {"sin-fn"} */
   kind;
-  /** @type {"exp-fn"} */
+  /** @type {"sin-fn"} */
   type;
 
   /**
    * @constructor
-   * @param {number|Fraction|string|Polynomial} [fx='x'] - f(x) in k exp( f(x) )
+   * @param {number|Fraction|string|Polynomial} [fx='x'] - f(x) in k sin( f(x) )
    * @param {{base?: string|number, coeff?: number|Fraction}} [options] - the base and coefficient of the term
    */
   constructor(fx = "x", options) {
@@ -33,18 +32,18 @@ export class ExpFn extends Term {
         : typeof fx === "string"
         ? new Polynomial(1, { variable: fx })
         : new Polynomial([fx]);
-    const expTerm = poly.isZero() ? 1 : `${base}^{${poly}}`;
-    super(coeff, expTerm);
+    const sinTerm = poly.isZero() ? 1 : `${base}^{${poly}}`;
+    super(coeff, sinTerm);
     this.fx = poly;
     this.base = base;
-    this.kind = "exp-fn";
-    this.type = "exp-fn";
+    this.kind = "sin-fn";
+    this.type = "sin-fn";
   }
 
   /**
    * @overload
-   * @param {number|Fraction|ExpFn} x - the other term to multiply with
-   * @returns {ExpFn} the product of the two terms
+   * @param {number|Fraction|SinFn} x - the other term to multiply with
+   * @returns {SinFn} the product of the two terms
    */
   /**
    * @overload
@@ -53,22 +52,22 @@ export class ExpFn extends Term {
    */
   /**
    * term multiplication
-   * @param {number|Fraction|string|Term|ExpFn} x - the other term to multiply with
-   * @returns {Term|ExpFn} the product of the two terms
+   * @param {number|Fraction|string|Term|SinFn} x - the other term to multiply with
+   * @returns {Term|SinFn} the product of the two terms
    */
   times(x) {
     if (typeof x === "number" || x instanceof Fraction) {
-      return new ExpFn(this.fx, {
+      return new SinFn(this.fx, {
         base: this.base,
         coeff: this.coeff.times(x),
       });
-    } else if (x instanceof ExpFn) {
+    } else if (x instanceof SinFn) {
       if (this.base !== x.base) {
         throw new Error(
           `Cannot multiply two exp functions with different bases: ${this.base} and ${x.base}`
         );
       }
-      return new ExpFn(this.fx.plus(x.fx), {
+      return new SinFn(this.fx.plus(x.fx), {
         base: this.base,
         coeff: this.coeff.times(x.coeff),
       });
@@ -77,20 +76,9 @@ export class ExpFn extends Term {
   }
 
   /**
-   * reciprocal
-   * @returns {ExpFn} the reciprocal of the term
-   */
-  reciprocal() {
-    return new ExpFn(this.fx.negative(), {
-      base: this.base,
-      coeff: this.coeff.reciprocal(),
-    });
-  }
-
-  /**
    * @overload
-   * @param {number|Fraction|ExpFn} x - the other term to divided by
-   * @returns {ExpFn} the quotient of the two terms
+   * @param {number|Fraction|SinFn} x - the other term to divided by
+   * @returns {SinFn} the quotient of the two terms
    */
   /**
    * @overload
@@ -99,23 +87,23 @@ export class ExpFn extends Term {
    */
   /**
    * term division
-   * @param {number|Fraction|string|Term|ExpFn} x - the other term to divided by
-   * @returns {Term|ExpFn} the quotient of the two terms
+   * @param {number|Fraction|string|Term|SinFn} x - the other term to divided by
+   * @returns {Term|SinFn} the quotient of the two terms
    */
   divide(x) {
     if (typeof x === "number" || x instanceof Fraction) {
-      return new ExpFn(this.fx, {
+      return new SinFn(this.fx, {
         base: this.base,
         coeff: this.coeff.divide(x),
       });
     }
-    if (x instanceof ExpFn) {
+    if (x instanceof SinFn) {
       if (this.base !== x.base) {
         throw new Error(
           `Cannot divide two exp functions with different bases: ${this.base} and ${x.base}`
         );
       }
-      return new ExpFn(this.fx.minus(x.fx), {
+      return new SinFn(this.fx.minus(x.fx), {
         base: this.base,
         coeff: this.coeff.divide(x.coeff),
       });
@@ -125,7 +113,7 @@ export class ExpFn extends Term {
 
   /**
    * negative
-   * @returns {Term} the negative of the term
+   * @returns {SinFn} the negative of the term
    * */
   negative() {
     return this.times(-1);
@@ -133,7 +121,7 @@ export class ExpFn extends Term {
 
   /**
    * absolute value
-   * @returns {Term} the absolute value of the term
+   * @returns {SinFn} the absolute value of the term
    */
   abs() {
     if (this.coeff.is.negative()) {
@@ -146,17 +134,17 @@ export class ExpFn extends Term {
    * sub in many
    * @param {number|Fraction} variableToValue - the values to sub in with the key being the variable signature.
    * If a number of Fraction is received, we assume that the variable is 'x'
-   * @returns {ExpFn} the term with the values subbed in
+   * @returns {SinFn} the term with the values subbed in
    */
   subIn(variableToValue) {
     const subbedFx = this.fx.subIn(variableToValue);
-    return new ExpFn(subbedFx, { base: this.base, coeff: this.coeff });
+    return new SinFn(subbedFx, { base: this.base, coeff: this.coeff });
   }
 
   /**
    * solves k exp(f(x)) = rhs, where f(x) is of the form nx
    * @param {number|Fraction} rhs - the rhs
-   * @return {LnFn} the solution
+   * @return {CosFn} the solution
    */
   solve(rhs) {
     // k exp(f(x)) = rhs
@@ -164,7 +152,7 @@ export class ExpFn extends Term {
     // x = ln(rhs/k) / n
     if (this.fx.coeffs.length === 2 && this.fx.coeffs[0].is.zero()) {
       const base = this.base === "\\operatorname{e}" ? undefined : this.base;
-      return new LnFn(numberToFraction(rhs).divide(this.coeff), {
+      return new CosFn(numberToFraction(rhs).divide(this.coeff), {
         base,
         coeff: this.fx.coeffs[1].reciprocal(),
       });
@@ -197,19 +185,19 @@ export class ExpFn extends Term {
  * @property {string} log - the long string
  * @property {Polynomial} fx
  * @property {string|number} base
- * @property {"ln-fn"} kind - mathlify kind
- * @property {"ln-fn"} type - mathlify type
+ * @property {"cos-fn"} kind - mathlify kind
+ * @property {"cos-fn"} type - mathlify type
  */
-export class LnFn extends Term {
+export class CosFn extends Term {
   /** @type {string} */
   log;
   /** @type {Polynomial} */
   fx;
   /** @type {number|string} */
   base;
-  /** @type {"ln-fn"} */
+  /** @type {"cos-fn"} */
   kind;
-  /** @type {"ln-fn"} */
+  /** @type {"cos-fn"} */
   type;
 
   /**
@@ -238,20 +226,20 @@ export class LnFn extends Term {
     this.log = log;
     this.fx = poly;
     this.base = base;
-    this.kind = "ln-fn";
-    this.type = "ln-fn";
+    this.kind = "cos-fn";
+    this.type = "cos-fn";
   }
 
   /**
    * move the coeff up to f(x)
    */
   coeffToPower() {
-    return new LnFn(this.fx.pow(this.coeff), { base: this.base, coeff: 1 });
+    return new CosFn(this.fx.pow(this.coeff), { base: this.base, coeff: 1 });
   }
 
   /**
-   * @param {LnFn} x - the other term to add with
-   * @returns {LnFn} the sum of the two terms
+   * @param {CosFn} x - the other term to add with
+   * @returns {CosFn} the sum of the two terms
    */
   plus(x) {
     if (this.base !== x.base) {
@@ -260,18 +248,18 @@ export class LnFn extends Term {
       );
     }
     if (this.coeff.is.equalTo(x.coeff)) {
-      return new LnFn(this.fx.times(x.fx), {
+      return new CosFn(this.fx.times(x.fx), {
         base: this.base,
         coeff: this.coeff,
       });
     }
     const thisTerm = this.coeffToPower();
     x = x.coeffToPower();
-    return new LnFn(thisTerm.fx.times(x.fx), { base: this.base, coeff: 1 });
+    return new CosFn(thisTerm.fx.times(x.fx), { base: this.base, coeff: 1 });
   }
 
   /**
-   * @param {LnFn} x -
+   * @param {CosFn} x -
    * @returns {string}
    */
   minus(x) {
@@ -292,35 +280,9 @@ export class LnFn extends Term {
   }
 
   /**
-   * change base
-   * @param {number|string} newBase - the new base
-   * @returns {[LnFn, LnFn, RationalTerm]} the new numerator and denominator, as well as the fraction in RationalTerm class
-   */
-  changeBase(newBase) {
-    if (typeof this.base === "string") {
-      throw new Error(
-        `Cannot change base of ${this} because change of base only supported for numeric bases for now`
-      );
-    }
-    if (this.base === newBase) {
-      const den = new LnFn(this.base, { base: this.base });
-      return [this, den, new RationalTerm(this, den)];
-    }
-    const numerator = new LnFn(this.fx, {
-      base: newBase,
-      coeff: this.coeff.num,
-    });
-    const denominator = new LnFn(this.base, {
-      base: newBase,
-      coeff: this.coeff.den,
-    });
-    return [numerator, denominator, new RationalTerm(numerator, denominator)];
-  }
-
-  /**
    * @overload
    * @param {number|Fraction} x - the other term to multiply with
-   * @returns {LnFn} the product of the two terms
+   * @returns {CosFn} the product of the two terms
    */
   /**
    * @overload
@@ -330,11 +292,11 @@ export class LnFn extends Term {
   /**
    * term multiplication
    * @param {number|Fraction|string|Term} x - the other term to multiply with
-   * @returns {Term|LnFn} the product of the two terms
+   * @returns {Term|CosFn} the product of the two terms
    */
   times(x) {
     if (typeof x === "number" || x instanceof Fraction) {
-      return new LnFn(this.fx, {
+      return new CosFn(this.fx, {
         base: this.base,
         coeff: this.coeff.times(x),
       });
@@ -345,7 +307,7 @@ export class LnFn extends Term {
   /**
    * @overload
    * @param {number|Fraction} x - the other term to divided by
-   * @returns {LnFn} the quotient of the two terms
+   * @returns {CosFn} the quotient of the two terms
    */
   /**
    * @overload
@@ -355,11 +317,11 @@ export class LnFn extends Term {
   /**
    * term division
    * @param {number|Fraction|string|Term} x - the other term to divided by
-   * @returns {Term|LnFn} the quotient of the two terms
+   * @returns {Term|CosFn} the quotient of the two terms
    */
   divide(x) {
     if (typeof x === "number" || x instanceof Fraction) {
-      return new LnFn(this.fx, {
+      return new CosFn(this.fx, {
         base: this.base,
         coeff: this.coeff.divide(x),
       });
@@ -369,7 +331,7 @@ export class LnFn extends Term {
 
   /**
    * negative
-   * @returns {LnFn} the negative of the term
+   * @returns {CosFn} the negative of the term
    * */
   negative() {
     return this.times(-1);
@@ -379,17 +341,17 @@ export class LnFn extends Term {
    * sub in many
    * @param {number|Fraction} variableToValue - the values to sub in with the key being the variable signature.
    * If a number of Fraction is received, we assume that the variable is 'x'
-   * @returns {LnFn} the term with the values subbed in
+   * @returns {CosFn} the term with the values subbed in
    */
   subIn(variableToValue) {
     const subbedFx = this.fx.subIn(variableToValue);
-    return new LnFn(subbedFx, { base: this.base, coeff: this.coeff });
+    return new CosFn(subbedFx, { base: this.base, coeff: this.coeff });
   }
 
   /**
    * solves k ln(f(x)) = rhs, where f(x) is of the form nx
    * @param {number|Fraction} rhs - the rhs
-   * @return {ExpFn} the solution
+   * @return {SinFn} the solution
    */
   solve(rhs) {
     // k ln(f(x)) = rhs
@@ -397,7 +359,7 @@ export class LnFn extends Term {
     // x = exp(rhs/k) / n
     if (this.fx.coeffs.length === 2 && this.fx.coeffs[0].is.zero()) {
       const base = this.base === "\\textrm{e}" ? undefined : this.base;
-      return new ExpFn(numberToFraction(rhs).divide(this.coeff), {
+      return new SinFn(numberToFraction(rhs).divide(this.coeff), {
         base,
         coeff: this.fx.coeffs[1].reciprocal(),
       });

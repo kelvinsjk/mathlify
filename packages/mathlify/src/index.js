@@ -57,6 +57,8 @@ export {
   PowerFn,
   ExpFn,
   LnFn,
+  SinFn,
+  CosFn,
   dydx,
   d2ydx2,
   PolynomialLike,
