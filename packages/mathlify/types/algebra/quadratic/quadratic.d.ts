@@ -13,6 +13,15 @@ export function solveQuadratic(poly: Polynomial | number | Fraction | Expression
     variable?: string | undefined;
 } | undefined): [Fraction, Fraction];
 /**
+ * solve quadratic polynomial/equations
+ * @param {Polynomial|Expression|[(number|Fraction), (number|Fraction), (number|Fraction)]} poly - the polynomial to be solved/left hand side of the equation
+ * @param {{variable?: string}} [options] - options to specify the variable
+ * @returns {[number, number]} - the solution [x1, x2], where x1 \\leq x2
+ */
+export function solveQuadraticNumerical(poly: Polynomial | Expression | [(number | Fraction), (number | Fraction), (number | Fraction)], options?: {
+    variable?: string | undefined;
+} | undefined): [number, number];
+/**
  * factorize quadratic
  * @param {Polynomial|Expression} poly
  * @param {{variable?: string}} [options] - options to specify the variable
@@ -35,7 +44,7 @@ export function solveQuadraticSurd(poly: Polynomial | number | Fraction | Expres
  */
 export function discriminant(poly: Polynomial | [number | Fraction, number | Fraction, number | Fraction]): Fraction;
 export type Fraction = import('../../core/fraction.js').Fraction;
-import { Polynomial } from "../../core/algebra/polynomial/polynomial.js";
-import { Expression } from "../../core/algebra/expression/expression.js";
-import { ExpansionTerm } from "../term/index.js";
+import { Polynomial } from '../../core/algebra/polynomial/polynomial.js';
+import { Expression } from '../../core/algebra/expression/expression.js';
+import { ExpansionTerm } from '../term/index.js';
 //# sourceMappingURL=quadratic.d.ts.map

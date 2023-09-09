@@ -33,6 +33,19 @@ export class ExpFn extends Term {
     divide(x: number | Fraction | ExpFn): ExpFn;
     divide(x: string | Term): Term;
     /**
+     * differentiate
+     * @returns {ExpFn} the derivative of the term
+     * Only works for linear fx
+     */
+    differentiate(): ExpFn;
+    /**
+     * integrate
+     * @returns {ExpFn} the integral of the term
+     * Only works for linear fx. for non-linear fx, we assume an f'(x) term is already present
+     * only works for base e
+     */
+    integrate(): ExpFn;
+    /**
      * sub in many
      * @param {number|Fraction} variableToValue - the values to sub in with the key being the variable signature.
      * If a number of Fraction is received, we assume that the variable is 'x'
@@ -116,9 +129,15 @@ export class LnFn extends Term {
      * @return {ExpFn} the solution
      */
     solve(rhs: number | Fraction): ExpFn;
+    /**
+     * differentiate
+     * @returns {RationalFn} the derivative of the term
+     */
+    differentiate(): RationalFn;
 }
 import { Term } from "../../core";
 import { Polynomial } from "../../core";
 import { Fraction } from "../../core";
 import { RationalTerm } from "../../algebra";
+import { RationalFn } from "../rationalFn/rationalFn";
 //# sourceMappingURL=expLog.d.ts.map

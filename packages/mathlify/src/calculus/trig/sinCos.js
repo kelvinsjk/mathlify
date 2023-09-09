@@ -103,6 +103,32 @@ export class SinFn extends Term {
 	}
 
 	/**
+	 * differentiates
+	 * @returns {CosFn}
+	 * only works for linear fx
+	 */
+	differentiate() {
+		if (this.fx.degree !== 1) {
+			throw new Error(`Differentiation only supported for linear fx. ${this}`);
+		}
+		return new CosFn(this.fx, { coeff: this.coeff.times(this.fx.coeffs[1]) });
+	}
+
+	/**
+	 * differentiates
+	 * @returns {CosFn}
+	 * works for linear fx, and assumes f'(x) is already present if f(x) not linear
+	 */
+	integrate() {
+		if (this.fx.degree !== 1) {
+			return new CosFn(this.fx, { coeff: this.coeff.negative() });
+		}
+		return new CosFn(this.fx, {
+			coeff: this.coeff.divide(this.fx.coeffs[1]).negative(),
+		});
+	}
+
+	/**
 	 * sub in many
 	 * @param {number|Fraction} variableToValue - the values to sub in with the key being the variable signature.
 	 * If a number of Fraction is received, we assume that the variable is 'x'
@@ -232,6 +258,32 @@ export class CosFn extends Term {
 	 * */
 	negative() {
 		return this.times(-1);
+	}
+
+	/**
+	 * differentiates
+	 * @returns {SinFn}
+	 * only works for linear fx
+	 */
+	differentiate() {
+		if (this.fx.degree !== 1) {
+			throw new Error(`Differentiation only supported for linear fx. ${this}`);
+		}
+		return new SinFn(this.fx, {
+			coeff: this.coeff.times(this.fx.coeffs[1]).negative(),
+		});
+	}
+
+	/**
+	 * differentiates
+	 * @returns {SinFn}
+	 * works for linear fx, and assumes f'(x) is already present if f(x) not linear
+	 */
+	integrate() {
+		if (this.fx.degree !== 1) {
+			return new SinFn(this.fx, { coeff: this.coeff });
+		}
+		return new SinFn(this.fx, { coeff: this.coeff.divide(this.fx.coeffs[1]) });
 	}
 
 	/**

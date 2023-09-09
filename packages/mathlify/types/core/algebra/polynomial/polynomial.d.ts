@@ -7,6 +7,15 @@
  * @property {"polynomial"|"linear-polynomial"|"quadratic-polynomial"} type - mathlify expression class type
  */
 export class Polynomial extends Expression {
+    /**
+     * @param {number} degree
+     * @param {{variable?: string, ascending?: boolean}} [options] defaults to {variable:'x', ascending: false}
+     * @returns {Polynomial}
+     */
+    static ofDegree(degree: number, options?: {
+        variable?: string | undefined;
+        ascending?: boolean | undefined;
+    } | undefined): Polynomial;
     /** @type {"polynomial"|"linear-polynomial"|"quadratic-polynomial"} */
     /**
      * @constructor
@@ -118,7 +127,7 @@ export class Polynomial extends Expression {
      */
     subInWorking(x: number | Fraction): string;
 }
-import { Expression } from "../expression/index.js";
-import { Fraction } from "../../fraction.js";
-import { Term } from "../term/index.js";
+import { Expression } from '../expression/index.js';
+import { Fraction } from '../../fraction.js';
+import { Term } from '../term/index.js';
 //# sourceMappingURL=polynomial.d.ts.map

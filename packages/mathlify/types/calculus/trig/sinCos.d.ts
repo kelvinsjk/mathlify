@@ -34,6 +34,18 @@ export class SinFn extends Term {
      */
     abs(): SinFn;
     /**
+     * differentiates
+     * @returns {CosFn}
+     * only works for linear fx
+     */
+    differentiate(): CosFn;
+    /**
+     * differentiates
+     * @returns {CosFn}
+     * works for linear fx, and assumes f'(x) is already present if f(x) not linear
+     */
+    integrate(): CosFn;
+    /**
      * sub in many
      * @param {number|Fraction} variableToValue - the values to sub in with the key being the variable signature.
      * If a number of Fraction is received, we assume that the variable is 'x'
@@ -81,6 +93,18 @@ export class CosFn extends Term {
      * @returns {CosFn} the negative of the term
      * */
     negative(): CosFn;
+    /**
+     * differentiates
+     * @returns {SinFn}
+     * only works for linear fx
+     */
+    differentiate(): SinFn;
+    /**
+     * differentiates
+     * @returns {SinFn}
+     * works for linear fx, and assumes f'(x) is already present if f(x) not linear
+     */
+    integrate(): SinFn;
     /**
      * sub in many
      * @param {number|Fraction} variableToValue - the values to sub in with the key being the variable signature.
