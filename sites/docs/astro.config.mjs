@@ -11,7 +11,7 @@ export default defineConfig({
     starlightLinksValidator(),
     startlightBlog({
       authors: {
-        ksoh: {
+        kelvinsoh: {
           name: "Kelvin Soh",
           url: "https://github.com/kelvinsjk",
         },
@@ -50,7 +50,7 @@ export default defineConfig({
     }),
   ],
   markdown: {
-    remarkPlugins: [[remarkMath, { behavior: "append" }]],
+    remarkPlugins: [remarkMath],
     rehypePlugins: [rehypeKatex],
   },
 });

@@ -4,7 +4,7 @@ date: 2023-09-20
 tags:
   - Setup
 authors: 
-	- ksoh
+	- kelvinsoh
 slug: blog/tech-stack
 ---
 
