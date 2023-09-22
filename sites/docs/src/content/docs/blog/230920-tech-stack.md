@@ -67,3 +67,11 @@ export default defineConfig({
   },
 });
 ```
+
+## PSA: markdown plugin versions
+
+As of the time of writing, Astro is of version 3.1.2 using a markdown-remark system that
+corresponds to version 10.x.x of [unified](https://github.com/unifiedjs/unified).
+The latest versions of remarkMath (6.0.0) aligns with the new major version of unified (11.0.x),
+and caused issues with showing displayed mathematics. Switching to remarkMath version 5.1.x resolved
+the issue, and I will stick with that until Astro updates to the latest unified version.
