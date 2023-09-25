@@ -1,0 +1,74 @@
+---
+title: "Mathlify-x prototype"
+date: 2023-09-25
+tags:
+  - Typesetting
+authors: 
+	- kelvinsoh
+slug: blog/mathlify-x-prototype
+---
+
+import { Fraction } from "mathlify-x";
+export const x = new Fraction(1, 2);
+export const y = 3;
+export const sum = x.plus(y);
+export const diff = x.minus(y);
+export const prod = x.times(y);
+export const quot = x.divide(y);
+
+Let $x=$ {x} and $y=$ {y}.
+
+Then $x+y=$ {sum}, $x-y=$ {diff}, $x\times y=$ {prod} and $x\div y=$ {quot}.
+
+## The why
+
+### Building mathlify
+
+For the past 2 years I have been working on [Mathlify](https://www.npmjs.com/package/mathlify),
+a computer algebra system (CAS) in JavaScript. $\LaTeX$ output
+is a first class citizen in Mathlify, allowing for what we believe
+is more idiomatic code/content generation
+compared to the more computation-centric approach of other CASs.
+
+```js
+const x = new Fraction(1, 2);
+const content = `${x} + 3 = ${x.plus(3)}`;
+// content computes to the LaTeX string
+// \frac{1}{2} + 3 = \frac{7}{2}
+```
+
+### Integration with markdown
+
+Because the math content is dynamically generated, integration with
+markdown is not straightforward: when writing markup like
+`\frac{a}{b}`, do we want to output $\frac{a}{b}$, or if
+$a=1$ and $b=2$ have already been defined earlier, $\frac{1}{2}$?
+I can see use cases for both (or even a combination of them), and working
+around it has led to rather hacky code.
+
+I have since turned to some variation of math-in-js (that I will write about in a future post),
+and believe that to be the best method currently for highly dynamic and reactive math content
+typical in an app-like environment.
+
+For more content heavy content, the writing experience in markdown with regards
+with content formatting is still superior. But I've grown so accustomed to my regular
+Mathlify-powered setup that having to do any calculations (like
+having to calculate results of arithmetic operations in a separate environment outside of the content)
+felt like a step back.
+
+[Remark MDX math enhanced](https://github.com/goodproblems/remark-mdx-math-enhanced) solves some of the
+problems, but I feel the code is not sufficient ergonomic for my use case.
+
+I am thus giving math in markdown (via MDX) another go, porting the Mathlify codebase to
+output $\KaTeX$ HTML strings instead of $\LaTeX$ strings.
+
+## Pros and cons
+
+The obvious pro will be the ability to write content in markdown and allow for its
+superior writing exprience.
+
+The con is that custom mix and match content (for example, typesetting `x+y=${x.plus(y)}`)
+still requires some hacky markup.
+
+I'm interested to see how this experiment will end up. I still think the math-in-js approach
+is still the best I can think of, but can see such
