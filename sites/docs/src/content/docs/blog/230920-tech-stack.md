@@ -37,6 +37,11 @@ and [rehype-katex](https://www.npmjs.com/package/rehype-katex) plugins.
 The [KaTeX](https://katex.org/) css is added to our site layout using
 the starlight config option.
 
+For cases where I want to do some calculations in javascript and use the results as
+part of the content, I use MDX along with the
+`mathlify-x` library (under construction). I will blog about this as I explore
+this idea further.
+
 ## Astro config file reference
 
 ```js
@@ -44,7 +49,7 @@ the starlight config option.
 export default defineConfig({
   integrations: [
     // ...
-    startlightBlog(),
+    starlightBlog(),
     starlight({
       // ...
       head: [

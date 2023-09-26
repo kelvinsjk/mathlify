@@ -19,6 +19,7 @@ export default defineConfig({
     }),
     starlight({
       title: "My Docs",
+      customCss: ["./src/styles/highlight.css"],
       social: {
         github: "https://github.com/kelvinsjk/mathlify",
       },

@@ -1,0 +1,13 @@
+code {
+  --astro-code-token-comment: #6a9955;
+  --astro-code-token-string-expression: #ce9178;
+  --astro-code-token-keyword: #569cd6;
+  --astro-code-token-constant: #9cdcfe;
+  --astro-code-color-text: #9cdcfe;
+  --astro-code-token-function: #dcdcae;
+  --astro-code-token-punctuation: #d4d4d4;
+}
+
+pre {
+  --astro-code-color-background: #1e1e1e;
+}

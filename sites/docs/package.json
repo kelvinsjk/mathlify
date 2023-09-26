@@ -13,6 +13,8 @@
     "@astrojs/mdx": "^1.1.0",
     "@astrojs/starlight": "^0.10.1",
     "astro": "^3.1.2",
+    "katex": "^0.16.8",
+    "mathlify": "workspace:*",
     "mathlify-x": "workspace:*",
     "rehype-katex": "^6.0.3",
     "remark-math": "^5.1.1",

@@ -2,7 +2,7 @@
 title: "Mathlify-x prototype"
 date: 2023-09-25
 tags:
-  - Typesetting
+  - Mathlify-x
 authors: 
 	- kelvinsoh
 slug: blog/mathlify-x-prototype
@@ -18,7 +18,10 @@ export const quot = x.divide(y);
 
 Let $x=$ {x} and $y=$ {y}.
 
-Then $x+y=$ {sum}, $x-y=$ {diff}, $x\times y=$ {prod} and $x\div y=$ {quot}.
+- $x+y=$ {sum}
+- $x-y=$ {diff}
+- $x\times y=$ {prod}
+- $x\div y=$ {quot}.
 
 ## The why
 
@@ -68,7 +71,9 @@ The obvious pro will be the ability to write content in markdown and allow for i
 superior writing exprience.
 
 The con is that custom mix and match content (for example, typesetting `x+y=${x.plus(y)}`)
-still requires some hacky markup.
+still requires some hacky markup. As of now we are only restricted to inline math so
+displayed math will also require non-ideal markup.
 
 I'm interested to see how this experiment will end up. I still think the math-in-js approach
-is still the best I can think of, but can see such
+is still the best I can think of for highly dynamic content like in an app, but for blogging
+this approach might be a good compromise.

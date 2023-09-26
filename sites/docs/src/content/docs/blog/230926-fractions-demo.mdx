@@ -1,0 +1,180 @@
+---
+title: "Mathlify fractions demo"
+date: 2023-09-26
+tags:
+  - Mathlify
+  - Mathlify Demo
+authors: 
+	- kelvinsoh
+slug: blog/mathlify-fractions
+---
+
+In this post, we explore the use of Mathlify to typeset questions
+and answers involving fractions. We hope that you will find
+that Mathlify helps you author math content with
+idiomatic code that is easy to write, read and maintain.
+
+## OpenStax Elementary Algebra 2e
+
+The questions are taken from the review exercises at the end of chapter 1 in
+[OpenStax Elementary Algebra 2e](https://openstax.org/books/elementary-algebra-2e/pages/1-review-exercises),
+under the [Creative Commons Attribution License](https://creativecommons.org/licenses/by/4.0/).
+
+Access for free at https://openstax.org/books/elementary-algebra-2e/pages/1-introduction
+
+## Simplify Fractions
+
+import { Fraction } from "mathlify";
+import katex from "katex";
+export const q1070 = function () {
+  const num = 8;
+  const den = 24;
+  const f = new Fraction(num, den);
+  const soln = `\\frac{${num}}{${den}} = ${f}`;
+  return {
+    toString: function () {
+      return katex.renderToString(soln);
+    },
+  };
+};
+
+> **Qn 1070.**
+> {q1070()}
+
+### Code sample
+
+```js
+const num = 8;
+const den = 24;
+const f = new Fraction(num, den);
+const soln = `\\frac{${num}}{${den}} = ${f}`;
+// \frac{8}{24} = \frac{1}{3}
+```
+
+## Multiply Fractions
+
+export const q1078 = function () {
+  const f1 = new Fraction(1, 2);
+  const f2 = new Fraction(3, 8);
+  const soln = `${f1} \\cdot ${f2} = ${f1.times(f2)}`;
+  return {
+    toString: function () {
+      return katex.renderToString(soln);
+    },
+  };
+};
+
+> **Qn 1078.**
+> {q1078()}
+
+### Code sample
+
+```js
+const f1 = new Fraction(1, 2);
+const f2 = new Fraction(3, 8);
+const soln = `${f1} \\cdot ${f2} = ${f1.times(f2)}`;
+// \frac{1}{2} \cdot \frac{3}{8} = \frac{3}{16}
+```
+
+## Divide Fractions
+
+export const q1088 = function () {
+  const f1 = new Fraction(-3, 4);
+  const f2 = new Fraction(3, 5);
+  const soln = `${f1} \\div ${f2} = ${f1.divide(f2)}`;
+  return {
+    toString: function () {
+      return katex.renderToString(soln);
+    },
+  };
+};
+
+> **Qn 1088.**
+> {q1088()}
+
+### Code sample
+
+```js
+const f1 = new Fraction(-3, 4);
+const f2 = new Fraction(3, 5);
+const soln = `${f1} \\div ${f2} = ${f1.divide(f2)}`;
+// \frac{-3}{4} \div \frac{3}{5} = -\frac{5}{4}
+```
+
+## Add or Subtract Fractions
+
+export const q1132 = function () {
+  const f1 = new Fraction(1, 4);
+  const f2 = new Fraction(1, 5);
+  const soln = `${f1} + ${f2} = ${f1.plus(f2)}`;
+  return {
+    toString: function () {
+      return katex.renderToString(soln);
+    },
+  };
+};
+export const q1138 = function () {
+  const f1 = new Fraction(1);
+  const f2 = new Fraction(5, 9);
+  const soln = `${f1} - ${f2} = ${f1.minus(f2)}`;
+  return {
+    toString: function () {
+      return katex.renderToString(soln);
+    },
+  };
+};
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+<Tabs>
+  <TabItem label="Qn 1132: Addition">
+		> {q1132()}
+		#### Code sample
+		```js
+		const f1 = new Fraction(1, 4);
+		const f2 = new Fraction(1, 5);
+		const soln = `${f1} + ${f2} = ${f1.plus(f2)}`;
+		// \frac{1}{4} + \frac{1}{5} = \frac{9}{20}
+		```	
+	</TabItem>
+  <TabItem label="Qn 1138: Subtraction">
+		> {q1138()}
+		#### Code sample
+		```js
+		const f1 = new Fraction(1);
+		const f2 = new Fraction(5, 9);
+		const soln = `${f1} - ${f2} = ${f1.minus(f2)}`;
+		// 1 - \frac{5}{9} = \frac{4}{9}
+		```			
+	</TabItem>
+</Tabs>
+
+## Use the Order of Operations to Simplify Complex Fractions
+
+export const q1140 = function () {
+  const num = new Fraction(1, 3);
+  const d1 = new Fraction(5);
+  const d2 = new Fraction(2);
+  const soln = `\\displaystyle \\frac{\\left(${num}\\right)^2}{${d1} + ${d2}^2} = ${num
+    .square()
+    .divide(d1.plus(d2.square()))}`;
+  return {
+    toString: function () {
+      return katex.renderToString(soln);
+    },
+  };
+};
+
+> **Qn 1140.**
+> {q1140()}
+
+### Code sample
+
+```js
+const num = new Fraction(1, 3);
+const d1 = new Fraction(5);
+const d2 = new Fraction(2);
+const soln = `\\frac{\\left(${num}\\right)^2}{${d1} + ${d2}^2}
+	= ${num.square().divide(d1.plus(d2.square()))}`;
+// \frac{\left(\frac{1}{3}\right)^2}{5 + 2^2} = \frac{1}{45}
+```
