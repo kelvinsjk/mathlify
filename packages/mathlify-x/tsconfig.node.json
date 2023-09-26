@@ -3,5 +3,6 @@
     "composite": true,
     "skipLibCheck": true,
     "module": "ESNext"
-  }
+  },
+  "include": ["vite.config.ts"]
 }

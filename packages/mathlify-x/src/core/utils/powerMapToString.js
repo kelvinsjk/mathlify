@@ -1,4 +1,4 @@
-import { Fraction } from '../fraction.js';
+import { Fraction } from "../fraction.js";
 
 /**
  * creates the string representation of a Term, following the order
@@ -7,18 +7,19 @@ import { Fraction } from '../fraction.js';
  * @returns {string}
  */
 export function powerMapToString(powerMap) {
-	let variableString = '';
-	let firstTerm = true;
-	powerMap.forEach((power, variable) => {
-		const powerString = `${power}`.length > 1 ? `{${power}}` : `${power}`;
-		if (firstTerm) {
-			variableString = power.is.one() ? variable : `${variable}^${powerString}`;
-			firstTerm = false;
-		} else {
-			variableString += power.is.one()
-				? ` ${variable}`
-				: ` ${variable}^${powerString}`;
-		}
-	});
-	return variableString;
+  let variableString = "";
+  let firstTerm = true;
+  powerMap.forEach((power, variable) => {
+    const powerString =
+      `${power.toTex()}`.length > 1 ? `{${power.toTex()}}` : `${power.toTex()}`;
+    if (firstTerm) {
+      variableString = power.is.one() ? variable : `${variable}^${powerString}`;
+      firstTerm = false;
+    } else {
+      variableString += power.is.one()
+        ? ` ${variable}`
+        : ` ${variable}^${powerString}`;
+    }
+  });
+  return variableString;
 }
