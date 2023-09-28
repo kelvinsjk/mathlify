@@ -1,19 +1,21 @@
 {
-	"name": "mathlify-monorepo",
-	"version": "0.0.1",
-	"description": "bringing mathematics into the digital age",
-	"scripts": {
-		"mathlify": "pnpm --filter mathlify test",
-		"demo": "pnpm --filter mathlify-demo dev"
-	},
-	"keywords": [
-		"math",
-		"mathlify"
-	],
-	"author": "Kelvin Soh",
-	"license": "MIT",
-	"bugs": {
-		"url": "https://github.com/kelvinsjk/mathlify/issues"
-	},
-	"homepage": "https://github.com/kelvinsjk/mathlify#readme"
+  "name": "mathlify-monorepo",
+  "version": "0.0.1",
+  "description": "bringing mathematics into the digital age",
+  "scripts": {
+    "mathlify": "pnpm --filter mathlify test",
+    "mathlify-x": "pnpm --filter mathlify-x test",
+    "docs": "pnpm --filter mathlify-docs dev",
+    "demo": "pnpm --filter mathlify-demo dev"
+  },
+  "keywords": [
+    "math",
+    "mathlify"
+  ],
+  "author": "Kelvin Soh",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kelvinsjk/mathlify/issues"
+  },
+  "homepage": "https://github.com/kelvinsjk/mathlify#readme"
 }
