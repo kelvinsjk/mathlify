@@ -339,7 +339,7 @@ export class Fraction {
 
 	//! serialize toJSON
 	/**
-	 * @typedef {import('./json.d.ts').FractionJSON} FractionJSON
+	 * @typedef {import('./types.js').FractionJSON} FractionJSON
 	 */
 
 	/**

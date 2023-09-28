@@ -1,4 +1,2 @@
-export class Fraction extends oldFrac {
-}
-import { Fraction as oldFrac } from "mathlify";
+export { Fraction, gcd, lcm, numberToFraction } from "./core/index.js";
 //# sourceMappingURL=index.d.ts.map
