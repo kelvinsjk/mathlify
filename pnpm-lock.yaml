@@ -104,6 +104,9 @@ importers:
       katex:
         specifier: ^0.16.8
         version: 0.16.8
+      mathlifier:
+        specifier: ^1.3.4
+        version: 1.3.4
       mathlify:
         specifier: workspace:*
         version: link:../../packages/mathlify

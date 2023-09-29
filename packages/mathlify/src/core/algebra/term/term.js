@@ -183,6 +183,22 @@ export class Term {
   }
 
   /**
+   * @param {number|Fraction} n - the power to raise the term to
+   * @returns {Term} power of the term
+   */
+  pow(n) {
+    const nFrac = numberToFraction(n);
+    if (this.coeff.is.not.one() && !nFrac.is.integer()) {
+      throw new Error(`Non-integral powers not supported at the moment`);
+    }
+    const newPowerMap = new Map();
+    this.powerMap.forEach((power, variable) => {
+      newPowerMap.set(variable, power.times(nFrac));
+    });
+    return powerMapToTerm(newPowerMap, this.coeff.pow(nFrac));
+  }
+
+  /**
    * sub in many
    * @param {{[key: string]: number|Fraction}|number|Fraction} variableToValue - the values to sub in with the key being the variable signature.
    * If a number of Fraction is received, we assume that the variable is 'x'
