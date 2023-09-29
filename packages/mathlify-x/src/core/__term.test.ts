@@ -1,5 +1,3 @@
-// import { Fraction } from './fraction';
-// import { Term } from './term';
 import { Term, Fraction } from './index';
 import { test, expect } from 'vitest';
 
@@ -100,6 +98,7 @@ test('Term multiplication', () => {
 });
 
 const half = new Fraction(1, 2);
+const xy = new Term('x', 'y');
 test('Term sub in method', () => {
 	const sqrtX = new Term(['x', half]);
 	expect(sqrtX.toTex()).to.equal('x^{\\frac{1}{2}}');
@@ -112,7 +111,6 @@ test('Term sub in method', () => {
 	expect(() => {
 		new Term({ variable: 'x', power: new Fraction(1, 2) }).subIn(2);
 	}).to.throw();
-	const xy = new Term('x', 'y');
 	expect(`${xy.subIn(2).toTex()}`).to.equal('2 y');
 	expect(`${xy.subIn({ y: 2 }).toTex()}`).to.equal('2 x');
 	const xy2 = xy.subIn({ z: 2 });
@@ -120,8 +118,13 @@ test('Term sub in method', () => {
 	expect(`${xy.subIn({ x: 2, y: 3 }).toTex()}`).toBe('6');
 });
 
+test('Term variables', () => {
+	expect(xy.variables).to.have.members(['y', 'x']);
+	expect(xy.variables.length).to.eq(2);
+});
+
+const threeFifthTerm = new Term(threeFifth);
 test('Term casting', () => {
-	const threeFifthTerm = new Term(threeFifth);
 	// @ts-expect-error
 	expect(threeFifth.is.equalTo(threeFifthTerm)).toBe(false);
 	expect(threeFifth.is.equalTo(threeFifthTerm.cast.toFraction())).toBe(true);
@@ -130,10 +133,12 @@ test('Term casting', () => {
 	}).to.throw();
 });
 
-test('is like, is equal', () => {
+test('boolean methods', () => {
 	const twoX = new Term(2, 'x');
-	expect(twoX.is.like('x')).toBe(true);
-	expect(twoX.is.equalTo('x')).toBe(false);
+	expect(twoX.is.not.like('x')).toBe(false);
+	expect(twoX.is.not.equalTo('x')).toBe(true);
+	expect(twoX.is.not.constant()).toBe(true);
+	expect(threeFifthTerm.is.not.rational()).toBe(false);
 });
 
 test('JSON', () => {
