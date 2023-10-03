@@ -1,0 +1,130 @@
+---
+title: "Mathlify polynomial demo"
+date: 2023-10-01
+tags:
+  - Mathlify
+  - Mathlify Demo
+authors: 
+	- kelvinsoh
+slug: blog/mathlify-polynomial
+---
+
+In this post, we explore the use of Mathlify to typeset questions
+and answers involving
+polynomials.
+We hope that you will find
+that Mathlify helps you author math content with
+idiomatic code that is easy to write, read and maintain.
+
+## The `Polynomial` class
+
+In Mathlify, the `Polynomial` class is used to
+represent a single variable polynomial with
+coefficients in the rational numbers.
+
+## OpenStax Elementary Algebra 2e
+
+The questions are taken from the review exercises in chapter 6 of
+[OpenStax Elementary Algebra 2e](https://openstax.org/books/elementary-algebra-2e/pages/6-review-exercises),
+under the [Creative Commons Attribution License](https://creativecommons.org/licenses/by/4.0/).
+
+Access for free at https://openstax.org/books/elementary-algebra-2e/pages/1-introduction
+
+## Add and Subtract Polynomials
+
+import { Expression, Term, Polynomial } from "mathlify";
+import katex from "katex";
+
+export const q600 = function () {
+  const poly1 = new Polynomial([5,12,1]);
+  const poly2 = new Polynomial([6,-8,3]);
+  const qn = `
+    ${katex.renderToString(`(${poly1}) + (${poly2})
+      = ${poly1.plus(poly2)}
+    `)}
+  `;
+  return {
+    toString: function () {
+      return `<p>${qn}</p>`;
+    },
+  };
+};
+export const q602 = function () {
+  const poly1 = new Polynomial([10,-8,-1], {variable: 'm'});
+  const poly2 = new Polynomial([5,1,-2], {variable: 'm'});
+  const qn = `
+    ${katex.renderToString(`(${poly1}) - (${poly2})
+      = ${poly1.minus(poly2)}
+    `)}
+  `;
+  return {
+    toString: function () {
+      return `<p>${qn}</p>`;
+    },
+  };
+};
+
+> **Chapter 6 Qn 600.**
+> {q600()}
+> **Chapter 6 Qn 602.**
+> {q602()}
+
+### Code sample
+
+```js
+// qn 600
+const poly1 = new Polynomial([5,12,1]);
+const poly2 = new Polynomial([6,-8,3]);
+const qn = `(${poly1}) + (${poly2}) = ${poly1.plus(poly2)}`;
+// qn 602
+const poly3 = new Polynomial([10,-8,-1], {variable: 'm'});
+const poly4 = new Polynomial([5,1,-2], {variable: 'm'});
+const qn = `(${poly3}) + (${poly4}) = ${poly3.minus(poly4)}`;
+```
+
+## Evaluate a Polynomial for a Given Value of the Variable
+
+export const q606 = function () {
+  const poly = new Polynomial([3,-1,1],{variable: 'y'});
+  const y = 5;
+  const qn = `Evaluate ${katex.renderToString(`${poly}`)}
+    when ${katex.renderToString(`y = ${y}`)}.)} 
+  `;
+  return {
+    toString: function () {
+      return `<p>${qn}</p>`;
+    },
+  };
+};
+export const q602 = function () {
+  const poly1 = new Polynomial([10,-8,-1], {variable: 'm'});
+  const poly2 = new Polynomial([5,1,-2], {variable: 'm'});
+  const qn = `
+    ${katex.renderToString(`(${poly1}) - (${poly2})
+      = ${poly1.minus(poly2)}
+    `)}
+  `;
+  return {
+    toString: function () {
+      return `<p>${qn}</p>`;
+    },
+  };
+};
+
+> **Chapter 6 Qn 600.**
+> {q600()}
+> **Chapter 6 Qn 602.**
+> {q602()}
+
+### Code sample
+
+```js
+// qn 600
+const poly1 = new Polynomial([5,12,1]);
+const poly2 = new Polynomial([6,-8,3]);
+const qn = `(${poly1}) + (${poly2}) = ${poly1.plus(poly2)}`;
+// qn 602
+const poly3 = new Polynomial([10,-8,-1], {variable: 'm'});
+const poly4 = new Polynomial([5,1,-2], {variable: 'm'});
+const qn = `(${poly3}) + (${poly4}) = ${poly3.minus(poly4)}`;
+```

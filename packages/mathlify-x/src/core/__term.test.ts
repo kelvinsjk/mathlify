@@ -32,8 +32,8 @@ test('Terms', () => {
 });
 
 const threeFifth = new Fraction(3, 5);
+const threeFifthX = new Term(threeFifth, 'x');
 test('Term Fractional Display', () => {
-	const threeFifthX = new Term(threeFifth, 'x');
 	expect(`${threeFifthX.toTex()}`).to.equal('\\frac{3}{5} x');
 	threeFifthX.setDisplayMode('always');
 	expect(`${threeFifthX.toTex()}`).to.equal('\\frac{3 x}{5}');
@@ -95,6 +95,9 @@ test('Term multiplication', () => {
 		`${x.divide(2, { fractionalDisplayMode: 'always' }).toTex()}`
 	).to.equal('\\frac{x}{2}');
 	expect(`${x.divide(x).toTex()}`).to.equal('1');
+	expect(threeFifthX.pow(3).toTex()).to.equal('\\frac{27}{125} x^3');
+	expect(x.pow(half).toTex()).to.equal('x^{\\frac{1}{2}}');
+	expect(() => threeFifthX.pow(half)).to.throw();
 });
 
 const half = new Fraction(1, 2);

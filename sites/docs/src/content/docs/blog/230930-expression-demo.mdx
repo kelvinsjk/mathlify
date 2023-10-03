@@ -1,0 +1,129 @@
+---
+title: "Mathlify expressions demo"
+date: 2023-09-30
+tags:
+  - Mathlify
+  - Mathlify Demo
+authors: 
+	- kelvinsoh
+slug: blog/mathlify-expressions
+---
+
+In this post, we explore the use of Mathlify to typeset questions
+and answers involving
+expressions.
+We hope that you will find
+that Mathlify helps you author math content with
+idiomatic code that is easy to write, read and maintain.
+
+## The `Expression` class
+
+In Mathlify, the `Expression` class is used to represent elements under addition. Formally,
+it handles expressions of the form
+$\displaystyle \sum_i^N t_i$,
+where $t_i$ are terms.
+
+The `Expression` constructor handles automatic simplification by
+combining like terms.
+
+## OpenStax Elementary Algebra 2e
+
+The questions are taken from the review exercises in chapters 1 and 6 of
+[OpenStax Elementary Algebra 2e](https://openstax.org/books/elementary-algebra-2e/pages/1-review-exercises),
+under the [Creative Commons Attribution License](https://creativecommons.org/licenses/by/4.0/).
+
+Access for free at https://openstax.org/books/elementary-algebra-2e/pages/1-introduction
+
+## Evaluate an Expressions
+
+import { Expression, Term } from "mathlify";
+import katex from "katex";
+
+export const q972 = function () {
+  const exp = new Expression(new Term(2,'x'), new Term(4, 'y'), -5);
+  // shorthand: new Expression([2, 'x'], [4, 'y'], -5);
+  const x = 7;
+  const y = 8;
+  const qn = `Evaluate the expression
+    ${katex.renderToString(`${exp}`)}
+    when ${katex.renderToString(`x=${x}`)}
+    and ${katex.renderToString(`y=${y}.`)}
+  `;
+  const ans = katex.renderToString(`${exp.subIn({x,y})}`);
+  return {
+    toString: function () {
+      return `<p><strong>Question:</strong> ${qn}</p>
+        <p><strong>Answer:</strong> ${ans}</p>`;
+    },
+  };
+};
+
+> **Chapter 1 Qn 972.**
+> {q972()}
+
+### Code sample
+
+```js
+const exp = new Expression(new Term(2,'x'), new Term(4, 'y'), -5);
+// shorthand: new Expression([2, 'x'], [4, 'y'], -5);
+const x = 7;
+const y = 8;
+// uses the math function from the mathlifier library
+const qn = `Evaluate the expression
+  ${math(exp)}
+  when ${math(`x=${x}`)}
+  and ${math(`y=${y}.`)}
+`;
+const ans = exp.subIn({x,y});
+// outputs 41 when converted to string
+```
+
+## Simplify Expressions by Combining Like Terms
+
+export const q984 = function () {
+  const terms = [[8,'x'], 7, [4,'x'], -5];
+  const exp = new Expression(...terms);
+  const qnString =
+    `${terms[0]} + ${terms[1]} + ${terms[2]} ${terms[3]} = ${exp}`;
+  return {
+    toString: function () {
+      return katex.renderToString(qnString);
+    },
+  };
+};
+
+> **Chapter 1 Qn 984.**
+> {q984()}
+
+### Code sample
+
+```js
+const terms = [[8,'x'], 7, [4,'x'], -5];
+const exp = new Expression(...terms);
+const qnString =
+  `${terms[0]} + ${terms[1]} + ${terms[2]} ${terms[3]} = ${exp}`;
+```
+
+## Multiply a Binomial by a Binomial
+
+export const q658 = function () {
+  const exp1 = new Expression([9, 'x'], [-1, 'y']);
+  const exp2 = new Expression([6, 'x'], -5);
+  const qnString = `(${exp1}) (${exp2}) = ${exp1.times(exp2)}`;
+  return {
+    toString: function () {
+      return katex.renderToString(qnString);
+    },
+  };
+};
+
+> **Chapter 6 Qn 658.**
+> {q658()}
+
+### Code sample
+
+```js
+const exp1 = new Expression([9, 'x'], [-1, 'y']);
+const exp2 = new Expression([6, 'x'], -5);
+const qnString = `(${exp1}) (${exp2}) = ${exp1.times(exp2)}`;
+```
