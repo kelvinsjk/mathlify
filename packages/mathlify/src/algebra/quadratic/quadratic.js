@@ -1,6 +1,4 @@
-import { Polynomial } from '../../core/algebra/polynomial/polynomial.js';
-import { Expression } from '../../core/algebra/expression/expression.js';
-import { numberToFraction } from '../../utils/toFraction.js';
+import { Expression, Polynomial, numberToFraction } from '../../core/index.js';
 import { SquareRoot } from '../../surds/square-roots.js';
 import { castToPoly } from '../utils/castToPoly.js';
 import { ExpansionTerm } from '../term/index.js';

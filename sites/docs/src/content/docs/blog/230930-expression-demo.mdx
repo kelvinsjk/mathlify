@@ -81,7 +81,7 @@ const ans = exp.subIn({x,y});
 ## Simplify Expressions by Combining Like Terms
 
 export const q984 = function () {
-  const terms = [[8,'x'], 7, [4,'x'], -5];
+  const terms = [new Term(8, 'x'), 7, new Term(4,'x'), -5];
   const exp = new Expression(...terms);
   const qnString =
     `${terms[0]} + ${terms[1]} + ${terms[2]} ${terms[3]} = ${exp}`;
@@ -98,7 +98,7 @@ export const q984 = function () {
 ### Code sample
 
 ```js
-const terms = [[8,'x'], 7, [4,'x'], -5];
+const terms = [new Term(8, 'x'), 7, new Term(4,'x'), -5];
 const exp = new Expression(...terms);
 const qnString =
   `${terms[0]} + ${terms[1]} + ${terms[2]} ${terms[3]} = ${exp}`;

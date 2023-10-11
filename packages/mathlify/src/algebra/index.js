@@ -13,5 +13,4 @@ export {
 	completeSquare,
 	discriminant,
 } from './quadratic/index.js';
-export { castToPoly } from './utils/castToPoly.js';
 export { longDivision } from './polynomials/index.js';
