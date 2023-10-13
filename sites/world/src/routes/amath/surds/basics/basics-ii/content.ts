@@ -29,7 +29,7 @@ function exampleGen(a: number, b: number): string {
 	return parts(q1, q2, q3, q4);
 }
 
-function exampleArgs(): number[] {
+function exampleArgs(): Parameters<typeof exampleGen> {
 	const triple = sample(pythagoreanTriples);
 	let multiple = 1;
 	if (triple === undefined) {
@@ -44,7 +44,8 @@ function exampleArgs(): number[] {
 	if (multiple <= 1) {
 		multiple = 1;
 	}
-	return shuffle(triple.map((x) => x * multiple).slice(0, 2));
+	const shuffled = shuffle(triple.map((x) => x * multiple).slice(0, 2));
+	return [shuffled[0], shuffled[1]];
 }
 
 function qnGen(...triples: number[][]): [string, string] {
@@ -84,7 +85,7 @@ function qnGen(...triples: number[][]): [string, string] {
 	return [parts(...qns.map((x) => x[0])), parts(...qns.map((x) => x[1]))];
 }
 
-function qnArgs(): number[][] {
+function qnArgs(): Parameters<typeof qnGen> {
 	const triples: number[][] = [];
 	for (let i = 0; i < 4; i++) {
 		let triple = exampleArgs();

@@ -30,7 +30,7 @@ function exampleGen(base: number): string {
 	return parts(a, b, c, d, e, f, g);
 }
 
-function exampleArgs(): number {
+function exampleArgs(): Parameters<typeof exampleGen>[0] {
 	const bases = Array.from(Array(14).keys()).slice(2);
 	const base = sample(bases);
 	if (base === undefined) {
@@ -84,7 +84,7 @@ function qnGen(...bases: number[]): [string, string] {
 	return [parts(...qns.map((x) => x[0])), parts(...qns.map((x) => x[1]))];
 }
 
-function qnArgs(): number[] {
+function qnArgs(): Parameters<typeof qnGen> {
 	const bases = Array.from(Array(14).keys()).slice(1);
 	return sampleSize(bases, 7);
 }

@@ -1,8 +1,6 @@
 import { test, expect } from "vitest";
 import { solveLinear } from "./linear";
-import { Fraction } from "../../core/fraction";
-import { Polynomial } from "../../core/algebra/polynomial";
-import { Expression } from "../../core/algebra/expression";
+import { Fraction, Polynomial, Expression } from "../../core/";
 
 const xPlusThree = new Polynomial([1, 3]);
 const threePlusX = new Polynomial([3, 1], { ascending: true });

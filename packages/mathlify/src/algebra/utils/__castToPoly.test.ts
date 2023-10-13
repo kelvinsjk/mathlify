@@ -1,6 +1,6 @@
 import { test, expect } from "vitest";
 import { castToPoly } from "./castToPoly";
-import { Fraction, Expression, Polynomial } from "../../../core/index.js";
+import { Fraction, Expression, Polynomial } from "../../core";
 
 test("cast to poly", () => {
   expect(() => castToPoly(new Expression("x"), { variable: "y" })).to.throw();

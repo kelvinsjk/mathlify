@@ -1,5 +1,25 @@
-<script>
+<script lang="ts">
+	import { dev } from '$app/environment';
+	import { onMount } from 'svelte';
 	import '../app.postcss';
+
+	let wrapper: HTMLDivElement;
+
+	onMount(() => {
+		//TODO: REMOVE THIS
+		var all = document.getElementsByTagName('*'),
+			i = 0,
+			rect,
+			docWidth = document.documentElement.offsetWidth;
+		for (; i < all.length; i++) {
+			rect = all[i].getBoundingClientRect();
+			if (rect.right > docWidth || rect.left < 0) {
+				console.log('WARNING: OVERFLOW detected');
+				console.log(all[i]);
+				all[i].style.borderTop = '1px solid red';
+			}
+		}
+	});
 </script>
 
 <svelte:head>
@@ -17,7 +37,7 @@
 	/>
 </svelte:head>
 
-<div class="wrapper">
+<div class="wrapper" bind:this={wrapper}>
 	<slot />
 </div>
 

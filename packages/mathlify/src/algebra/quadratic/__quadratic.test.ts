@@ -5,9 +5,7 @@ import {
   factorizeQuadratic,
   discriminant,
 } from "./quadratic";
-import { Fraction } from "../../core/fraction";
-import { Polynomial } from "../../core/algebra/polynomial";
-import { Expression } from "../../core/algebra/expression";
+import { Fraction, Polynomial, Expression } from "../../core/";
 
 const x2Plus5xPlus4 = new Polynomial([1, 5, 4]);
 const x2MinusXMinus6 = new Polynomial([1, -1, -6]);
