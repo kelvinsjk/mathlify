@@ -14,7 +14,13 @@ export const surdCoeffs = {
 
 export const pythagoreanTriples: [number, number, number][] = [
 	[3, 4, 5],
+	[3, 4, 5],
+	[3, 4, 5],
+	[5, 12, 13],
 	[5, 12, 13],
 	[8, 15, 17],
 	[7, 24, 25],
+	[20, 21, 29],
+	[12, 35, 37],
+	[9, 40, 41],
 ];

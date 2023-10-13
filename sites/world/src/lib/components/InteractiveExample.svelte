@@ -3,15 +3,18 @@
 
 	export let title = '';
 	title = title ? `:${title}` : '';
+	export let plural = false;
+	const s = plural ? 's' : '';
 
+	/*eslint @typescript-eslint/no-explicit-any: ["error", { "ignoreRestArgs": true }]*/
 	export let generator: (...args: any[]) => string;
-	export let argsGenerator: () => unknown[] | unknown;
-	export let initialArg: unknown = undefined;
+	export let argsGenerator: () => unknown;
+	export let initialArgs: unknown = undefined;
 
 	let args: unknown[];
-	if (initialArg !== undefined) {
+	if (initialArgs !== undefined) {
 		// use initial if provided
-		args = Array.isArray(initialArg) ? initialArg : [initialArg];
+		args = Array.isArray(initialArgs) ? initialArgs : [initialArgs];
 	} else {
 		// otherwise use argsGenerator
 		const generatedArgs = argsGenerator();
@@ -27,9 +30,9 @@
 	}
 </script>
 
-<div class="collapse collapse-arrow border border-base-300 bg-base-200">
+<div class="collapse collapse-arrow border border-base-300 bg-base-200 my-4">
 	<input type="checkbox" />
-	<div class="collapse-title text-xl font-medium">Example{title}</div>
+	<div class="collapse-title text-xl font-medium">Example{s}{title}</div>
 	<div class="collapse-content bg-base-100">
 		{#key content}
 			<div in:scale class="pt-4">

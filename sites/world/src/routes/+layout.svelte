@@ -19,11 +19,6 @@
 
 <div class="wrapper">
 	<slot />
-	<div>
-		Lorem ipsum dolor sit amet consectetur adipisicing elit. Corrupti labore cupiditate porro
-		veritatis, exercitationem a dolore et iste dolores natus in quae modi! Perspiciatis illum
-		blanditiis, deserunt deleniti distinctio praesentium.
-	</div>
 </div>
 
 <style>

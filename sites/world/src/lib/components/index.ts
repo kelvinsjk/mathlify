@@ -5,13 +5,15 @@ import H2 from './H2.svelte';
 import H3 from './H3.svelte';
 import P from './P.svelte';
 
-import type { contentElements, staticElements, dynamicElements } from '$lib';
+import type { contentElements } from '$lib';
 import type { ComponentType, SvelteComponent } from 'svelte';
+import Display from './Display.svelte';
 
 export const components = {
 	h2: H2,
 	h3: H3,
 	p: P,
+	display: Display,
 	example: Example,
 	iExample: InteractiveExample,
 	iQn: InteractiveQn,
@@ -24,17 +26,31 @@ type Components =
 			>;
 	  }
 	| {
-			[key in (typeof staticElements)[number]]: ComponentType<
-				SvelteComponent<{ content: string; title?: string }>
+			example: ComponentType<
+				SvelteComponent<{ content: string; title?: string; plural?: boolean }>
 			>;
 	  }
 	| {
-			[key in (typeof dynamicElements)[number]]: ComponentType<
+			iExample: ComponentType<
 				SvelteComponent<{
+					/*eslint @typescript-eslint/no-explicit-any: ["error", { "ignoreRestArgs": true }]*/
 					generator: (...args: any[]) => string;
-					argsGenerator: () => unknown[] | unknown;
-					initial?: unknown;
+					argsGenerator: () => unknown;
+					initialArgs?: unknown;
 					title?: string;
+					plural?: boolean;
+				}>
+			>;
+	  }
+	| {
+			iQn: ComponentType<
+				SvelteComponent<{
+					/*eslint @typescript-eslint/no-explicit-any: ["error", { "ignoreRestArgs": true }]*/
+					generator: (...args: any[]) => [string, string];
+					argsGenerator: () => unknown;
+					initialArgs?: unknown;
+					title?: string;
+					preamble?: string;
 				}>
 			>;
 	  };
