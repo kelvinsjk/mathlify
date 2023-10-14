@@ -31,8 +31,18 @@ page.iExample(exampleGen, exampleArgs, {
 });
 [2, 1, 10, 1];
 // practice
-const preamble = `.`;
-page.iQn(qnGen, qnArgs, { preamble, initialArgs: new Array(4).fill([5, 12]) });
+const preamble = `Simplify the surds below using the multiplication rule.`;
+page.iQn(qnGen, qnArgs, {
+	preamble,
+	initialArgs: [
+		{ type: 1, param: 8 },
+		{ type: 1, param: 63 },
+		{ type: 1, param: 75 },
+		{ type: 2, param: [3, 15] },
+		{ type: 4, param: [2, 1, 8, 1] },
+		{ type: 4, param: [10, 3, 15, 2] },
+	],
+});
 
 export const content = page.content;
 
@@ -42,56 +52,10 @@ function exampleGen(
 	param3: number,
 	param4: [number, number, number, number]
 ): string {
-	const surd1 = new SquareRoot(param1);
-	const k1 = surd1.coeff;
-	const p1 = surd1.radicand;
-	const q1 = `${math(
-		`\\sqrt{${param1}} = \\sqrt{${k1.square()} \\times ${p1}} = \\sqrt{${k1.square()}} \\times \\sqrt{${p1}} = ${surd1}`,
-		{ wrap: true }
-	)}`;
-	const [a2, b2] = param2;
-	const surd2 = new SquareRoot(a2 * b2);
-	const k2 = surd2.coeff;
-	const p2 = surd2.radicand;
-	const q2 = `${math(
-		`\\sqrt{${a2}} \\times \\sqrt{${b2}} = \\sqrt{${k2
-			.square()
-			.times(p2)}} = \\sqrt{${k2.square()} \\times ${p2}} = ${surd2}`,
-		{ wrap: true }
-	)}`;
-	const n3 = param3;
-	const final3 = simplifyRootXN(n3);
-	const q3 =
-		`Assuming ${math(`x \\geq 0,`)} ${newline}` +
-		(n3 === 2
-			? math(`\\sqrt{x^2} = ${final3}`, { wrap: true })
-			: n3 % 2 === 0
-			? math(`\\sqrt{x^${n3}} = \\sqrt{\\left( x^${n3 / 2} \\right)^2} = ${final3}`, {
-					wrap: true,
-			  })
-			: math(
-					`\\sqrt{x^${n3}} = \\sqrt{x^${n3 - 1} \\cdot x} = \\sqrt{x^${
-						n3 - 1
-					}}  \\sqrt{x} = ${final3}`,
-					{
-						wrap: true,
-					}
-			  ));
-	const [a4, n4a, b4, n4b] = param4;
-	const radicand1 = new Term(a4, ['y', n4a]);
-	const radicand2 = new Term(b4, ['y', n4b]);
-	const sqrt4 = new SquareRoot(a4 * b4);
-	const var4 = simplifyRootXN(n4a + n4b, 'y');
-	const working4 = `\\sqrt{${radicand1.times(radicand2)}}`;
-	const final4 = `${sqrt4.times(var4)}`;
-	const finalAns =
-		final4 === working4 || (sqrt4.coeff.is.one() && n4a + n4b <= 1) ? '' : ` = ${final4}`;
-	const q4 = `${math(
-		`\\sqrt{${radicand1}} \\times \\sqrt{${radicand2}} = \\sqrt{${radicand1.times(
-			radicand2
-		)}}${finalAns}`,
-		{ wrap: true }
-	)}`;
+	const { ans: q1 } = q1Gen(param1);
+	const { ans: q2 } = q2Gen(...param2);
+	const { ans: q3 } = q3Gen(param3);
+	const { ans: q4 } = q4Gen(...param4);
 	return parts(q1, q2, q3, q4);
 }
 
@@ -115,32 +79,57 @@ function exampleArgs(): Parameters<typeof exampleGen> {
 	const param2: [number, number] = [a, b];
 	// q3
 	const param3 = sample([2, 3, 4, 5, 6, 7]);
-	// q4
-	const [a1, n1] = generate_axN();
-	const [a2, n2] = generate_axN();
-	const param4: [number, number, number, number] = [a1, n1, a2, n2];
-	return [param1, param2, param3, param4];
+	return [param1, param2, param3, q4Params()];
 }
 
-function qnGen(...bases: number[]): [string, string] {
+function qnGen(
+	...params: (
+		| { type: 1; param: number }
+		| { type: 2; param: [number, number] }
+		| { type: 3; param: number }
+		| { type: 4; param: [number, number, number, number] }
+	)[]
+): [string, string] {
 	let qns: [string, string][] = [];
-	bases.forEach((base, i) => {});
+	params.forEach((q) => {
+		if (q.type === 1) {
+			const { qn, ans } = q1Gen(q.param);
+			qns.push([qn, ans]);
+		} else if (q.type === 2) {
+			const { qn, ans } = q2Gen(...q.param);
+			qns.push([qn, ans]);
+		} else if (q.type === 3) {
+			const { qn, ans } = q3Gen(q.param);
+			qns.push([qn, ans]);
+		} else if (q.type === 4) {
+			const { qn, ans } = q4Gen(...q.param);
+			qns.push([qn, ans]);
+		}
+	});
 	qns = shuffle(qns);
 	return [parts(...qns.map((x) => x[0])), parts(...qns.map((x) => x[1]))];
 }
 
-function qnArgs(): number[] {
-	return [];
+function qnArgs(): Parameters<typeof qnGen> {
+	const args: Parameters<typeof qnGen> = [];
+	for (let i = 0; i < 3; i++) {
+		args.push({ type: 1, param: q1Params() });
+	}
+	args.push({ type: 2, param: q2Params() });
+	for (let i = 0; i < 2; i++) {
+		args.push({ type: 4, param: q4Params() });
+	}
+	return args;
 }
 
-function simplifyRootXN(n: number, x = 'x'): string {
+function simplifyRootXN(n: number, x = 'x'): [string, string] {
 	if (n === 0) {
-		return '';
+		return ['', ''];
 	} else if (n === 1) {
-		return `\\sqrt{${x}}`;
+		return ['', x];
 	} else {
 		const coeff = new Term([x, Math.floor(n / 2)]);
-		return n % 2 === 0 ? `${coeff}` : `${coeff} \\sqrt{${x}}`;
+		return n % 2 === 0 ? [`${coeff}`, ''] : [`${coeff}`, x];
 	}
 }
 
@@ -151,4 +140,112 @@ function generate_axN(): [number, number] {
 		return generate_axN();
 	}
 	return [a, n];
+}
+
+function q1Gen(a: number): { qn: string; ans: string } {
+	const surd1 = new SquareRoot(a);
+	const k1 = surd1.coeff;
+	const p1 = surd1.radicand;
+	const ans = `${math(
+		`\\sqrt{${a}} = \\sqrt{${k1.square()} \\times ${p1}} = \\sqrt{${k1.square()}} \\times \\sqrt{${p1}} = ${surd1}`,
+		{ wrap: true }
+	)}`;
+	const qn = math(`\\sqrt{${a}}`);
+	return { qn, ans };
+}
+function q2Gen(a: number, b: number): { qn: string; ans: string } {
+	const surd2 = new SquareRoot(a * b);
+	const k2 = surd2.coeff;
+	const p2 = surd2.radicand;
+	const ans = `${math(
+		`\\sqrt{${a}} \\times \\sqrt{${b}} = \\sqrt{${k2
+			.square()
+			.times(p2)}} = \\sqrt{${k2.square()} \\times ${p2}} = ${surd2}`,
+		{ wrap: true }
+	)}`;
+	const qn = math(`\\sqrt{${a}} \\times \\sqrt{${b}}`);
+	return { qn, ans };
+}
+function q3Gen(n: number): { qn: string; ans: string } {
+	const [coeff3, radicand3] = simplifyRootXN(n);
+	const final3 = radicand3 ? `${coeff3} \\sqrt{${radicand3}}` : coeff3;
+	const ans =
+		`Assuming ${math(`x \\geq 0,`)} ${newline}` +
+		(n === 2
+			? math(`\\sqrt{x^2} = ${final3}`, { wrap: true })
+			: n % 2 === 0
+			? math(`\\sqrt{x^${n}} = \\sqrt{\\left( x^${n / 2} \\right)^2} = ${final3}`, {
+					wrap: true,
+			  })
+			: math(
+					`\\sqrt{x^${n}} = \\sqrt{x^${n - 1} \\cdot x} = \\sqrt{x^${
+						n - 1
+					}}  \\sqrt{x} = ${final3}`,
+					{
+						wrap: true,
+					}
+			  ));
+	const qn = math(`\\sqrt{x^{${n}}}`);
+	return { qn, ans };
+}
+function q4Gen(a: number, n1: number, b: number, n2: number): { qn: string; ans: string } {
+	const radicand1 = new Term(a, ['y', n1]);
+	const radicand2 = new Term(b, ['y', n2]);
+	const sqrt4 = new SquareRoot(a * b);
+	const coeff4a = sqrt4.coeff;
+	const radicand4a = sqrt4.radicand;
+	const [coeff4b, radicand4b] = simplifyRootXN(n1 + n2, 'y');
+	const working4 = `\\sqrt{${radicand1.times(radicand2)}}`;
+	const finalRadicand =
+		radicand4a.is.one() && radicand4b === ''
+			? undefined
+			: radicand4b === ''
+			? new SquareRoot(radicand4a)
+			: `\\sqrt{${new Term(radicand4a, radicand4b)}}`;
+	let finalAns = '';
+	if (coeff4a.is.not.one() || coeff4b !== '') {
+		if (finalRadicand === undefined) {
+			finalAns = `= ${new Term(coeff4a, coeff4b)}`;
+		} else if (typeof finalRadicand === 'string') {
+			finalAns = `= ${new Term(coeff4a, coeff4b, finalRadicand)}`;
+		} else {
+			finalAns = `= ${new Term(coeff4a, coeff4b).times(finalRadicand)}`;
+		}
+	}
+	const ans = `${math(
+		`\\sqrt{${radicand1}} \\times \\sqrt{${radicand2}} = ${working4}${finalAns}`,
+		{
+			wrap: true,
+		}
+	)}`;
+	const qn = math(`\\sqrt{${radicand1}} \\times \\sqrt{${radicand2}}`);
+	return { qn, ans };
+}
+
+function q1Params(): number {
+	const base1 = sample(surdBases);
+	const coeff1 = sample(surdCoeffs[base1].slice(1));
+	if (coeff1 === undefined) {
+		throw new Error('undefined sampling');
+	}
+	return coeff1 ** 2 * base1;
+}
+
+function q2Params(): [number, number] {
+	const base2 = sample(surdBases);
+	let coeff2 = sample(surdCoeffs[base2].slice(1));
+	while (coeff2 === base2 || new SquareRoot(coeff2 ?? 1).radicand.is.one()) {
+		coeff2 = sample(surdCoeffs[base2].slice(1));
+	}
+	if (coeff2 === undefined) {
+		throw new Error('undefined sampling');
+	}
+	const [a, b] = shuffle([coeff2 * base2, coeff2]);
+	return [a, b];
+}
+
+function q4Params(): [number, number, number, number] {
+	const [a1, n1] = generate_axN();
+	const [a2, n2] = generate_axN();
+	return [a1, n1, a2, n2];
 }
