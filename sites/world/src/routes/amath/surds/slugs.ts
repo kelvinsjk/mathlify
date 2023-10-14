@@ -9,7 +9,7 @@ export const slugs = [
 	{ section: 'Simplifying Surds', subsection: 'Division', slug: 'simplifying-surds/division' },
 	{
 		section: 'Arithmetic',
-		subsection: 'Addition and Subtraction',
+		subsection: 'Addition Subtraction',
 		slug: 'arithmetic/addition-and-subtraction',
 	},
 	{ section: 'Arithmetic', subsection: 'Multiplication', slug: 'arithmetic/multiplication' },

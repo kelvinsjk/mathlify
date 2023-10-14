@@ -2,7 +2,7 @@ import { PageContent } from '$lib';
 import { sample, sampleSize, shuffle } from 'lodash-es';
 import { math, newline } from 'mathlifier';
 import { parts } from '$lib/typesetting/parts';
-import { SquareRoot, Term } from 'mathlify';
+import { Fraction, SquareRoot, Term } from 'mathlify';
 import { surdBases, surdCoeffs } from '../../utils';
 
 export const title = 'Simplifying Surds via Division';
@@ -17,83 +17,62 @@ page.text(`In this section, we will investigate the division rule
 
 // example
 page.iExample(exampleGen, exampleArgs, {
-	initialArgs: [18, [6, 2], 3, [2, 1, 10, 1]],
+	initialArgs: [
+		[9, 4],
+		[6, 2],
+		[8, 3, 2, 1, 'x'],
+	],
 	plural: true,
 });
 [2, 1, 10, 1];
 // practice
-const preamble = `Simplify the surds below using the multiplication rule.`;
+const preamble = `Simplify the surds below using the division rule. You may assume that ${math(
+	`x \\geq 0.`
+)}`;
 page.iQn(qnGen, qnArgs, {
 	preamble,
 	initialArgs: [
-		{ type: 1, param: 8 },
-		{ type: 1, param: 63 },
-		{ type: 1, param: 75 },
-		{ type: 2, param: [3, 15] },
-		{ type: 4, param: [2, 1, 8, 1] },
-		{ type: 4, param: [10, 3, 15, 2] },
+		{ type: 1, param: [1, 25] },
+		{ type: 1, param: [81, 16] },
+		{ type: 2, param: [18, 2] },
+		{ type: 3, param: [12, 2, 3, 1, 'x', false] },
 	],
 });
 
 export const content = page.content;
 
 function exampleGen(
-	param1: number,
+	param1: [number, number],
 	param2: [number, number],
-	param3: number,
-	param4: [number, number, number, number]
+	param3: [number, number, number, number, string, boolean?]
 ): string {
-	const { ans: q1 } = q1Gen(param1);
+	const { ans: q1 } = q1Gen(...param1);
 	const { ans: q2 } = q2Gen(...param2);
-	const { ans: q3 } = q3Gen(param3);
-	const { ans: q4 } = q4Gen(...param4);
-	return parts(q1, q2, q3, q4);
+	const { ans: q3 } = q3Gen(...param3);
+	return parts(q1, q2, q3);
 }
 
 function exampleArgs(): Parameters<typeof exampleGen> {
-	// q1
-	const [base1, base2] = sampleSize(surdBases, 2);
-	const coeff1 = sample(surdCoeffs[base1].slice(1));
-	if (coeff1 === undefined) {
-		throw new Error('undefined sampling');
-	}
-	const param1 = coeff1 ** 2 * base1;
-	// q2
-	let coeff2 = sample(surdCoeffs[base2].slice(1));
-	while (coeff2 === base2 || new SquareRoot(coeff2 ?? 1).radicand.is.one()) {
-		coeff2 = sample(surdCoeffs[base2].slice(1));
-	}
-	if (coeff2 === undefined) {
-		throw new Error('undefined sampling');
-	}
-	const [a, b] = shuffle([coeff2 * base2, coeff2]);
-	const param2: [number, number] = [a, b];
-	// q3
-	const param3 = sample([2, 3, 4, 5, 6, 7]);
-	return [param1, param2, param3, q4Params()];
+	return [q1Params(), q2Params(), q3Params()];
 }
 
 function qnGen(
 	...params: (
-		| { type: 1; param: number }
+		| { type: 1; param: [number, number] }
 		| { type: 2; param: [number, number] }
-		| { type: 3; param: number }
-		| { type: 4; param: [number, number, number, number] }
+		| { type: 3; param: [number, number, number, number, string, boolean] }
 	)[]
 ): [string, string] {
 	let qns: [string, string][] = [];
 	params.forEach((q) => {
 		if (q.type === 1) {
-			const { qn, ans } = q1Gen(q.param);
+			const { qn, ans } = q1Gen(...q.param);
 			qns.push([qn, ans]);
 		} else if (q.type === 2) {
 			const { qn, ans } = q2Gen(...q.param);
 			qns.push([qn, ans]);
 		} else if (q.type === 3) {
-			const { qn, ans } = q3Gen(q.param);
-			qns.push([qn, ans]);
-		} else if (q.type === 4) {
-			const { qn, ans } = q4Gen(...q.param);
+			const { qn, ans } = q3Gen(...q.param);
 			qns.push([qn, ans]);
 		}
 	});
@@ -103,13 +82,11 @@ function qnGen(
 
 function qnArgs(): Parameters<typeof qnGen> {
 	const args: Parameters<typeof qnGen> = [];
-	for (let i = 0; i < 3; i++) {
+	for (let i = 0; i < 2; i++) {
 		args.push({ type: 1, param: q1Params() });
 	}
 	args.push({ type: 2, param: q2Params() });
-	for (let i = 0; i < 2; i++) {
-		args.push({ type: 4, param: q4Params() });
-	}
+	args.push({ type: 3, param: q3Params(false) });
 	return args;
 }
 
@@ -124,102 +101,79 @@ function simplifyRootXN(n: number, x = 'x'): [string, string] {
 	}
 }
 
-function generate_axN(): [number, number] {
-	const a = sample([1, 1, 2, 3, 4, 5, 6, 8, 9, 10]);
-	const n = sample([0, 1, 2, 3]);
-	if (a === 1 && n === 0) {
-		return generate_axN();
-	}
-	return [a, n];
-}
-
-function q1Gen(a: number): { qn: string; ans: string } {
-	const surd1 = new SquareRoot(a);
-	const k1 = surd1.coeff;
-	const p1 = surd1.radicand;
+function q1Gen(a: number, b: number): { qn: string; ans: string } {
+	const frac = new Fraction(a, b);
+	const sqrt = new SquareRoot(frac);
 	const ans = `${math(
-		`\\sqrt{${a}} = \\sqrt{${k1.square()} \\times ${p1}} = \\sqrt{${k1.square()}} \\times \\sqrt{${p1}} = ${surd1}`,
-		{ wrap: true }
+		`\\displaystyle \\sqrt{${frac}} = \\frac{\\sqrt{${a}}}{\\sqrt{${b}}} = ${sqrt}`
 	)}`;
-	const qn = math(`\\sqrt{${a}}`);
+	const qn = math(`\\displaystyle \\sqrt{${frac}}`);
 	return { qn, ans };
 }
 function q2Gen(a: number, b: number): { qn: string; ans: string } {
-	const surd2 = new SquareRoot(a * b);
-	const k2 = surd2.coeff;
-	const p2 = surd2.radicand;
+	const frac = new Fraction(a, b);
+	const sqrt = new SquareRoot(frac);
+	const working = sqrt.is.rational() ? `= \\sqrt{${frac}}` : '';
 	const ans = `${math(
-		`\\sqrt{${a}} \\times \\sqrt{${b}} = \\sqrt{${k2
-			.square()
-			.times(p2)}} = \\sqrt{${k2.square()} \\times ${p2}} = ${surd2}`,
+		`\\displaystyle \\frac{\\sqrt{${a}}}{\\sqrt{${b}}} = \\sqrt{\\frac{${a}}{${b}}} ${working} = ${sqrt}`,
 		{ wrap: true }
 	)}`;
-	const qn = math(`\\sqrt{${a}} \\times \\sqrt{${b}}`);
+	const qn = math(`\\displaystyle \\frac{\\sqrt{${a}}}{\\sqrt{${b}}}`);
 	return { qn, ans };
 }
-function q3Gen(n: number): { qn: string; ans: string } {
-	const [coeff3, radicand3] = simplifyRootXN(n);
-	const final3 = radicand3 ? `${coeff3} \\sqrt{${radicand3}}` : coeff3;
-	const ans =
-		`Assuming ${math(`x \\geq 0,`)} ${newline}` +
-		(n === 2
-			? math(`\\sqrt{x^2} = ${final3}`, { wrap: true })
-			: n % 2 === 0
-			? math(`\\sqrt{x^${n}} = \\sqrt{\\left( x^${n / 2} \\right)^2} = ${final3}`, {
-					wrap: true,
-			  })
-			: math(
-					`\\sqrt{x^${n}} = \\sqrt{x^${n - 1} \\cdot x} = \\sqrt{x^${
-						n - 1
-					}}  \\sqrt{x} = ${final3}`,
-					{
-						wrap: true,
-					}
-			  ));
-	const qn = math(`\\sqrt{x^{${n}}}`);
-	return { qn, ans };
-}
-function q4Gen(a: number, n1: number, b: number, n2: number): { qn: string; ans: string } {
-	const radicand1 = new Term(a, ['y', n1]);
-	const radicand2 = new Term(b, ['y', n2]);
-	const sqrt4 = new SquareRoot(a * b);
-	const coeff4a = sqrt4.coeff;
-	const radicand4a = sqrt4.radicand;
-	const [coeff4b, radicand4b] = simplifyRootXN(n1 + n2, 'y');
-	const working4 = `\\sqrt{${radicand1.times(radicand2)}}`;
-	const finalRadicand =
-		radicand4a.is.one() && radicand4b === ''
-			? undefined
-			: radicand4b === ''
-			? new SquareRoot(radicand4a)
-			: `\\sqrt{${new Term(radicand4a, radicand4b)}}`;
+function q3Gen(
+	a: number,
+	n1: number,
+	b: number,
+	n2: number,
+	x: string,
+	exampleMode = true
+): { qn: string; ans: string } {
+	const radicand1 = n1 === 0 ? new Term(a) : new Term(a, [x, n1]);
+	const radicand2 = n2 === 0 ? new Term(b) : new Term(b, [x, n2]);
+	const frac = new Fraction(a, b);
+	const n3 = n1 - n2;
+	const radicand3 = n3 === 0 ? new Term(frac) : new Term(frac, [x, n3]);
+	const sqrt = new SquareRoot(frac);
+	const coeff = sqrt.coeff;
+	const radicandNum = sqrt.radicand;
+	const [coeffX, radicandX] = simplifyRootXN(n3, x);
+	let finalRadicand: undefined | string = undefined;
+	if (radicandX) {
+		finalRadicand = coeff.is.one() ? radicandX : `${new Term(radicandNum, radicandX)}`;
+	} else if (radicandNum.is.not.one()) {
+		finalRadicand = `\\sqrt{${radicandNum}}`;
+	}
 	let finalAns = '';
-	if (coeff4a.is.not.one() || coeff4b !== '') {
+	if (coeff.is.not.one() || coeffX !== '') {
 		if (finalRadicand === undefined) {
-			finalAns = `= ${new Term(coeff4a, coeff4b)}`;
-		} else if (typeof finalRadicand === 'string') {
-			finalAns = `= ${new Term(coeff4a, coeff4b, finalRadicand)}`;
+			finalAns = `= ${new Term(coeff, coeffX)}`;
 		} else {
-			finalAns = `= ${new Term(coeff4a, coeff4b).times(finalRadicand)}`;
+			finalAns = `= ${new Term(coeff, coeffX, `\\sqrt{${finalRadicand}}`)}`;
 		}
 	}
-	const ans = `${math(
-		`\\sqrt{${radicand1}} \\times \\sqrt{${radicand2}} = ${working4}${finalAns}`,
+	let ans = `${math(
+		`\\displaystyle \\frac{\\sqrt{${radicand1}}}{\\sqrt{${radicand2}}} = \\sqrt{${radicand3}} ${finalAns}`,
 		{
 			wrap: true,
 		}
 	)}`;
-	const qn = math(`\\sqrt{${radicand1}} \\times \\sqrt{${radicand2}}`);
+	if (exampleMode) {
+		ans = `Assuming ${math(`x \\geq 0,`)} ${newline}` + ans;
+	}
+	const qn = math(`\\displaystyle \\frac{\\sqrt{${radicand1}}}{\\sqrt{${radicand2}}}`);
 	return { qn, ans };
 }
 
-function q1Params(): number {
-	const base1 = sample(surdBases);
-	const coeff1 = sample(surdCoeffs[base1].slice(1));
-	if (coeff1 === undefined) {
-		throw new Error('undefined sampling');
+function q1Params(): [number, number] {
+	let [a, b] = sampleSize(Array.from(Array(13).keys()).slice(2), 2);
+	const frac = new Fraction(a, b);
+	a = frac.num;
+	b = frac.den;
+	if (b === 1) {
+		[a, b] = [b, a];
 	}
-	return coeff1 ** 2 * base1;
+	return [a ** 2, b ** 2];
 }
 
 function q2Params(): [number, number] {
@@ -231,12 +185,25 @@ function q2Params(): [number, number] {
 	if (coeff2 === undefined) {
 		throw new Error('undefined sampling');
 	}
-	const [a, b] = shuffle([coeff2 * base2, coeff2]);
-	return [a, b];
+	return [coeff2 * base2, coeff2];
 }
 
-function q4Params(): [number, number, number, number] {
-	const [a1, n1] = generate_axN();
-	const [a2, n2] = generate_axN();
-	return [a1, n1, a2, n2];
+function q3Params(exampleMode = true): [number, number, number, number, string, boolean] {
+	const n1 = sample([1, 2, 3]);
+	const n2s: Record<number, number[]> = {
+		1: [0, 1],
+		2: [0, 1, 2],
+		3: [0, 1, 2, 3],
+	};
+	const n2 = sample(n2s[n1]);
+	if (n2 === undefined) {
+		throw new Error('undefined sampling');
+	}
+	const a = sample([2, 3, 5, 6, 7, 1, 4, 9, 16, 25]);
+	if (a === 1 && n1 - n2 === 0) {
+		return q3Params(exampleMode);
+	}
+	const multiple = a < 16 ? sample([2, 3, 5, 6, 7, 8]) : sample([2, 3, 5]);
+	const b = a * multiple;
+	return [b, n1, multiple, n2, 'x', exampleMode];
 }

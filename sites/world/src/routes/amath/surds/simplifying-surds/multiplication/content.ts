@@ -31,7 +31,9 @@ page.iExample(exampleGen, exampleArgs, {
 });
 [2, 1, 10, 1];
 // practice
-const preamble = `Simplify the surds below using the multiplication rule.`;
+const preamble = `Simplify the surds below using the multiplication rule. You may assume that ${math(
+	`x \\geq 0.`
+)}`;
 page.iQn(qnGen, qnArgs, {
 	preamble,
 	initialArgs: [
@@ -39,8 +41,8 @@ page.iQn(qnGen, qnArgs, {
 		{ type: 1, param: 63 },
 		{ type: 1, param: 75 },
 		{ type: 2, param: [3, 15] },
-		{ type: 4, param: [2, 1, 8, 1] },
-		{ type: 4, param: [10, 3, 15, 2] },
+		{ type: 4, param: [2, 1, 8, 1, false] },
+		{ type: 4, param: [10, 3, 15, 2, false] },
 	],
 });
 
@@ -50,7 +52,7 @@ function exampleGen(
 	param1: number,
 	param2: [number, number],
 	param3: number,
-	param4: [number, number, number, number]
+	param4: [number, number, number, number, boolean]
 ): string {
 	const { ans: q1 } = q1Gen(param1);
 	const { ans: q2 } = q2Gen(...param2);
@@ -87,7 +89,7 @@ function qnGen(
 		| { type: 1; param: number }
 		| { type: 2; param: [number, number] }
 		| { type: 3; param: number }
-		| { type: 4; param: [number, number, number, number] }
+		| { type: 4; param: [number, number, number, number, boolean] }
 	)[]
 ): [string, string] {
 	let qns: [string, string][] = [];
@@ -117,7 +119,7 @@ function qnArgs(): Parameters<typeof qnGen> {
 	}
 	args.push({ type: 2, param: q2Params() });
 	for (let i = 0; i < 2; i++) {
-		args.push({ type: 4, param: q4Params() });
+		args.push({ type: 4, param: q4Params(false) });
 	}
 	return args;
 }
@@ -188,13 +190,20 @@ function q3Gen(n: number): { qn: string; ans: string } {
 	const qn = math(`\\sqrt{x^{${n}}}`);
 	return { qn, ans };
 }
-function q4Gen(a: number, n1: number, b: number, n2: number): { qn: string; ans: string } {
-	const radicand1 = new Term(a, ['y', n1]);
-	const radicand2 = new Term(b, ['y', n2]);
+function q4Gen(
+	a: number,
+	n1: number,
+	b: number,
+	n2: number,
+	exampleMode = true
+): { qn: string; ans: string } {
+	const y = exampleMode ? 'y' : 'x';
+	const radicand1 = new Term(a, [y, n1]);
+	const radicand2 = new Term(b, [y, n2]);
 	const sqrt4 = new SquareRoot(a * b);
 	const coeff4a = sqrt4.coeff;
 	const radicand4a = sqrt4.radicand;
-	const [coeff4b, radicand4b] = simplifyRootXN(n1 + n2, 'y');
+	const [coeff4b, radicand4b] = simplifyRootXN(n1 + n2, y);
 	const working4 = `\\sqrt{${radicand1.times(radicand2)}}`;
 	const finalRadicand =
 		radicand4a.is.one() && radicand4b === ''
@@ -244,8 +253,8 @@ function q2Params(): [number, number] {
 	return [a, b];
 }
 
-function q4Params(): [number, number, number, number] {
+function q4Params(exampleMode = true): [number, number, number, number, boolean] {
 	const [a1, n1] = generate_axN();
 	const [a2, n2] = generate_axN();
-	return [a1, n1, a2, n2];
+	return [a1, n1, a2, n2, exampleMode];
 }
