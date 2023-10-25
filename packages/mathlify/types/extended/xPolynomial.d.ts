@@ -28,9 +28,7 @@ export class xPolynomial extends Expression {
     /** @type {number} */
     degree: number;
     /** @type {"extended-polynomial"} */
-    kind: "extended-polynomial";
-    /** @type {"extended-polynomial"|"extended-linear-polynomial"|"extended-quadratic-polynomial"} */
-    type: "extended-polynomial" | "extended-linear-polynomial" | "extended-quadratic-polynomial";
+    type: "extended-polynomial";
     /**
      * Polynomial addition
      * @param {xPolynomial|Polynomial|number|Fraction} x - the polynomial to be added

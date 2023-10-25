@@ -8,6 +8,6 @@
  */
 export function completeSquare(poly: Polynomial | Expression): Expression;
 export type Fraction = import('../../core/fraction.js').Fraction;
-import { Polynomial } from "../../core/algebra/polynomial/polynomial.js";
-import { Expression } from "../../core/algebra/expression/expression.js";
+import { Polynomial } from '../../core/index.js';
+import { Expression } from '../../core/index.js';
 //# sourceMappingURL=completeSquare.d.ts.map

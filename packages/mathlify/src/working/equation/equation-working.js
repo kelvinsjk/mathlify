@@ -17,9 +17,6 @@ import {
   solveQuadratic,
 } from "../../algebra/index.js";
 
-//TODO: move all x's to right method
-//TODO: make rhs 0 method
-
 /**
  * General Equation class representing LHS = RHS, with typesetting to output a series of steps to
  * to plugged into a LaTeX align/align* /gather/gather* environment
@@ -249,7 +246,7 @@ export class EquationWorking {
       const rhsWorking = rhs.minus(offset);
       this.lhsArray.push(lhsWorking);
       this.rhsArray.push(rhsWorking);
-      const leadingCoeff = lhsWorking.leadingCoefficient();
+      const leadingCoeff = lhsWorking.leadingCoeff;
       if (leadingCoeff.is.not.one()) {
         this.lhs = lhsWorking.divide(leadingCoeff);
         this.rhs = rhsWorking.divide(leadingCoeff);
@@ -276,33 +273,33 @@ export class EquationWorking {
    * @returns {EquationWorking} - a reference to this equation
    * WARNING: mutates the current instance. the lhs/rhs is the latest after the method
    */
-  combineRationalTerms(options) {
-    const simplifiedLHS = simplifyRationalTerm(this.lhs);
-    const newLHS =
-      simplifiedLHS instanceof RationalTerm
-        ? new Expression(simplifiedLHS)
-        : simplifiedLHS;
-    const simplifiedRHS = simplifyRationalTerm(this.rhs);
-    const newRHS =
-      simplifiedRHS instanceof RationalTerm
-        ? new Expression(simplifiedRHS)
-        : simplifiedRHS;
-    if (
-      simplifiedLHS instanceof RationalTerm ||
-      simplifiedRHS instanceof RationalTerm
-    ) {
-      insertIntertext(this, options);
-      this.lhsArray.push(newLHS);
-      this.rhsArray.push(newRHS);
-      this.lhs = newLHS;
-      this.rhs = newRHS;
-      return this;
-    }
-    console.warn(
-      `no rational terms found in lhs: ${this.lhs} and rhs: ${this.rhs} during rational term combination. Is this intended?`
-    );
-    return this;
-  }
+  // combineRationalTerms(options) {
+  //   const simplifiedLHS = simplifyRationalTerm(this.lhs);
+  //   const newLHS =
+  //     simplifiedLHS instanceof RationalTerm
+  //       ? new Expression(simplifiedLHS)
+  //       : simplifiedLHS;
+  //   const simplifiedRHS = simplifyRationalTerm(this.rhs);
+  //   const newRHS =
+  //     simplifiedRHS instanceof RationalTerm
+  //       ? new Expression(simplifiedRHS)
+  //       : simplifiedRHS;
+  //   if (
+  //     simplifiedLHS instanceof RationalTerm ||
+  //     simplifiedRHS instanceof RationalTerm
+  //   ) {
+  //     insertIntertext(this, options);
+  //     this.lhsArray.push(newLHS);
+  //     this.rhsArray.push(newRHS);
+  //     this.lhs = newLHS;
+  //     this.rhs = newRHS;
+  //     return this;
+  //   }
+  //   console.warn(
+  //     `no rational terms found in lhs: ${this.lhs} and rhs: ${this.rhs} during rational term combination. Is this intended?`
+  //   );
+  //   return this;
+  // }
   /**
    * cross multiplication (only if there is a rational term on either/both sides)
    * @param {{intertext?: string, show?: boolean}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
@@ -473,10 +470,12 @@ export class EquationWorking {
 
   /**
    * returns a string representation of the sequence of steps to be fed into a LaTeX align/align* / gather/gather* environment
+   * @returns {string} - the string representation of the sequence of steps
    */
   toString() {
     const equal = this.aligned ? " &= " : " = ";
-    return this.lhsArray.reduce((prev, lhs, i) => {
+    let str = "";
+    this.lhsArray.forEach((lhs, i) => {
       const newLine = i === 0 ? "" : "\n\t\\\\ ";
       const equalSign =
         typeof lhs === "string" && this.rhsArray[i] === ""
@@ -484,8 +483,9 @@ export class EquationWorking {
             ? " &"
             : ""
           : equal;
-      return prev + `${newLine}${lhs}${equalSign}${this.rhsArray[i]}`;
-    }, "");
+      str += `${newLine}${lhs}${equalSign}${this.rhsArray[i]}`;
+    });
+    return str;
   }
 
   /**

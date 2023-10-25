@@ -1,45 +1,48 @@
 export interface FractionJSON {
-	type: 'fraction';
-	num: number;
-	den: number;
-	args: [number, number];
+  type: "fraction";
+  num: number;
+  den: number;
+  args: [number, number];
 }
 
 export type TermType =
-	| 'term'
-	| 'sqrt'
-	| 'rational-term'
-	| 'expansion-term'
-	| 'rational-fn'
-	| 'power-fn'
-	| 'exp-fn'
-	| 'ln-fn'
-	| 'sin-fn'
-	| 'cos-fn';
+  | "term"
+  | "sqrt"
+  | "rational-term"
+  | "expansion-term"
+  | "rational-fn"
+  | "power-fn"
+  | "exp-fn"
+  | "ln-fn"
+  | "sin-fn"
+  | "cos-fn"
+  | "expression-product";
+
+// TODO: remove expansion-term in lieu of expansion-product
 
 export interface TermJSON {
-	type: TermType;
-	coeff: string;
-	signature: string;
-	args: [FractionJSON, ...[string, FractionJSON][]];
+  type: TermType;
+  coeff: string;
+  signature: string;
+  args: [FractionJSON, ...[string, FractionJSON][]];
 }
 
 export type ExpressionType =
-	| 'expression'
-	| 'polynomial'
-	| 'extended-polynomial'
-	| 'general-fn'
-	| 'polynomial-like';
+  | "expression"
+  | "polynomial"
+  | "extended-polynomial"
+  | "general-fn"
+  | "polynomial-like";
 
 export interface ExpressionJSON {
-	type: ExpressionType;
-	terms: string[];
-	args: TermJSON[];
+  type: ExpressionType;
+  terms: string[];
+  args: TermJSON[];
 }
 
 export interface PolynomialJSON extends ExpressionJSON {
-	type: 'polynomial';
-	variable: string;
-	coeffs: string[];
-	args2: [FractionJSON[], { variable: string; ascending: boolean }];
+  type: "polynomial";
+  variable: string;
+  coeffs: string[];
+  args2: [FractionJSON[], { variable: string; ascending: boolean }];
 }

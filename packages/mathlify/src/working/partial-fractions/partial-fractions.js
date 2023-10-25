@@ -122,8 +122,8 @@ export function partialFraction(rational, denFactor) {
           const C = rational.numFn
             .subIn(repeatedRoot)
             .divide(uniqueFactor.subIn(repeatedRoot));
-          const repeatedCoeff = repeatedFactor.leadingCoefficient();
-          const uniqueCoeff = uniqueFactor.leadingCoefficient();
+          const repeatedCoeff = repeatedFactor.leadingCoeff;
+          const uniqueCoeff = uniqueFactor.leadingCoeff;
           const x2Coeff = rational.numFn.coeffs[2] ?? new Fraction(0);
           const ACoeff = repeatedCoeff.square();
           const BCoeff = uniqueCoeff.times(repeatedCoeff);

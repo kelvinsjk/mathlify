@@ -10,10 +10,10 @@
 export class ExpressionWorking {
     /**
      * constructor
-     * @param {UnsimplifiedExpression|Expression|number|Fraction|string|Term|(number|Fraction|string|Term)[]} exp - the left hand side of the equation
+     * @param {Expression|number|Fraction|string|Term|(number|Fraction|string|Term)[]} exp - the left hand side of the equation
      * @param {{aligned?: boolean, equalStart?: boolean}} [options] - options object defaulting to `{aligned: true, equalStart: false}`
      */
-    constructor(exp: UnsimplifiedExpression | Expression | number | Fraction | string | Term | (number | Fraction | string | Term)[], options?: {
+    constructor(exp: Expression | number | Fraction | string | Term | (number | Fraction | string | Term)[], options?: {
         aligned?: boolean | undefined;
         equalStart?: boolean | undefined;
     } | undefined);
@@ -55,9 +55,6 @@ export class ExpressionWorking {
      * @returns {ExpressionWorking} - a reference to this equation
      * WARNING: mutates the current instance. the lhs/rhs is the latest after the method
      */
-    expand(options?: {
-        intertext?: string | undefined;
-    } | undefined): ExpressionWorking;
     /**
      * rationalize surds
      * TODO: for singleton denominator
@@ -65,9 +62,6 @@ export class ExpressionWorking {
      * @returns {ExpressionWorking} - a reference to this equation
      * WARNING: mutates the current instance. the lhs/rhs is the latest after the method
      */
-    rationalize(options?: {
-        intertext?: string | undefined;
-    } | undefined): ExpressionWorking;
     /**
      * combines rational terms into a single rational term
      * @param {{intertext: string}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
@@ -90,9 +84,6 @@ export class ExpressionWorking {
      * @returns {ExpressionWorking} - a reference to this equation
      * WARNING: mutates current instance
      */
-    simplifyTerms(args: number[], options?: {
-        intertext?: string | undefined;
-    } | undefined): ExpressionWorking;
     /**
      * simplify all terms, leaving an Expression term
      * @param {{intertext?: string}} [options] - options object defaulting to `{from: "lhs"}`. intertext for inserting text between steps.
@@ -131,8 +122,19 @@ export class ExpressionWorking {
      */
     clear(): ExpressionWorking;
 }
-import { UnsimplifiedExpression } from "../../algebra/index.js";
+declare class UnsimplifiedExpression {
+    /** @param {(number|Fraction|string|Term|(number|Fraction|string|{variable: string, power: number|Fraction}|[string,number|Fraction]|Term)[])[]} terms - terms of the expression
+     * */
+    constructor(...terms: (number | Fraction | string | Term | (number | Fraction | string | {
+        variable: string;
+        power: number | Fraction;
+    } | [string, number | Fraction] | Term)[])[]);
+    exp: Expression;
+    terms: Term[];
+    simplify(): Expression;
+}
 import { Expression } from "../../core/index.js";
 import { Fraction } from "../../core/index.js";
 import { Term } from "../../core/index.js";
+export {};
 //# sourceMappingURL=expression-working.d.ts.map

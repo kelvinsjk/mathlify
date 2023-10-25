@@ -24,9 +24,7 @@ export class RationalTerm extends Term {
     /** @type {ExpansionTerm} */
     den: ExpansionTerm;
     /** @type {"rational-term"|"rational-fn"} */
-    kind: "rational-term" | "rational-fn";
-    /** @type {"rational-term"|"rational-expression"|"rational-fn"} */
-    type: "rational-term" | "rational-expression" | "rational-fn";
+    type: "rational-term" | "rational-fn";
     /**
      * multiplication
      * @param {number|Fraction|string|Term|RationalTerm} x - the other term/expression to multiply with

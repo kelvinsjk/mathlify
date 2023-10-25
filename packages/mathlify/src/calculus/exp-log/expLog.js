@@ -31,9 +31,9 @@ export class ExpFn extends Term {
       fx instanceof Polynomial
         ? fx
         : typeof fx === "string"
-        ? new Polynomial(1, { variable: fx })
+        ? Polynomial.ofDegree(1, { variable: fx })
         : new Polynomial([fx]);
-    const expTerm = poly.isZero() ? 1 : `${base}^{${poly}}`;
+    const expTerm = poly.is.zero() ? 1 : `${base}^{${poly}}`;
     super(coeff, expTerm);
     this.fx = poly;
     this.base = base;
@@ -214,7 +214,7 @@ export class ExpFn extends Term {
      * @returns {Fraction} the fraction representation of this term
      */
     toFraction: () => {
-      if (this.fx.isZero()) {
+      if (this.fx.is.zero()) {
         return this.coeff;
       }
       if (typeof this.base === "number" && this.fx.coeffs.length === 1) {
@@ -256,7 +256,7 @@ export class LnFn extends Term {
       fx instanceof Polynomial
         ? fx
         : typeof fx === "string"
-        ? new Polynomial(1, { variable: fx })
+        ? Polynomial.ofDegree(1, { variable: fx })
         : new Polynomial([fx]);
     const log =
       base === "\\textrm{e}"

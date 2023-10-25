@@ -1,1 +1,1 @@
-{"version":3,"file":"longDivision.d.ts","sourceRoot":"","sources":["../../../src/algebra/polynomials/longDivision.js"],"names":[],"mappings":"AAGA;;;;;;GAMG;AACH,mCALW,UAAU,WACV,UAAU,yCAER,UAAU,CAkCtB;2BAzCgD,qBAAqB;yBAArB,qBAAqB;2BAArB,qBAAqB"}
+{"version":3,"file":"longDivision.d.ts","sourceRoot":"","sources":["../../../src/algebra/polynomials/longDivision.js"],"names":[],"mappings":"AAGA;;;;;;GAMG;AACH,mCALW,UAAU,WACV,UAAU,yCAER,UAAU,CAoCtB;2BA3CgD,qBAAqB;yBAArB,qBAAqB;2BAArB,qBAAqB"}

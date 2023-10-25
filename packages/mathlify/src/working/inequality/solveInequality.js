@@ -56,7 +56,7 @@ function preprocess(lhs, rhs = 0, sign = "<", options) {
   const lhsPoly = castToPoly(lhs, { variable: x });
   const rhsPoly = castToPoly(rhs, { variable: x });
   const poly = lhsPoly.minus(rhsPoly);
-  const leadingCoeff = poly.leadingCoefficient();
+  const leadingCoeff = poly.leadingCoeff;
   if (leadingCoeff.is.negative()) {
     finalSign = oppositeSign(finalSign);
   }

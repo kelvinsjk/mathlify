@@ -122,7 +122,7 @@ export class CosFn extends Term {
         degreeMode?: boolean | undefined;
     } | undefined): number;
 }
-import { Term } from '../../core';
-import { Polynomial } from '../../core';
-import { Fraction } from '../../core';
+import { Term } from "../../core";
+import { Polynomial } from "../../core";
+import { Fraction } from "../../core";
 //# sourceMappingURL=sinCos.d.ts.map

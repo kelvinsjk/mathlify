@@ -6,13 +6,25 @@
 //TODO: rainbow expansion
 
 import { Fraction, Term, Expression } from "../../core/index.js";
-import { ExpansionTerm, RationalTerm } from "../../algebra/term/index.js";
+//import { ExpansionTerm, RationalTerm } from "../../algebra/term/index.js";
 import {
-  UnsimplifiedExpression,
+  //UnsimplifiedExpression,
   castToPoly,
   factorizeQuadratic,
 } from "../../algebra/index.js";
-import { SquareRoot } from "../../surds/square-roots.js";
+//import { SquareRoot } from "../../surds/square-roots.js";
+
+class UnsimplifiedExpression {
+  /** @param {(number|Fraction|string|Term|(number|Fraction|string|{variable: string, power: number|Fraction}|[string,number|Fraction]|Term)[])[]} terms - terms of the expression
+   * */
+  constructor(...terms) {
+    this.exp = new Expression(...terms);
+    this.terms = this.exp.terms;
+  }
+  simplify() {
+    return this.exp;
+  }
+}
 
 /**
  * General Equation class representing LHS = RHS, with typesetting to output a series of steps to
@@ -32,9 +44,10 @@ export class ExpressionWorking {
   aligned;
   /** @type {boolean} */
   equalStart;
+  //* @param {UnsimplifiedExpression|Expression|number|Fraction|string|Term|(number|Fraction|string|Term)[]} exp - the left hand side of the equation
   /**
    * constructor
-   * @param {UnsimplifiedExpression|Expression|number|Fraction|string|Term|(number|Fraction|string|Term)[]} exp - the left hand side of the equation
+   * @param {Expression|number|Fraction|string|Term|(number|Fraction|string|Term)[]} exp - the left hand side of the equation
    * @param {{aligned?: boolean, equalStart?: boolean}} [options] - options object defaulting to `{aligned: true, equalStart: false}`
    */
   constructor(exp, options) {
@@ -94,41 +107,41 @@ export class ExpressionWorking {
    * @returns {ExpressionWorking} - a reference to this equation
    * WARNING: mutates the current instance. the lhs/rhs is the latest after the method
    */
-  expand(options) {
-    insertIntertext(this, options);
-    /**@type {(Term|{term: Term, brackets?: 'auto'|'always'|'off', addition: boolean})[]} */
-    const terms = [];
-    /** @type {number} */
-    let count = 0;
-    if (this.exp instanceof Expression) {
-      this.exp.terms.forEach((term) => {
-        if (term instanceof ExpansionTerm) {
-          const newTerms = term.expand().terms;
-          newTerms.forEach((t) => {
-            terms.push({ term: t.abs(), addition: t.coeff.is.positive() });
-          });
-          count++;
-        } else {
-          terms.push(term);
-        }
-      });
-      if (count > 1) {
-        this.expArray.push(new UnsimplifiedExpression(...terms));
-      }
-    } else {
-      this.exp.terms.forEach((termObj) => {
-        if (termObj.term instanceof ExpansionTerm) {
-          let exp = termObj.term.expand();
-          terms.push(...exp.terms);
-        } else {
-          terms.push(termObj);
-        }
-      });
-    }
-    this.exp = new Expression(...terms);
-    this.expArray.push(this.exp);
-    return this;
-  }
+  // expand(options) {
+  //   insertIntertext(this, options);
+  //   /**@type {(Term|{term: Term, brackets?: 'auto'|'always'|'off', addition: boolean})[]} */
+  //   const terms = [];
+  //   /** @type {number} */
+  //   let count = 0;
+  //   if (this.exp instanceof Expression) {
+  //     this.exp.terms.forEach((term) => {
+  //       if (term instanceof ExpansionTerm) {
+  //         const newTerms = term.expand().terms;
+  //         newTerms.forEach((t) => {
+  //           terms.push({ term: t.abs(), addition: t.coeff.is.positive() });
+  //         });
+  //         count++;
+  //       } else {
+  //         terms.push(term);
+  //       }
+  //     });
+  //     if (count > 1) {
+  //       this.expArray.push(new UnsimplifiedExpression(...terms));
+  //     }
+  //   } else {
+  //     this.exp.terms.forEach((termObj) => {
+  //       if (termObj.term instanceof ExpansionTerm) {
+  //         let exp = termObj.term.expand();
+  //         terms.push(...exp.terms);
+  //       } else {
+  //         terms.push(termObj);
+  //       }
+  //     });
+  //   }
+  //   this.exp = new Expression(...terms);
+  //   this.expArray.push(this.exp);
+  //   return this;
+  // }
 
   /**
    * rationalize surds
@@ -137,79 +150,79 @@ export class ExpressionWorking {
    * @returns {ExpressionWorking} - a reference to this equation
    * WARNING: mutates the current instance. the lhs/rhs is the latest after the method
    */
-  rationalize(options) {
-    insertIntertext(this, options);
-    /** @type {Expression} */
-    let num;
-    /** @type {Expression} */
-    let den;
-    if (
-      this.exp instanceof Expression &&
-      this.exp.terms.length === 1 &&
-      this.exp.terms[0] instanceof RationalTerm
-    ) {
-      num = this.exp.terms[0].num;
-      den = this.exp.terms[0].den.expand();
-    } else if (
-      this.exp instanceof UnsimplifiedExpression &&
-      this.exp.terms.length === 1 &&
-      this.exp.terms[0].term instanceof RationalTerm
-    ) {
-      num = this.exp.terms[0].term.num;
-      den = this.exp.terms[0].term.den.expand();
-    } else {
-      throw new Error(`no rational term found for ${this.exp}`);
-    }
-    /** @type {Expression} */
-    let conjugate;
-    if (den.terms.length === 2) {
-      conjugate = new Expression(den.terms[0], den.terms[1].negative());
-    } else {
-      throw new Error(`rationalize not supported for denominator ${den}`);
-    }
-    this.expArray.push(`=${this.exp}\\times\\frac{${conjugate}}{${conjugate}}`);
-    const denom = den.times(conjugate).cast.toFraction();
-    /** @type {({term: Term, addition: boolean})[]} */
-    const numArray = [];
-    num.terms.forEach((term) => {
-      conjugate.terms.forEach((conjugateTerm) => {
-        if (term instanceof SquareRoot) {
-          if (conjugateTerm instanceof SquareRoot) {
-            const t = new Term(
-              term.coeff.times(conjugateTerm.coeff),
-              `\\sqrt{${term.radicand.times(conjugateTerm.radicand)}}`
-            );
-            numArray.push({ term: t.abs(), addition: t.coeff.is.positive() });
-          } else {
-            const t = term.times(conjugateTerm);
-            numArray.push({ term: t.abs(), addition: t.coeff.is.positive() });
-          }
-        } else {
-          if (conjugateTerm instanceof SquareRoot) {
-            const t = conjugateTerm.times(term);
-            numArray.push({ term: t.abs(), addition: t.coeff.is.positive() });
-          } else {
-            const t = term.times(conjugateTerm);
-            numArray.push({ term: t.abs(), addition: t.coeff.is.positive() });
-          }
-        }
-      });
-    });
-    const numString = new UnsimplifiedExpression(...numArray);
+  // rationalize(options) {
+  //   insertIntertext(this, options);
+  //   /** @type {Expression} */
+  //   let num;
+  //   /** @type {Expression} */
+  //   let den;
+  //   if (
+  //     this.exp instanceof Expression &&
+  //     this.exp.terms.length === 1 &&
+  //     this.exp.terms[0] instanceof RationalTerm
+  //   ) {
+  //     num = this.exp.terms[0].num;
+  //     den = this.exp.terms[0].den.expand();
+  //   } else if (
+  //     this.exp instanceof UnsimplifiedExpression &&
+  //     this.exp.terms.length === 1 &&
+  //     this.exp.terms[0].term instanceof RationalTerm
+  //   ) {
+  //     num = this.exp.terms[0].term.num;
+  //     den = this.exp.terms[0].term.den.expand();
+  //   } else {
+  //     throw new Error(`no rational term found for ${this.exp}`);
+  //   }
+  //   /** @type {Expression} */
+  //   let conjugate;
+  //   if (den.terms.length === 2) {
+  //     conjugate = new Expression(den.terms[0], den.terms[1].negative());
+  //   } else {
+  //     throw new Error(`rationalize not supported for denominator ${den}`);
+  //   }
+  //   this.expArray.push(`=${this.exp}\\times\\frac{${conjugate}}{${conjugate}}`);
+  //   const denom = den.times(conjugate).cast.toFraction();
+  //   /** @type {({term: Term, addition: boolean})[]} */
+  //   const numArray = [];
+  //   num.terms.forEach((term) => {
+  //     conjugate.terms.forEach((conjugateTerm) => {
+  //       if (term instanceof SquareRoot) {
+  //         if (conjugateTerm instanceof SquareRoot) {
+  //           const t = new Term(
+  //             term.coeff.times(conjugateTerm.coeff),
+  //             `\\sqrt{${term.radicand.times(conjugateTerm.radicand)}}`
+  //           );
+  //           numArray.push({ term: t.abs(), addition: t.coeff.is.positive() });
+  //         } else {
+  //           const t = term.times(conjugateTerm);
+  //           numArray.push({ term: t.abs(), addition: t.coeff.is.positive() });
+  //         }
+  //       } else {
+  //         if (conjugateTerm instanceof SquareRoot) {
+  //           const t = conjugateTerm.times(term);
+  //           numArray.push({ term: t.abs(), addition: t.coeff.is.positive() });
+  //         } else {
+  //           const t = term.times(conjugateTerm);
+  //           numArray.push({ term: t.abs(), addition: t.coeff.is.positive() });
+  //         }
+  //       }
+  //     });
+  //   });
+  //   const numString = new UnsimplifiedExpression(...numArray);
 
-    this.expArray.push(
-      `=\\frac{${numString}}{\\left(${den.terms[0].abs()}\\right)^2 - \\left(${den.terms[1].abs()}\\right)^2}`
-    );
-    const numExp = num.times(conjugate);
-    this.expArray.push(`=\\frac{${numExp}}{${denom}}`);
-    this.exp = numExp.divide(denom);
-    this.expArray.push(this.exp);
-    return this;
+  //   this.expArray.push(
+  //     `=\\frac{${numString}}{\\left(${den.terms[0].abs()}\\right)^2 - \\left(${den.terms[1].abs()}\\right)^2}`
+  //   );
+  //   const numExp = num.times(conjugate);
+  //   this.expArray.push(`=\\frac{${numExp}}{${denom}}`);
+  //   this.exp = numExp.divide(denom);
+  //   this.expArray.push(this.exp);
+  //   return this;
 
-    //this.exp = new Expression(
-    //  new RationalTerm(num.times(conjugate), den.times(conjugate))
-    //);
-  }
+  //   //this.exp = new Expression(
+  //   //  new RationalTerm(num.times(conjugate), den.times(conjugate))
+  //   //);
+  // }
 
   //TODO: Methods for RationalTerm
   /**
@@ -265,30 +278,30 @@ export class ExpressionWorking {
    * @returns {ExpressionWorking} - a reference to this equation
    * WARNING: mutates current instance
    */
-  simplifyTerms(args, options) {
-    insertIntertext(this, options);
-    if (this.exp instanceof Expression) {
-      throw new Error(`simplifyTerms is not supported for Expression`);
-    }
-    const terms = this.exp.terms;
-    args.sort();
-    const prevTerms = terms.slice(0, args[0]);
-    const postTerms = terms
-      .slice(args[0] + 1)
-      .filter((_, i) => !args.includes(i));
-    const termsToSimplify = terms
-      .filter((_, i) => args.includes(i))
-      .map((e) => e.term);
-    const simplifiedExpression = new Expression(...termsToSimplify);
-    const newExp = new UnsimplifiedExpression(
-      ...prevTerms,
-      ...simplifiedExpression.terms,
-      ...postTerms
-    );
-    this.expArray.push(newExp);
-    this.exp = newExp;
-    return this;
-  }
+  // simplifyTerms(args, options) {
+  //   insertIntertext(this, options);
+  //   if (this.exp instanceof Expression) {
+  //     throw new Error(`simplifyTerms is not supported for Expression`);
+  //   }
+  //   const terms = this.exp.terms;
+  //   args.sort();
+  //   const prevTerms = terms.slice(0, args[0]);
+  //   const postTerms = terms
+  //     .slice(args[0] + 1)
+  //     .filter((_, i) => !args.includes(i));
+  //   const termsToSimplify = terms
+  //     .filter((_, i) => args.includes(i))
+  //     .map((e) => e.term);
+  //   const simplifiedExpression = new Expression(...termsToSimplify);
+  //   const newExp = new UnsimplifiedExpression(
+  //     ...prevTerms,
+  //     ...simplifiedExpression.terms,
+  //     ...postTerms
+  //   );
+  //   this.expArray.push(newExp);
+  //   this.exp = newExp;
+  //   return this;
+  // }
   /**
    * simplify all terms, leaving an Expression term
    * @param {{intertext?: string}} [options] - options object defaulting to `{from: "lhs"}`. intertext for inserting text between steps.

@@ -1,1 +1,1 @@
-{"version":3,"file":"linear.d.ts","sourceRoot":"","sources":["../../../src/algebra/linear/linear.js"],"names":[],"mappings":"AAGA;;GAEG;AACH;;;;;;GAMG;AACH,kCALW,UAAU,GAAC,MAAM,GAAC,QAAQ,GAAC,UAAU;;gBAGnC,QAAQ,CAmBpB;uBA1BY,OAAO,wBAAwB,EAAE,QAAQ;2BAJ3B,6CAA6C;2BAC7C,6CAA6C"}
+{"version":3,"file":"linear.d.ts","sourceRoot":"","sources":["../../../src/algebra/linear/linear.js"],"names":[],"mappings":"AAEA;;GAEG;AACH;;;;;;GAMG;AACH,kCALW,UAAU,GAAC,MAAM,GAAC,QAAQ,GAAC,UAAU;;gBAGnC,QAAQ,CAmBpB;uBA1BY,OAAO,wBAAwB,EAAE,QAAQ;2BAHf,qBAAqB;2BAArB,qBAAqB"}

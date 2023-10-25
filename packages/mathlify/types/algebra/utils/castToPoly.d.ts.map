@@ -1,1 +1,1 @@
-{"version":3,"file":"castToPoly.d.ts","sourceRoot":"","sources":["../../../src/algebra/utils/castToPoly.js"],"names":[],"mappings":"AAIA;;GAEG;AAEH;;;;GAIG;AACH,iCAJW,UAAU,GAAC,MAAM,GAAC,QAAQ,GAAC,UAAU;;gBAEnC,UAAU,CAQtB;uBAdY,OAAO,wBAAwB,EAAE,QAAQ;2BAL3B,6CAA6C;2BAC7C,6CAA6C"}
+{"version":3,"file":"castToPoly.d.ts","sourceRoot":"","sources":["../../../src/algebra/utils/castToPoly.js"],"names":[],"mappings":"AAEA;;GAEG;AAEH;;;;GAIG;AACH,iCAJW,UAAU,GAAC,MAAM,GAAC,QAAQ,GAAC,UAAU;;;gBAEnC,UAAU,CAQtB;uBAdY,OAAO,qBAAqB,EAAE,QAAQ;2BAHZ,qBAAqB;2BAArB,qBAAqB"}

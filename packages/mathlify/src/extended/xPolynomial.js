@@ -24,8 +24,6 @@ export class xPolynomial extends Expression {
   /** @type {number} */
   degree;
   /** @type {"extended-polynomial"} */
-  kind;
-  /** @type {"extended-polynomial"|"extended-linear-polynomial"|"extended-quadratic-polynomial"} */
   type;
   /**
    * @constructor
@@ -64,13 +62,7 @@ export class xPolynomial extends Expression {
     this.variable = variable;
     this.ascending = ascending;
     this.degree = this.coeffs.length - 1;
-    this.kind = "extended-polynomial";
-    this.type =
-      this.degree === 1
-        ? "extended-linear-polynomial"
-        : this.degree === 2
-        ? "extended-quadratic-polynomial"
-        : "extended-polynomial";
+    this.type = "extended-polynomial";
   }
 
   /**

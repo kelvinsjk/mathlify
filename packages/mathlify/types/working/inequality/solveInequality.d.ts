@@ -7,7 +7,7 @@
  * @param {'<'|'>'|'geq'|'leq'|'\\geq'|'\\leq'} [sign='<'] - the sign of the inequality
  * @returns {string} - the solution as a string
  */
-export function solveLinearInequality(lhs: Polynomial | Expression, sign?: "<" | ">" | "\\geq" | "\\leq" | "geq" | "leq" | undefined, rhs?: number | import("../../core/fraction.js").Fraction | import("../../core/index.js").Expression | Polynomial | undefined): string;
+export function solveLinearInequality(lhs: Polynomial | Expression, sign?: "<" | ">" | "\\geq" | "\\leq" | "geq" | "leq" | undefined, rhs?: number | import("../../core/fraction.js").Fraction | import("../../core/expression.js").Expression | Polynomial | undefined): string;
 /**
  * solve rational inequality of which num/den is of degree at most 2, and either has distinct rational roots or no real roots
  * @param {Polynomial|Expression} lhs - the left hand side of the inequality
@@ -16,7 +16,7 @@ export function solveLinearInequality(lhs: Polynomial | Expression, sign?: "<" |
  * @param {'<'|'>'|'geq'|'leq'|'\\geq'|'\\leq'} [sign='<'] - the sign of the inequality
  * @returns {string[]} - the solution as a string
  */
-export function solveQuadraticInequality(lhs: Polynomial | Expression, sign?: "<" | ">" | "\\geq" | "\\leq" | "geq" | "leq" | undefined, rhs?: number | import("../../core/fraction.js").Fraction | import("../../core/index.js").Expression | Polynomial | undefined, options?: {
+export function solveQuadraticInequality(lhs: Polynomial | Expression, sign?: "<" | ">" | "\\geq" | "\\leq" | "geq" | "leq" | undefined, rhs?: number | import("../../core/fraction.js").Fraction | import("../../core/expression.js").Expression | Polynomial | undefined, options?: {
     variable?: string | undefined;
 } | undefined): string[];
 export type Fraction = import("../../core/index.js").Fraction;

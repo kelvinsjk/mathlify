@@ -12,6 +12,6 @@ export function solveLinear(poly: Polynomial | number | Fraction | Expression, r
     variable?: string | undefined;
 } | undefined): Fraction;
 export type Fraction = import('../../core/fraction.js').Fraction;
-import { Polynomial } from "../../core/algebra/polynomial/polynomial.js";
-import { Expression } from "../../core/algebra/expression/expression.js";
+import { Polynomial } from '../../core/index.js';
+import { Expression } from '../../core/index.js';
 //# sourceMappingURL=linear.d.ts.map

@@ -23,8 +23,6 @@ export class RationalTerm extends Term {
   /** @type {Fraction} */
   coeff;
   /** @type {"rational-term"|"rational-fn"} */
-  kind;
-  /** @type {"rational-term"|"rational-expression"|"rational-fn"} */
   type;
   /**
    * @constructor
@@ -68,9 +66,7 @@ export class RationalTerm extends Term {
     this.num = numerator;
     this.den = den;
     this.coeff = coeff;
-    this.kind = "rational-term";
-    this.type =
-      `${denominator}` === "1" ? "rational-expression" : "rational-term";
+    this.type = "rational-term";
   }
 
   /**

@@ -143,9 +143,6 @@ export class EquationWorking {
      * @returns {EquationWorking} - a reference to this equation
      * WARNING: mutates the current instance. the lhs/rhs is the latest after the method
      */
-    combineRationalTerms(options?: {
-        intertext: string;
-    } | undefined): EquationWorking;
     /**
      * cross multiplication (only if there is a rational term on either/both sides)
      * @param {{intertext?: string, show?: boolean}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
@@ -194,8 +191,9 @@ export class EquationWorking {
     } | undefined): void;
     /**
      * returns a string representation of the sequence of steps to be fed into a LaTeX align/align* / gather/gather* environment
+     * @returns {string} - the string representation of the sequence of steps
      */
-    toString(): string | Expression;
+    toString(): string;
     /**
      * clears the arrays, leaving just the final line
      * @returns {EquationWorking} - a reference to this equation
