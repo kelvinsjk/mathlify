@@ -3,14 +3,13 @@ import {
   solveQuadratic,
   castToPoly,
 } from "../../algebra/index.js";
-import { Polynomial } from "../../core/index.js";
+import { Polynomial, Expression } from "../../core/index.js";
 import { oppositeSign, twoRoots } from "./utils/index.js";
 
 /** @typedef {import("../../core/index.js").Fraction} Fraction */
-/** @typedef {import("../../core/index.js").Expression} Expression */
 
 /**
- * solve rational inequality of which num/den is of degree at most 2, and either has distinct rational roots or no real roots
+ * solve linear
  * @param {Polynomial|Expression} lhs - the left hand side of the inequality
  * @param {Polynomial|Expression|number|Fraction} [rhs=0] - the right hand side of the inequality
  * @param {'<'|'>'|'geq'|'leq'|'\\geq'|'\\leq'} [sign='<'] - the sign of the inequality
@@ -50,9 +49,12 @@ function preprocess(lhs, rhs = 0, sign = "<", options) {
     options?.variable ??
     (lhs instanceof Polynomial
       ? lhs.variable
-      : rhs instanceof Polynomial
-      ? rhs.variable
-      : "x");
+      : lhs.variables[0] ??
+        (rhs instanceof Polynomial
+          ? rhs.variable
+          : rhs instanceof Expression
+          ? rhs.variables[0] ?? "x"
+          : "x"));
   const lhsPoly = castToPoly(lhs, { variable: x });
   const rhsPoly = castToPoly(rhs, { variable: x });
   const poly = lhsPoly.minus(rhsPoly);

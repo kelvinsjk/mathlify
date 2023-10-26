@@ -1,7 +1,7 @@
 // RationalInequalityWorking class
 
 import { Fraction, Term, Expression } from "../../core/index.js";
-import { ExpansionTerm, RationalTerm } from "../../algebra/term/index.js";
+import { ExpressionProduct, RationalTerm } from "../../algebra/term/index.js";
 import { factorizeQuadratic } from "../../algebra/quadratic/index.js";
 import { solveRationalInequality } from "./solveRationalInequality.js";
 
@@ -90,7 +90,7 @@ export class RationalInequalityWorking {
    */
   factorize(options) {
     insertIntertext(this, options);
-    /** @type {Expression|ExpansionTerm} */
+    /** @type {Expression|ExpressionProduct} */
     let newNum = this.lhs.num;
     let newDen = this.lhs.den;
     const num = options?.num ?? true;

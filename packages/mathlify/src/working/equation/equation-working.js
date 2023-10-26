@@ -67,7 +67,7 @@ export class EquationWorking {
   /**
    * addition
    * @param {number|Fraction|string|Term|Expression} x - the term/expression to be added to both sides
-   * @param {{intertext?: string, show?: boolean}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
+   * @param {{intertext?: string, hide?: boolean}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
    * the equal sign will be push to the right by the length of the intertext
    * @returns {EquationWorking} - a reference to this equation
    * WARNING: mutates the current instance. the lhs/rhs is the latest after the method
@@ -76,7 +76,7 @@ export class EquationWorking {
     insertIntertext(this, options);
     const newLHS = this.lhs.plus(x);
     const newRHS = this.rhs.plus(x);
-    if (options?.show ?? true) {
+    if (!options?.hide) {
       this.lhsArray.push(newLHS);
       this.rhsArray.push(newRHS);
     }
@@ -87,7 +87,7 @@ export class EquationWorking {
   /**
    * subtraction
    * @param {number|Fraction|string|Term|Expression} x - the term/expression to be subtracted from both sides
-   * @param {{intertext?: string, show?: boolean}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
+   * @param {{intertext?: string, hide?: boolean}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
    * the equal sign will be push to the right by the length of the intertext
    * @returns {EquationWorking} - a reference to this equation
    * WARNING: mutates the current instance. the lhs/rhs is the latest after the method
@@ -96,7 +96,7 @@ export class EquationWorking {
     insertIntertext(this, options);
     const newLHS = this.lhs.minus(x);
     const newRHS = this.rhs.minus(x);
-    if (options?.show ?? true) {
+    if (!options?.hide) {
       this.lhsArray.push(newLHS);
       this.rhsArray.push(newRHS);
     }
@@ -107,7 +107,7 @@ export class EquationWorking {
   /**
    * multiplication
    * @param {number|Fraction|string|Term|Expression} x - the term/expression to be multiplied from both sides
-   * @param {{intertext?: string, show?: boolean}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
+   * @param {{intertext?: string, hide?: boolean}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
    * the equal sign will be push to the right by the length of the intertext
    * @returns {EquationWorking} - a reference to this equation
    * WARNING: mutates the current instance. the lhs/rhs is the latest after the method
@@ -116,7 +116,7 @@ export class EquationWorking {
     insertIntertext(this, options);
     const newLHS = this.lhs.times(x);
     const newRHS = this.rhs.times(x);
-    if (options?.show ?? true) {
+    if (!options?.hide) {
       this.lhsArray.push(newLHS);
       this.rhsArray.push(newRHS);
     }
@@ -126,7 +126,7 @@ export class EquationWorking {
   }
   /**
    * negative
-   * @param {{intertext?: string, show?: boolean}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
+   * @param {{intertext?: string, hide?: boolean}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
    * the equal sign will be push to the right by the length of the intertext
    * @returns {EquationWorking} - a reference to this equation
    * WARNING: mutates the current instance. the lhs/rhs is the latest after the method
@@ -135,7 +135,7 @@ export class EquationWorking {
     insertIntertext(this, options);
     const newLHS = this.lhs.negative();
     const newRHS = this.rhs.negative();
-    if (options?.show ?? true) {
+    if (!options?.hide) {
       this.lhsArray.push(newLHS);
       this.rhsArray.push(newRHS);
     }
@@ -146,7 +146,7 @@ export class EquationWorking {
   /**
    * division
    * @param {number|Fraction|string|Term} x - the term to be divided from both sides
-   * @param {{intertext?: string, show?: boolean}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
+   * @param {{intertext?: string, hide?: boolean}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
    * the equal sign will be push to the right by the length of the intertext
    * @returns {EquationWorking} - a reference to this equation
    * WARNING: mutates the current instance. the lhs/rhs is the latest after the method
@@ -155,7 +155,7 @@ export class EquationWorking {
     const newLHS = this.lhs.divide(x);
     const newRHS = this.rhs.divide(x);
     insertIntertext(this, options);
-    if (options?.show ?? true) {
+    if (!options?.hide) {
       this.lhsArray.push(newLHS);
       this.rhsArray.push(newRHS);
     }
@@ -165,7 +165,7 @@ export class EquationWorking {
   }
   /**
    * swaps lhs and rhs
-   * @param {{intertext?: string, show?: boolean}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
+   * @param {{intertext?: string, hide?: boolean}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
    * the equal sign will be push to the right by the length of the intertext
    * @returns {EquationWorking} - a reference to this equation
    */
@@ -173,7 +173,7 @@ export class EquationWorking {
     insertIntertext(this, options);
     const newLHS = this.rhs;
     const newRHS = this.lhs;
-    if (options?.show ?? true) {
+    if (!options?.hide) {
       this.lhsArray.push(newLHS);
       this.rhsArray.push(newRHS);
     }
@@ -184,7 +184,7 @@ export class EquationWorking {
 
   /**
    * make rhs 0
-   * @param {{intertext?: string, working?: boolean, show?: boolean}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
+   * @param {{intertext?: string, working?: boolean, hide?: boolean}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
    * @returns {EquationWorking} - a reference to this equation
    * WARNING: mutates the current instance. the lhs/rhs is the latest after the method
    */
@@ -198,7 +198,7 @@ export class EquationWorking {
     // final
     const newLHS = this.lhs.minus(this.rhs);
     const newRHS = new Expression(0);
-    if (options?.show ?? true) {
+    if (!options?.hide) {
       this.lhsArray.push(newLHS);
       this.rhsArray.push(newRHS);
     }
@@ -217,12 +217,39 @@ export class EquationWorking {
    */
   factorizeQuadratic(options) {
     insertIntertext(this, options);
-    const x = options?.variable ?? "x";
-    const roots = solveQuadratic(this.lhs, this.rhs, { variable: x });
-    this.lhs = new Expression(factorizeQuadratic(this.lhs, { variable: x }));
+    const variable = this.lhs.variables[0] ?? this.rhs.variables[0] ?? "x";
+    const roots = solveQuadratic(this.lhs, this.rhs, { variable });
+    this.lhs = new Expression(factorizeQuadratic(this.lhs, { variable }));
     this.lhsArray.push(this.lhs);
     this.rhsArray.push(this.rhs);
     return roots;
+  }
+
+  /**
+   * if lhs and/or rhs are polynomials, switch the ascending/descending behavior
+   * @param {boolean} [ascending] - defaults to toggling between states
+   * @param {{hide?: boolean}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
+   * @returns {EquationWorking} - a reference to this equation
+   */
+  changeAscending(ascending, options) {
+    let success = true;
+    try {
+      const lhsPoly = castToPoly(this.lhs);
+      this.lhs = lhsPoly.changeAscending(ascending);
+    } catch {
+      success = false;
+    }
+    try {
+      const rhsPoly = castToPoly(this.rhs);
+      this.rhs = rhsPoly.changeAscending(ascending);
+    } catch {
+      success = false;
+    }
+    if (success && !options?.hide) {
+      this.lhsArray.push(this.lhs);
+      this.rhsArray.push(this.rhs);
+    }
+    return this;
   }
 
   /**
@@ -234,19 +261,29 @@ export class EquationWorking {
    */
   solveLinear(options) {
     insertIntertext(this, options);
-    const x = options?.variable ?? "x";
-    const root = solveLinear(this.lhs, this.rhs, { variable: x });
-    const lhs = castToPoly(this.lhs, { variable: x });
-    const rhs = castToPoly(this.rhs, { variable: x });
-    if (`${lhs}` !== x) {
+    const variable =
+      options?.variable ??
+      this.lhs.variables[0] ??
+      this.rhs.variables[0] ??
+      "x";
+    const root = solveLinear(this.lhs, this.rhs, { variable });
+    const lhs = castToPoly(this.lhs, { variable });
+    const rhs = castToPoly(this.rhs, { variable });
+    if (`${lhs}` !== variable) {
       const [a] = lhs.coeffs;
       const [_, d] = rhs.coeffs;
-      const offset = new Polynomial([d ?? 0, a ?? 0]);
+      const offset = new Polynomial([d ?? 0, a ?? 0], { variable });
       const lhsWorking = lhs.minus(offset);
       const rhsWorking = rhs.minus(offset);
-      this.lhsArray.push(lhsWorking);
-      this.rhsArray.push(rhsWorking);
-      const leadingCoeff = lhsWorking.leadingCoeff;
+      let leadingCoeff = lhsWorking.leadingCoeff;
+      if (leadingCoeff.is.negative()) {
+        this.lhsArray.push(lhsWorking.times(-1));
+        this.rhsArray.push(rhsWorking.times(-1));
+        leadingCoeff = leadingCoeff.times(-1);
+      } else {
+        this.lhsArray.push(lhsWorking);
+        this.rhsArray.push(rhsWorking);
+      }
       if (leadingCoeff.is.not.one()) {
         this.lhs = lhsWorking.divide(leadingCoeff);
         this.rhs = rhsWorking.divide(leadingCoeff);
@@ -302,7 +339,7 @@ export class EquationWorking {
   // }
   /**
    * cross multiplication (only if there is a rational term on either/both sides)
-   * @param {{intertext?: string, show?: boolean}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
+   * @param {{intertext?: string, hide?: boolean}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
    * the equal sign will be push to the right by the length of the intertext
    * @returns {EquationWorking} - a reference to this equation
    */
@@ -318,7 +355,7 @@ export class EquationWorking {
           .times(simplifiedRHS.coeff)
           .times(simplifiedLHS.den.expand());
         insertIntertext(this, options);
-        if (options?.show ?? true) {
+        if (!options?.hide) {
           this.lhsArray.push(newLHS);
           this.rhsArray.push(newRHS);
         }
@@ -332,7 +369,7 @@ export class EquationWorking {
           .times(rhs.den);
         const newRHS = simplifiedLHS.den.expand().times(rhs.num);
         insertIntertext(this, options);
-        if (options?.show ?? true) {
+        if (!options?.hide) {
           this.lhsArray.push(newLHS);
           this.rhsArray.push(newRHS);
         }
@@ -343,7 +380,7 @@ export class EquationWorking {
         const newLHS = simplifiedLHS.num.times(simplifiedLHS.coeff);
         const newRHS = simplifiedRHS.times(simplifiedLHS.den.expand());
         insertIntertext(this, options);
-        if (options?.show ?? true) {
+        if (!options?.hide) {
           this.lhsArray.push(newLHS);
           this.rhsArray.push(newRHS);
         }
@@ -361,7 +398,7 @@ export class EquationWorking {
             .times(lhs.den)
             .times(simplifiedRHS.coeff);
           insertIntertext(this, options);
-          if (options?.show ?? true) {
+          if (!options?.hide) {
             this.lhsArray.push(newLHS);
             this.rhsArray.push(newRHS);
           }
@@ -372,7 +409,7 @@ export class EquationWorking {
           const newLHS = simplifiedLHS.times(simplifiedRHS.den.expand());
           const newRHS = simplifiedRHS.num.times(simplifiedRHS.coeff);
           insertIntertext(this, options);
-          if (options?.show ?? true) {
+          if (!options?.hide) {
             this.lhsArray.push(newLHS);
             this.rhsArray.push(newRHS);
           }
@@ -391,14 +428,14 @@ export class EquationWorking {
 
   //! Methods for ExpansionTerm
   /**
-   * @param {{intertext?: string, show?: boolean}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
+   * @param {{intertext?: string, hide?: boolean}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
    * @returns {EquationWorking} - a reference to this equation
    */
   expand(options) {
     insertIntertext(this, options);
     const newLHS = expandExpansionTerm(this.lhs);
     const newRHS = expandExpansionTerm(this.rhs);
-    if (options?.show ?? true) {
+    if (!options?.hide) {
       this.lhsArray.push(newLHS);
       this.rhsArray.push(newRHS);
     }
@@ -425,7 +462,7 @@ export class EquationWorking {
   /**
    * move term i from (lhs/rhs) to (rhs/lhs)
    * @param {number} i - the index of the term to be moved (note: 0-indexed)
-   * @param {{from?: "lhs"|"rhs", intertext?: string, show?: boolean}} [options] - options object defaulting to `{from: "lhs"}`. intertext for inserting text between steps.
+   * @param {{from?: "lhs"|"rhs", intertext?: string, hide?: boolean}} [options] - options object defaulting to `{from: "lhs"}`. intertext for inserting text between steps.
    * it is recommended we would in the non-aligned environment for this as the equal sign will be push to the right by the length of the intertext for aligned environments
    * @returns {EquationWorking} - a reference to this equation
    * WARNING: mutates current instance
@@ -444,7 +481,7 @@ export class EquationWorking {
       newLHS = this.lhs.minus(this.rhs.terms[i]);
     }
     insertIntertext(this, options);
-    if (options?.show ?? true) {
+    if (!options?.hide) {
       this.lhsArray.push(newLHS);
       this.rhsArray.push(newRHS);
     }

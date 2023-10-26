@@ -1,7 +1,7 @@
 /**
  * RationalTerm class extending the Term class
  * @property {Expression} num - the numerator of the term
- * @property {ExpansionTerm} den - the denominator of the term
+ * @property {ExpressionProduct} den - the denominator of the term
  * @property {Fraction} coeff - either 1 or -1 to indicate the sign of the term
  * @property {"rational-term"} kind - mathlify rational class kind
  * @property {"rational-term"|"rational-expression"} type - mathlify rational class type
@@ -12,17 +12,17 @@ export class RationalTerm extends Term {
      * @constructor
      * Creates a Rational Term instance
      * @param {Expression|number|Fraction|string|Term|(number|Fraction|string|Term)[]} numerator - the numerator
-     * @param {ExpansionTerm|Expression|number|Fraction|string|Term} [denominator=1] - the denominator
+     * @param {ExpressionProduct|Expression|number|Fraction|string|Term} [denominator=1] - the denominator
      * @param {{coeff: Fraction|number}} [options] - options for coefficient (default {coeff: 1}). Only tested for 1 and -1, use with care
      * @throws {Error} if denominator is zero
      */
-    constructor(numerator: Expression | number | Fraction | string | Term | (number | Fraction | string | Term)[], denominator?: string | number | Fraction | Term | Expression | ExpansionTerm | undefined, options?: {
+    constructor(numerator: Expression | number | Fraction | string | Term | (number | Fraction | string | Term)[], denominator?: string | number | Fraction | Term | Expression | ExpressionProduct | undefined, options?: {
         coeff: Fraction | number;
     } | undefined);
     /** @type {Expression} */
     num: Expression;
-    /** @type {ExpansionTerm} */
-    den: ExpansionTerm;
+    /** @type {ExpressionProduct} */
+    den: ExpressionProduct;
     /** @type {"rational-term"|"rational-fn"} */
     type: "rational-term" | "rational-fn";
     /**
@@ -91,6 +91,6 @@ export class RationalTerm extends Term {
 }
 import { Term } from "../../../core/index.js";
 import { Expression } from "../../../core/index.js";
-import { ExpansionTerm } from "../expansion-term/expansion.js";
+import { ExpressionProduct } from "../expression-product/expression-product.js";
 import { Fraction } from "../../../core/index.js";
 //# sourceMappingURL=rational.d.ts.map

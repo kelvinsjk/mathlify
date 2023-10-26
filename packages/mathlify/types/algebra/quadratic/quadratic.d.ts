@@ -25,11 +25,11 @@ export function solveQuadraticNumerical(poly: Polynomial | Expression | [(number
  * factorize quadratic
  * @param {Polynomial|Expression} poly
  * @param {{variable?: string}} [options] - options to specify the variable
- * @returns {ExpansionTerm} - the factorized form
+ * @returns {ExpressionProduct} - the factorized form
  */
 export function factorizeQuadratic(poly: Polynomial | Expression, options?: {
     variable?: string | undefined;
-} | undefined): ExpansionTerm;
+} | undefined): ExpressionProduct;
 /**
  * solve quadratic polynomial/equations
  * @param {Polynomial|number|Fraction|Expression} poly - the polynomial to be solved/left hand side of the equation
@@ -44,7 +44,7 @@ export function solveQuadraticSurd(poly: Polynomial | number | Fraction | Expres
  */
 export function discriminant(poly: Polynomial | [number | Fraction, number | Fraction, number | Fraction]): Fraction;
 export type Fraction = import('../../core/fraction.js').Fraction;
-import { Polynomial } from '../../core/index.js';
-import { Expression } from '../../core/index.js';
-import { ExpansionTerm } from '../term/index.js';
+import { Polynomial } from "../../core/index.js";
+import { Expression } from "../../core/index.js";
+import { ExpressionProduct } from "../term/index.js";
 //# sourceMappingURL=quadratic.d.ts.map

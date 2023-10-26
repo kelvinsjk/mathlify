@@ -119,6 +119,15 @@ export class InequalityWorking {
         hide?: boolean | undefined;
     } | undefined): InequalityWorking;
     /**
+     * solves linear inequality
+      @param {{intertext?: string}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
+     * @returns {Fraction} - the root of the equation
+     * WARNING: mutates the current instance. the lhs/rhs is the latest after the method
+     */
+    solveLinear(options?: {
+        intertext?: string | undefined;
+    } | undefined): Fraction;
+    /**
      * factorize the lhs
      * @param {{intertext?: string, variable?: string, hide?: boolean}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
      * @returns {string[]} - the roots of the equation
@@ -166,6 +175,21 @@ export class InequalityWorking {
         side?: "both" | "lhs" | "rhs" | undefined;
         hide?: boolean | undefined;
     } | undefined): InequalityWorking;
+    /**
+     * if lhs and/or rhs are polynomials, switch the ascending/descending behavior
+     * @param {boolean} [ascending] - defaults to toggling between states
+     * @param {{hide?: boolean}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
+     * @returns {InequalityWorking} - a reference to this equation
+     */
+    changeAscending(ascending?: boolean | undefined, options?: {
+        hide?: boolean | undefined;
+    } | undefined): InequalityWorking;
+    /**
+     * clears the arrays, leaving just the final line
+     * @returns {InequalityWorking} - a reference to this equation
+     * WARNING: mutates current instance
+     */
+    clear(): InequalityWorking;
     /**
      * sets the aligned state
      * @param {boolean} [aligned] - whether or not the steps are to be aligned. if not provided, defaults to toggling between states

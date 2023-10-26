@@ -2,6 +2,7 @@ export { Fraction, Term, Expression, Polynomial } from "./core/index.js";
 export { gcd, lcm, bracket } from "./utils/index.js";
 export {
   //! Special Term type
+  ExpressionProduct,
   RationalTerm,
   ExpansionTerm,
   //! Linear equations

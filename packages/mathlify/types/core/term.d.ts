@@ -108,11 +108,11 @@ export class Term {
         toFraction: () => Fraction;
     };
     /**
-     * @param {number|Fraction|string|Term} x the other term to multiply with
+     * @param {number|Fraction|string|Term|[string,number|Fraction]} x the other term to multiply with
      * @param {{fractionalDisplayMode: "never"|"auto"|"always"}} [options] - the fractional display mode to set on the result (defaults to mode of this)
      * @returns {Term} the product of the two terms
      */
-    times(x: number | Fraction | string | Term, options?: {
+    times(x: number | Fraction | string | Term | [string, number | Fraction], options?: {
         fractionalDisplayMode: "never" | "auto" | "always";
     } | undefined): Term;
     /**
@@ -173,5 +173,5 @@ export class Term {
     toJSON(): import("./types.js").TermJSON;
 }
 export type TermType = import('./types.js').TermType;
-import { Fraction } from './fraction.js';
+import { Fraction } from "./fraction.js";
 //# sourceMappingURL=term.d.ts.map

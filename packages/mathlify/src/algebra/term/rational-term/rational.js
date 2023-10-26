@@ -1,7 +1,7 @@
 // rationalTerm represents ( num / den ), where both are expression types
 
 import { Expression, Fraction, Term } from "../../../core/index.js";
-import { ExpansionTerm } from "../expansion-term/expansion.js";
+import { ExpressionProduct } from "../expression-product/expression-product.js";
 import { numberToFraction } from "../../../utils/toFraction.js";
 
 //TODO: leave denominator as (den1)(den2) if both are expressions
@@ -9,7 +9,7 @@ import { numberToFraction } from "../../../utils/toFraction.js";
 /**
  * RationalTerm class extending the Term class
  * @property {Expression} num - the numerator of the term
- * @property {ExpansionTerm} den - the denominator of the term
+ * @property {ExpressionProduct} den - the denominator of the term
  * @property {Fraction} coeff - either 1 or -1 to indicate the sign of the term
  * @property {"rational-term"} kind - mathlify rational class kind
  * @property {"rational-term"|"rational-expression"} type - mathlify rational class type
@@ -18,7 +18,7 @@ import { numberToFraction } from "../../../utils/toFraction.js";
 export class RationalTerm extends Term {
   /** @type {Expression} */
   num;
-  /** @type {ExpansionTerm} */
+  /** @type {ExpressionProduct} */
   den;
   /** @type {Fraction} */
   coeff;
@@ -28,7 +28,7 @@ export class RationalTerm extends Term {
    * @constructor
    * Creates a Rational Term instance
    * @param {Expression|number|Fraction|string|Term|(number|Fraction|string|Term)[]} numerator - the numerator
-   * @param {ExpansionTerm|Expression|number|Fraction|string|Term} [denominator=1] - the denominator
+   * @param {ExpressionProduct|Expression|number|Fraction|string|Term} [denominator=1] - the denominator
    * @param {{coeff: Fraction|number}} [options] - options for coefficient (default {coeff: 1}). Only tested for 1 and -1, use with care
    * @throws {Error} if denominator is zero
    */
@@ -47,9 +47,9 @@ export class RationalTerm extends Term {
       }
     }
     let den =
-      denominator instanceof ExpansionTerm
+      denominator instanceof ExpressionProduct
         ? denominator
-        : new ExpansionTerm(denominator);
+        : new ExpressionProduct(denominator);
     if (`${den}` === "0") {
       throw new Error("denominator cannot be zero");
     }
@@ -80,7 +80,7 @@ export class RationalTerm extends Term {
     if (x instanceof RationalTerm) {
       return new RationalTerm(
         this.num.times(x.num),
-        new ExpansionTerm(this.den, x.den),
+        new ExpressionProduct(this.den, x.den),
         { coeff: this.coeff.times(x.coeff) }
       );
     }
@@ -107,7 +107,7 @@ export class RationalTerm extends Term {
     const xRational = x instanceof RationalTerm ? x : new RationalTerm(x);
     return new RationalTerm(
       this.num.times(this.coeff).times(xRational.den.expand()),
-      new ExpansionTerm(this.den, xRational.num)
+      new ExpressionProduct(this.den, xRational.num)
     );
   }
 
@@ -119,7 +119,7 @@ export class RationalTerm extends Term {
   plus(x) {
     // (this.num * x.den + this.den * x.num) / (this.den * x.den)
     const xRational = x instanceof RationalTerm ? x : new RationalTerm(x);
-    const den = ExpansionTerm.lcm(this.den, xRational.den);
+    const den = ExpressionProduct.lcm(this.den, xRational.den);
     const num1 = this.num
       .times(this.coeff)
       .times(den.divide(this.den).expand());

@@ -3,7 +3,7 @@
 // the terms array removes any such terms with zero coefficients
 
 import { Fraction, Expression, Term, Polynomial } from "../core/index.js";
-import { ExpansionTerm } from "../algebra/index.js";
+//import { ExpressionProduct } from "../algebra/index.js";
 import { numberToFraction } from "../utils/toFraction.js";
 
 /** Expression class
@@ -28,7 +28,7 @@ export class xPolynomial extends Expression {
   /**
    * @constructor
    * Creates a extended Polynomial instance, where the coefficients are Expressions
-   * @param {(number|Fraction|string|Term|Expression)[]|number|Fraction|Term|Expression} coeffs - the coefficients.
+   * @param {(number|Fraction|string|Term|Expression|((number|Fraction|string|[string,number|Fraction]|Term)[]))[]|number|Fraction|Term|Expression} coeffs - the coefficients.
    * @param {{ascending?: boolean, variable?: string}} [options] - options. default to {ascending: false, variable: "x"}
    *
    * Note that new Polynomial([2]) creates the constant polynomial "2" while new Polynomial(2) creates the linear polynomial "2x"
@@ -39,6 +39,9 @@ export class xPolynomial extends Expression {
       coeffs = ascending ? [0, coeffs] : [coeffs, 0];
     }
     const coeffsExp = coeffs.map((x) => {
+      if (Array.isArray(x)) {
+        return new Expression(...x);
+      }
       return x instanceof Expression ? x : new Expression(x);
     });
     if (!ascending) {
@@ -46,13 +49,11 @@ export class xPolynomial extends Expression {
     }
     const coeffsCleaned = removeTrailingZeroes(coeffsExp);
     const terms = coeffsCleaned.map((coeff, i) => {
-      if (coeff.terms.length === 1 && coeff.terms[0] instanceof ExpansionTerm) {
-        return ExpansionTerm.product(
-          coeff.terms[0],
-          new ExpansionTerm([new Expression(variable), i])
-        );
+      if (coeff.terms.length <= 1) {
+        return coeff.cast.toTerm().times([variable, i]);
+      } else {
+        return new Term(`\\left( ${coeff} \\right)`, [variable, i]);
       }
-      return new ExpansionTerm(coeff, [new Expression(variable), i]);
     });
     if (!ascending) {
       terms.reverse();
@@ -71,7 +72,9 @@ export class xPolynomial extends Expression {
    * @returns {xPolynomial} - the sum of the two
    */
   plus(x) {
-    if (!(x instanceof xPolynomial)) {
+    if (typeof x === "number" || x instanceof Fraction) {
+      x = new xPolynomial([x]);
+    } else if (typeof x === "string") {
       x = new xPolynomial([x]);
     }
     const newCoeffs = addArrays(this.coeffs, x.coeffs);

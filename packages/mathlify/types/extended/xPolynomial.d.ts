@@ -10,12 +10,12 @@ export class xPolynomial extends Expression {
     /**
      * @constructor
      * Creates a extended Polynomial instance, where the coefficients are Expressions
-     * @param {(number|Fraction|string|Term|Expression)[]|number|Fraction|Term|Expression} coeffs - the coefficients.
+     * @param {(number|Fraction|string|Term|Expression|((number|Fraction|string|[string,number|Fraction]|Term)[]))[]|number|Fraction|Term|Expression} coeffs - the coefficients.
      * @param {{ascending?: boolean, variable?: string}} [options] - options. default to {ascending: false, variable: "x"}
      *
      * Note that new Polynomial([2]) creates the constant polynomial "2" while new Polynomial(2) creates the linear polynomial "2x"
      */
-    constructor(coeffs: (number | Fraction | string | Term | Expression)[] | number | Fraction | Term | Expression, options?: {
+    constructor(coeffs: (number | Fraction | string | Term | Expression | ((number | Fraction | string | [string, number | Fraction] | Term)[]))[] | number | Fraction | Term | Expression, options?: {
         ascending?: boolean | undefined;
         variable?: string | undefined;
     } | undefined);

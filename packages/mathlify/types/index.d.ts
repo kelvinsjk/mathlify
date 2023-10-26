@@ -2,7 +2,7 @@ export { SquareRoot } from "./surds/index.js";
 export { xPolynomial } from "./extended/index.js";
 export { Fraction, Term, Expression, Polynomial } from "./core/index.js";
 export { gcd, lcm, bracket } from "./utils/index.js";
-export { RationalTerm, ExpansionTerm, SLE, SLENumerical, solveLinear, discriminant, solveQuadratic, solveQuadraticSurd, solveQuadraticNumerical, factorizeQuadratic, completeSquare, factorizeExpression, castExpression, UnsimplifiedTerm, longDivision } from "./algebra/index.js";
+export { ExpressionProduct, RationalTerm, ExpansionTerm, SLE, SLENumerical, solveLinear, discriminant, solveQuadratic, solveQuadraticSurd, solveQuadraticNumerical, factorizeQuadratic, completeSquare, factorizeExpression, castExpression, UnsimplifiedTerm, longDivision } from "./algebra/index.js";
 export { determinant, determinantNumerical, cramersRule, cramersRuleNumerical, factorial, nCr } from "./numerical/index.js";
 export { getRandomInt, getRandomInts, getRandomFraction, getRandomFractions } from "./random/index.js";
 export { UnsimplifiedExpression, EquationWorking, InequalityWorking, RationalInequalityWorking, solveRationalInequality, solveLinearInequality, solveQuadraticInequality, ExpressionWorking, BinomialGeneralTerm, partialFraction } from "./working/index.js";

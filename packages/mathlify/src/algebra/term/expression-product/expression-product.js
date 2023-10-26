@@ -80,15 +80,15 @@ export class ExpressionProduct extends Term {
       }
     });
 
-    /** @type {string[]} */
-    const expStrings = [];
+    /** @type {[string, Fraction][]} */
+    const expArray = [];
     /** @type {Expression[]} */
     const expressions = [];
     for (let [exp, power] of expPowerMap.entries()) {
       if (power.is.equalTo(0)) {
         expPowerMap.delete(exp);
       } else {
-        expStrings.push(`(${exp})^{${power}}`);
+        expArray.push([`(${exp})`, power]);
         expressions.push(exp);
       }
     }
@@ -97,7 +97,7 @@ export class ExpressionProduct extends Term {
     factor.powerMap.forEach((power, variable) => {
       args.push([variable, power]);
     });
-    super(factor.coeff, ...args, ...expStrings);
+    super(factor.coeff, ...args, ...expArray);
     this.expPowerMap = expPowerMap;
     this.factor = factor;
     this.exps = expressions;
@@ -111,7 +111,7 @@ export class ExpressionProduct extends Term {
    */
   resetCoeff() {
     return new ExpressionProduct(
-      this.factor,
+      this.factor.resetCoeff(),
       ...expPowerMapToConstructorObj(this.expPowerMap)
     );
   }
@@ -123,7 +123,7 @@ export class ExpressionProduct extends Term {
    */
   times(x) {
     return new ExpressionProduct(
-      this.coeff.times(x),
+      this.factor.times(x),
       ...expPowerMapToConstructorObj(this.expPowerMap)
     );
   }
@@ -150,7 +150,7 @@ export class ExpressionProduct extends Term {
       }
     });
     return new ExpressionProduct(
-      this.coeff.divide(x.coeff),
+      this.factor.divide(x.coeff),
       ...expPowerMapToConstructorObj(expPowerMap)
     );
   }
@@ -184,69 +184,69 @@ export class ExpressionProduct extends Term {
       }
     }
     if (exp === undefined) {
-      return new Expression(this.coeff);
+      return new Expression(this.factor);
     }
-    return exp.times(this.coeff);
+    return exp.times(this.factor);
   }
 
-  /**
-   * toString
-   * @returns {string} - the LaTeX string representation of the Expression
-   */
-  toString() {
-    /** @type {string[]} */
-    const expStrings = [];
-    if (this.expPowerMap.size === 1) {
-      const [exp, power] = Array.from(this.expPowerMap)[0];
-      if (this.coeff.is.equalTo(1) && power.is.equalTo(1)) {
-        expStrings.push(`${exp}`);
-      } else {
-        const powerBrackets = `${power}`.length > 1 ? `{${power}}` : `${power}`;
-        const bracketString =
-          exp.terms.length === 1 ? `${exp}` : `\\left( ${exp} \\right)`;
-        const expString = power.is.equalTo(1)
-          ? bracketString
-          : `${bracketString}^${powerBrackets}`;
-        expStrings.push(expString);
-      }
-    } else {
-      for (let [exp, power] of this.expPowerMap.entries()) {
-        const bracketString =
-          exp.terms.length === 1 ? `${exp}` : `\\left( ${exp} \\right)`;
-        const powerBrackets = `${power}`.length > 1 ? `{${power}}` : `${power}`;
-        const expString = power.is.equalTo(1)
-          ? bracketString
-          : `${bracketString}^${powerBrackets}`;
-        expStrings.push(expString);
-      }
+  // /**
+  //  * toString
+  //  * @returns {string} - the LaTeX string representation of the Expression
+  //  */
+  // toString() {
+  //   /** @type {string[]} */
+  //   const expStrings = [];
+  //   if (this.expPowerMap.size === 1) {
+  //     const [exp, power] = Array.from(this.expPowerMap)[0];
+  //     if (this.coeff.is.equalTo(1) && power.is.equalTo(1)) {
+  //       expStrings.push(`${exp}`);
+  //     } else {
+  //       const powerBrackets = `${power}`.length > 1 ? `{${power}}` : `${power}`;
+  //       const bracketString =
+  //         exp.terms.length === 1 ? `${exp}` : `\\left( ${exp} \\right)`;
+  //       const expString = power.is.equalTo(1)
+  //         ? bracketString
+  //         : `${bracketString}^${powerBrackets}`;
+  //       expStrings.push(expString);
+  //     }
+  //   } else {
+  //     for (let [exp, power] of this.expPowerMap.entries()) {
+  //       const bracketString =
+  //         exp.terms.length === 1 ? `${exp}` : `\\left( ${exp} \\right)`;
+  //       const powerBrackets = `${power}`.length > 1 ? `{${power}}` : `${power}`;
+  //       const expString = power.is.equalTo(1)
+  //         ? bracketString
+  //         : `${bracketString}^${powerBrackets}`;
+  //       expStrings.push(expString);
+  //     }
 
-      //if (firstTerm) {
-      //	firstTerm = false;
-      //	if (exp.terms.length === 1 && power.is.equalTo(1)) {
-      //		if (`${exp}` !== '1') {
-      //			expStrings.push(`${exp}`);
-      //		}
-      //	} else {
-      //		const powerBrackets =
-      //			`${power}`.length > 1 ? `{${power}}` : `${power}`;
-      //		const expString = power.is.equalTo(1)
-      //			? this.expPowerMap.size === 1 && this.coeff.is.equalTo(1)
-      //				? `${exp}`
-      //				: `\\left( ${exp} \\right)`
-      //			: `\\left( ${exp} \\right)^${powerBrackets}`;
-      //		expStrings.push(expString);
-      //	}
-      //} else {
-      //	const powerBrackets = `${power}`.length > 1 ? `{${power}}` : `${power}`;
-      //	const bracketString =
-      //	const expString = power.is.equalTo(1)
-      //		? `\\left( ${exp} \\right)`
-      //		: `\\left( ${exp} \\right)^${powerBrackets}`;
-      //	expStrings.push(expString);
-      //}
-    }
-    return `${new Term(this.coeff, ...expStrings)}`;
-  }
+  //     //if (firstTerm) {
+  //     //	firstTerm = false;
+  //     //	if (exp.terms.length === 1 && power.is.equalTo(1)) {
+  //     //		if (`${exp}` !== '1') {
+  //     //			expStrings.push(`${exp}`);
+  //     //		}
+  //     //	} else {
+  //     //		const powerBrackets =
+  //     //			`${power}`.length > 1 ? `{${power}}` : `${power}`;
+  //     //		const expString = power.is.equalTo(1)
+  //     //			? this.expPowerMap.size === 1 && this.coeff.is.equalTo(1)
+  //     //				? `${exp}`
+  //     //				: `\\left( ${exp} \\right)`
+  //     //			: `\\left( ${exp} \\right)^${powerBrackets}`;
+  //     //		expStrings.push(expString);
+  //     //	}
+  //     //} else {
+  //     //	const powerBrackets = `${power}`.length > 1 ? `{${power}}` : `${power}`;
+  //     //	const bracketString =
+  //     //	const expString = power.is.equalTo(1)
+  //     //		? `\\left( ${exp} \\right)`
+  //     //		: `\\left( ${exp} \\right)^${powerBrackets}`;
+  //     //	expStrings.push(expString);
+  //     //}
+  //   }
+  //   return `${new Term(this.coeff, ...expStrings)}`;
+  // }
 
   //! Static Methods
   /**

@@ -4,10 +4,15 @@
 // we will slowly build up the steps as an array of lhs (sign) rhs strings
 
 import { Fraction, Term, Expression } from "../../core/index.js";
-import { ExpansionTerm, RationalTerm } from "../../algebra/term/index.js";
+import {
+  //ExpansionTerm,
+  ExpressionProduct,
+  RationalTerm,
+} from "../../algebra/term/index.js";
 import { factorizeQuadratic } from "../../algebra/index.js";
 import { oppositeSign } from "./utils/oppositeSign.js";
 import { solveQuadraticInequality } from "./solveInequality.js";
+import { castToPoly } from "../../algebra/index.js";
 
 /**
  * General Equation class representing LHS = RHS, with typesetting to output a series of steps to
@@ -233,6 +238,40 @@ export class InequalityWorking {
   }
 
   /**
+   * solves linear inequality
+    @param {{intertext?: string}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
+   * @returns {Fraction} - the root of the equation
+   * WARNING: mutates the current instance. the lhs/rhs is the latest after the method
+   */
+  solveLinear(options) {
+    insertIntertext(this, options);
+    const variable = this.lhs.variables[0] ?? this.rhs.variables[0] ?? "x";
+    const lhs = castToPoly(this.lhs, { variable });
+    const rhs = castToPoly(this.rhs, { variable });
+    const lhsWhenRhsZero = lhs.minus(rhs);
+    if (lhsWhenRhsZero.degree !== 1) {
+      throw new Error("non linear inequality found");
+    }
+    const [b, a] = lhsWhenRhsZero.coeffs;
+    const lhsWorking = lhsWhenRhsZero.minus(b);
+    const rhsWorking = b.negative();
+    this.lhsArray.push(lhsWorking);
+    this.rhsArray.push(new Expression(rhsWorking));
+    this.signArray.push(this.sign);
+    if (a.is.not.one()) {
+      this.lhs = lhsWorking.divide(a);
+      this.lhsArray.push(this.lhs);
+      this.rhs = new Expression(rhsWorking.divide(a));
+      this.rhsArray.push(this.rhs);
+      if (a.is.negative()) {
+        this.sign = oppositeSign(this.sign);
+      }
+      this.signArray.push(this.sign);
+    }
+    return this.rhs.cast.toFraction();
+  }
+
+  /**
    * factorize the lhs
    * @param {{intertext?: string, variable?: string, hide?: boolean}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
    * @returns {string[]} - the roots of the equation
@@ -402,7 +441,7 @@ export class InequalityWorking {
     insertIntertext(this, options);
     if (options?.side !== "rhs") {
       const expansionTerm = this.lhs.terms[0];
-      if (expansionTerm instanceof ExpansionTerm) {
+      if (expansionTerm instanceof ExpressionProduct) {
         this.lhs = expansionTerm.expand();
         if (!options?.hide) {
           this.lhsArray.push(this.lhs);
@@ -415,7 +454,7 @@ export class InequalityWorking {
     }
     if (options?.side !== "lhs") {
       const expansionTerm = this.rhs.terms[0];
-      if (expansionTerm instanceof ExpansionTerm) {
+      if (expansionTerm instanceof ExpressionProduct) {
         this.rhs = expansionTerm.expand();
         if (!options?.hide) {
           this.rhsArray.push(this.rhs);
@@ -429,6 +468,46 @@ export class InequalityWorking {
     if (!options?.hide) {
       this.signArray.push(this.sign);
     }
+    return this;
+  }
+
+  /**
+   * if lhs and/or rhs are polynomials, switch the ascending/descending behavior
+   * @param {boolean} [ascending] - defaults to toggling between states
+   * @param {{hide?: boolean}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
+   * @returns {InequalityWorking} - a reference to this equation
+   */
+  changeAscending(ascending, options) {
+    let success = true;
+    try {
+      const lhsPoly = castToPoly(this.lhs);
+      this.lhs = lhsPoly.changeAscending(ascending);
+    } catch {
+      success = false;
+    }
+    try {
+      const rhsPoly = castToPoly(this.rhs);
+      this.rhs = rhsPoly.changeAscending(ascending);
+    } catch {
+      success = false;
+    }
+    if (success && !options?.hide) {
+      this.lhsArray.push(this.lhs);
+      this.rhsArray.push(this.rhs);
+      this.signArray.push(this.sign);
+    }
+    return this;
+  }
+
+  /**
+   * clears the arrays, leaving just the final line
+   * @returns {InequalityWorking} - a reference to this equation
+   * WARNING: mutates current instance
+   */
+  clear() {
+    this.lhsArray = [this.lhs];
+    this.rhsArray = [this.rhs];
+    this.signArray = [this.sign];
     return this;
   }
 
