@@ -11,8 +11,7 @@ import { numberToFraction } from "../../../utils/toFraction.js";
  * @property {Expression} num - the numerator of the term
  * @property {ExpressionProduct} den - the denominator of the term
  * @property {Fraction} coeff - either 1 or -1 to indicate the sign of the term
- * @property {"rational-term"} kind - mathlify rational class kind
- * @property {"rational-term"|"rational-expression"} type - mathlify rational class type
+ * @property {"rational-term"|"rational-fn"} type - mathlify rational term class type
  * @extends Term
  */
 export class RationalTerm extends Term {
@@ -62,7 +61,7 @@ export class RationalTerm extends Term {
     const denDivisor = k2.divide(divisor.den);
     numerator = numerator.times(numDivisor.reciprocal());
     den = den.times(denDivisor.reciprocal());
-    super(coeff, `(${numerator})`, [`(${den})`, -1]);
+    super(coeff, `${numerator}`, [`${den}`, -1]);
     this.num = numerator;
     this.den = den;
     this.coeff = coeff;

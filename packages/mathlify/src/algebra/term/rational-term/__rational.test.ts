@@ -3,7 +3,7 @@ import {
   Fraction,
   Expression,
   Term,
-  ExpansionTerm,
+  ExpressionProduct,
   Polynomial,
 } from "../../../index.js";
 import { RationalTerm } from "./rational.js";
@@ -34,6 +34,7 @@ test("RationalTerm in Expression", () => {
   const negRational = new RationalTerm([2, "x"], new Expression(3, "x"), {
     coeff: -1,
   });
+  expect(`${twoOverXPlus1b}`).to.equal(`\\frac{2}{x + 1}`);
   expect(`${exp}`).to.equal(`\\frac{2}{x + 1} + 3`);
   expect(`${negRational}`).to.equal(`- \\frac{2 + x}{3 + x}`);
   expect(`${negRational.subIn({ x: 2 })}`).to.equal(`- \\frac{4}{5}`);
@@ -46,7 +47,7 @@ test("RationalTerm in Expression", () => {
   expect(`${exp3}`).to.equal(`3 - \\frac{2 + x}{3 + x}`);
 
   const linear = new Polynomial([1, 1]);
-  const rational = new RationalTerm(3, new ExpansionTerm([linear, 2]));
+  const rational = new RationalTerm(3, new ExpressionProduct([linear, 2]));
   const rationalExp = new Expression(rational);
   expect(`${rational}`).to.equal(`\\frac{3}{\\left( x + 1 \\right)^2}`);
   expect(`${rationalExp}`).to.equal(`\\frac{3}{\\left( x + 1 \\right)^2}`);
@@ -81,7 +82,7 @@ test("Rational Arithmetic", () => {
   const oneOverXPlus1 = new RationalTerm(1, xPlus1);
   const oneOverXPlus1Square = new RationalTerm(
     1,
-    new ExpansionTerm([xPlus1, 2])
+    new ExpressionProduct([xPlus1, 2])
   );
   expect(`${oneOverXPlus1.minus(oneOverXPlus1Square)}`).to.equal(
     "\\frac{x}{\\left( x + 1 \\right)^2}"

@@ -3,8 +3,7 @@
  * @property {Expression} num - the numerator of the term
  * @property {ExpressionProduct} den - the denominator of the term
  * @property {Fraction} coeff - either 1 or -1 to indicate the sign of the term
- * @property {"rational-term"} kind - mathlify rational class kind
- * @property {"rational-term"|"rational-expression"} type - mathlify rational class type
+ * @property {"rational-term"|"rational-fn"} type - mathlify rational term class type
  * @extends Term
  */
 export class RationalTerm extends Term {
@@ -16,7 +15,7 @@ export class RationalTerm extends Term {
      * @param {{coeff: Fraction|number}} [options] - options for coefficient (default {coeff: 1}). Only tested for 1 and -1, use with care
      * @throws {Error} if denominator is zero
      */
-    constructor(numerator: Expression | number | Fraction | string | Term | (number | Fraction | string | Term)[], denominator?: string | number | Fraction | Term | Expression | ExpressionProduct | undefined, options?: {
+    constructor(numerator: Expression | number | Fraction | string | Term | (number | Fraction | string | Term)[], denominator?: string | number | Fraction | Expression | Term | ExpressionProduct | undefined, options?: {
         coeff: Fraction | number;
     } | undefined);
     /** @type {Expression} */

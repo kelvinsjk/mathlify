@@ -16,7 +16,7 @@ export class RationalInequalityWorking {
      * @param {RationalTerm|number|Fraction|string|Term|Expression|[Expression, Expression]} [rhs=0] - the right hand side of the inequality (defaults to 0)
      * @param {{aligned?: boolean, sign?: '>'|'<'}} [options] - options object defaulting to `{aligned: false, sign: '<'}`
      */
-    constructor(lhs: RationalTerm | number | Fraction | string | Term | Expression | [Expression, Expression], rhs?: string | number | Fraction | Term | Expression | RationalTerm | [Expression, Expression] | undefined, options?: {
+    constructor(lhs: RationalTerm | number | Fraction | string | Term | Expression | [Expression, Expression], rhs?: string | number | Fraction | Expression | Term | RationalTerm | [Expression, Expression] | undefined, options?: {
         aligned?: boolean | undefined;
         sign?: "<" | ">" | undefined;
     } | undefined);

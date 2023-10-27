@@ -29,6 +29,11 @@ export class SLE {
     alignatArg: number;
     variables: string[];
     /**
+     * eqns
+     * @returns {Expression[]}
+     */
+    get eqns(): Expression[];
+    /**
      * returns a string representation of the SLE to be fed into a LaTeX align/align* / gather/gather* environment
      */
     toString(): string;
@@ -85,4 +90,5 @@ export class SLENumerical {
     } | undefined): string[];
 }
 import { Fraction } from "../../../core/index.js";
+import { Expression } from "../../../core/index.js";
 //# sourceMappingURL=system-of-linear-equations.d.ts.map

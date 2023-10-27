@@ -17,7 +17,7 @@ export class InequalityWorking {
      * @param {Expression|number|Fraction|string|Term|(number|Fraction|string|Term)[]} [rhs=0] - the right hand side of the equation (defaults to 0)
      * @param {{aligned?: boolean, sign?: '>'|'<'|'leq'|'geq'|'\\leq'|'\\geq'}} [options] - options object defaulting to `{aligned: false, sign: '<'}`
      */
-    constructor(lhs: Expression | number | Fraction | string | Term | (number | Fraction | string | Term)[], rhs?: string | number | Fraction | Term | Expression | (string | number | Fraction | Term)[] | undefined, options?: {
+    constructor(lhs: Expression | number | Fraction | string | Term | (number | Fraction | string | Term)[], rhs?: string | number | Fraction | Expression | Term | (string | number | Fraction | Term)[] | undefined, options?: {
         aligned?: boolean | undefined;
         sign?: "<" | ">" | "\\geq" | "\\leq" | "geq" | "leq" | undefined;
     } | undefined);

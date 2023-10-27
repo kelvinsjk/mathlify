@@ -6,23 +6,80 @@
 //TODO: rainbow expansion
 
 import { Fraction, Term, Expression } from "../../core/index.js";
-//import { ExpansionTerm, RationalTerm } from "../../algebra/term/index.js";
+import {
+  //ExpressionProduct,
+  RationalTerm,
+} from "../../algebra/term/index.js";
 import {
   //UnsimplifiedExpression,
   castToPoly,
   factorizeQuadratic,
 } from "../../algebra/index.js";
-//import { SquareRoot } from "../../surds/square-roots.js";
+import { SquareRoot } from "../../surds/square-roots.js";
 
-class UnsimplifiedExpression {
-  /** @param {(number|Fraction|string|Term|(number|Fraction|string|{variable: string, power: number|Fraction}|[string,number|Fraction]|Term)[])[]} terms - terms of the expression
+export class UnsimplifiedExpression {
+  /** @type {([Term, boolean])[]} */
+  terms;
+  /** @param {(number|Fraction|string|Term|{term:Term, addition:boolean}|(number|Fraction|string|[string,number|Fraction])[])[]} terms - terms of the expression
    * */
   constructor(...terms) {
-    this.exp = new Expression(...terms);
-    this.terms = this.exp.terms;
+    /** @type {([Term, boolean])[]} */
+    const termsArray = [];
+    terms.forEach((term) => {
+      // check if of {term: Term, addition: boolean} form
+      if (Array.isArray(term)) {
+        termsArray.push([new Term(...term), true]);
+      } else if (
+        typeof term === "number" ||
+        term instanceof Fraction ||
+        typeof term === "string"
+      ) {
+        termsArray.push([new Term(term), true]);
+      } else if (term instanceof Term) {
+        termsArray.push([term, true]);
+      } else {
+        termsArray.push([term.term, term.addition]);
+      }
+    });
+    this.terms = termsArray;
   }
+  /**
+   * converts to Expression with automatic simplification
+   * of like terms
+   * @returns {Expression}
+   */
   simplify() {
-    return this.exp;
+    const terms = this.terms.map(([term, addition]) => {
+      return addition ? term : term.negative();
+    });
+    return new Expression(...terms);
+  }
+  /**
+   * to string
+   */
+  toString() {
+    let str = "";
+    this.terms.forEach(([term, addition], i) => {
+      if (i === 0) {
+        if (addition) {
+          str += `${term}`;
+        } else {
+          str += `${term}`.startsWith("-")
+            ? term
+            : `- \\left( ${term} \\right)`;
+        }
+      } else {
+        if (addition) {
+          str += ` + `;
+        } else {
+          str += ` - `;
+        }
+        str += `${term}`.startsWith("-")
+          ? `\\left( ${term} \\right)`
+          : `${term}`;
+      }
+    });
+    return str;
   }
 }
 
@@ -69,6 +126,10 @@ export class ExpressionWorking {
     this.equalStart = options?.equalStart ?? false;
   }
 
+  get expression() {
+    return this.exp instanceof Expression ? this.exp : this.exp.simplify();
+  }
+
   /**
    * sub in
    * @param {{[key: string]: number|Fraction}} x - the values to sub in with the key being the variable signature.
@@ -80,6 +141,33 @@ export class ExpressionWorking {
     insertIntertext(this, options);
     const exp = this.exp instanceof Expression ? this.exp : this.exp.simplify();
     this.exp = exp.subIn(x);
+    this.expArray.push(this.exp);
+    return this;
+  }
+
+  /**
+   * square
+   * @returns {ExpressionWorking} - reference to this ExpressionWorking
+   * only works for binomial expressions (with two terms) now
+   */
+  square() {
+    // TODO: non-binomial expressions
+    const exp = this.exp instanceof Expression ? this.exp : this.exp.simplify();
+    if (exp.terms.length !== 2) {
+      throw new Error("only binomial expressions are supported");
+    }
+    const [a, b] = exp.terms;
+    this.expArray.push(
+      new UnsimplifiedExpression(
+        `\\left( ${a} \\right)^2`,
+        {
+          term: new Term(`2 \\left( ${a} \\right) \\left( ${b.abs()} \\right)`),
+          addition: b.coeff.is.positive(),
+        },
+        `\\left( ${b} \\right)^2`
+      )
+    );
+    this.exp = exp.square();
     this.expArray.push(this.exp);
     return this;
   }
@@ -150,79 +238,73 @@ export class ExpressionWorking {
    * @returns {ExpressionWorking} - a reference to this equation
    * WARNING: mutates the current instance. the lhs/rhs is the latest after the method
    */
-  // rationalize(options) {
-  //   insertIntertext(this, options);
-  //   /** @type {Expression} */
-  //   let num;
-  //   /** @type {Expression} */
-  //   let den;
-  //   if (
-  //     this.exp instanceof Expression &&
-  //     this.exp.terms.length === 1 &&
-  //     this.exp.terms[0] instanceof RationalTerm
-  //   ) {
-  //     num = this.exp.terms[0].num;
-  //     den = this.exp.terms[0].den.expand();
-  //   } else if (
-  //     this.exp instanceof UnsimplifiedExpression &&
-  //     this.exp.terms.length === 1 &&
-  //     this.exp.terms[0].term instanceof RationalTerm
-  //   ) {
-  //     num = this.exp.terms[0].term.num;
-  //     den = this.exp.terms[0].term.den.expand();
-  //   } else {
-  //     throw new Error(`no rational term found for ${this.exp}`);
-  //   }
-  //   /** @type {Expression} */
-  //   let conjugate;
-  //   if (den.terms.length === 2) {
-  //     conjugate = new Expression(den.terms[0], den.terms[1].negative());
-  //   } else {
-  //     throw new Error(`rationalize not supported for denominator ${den}`);
-  //   }
-  //   this.expArray.push(`=${this.exp}\\times\\frac{${conjugate}}{${conjugate}}`);
-  //   const denom = den.times(conjugate).cast.toFraction();
-  //   /** @type {({term: Term, addition: boolean})[]} */
-  //   const numArray = [];
-  //   num.terms.forEach((term) => {
-  //     conjugate.terms.forEach((conjugateTerm) => {
-  //       if (term instanceof SquareRoot) {
-  //         if (conjugateTerm instanceof SquareRoot) {
-  //           const t = new Term(
-  //             term.coeff.times(conjugateTerm.coeff),
-  //             `\\sqrt{${term.radicand.times(conjugateTerm.radicand)}}`
-  //           );
-  //           numArray.push({ term: t.abs(), addition: t.coeff.is.positive() });
-  //         } else {
-  //           const t = term.times(conjugateTerm);
-  //           numArray.push({ term: t.abs(), addition: t.coeff.is.positive() });
-  //         }
-  //       } else {
-  //         if (conjugateTerm instanceof SquareRoot) {
-  //           const t = conjugateTerm.times(term);
-  //           numArray.push({ term: t.abs(), addition: t.coeff.is.positive() });
-  //         } else {
-  //           const t = term.times(conjugateTerm);
-  //           numArray.push({ term: t.abs(), addition: t.coeff.is.positive() });
-  //         }
-  //       }
-  //     });
-  //   });
-  //   const numString = new UnsimplifiedExpression(...numArray);
+  rationalize(options) {
+    insertIntertext(this, options);
+    /** @type {Expression} */
+    let num;
+    /** @type {Expression} */
+    let den;
+    if (this.exp instanceof UnsimplifiedExpression) {
+      this.exp = this.exp.simplify();
+    }
+    if (
+      this.exp instanceof Expression &&
+      this.exp.terms.length === 1 &&
+      this.exp.terms[0] instanceof RationalTerm
+    ) {
+      num = this.exp.terms[0].num;
+      den = this.exp.terms[0].den.expand();
+    } else {
+      throw new Error(`no rational term found for ${this.exp}`);
+    }
+    /** @type {Expression} */
+    let conjugate;
+    if (den.terms.length === 2) {
+      conjugate = new Expression(den.terms[0], den.terms[1].negative());
+    } else {
+      throw new Error(`rationalize not supported for denominator ${den}`);
+    }
+    this.expArray.push(
+      `= ${this.exp} \\times \\frac{${conjugate}}{${conjugate}}`
+    );
+    const denom = den.times(conjugate).cast.toFraction();
+    /** @type {({term: Term, addition: boolean})[]} */
+    const numArray = [];
+    num.terms.forEach((term) => {
+      conjugate.terms.forEach((conjugateTerm) => {
+        if (term instanceof SquareRoot) {
+          if (conjugateTerm instanceof SquareRoot) {
+            const t = new Term(
+              term.coeff.times(conjugateTerm.coeff),
+              `\\sqrt{${term.radicand.times(conjugateTerm.radicand)}}`
+            );
+            numArray.push({ term: t.abs(), addition: t.coeff.is.positive() });
+          } else {
+            const t = term.times(conjugateTerm);
+            numArray.push({ term: t.abs(), addition: t.coeff.is.positive() });
+          }
+        } else {
+          if (conjugateTerm instanceof SquareRoot) {
+            const t = conjugateTerm.times(term);
+            numArray.push({ term: t.abs(), addition: t.coeff.is.positive() });
+          } else {
+            const t = term.times(conjugateTerm);
+            numArray.push({ term: t.abs(), addition: t.coeff.is.positive() });
+          }
+        }
+      });
+    });
+    const numString = new UnsimplifiedExpression(...numArray);
 
-  //   this.expArray.push(
-  //     `=\\frac{${numString}}{\\left(${den.terms[0].abs()}\\right)^2 - \\left(${den.terms[1].abs()}\\right)^2}`
-  //   );
-  //   const numExp = num.times(conjugate);
-  //   this.expArray.push(`=\\frac{${numExp}}{${denom}}`);
-  //   this.exp = numExp.divide(denom);
-  //   this.expArray.push(this.exp);
-  //   return this;
-
-  //   //this.exp = new Expression(
-  //   //  new RationalTerm(num.times(conjugate), den.times(conjugate))
-  //   //);
-  // }
+    this.expArray.push(
+      `=\\frac{${numString}}{\\left(${den.terms[0].abs()}\\right)^2 - \\left(${den.terms[1].abs()}\\right)^2}`
+    );
+    const numExp = num.times(conjugate);
+    this.expArray.push(`=\\frac{${numExp}}{${denom}}`);
+    this.exp = numExp.divide(denom);
+    this.expArray.push(this.exp);
+    return this;
+  }
 
   //TODO: Methods for RationalTerm
   /**
@@ -366,6 +448,44 @@ export class ExpressionWorking {
    */
   clear() {
     this.expArray = [this.exp];
+    return this;
+  }
+
+  /**
+   * @param {Expression} x
+   * @returns {ExpressionWorking}
+   */
+  multiplySurdExpression(x) {
+    /** @type {({term: Term, addition: boolean})[]} */
+    const numArray = [];
+    const exp = this.exp instanceof Expression ? this.exp : this.exp.simplify();
+    exp.terms.forEach((term) => {
+      x.terms.forEach((term2) => {
+        if (term instanceof SquareRoot) {
+          if (term2 instanceof SquareRoot) {
+            const t = new Term(
+              term.coeff.times(term2.coeff),
+              `\\sqrt{${term.radicand.times(term2.radicand)}}`
+            );
+            numArray.push({ term: t.abs(), addition: t.coeff.is.positive() });
+          } else {
+            const t = term.times(term2);
+            numArray.push({ term: t.abs(), addition: t.coeff.is.positive() });
+          }
+        } else {
+          if (term2 instanceof SquareRoot) {
+            const t = term2.times(term);
+            numArray.push({ term: t.abs(), addition: t.coeff.is.positive() });
+          } else {
+            const t = term.times(term2);
+            numArray.push({ term: t.abs(), addition: t.coeff.is.positive() });
+          }
+        }
+      });
+    });
+    this.expArray.push(new UnsimplifiedExpression(...numArray));
+    this.exp = exp.times(x);
+    this.expArray.push(this.exp);
     return this;
   }
 }

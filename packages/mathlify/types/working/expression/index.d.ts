@@ -1,2 +1,2 @@
-export { ExpressionWorking } from "./expression-working.js";
+export { ExpressionWorking, UnsimplifiedExpression } from "./expression-working.js";
 //# sourceMappingURL=index.d.ts.map

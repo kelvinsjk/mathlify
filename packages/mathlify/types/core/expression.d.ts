@@ -17,12 +17,9 @@ export class Expression {
     /**
      * @constructor
      * Creates an Expression instance
-     * @param {(number|Fraction|string|Term|(number|Fraction|string|{variable: string, power: number|Fraction}|[string,number|Fraction]|Term)[])[]} terms - terms of the expression
+     * @param {(number|Fraction|string|Term|(number|Fraction|string|[string,number|Fraction]|Term)[])[]} terms - terms of the expression
      */
-    constructor(...terms: (number | Fraction | string | Term | (number | Fraction | string | {
-        variable: string;
-        power: number | Fraction;
-    } | [string, number | Fraction] | Term)[])[]);
+    constructor(...terms: (number | Fraction | string | Term | (number | Fraction | string | [string, number | Fraction] | Term)[])[]);
     /** @type {Map<string,Fraction>} */
     termCoeffMap: Map<string, Fraction>;
     /** @type {Map<string,Term>} */

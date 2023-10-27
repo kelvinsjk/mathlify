@@ -15,7 +15,7 @@ export class EquationWorking {
      * @param {Expression|number|Fraction|string|Term|(number|Fraction|string|Term)[]} [rhs=0] - the right hand side of the equation (defaults to 0)
      * @param {{aligned: boolean}} [options] - options object defaulting to `{aligned: false}`
      */
-    constructor(lhs: Expression | number | Fraction | string | Term | (number | Fraction | string | Term)[], rhs?: string | number | Fraction | Term | Expression | (string | number | Fraction | Term)[] | undefined, options?: {
+    constructor(lhs: Expression | number | Fraction | string | Term | (number | Fraction | string | Term)[], rhs?: string | number | Fraction | Expression | Term | (string | number | Fraction | Term)[] | undefined, options?: {
         aligned: boolean;
     } | undefined);
     /** @type {Expression} */

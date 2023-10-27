@@ -24,6 +24,18 @@ export class Fraction {
      */
     static lcm(...fractions: (Fraction | number)[]): Fraction;
     /**
+     * max of n fractions
+     * @param  {...(Fraction|number)} fractions
+     * @returns {Fraction} max of the fractions
+     */
+    static max(...fractions: (Fraction | number)[]): Fraction;
+    /**
+     * min of n fractions
+     * @param  {...(Fraction|number)} fractions
+     * @returns {Fraction} min of the fractions
+     */
+    static min(...fractions: (Fraction | number)[]): Fraction;
+    /**
      * re-instantiate Fraction class instance from JSON object literal
      * @param {FractionJSON} f JSON object literal obtained from JSON.parse
      * @returns {Fraction} fraction class instance

@@ -40,12 +40,9 @@ export class ExpressionProduct extends Term {
      * @constructor
      * Creates an Expansion Term instance
      * @param {(number|Fraction|string|Term|Expression
-     * |[Expression|(number|Fraction|string|{variable: string, power: number|Fraction}|[string,number|Fraction]|Term)[], number|Fraction])[]} exps - the expression
+     * |[Expression|(number|Fraction|string|[string,number|Fraction]|Term)[], number|Fraction])[]} exps - the expression
      */
-    constructor(...exps: (number | Fraction | string | Term | Expression | [Expression | (number | Fraction | string | {
-        variable: string;
-        power: number | Fraction;
-    } | [string, number | Fraction] | Term)[], number | Fraction])[]);
+    constructor(...exps: (number | Fraction | string | Term | Expression | [Expression | (number | Fraction | string | [string, number | Fraction] | Term)[], number | Fraction])[]);
     /** @type {Map<Expression,Fraction>} */
     expPowerMap: Map<Expression, Fraction>;
     /** @type {Expression[]} */
@@ -61,11 +58,11 @@ export class ExpressionProduct extends Term {
      */
     resetCoeff(): ExpressionProduct;
     /**
-     * times (into coefficient)
-     * @param {number|Fraction} x - the multiplier
-     * @returns {ExpressionProduct} - the Expansion Term multiplied by x
+     * times
+     * @param {number|Fraction|string|Term|ExpressionProduct} x - the multiplier
+     * @returns {ExpressionProduct} - the ExpressionProduct multiplied by x
      */
-    times(x: number | Fraction): ExpressionProduct;
+    times(x: number | Fraction | string | Term | ExpressionProduct): ExpressionProduct;
     /**
      * divide expansion terms
      * @param {ExpressionProduct} x - the divisor

@@ -6,6 +6,7 @@ import { powerMapToString } from "./utils/powerMapToString.js";
 
 /**
  * @typedef {import('./types.js').TermType} TermType
+ * @typedef {import('./expression.js').Expression} Expression
  */
 
 /** Term class
@@ -440,6 +441,51 @@ export class Term {
 
   //! static methods
   /**
+   * gcd of n terms
+   * @param {(Term|Expression)[]} terms
+   * @returns {Term} the gcd of the terms
+   */
+  static gcd(...terms) {
+    if (terms.length === 0) {
+      throw new Error(`Cannot find hcf of 0 terms`);
+    }
+    if (terms.length === 1) {
+      if (terms[0] instanceof Term) {
+        return terms[0];
+      }
+      throw new Error(`Term class cannot find gcd of expression`);
+    }
+    const term1 = terms[0];
+    const term2 = terms[1];
+    let gcd = gcd2(term1, term2);
+    for (let i = 2; i < terms.length; i++) {
+      gcd = gcd2(gcd, terms[i]);
+    }
+    return gcd;
+  }
+  /**
+   * lcm of n terms
+   * @param {(Term|Expression)[]} terms
+   * @returns {Term} the lcm of the terms
+   */
+  static lcm(...terms) {
+    if (terms.length === 0) {
+      throw new Error(`Cannot find lcm of 0 terms`);
+    }
+    if (terms.length === 1) {
+      if (terms[0] instanceof Term) {
+        return terms[0];
+      }
+      throw new Error(`Term class cannot find lcm of expression`);
+    }
+    const [term1, term2] = terms;
+    let lcm = lcm2(term1, term2);
+    for (let i = 2; i < terms.length; i++) {
+      lcm = lcm2(lcm, terms[i]);
+    }
+    return lcm;
+  }
+  /**
    * re-instantiate Term class instance from JSON object literal
    * @param {TermJSON} t JSON object literal obtained from JSON.parse
    * @returns {Term} Term class instance
@@ -473,4 +519,53 @@ export function powerMapToTerm(powerMap, coeff) {
     });
   }
   return new Term(...termAtoms);
+}
+
+/**
+ * gcd of 2 terms
+ * @param {Term|Expression} x
+ * @param {Term|Expression} y
+ * @returns {Term} the gcd of the terms
+ */
+function gcd2(x, y) {
+  if (x instanceof Term && y instanceof Term) {
+    /** @type {[string, Fraction][]} */
+    const powerMap = [];
+    x.powerMap.forEach((power, variable) => {
+      const yPower = y.powerMap.get(variable);
+      if (yPower) {
+        powerMap.push([variable, Fraction.min(power, yPower)]);
+      }
+    });
+    return new Term(Fraction.gcd(x.coeff, y.coeff), ...powerMap);
+  }
+  throw new Error(`Term class cannot find gcd of expression`);
+}
+/**
+ * lcm of 2 terms
+ * @param {Term|Expression} x
+ * @param {Term|Expression} y
+ * @returns {Term} the lcm of the terms
+ */
+function lcm2(x, y) {
+  if (x instanceof Term && y instanceof Term) {
+    /** @type {[string, Fraction][]} */
+    const powerMap = [];
+    x.powerMap.forEach((power, variable) => {
+      const yPower = y.powerMap.get(variable);
+      if (yPower) {
+        powerMap.push([variable, Fraction.max(power, yPower)]);
+      } else {
+        powerMap.push([variable, power]);
+      }
+    });
+    y.powerMap.forEach((power, variable) => {
+      const xPower = x.powerMap.get(variable);
+      if (!xPower) {
+        powerMap.push([variable, power]);
+      }
+    });
+    return new Term(Fraction.lcm(x.coeff, y.coeff), ...powerMap);
+  }
+  throw new Error(`Term class cannot find lcm of expression`);
 }

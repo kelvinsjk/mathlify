@@ -33,7 +33,7 @@ export class ExpressionProduct extends Term {
    * @constructor
    * Creates an Expansion Term instance
    * @param {(number|Fraction|string|Term|Expression
-   * |[Expression|(number|Fraction|string|{variable: string, power: number|Fraction}|[string,number|Fraction]|Term)[], number|Fraction])[]} exps - the expression
+   * |[Expression|(number|Fraction|string|[string,number|Fraction]|Term)[], number|Fraction])[]} exps - the expression
    */
   constructor(...exps) {
     /** @type {Map<Expression,Fraction>} */
@@ -88,16 +88,25 @@ export class ExpressionProduct extends Term {
       if (power.is.equalTo(0)) {
         expPowerMap.delete(exp);
       } else {
-        expArray.push([`(${exp})`, power]);
+        expArray.push([`${exp}`, power]);
         expressions.push(exp);
       }
     }
+    /** @type {[string, Fraction][]} */
+    const expArrayBrackets = expArray.map(([exp, power]) => [
+      `\\left( ${exp} \\right)`,
+      power,
+    ]);
+    const finalExpArray =
+      `${factor}` === "1" && expArray.length === 1 && expArray[0][1].is.one()
+        ? expArray
+        : expArrayBrackets;
     /** @type {[string, Fraction][]} */
     const args = [];
     factor.powerMap.forEach((power, variable) => {
       args.push([variable, power]);
     });
-    super(factor.coeff, ...args, ...expArray);
+    super(factor.coeff, ...args, ...finalExpArray);
     this.expPowerMap = expPowerMap;
     this.factor = factor;
     this.exps = expressions;
@@ -117,14 +126,17 @@ export class ExpressionProduct extends Term {
   }
 
   /**
-   * times (into coefficient)
-   * @param {number|Fraction} x - the multiplier
-   * @returns {ExpressionProduct} - the Expansion Term multiplied by x
+   * times
+   * @param {number|Fraction|string|Term|ExpressionProduct} x - the multiplier
+   * @returns {ExpressionProduct} - the ExpressionProduct multiplied by x
    */
   times(x) {
+    const exp = x instanceof ExpressionProduct ? x : new ExpressionProduct(x);
     return new ExpressionProduct(
-      this.factor.times(x),
-      ...expPowerMapToConstructorObj(this.expPowerMap)
+      this.factor,
+      exp.factor,
+      ...expPowerMapToConstructorObj(this.expPowerMap),
+      ...expPowerMapToConstructorObj(exp.expPowerMap)
     );
   }
 
@@ -150,7 +162,7 @@ export class ExpressionProduct extends Term {
       }
     });
     return new ExpressionProduct(
-      this.factor.divide(x.coeff),
+      this.factor.divide(x.factor),
       ...expPowerMapToConstructorObj(expPowerMap)
     );
   }
@@ -258,16 +270,16 @@ export class ExpressionProduct extends Term {
   static lcm(...exps) {
     /** @type {Map<Expression,Fraction>} */
     let expPowerMap = new Map();
-    /** @type {Fraction} */
-    let coeff = new Fraction(1);
+    /** @type {Term[]} */
+    let factors = [];
     exps.forEach((exp) => {
       const expression =
         exp instanceof ExpressionProduct ? exp : new ExpressionProduct(exp);
       expPowerMap = expPowerMapMaxPower(expPowerMap, expression.expPowerMap);
-      coeff = Fraction.lcm(coeff, expression.coeff);
+      factors.push(expression.factor);
     });
     return new ExpressionProduct(
-      coeff,
+      Term.lcm(...factors),
       ...expPowerMapToConstructorObj(expPowerMap)
     );
   }

@@ -279,7 +279,7 @@ export class EquationWorking {
       if (leadingCoeff.is.negative()) {
         this.lhsArray.push(lhsWorking.times(-1));
         this.rhsArray.push(rhsWorking.times(-1));
-        leadingCoeff = leadingCoeff.times(-1);
+        // leadingCoeff = leadingCoeff.times(-1);
       } else {
         this.lhsArray.push(lhsWorking);
         this.rhsArray.push(rhsWorking);

@@ -49,6 +49,19 @@ export class SLE {
   }
 
   /**
+   * eqns
+   * @returns {Expression[]}
+   */
+  get eqns() {
+    // convert each row into terms and then into expressions
+    const terms = this.coeffs.map((row) =>
+      row.map((x, i) => new Term(x, this.variables[i]))
+    );
+    const exps = terms.map((row) => new Expression(...row));
+    return exps;
+  }
+
+  /**
    * returns a string representation of the SLE to be fed into a LaTeX align/align* / gather/gather* environment
    */
   toString() {

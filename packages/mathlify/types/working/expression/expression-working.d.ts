@@ -1,3 +1,23 @@
+export class UnsimplifiedExpression {
+    /** @param {(number|Fraction|string|Term|{term:Term, addition:boolean}|(number|Fraction|string|[string,number|Fraction])[])[]} terms - terms of the expression
+     * */
+    constructor(...terms: (number | Fraction | string | Term | {
+        term: Term;
+        addition: boolean;
+    } | (number | Fraction | string | [string, number | Fraction])[])[]);
+    /** @type {([Term, boolean])[]} */
+    terms: ([Term, boolean])[];
+    /**
+     * converts to Expression with automatic simplification
+     * of like terms
+     * @returns {Expression}
+     */
+    simplify(): Expression;
+    /**
+     * to string
+     */
+    toString(): string;
+}
 /**
  * General Equation class representing LHS = RHS, with typesetting to output a series of steps to
  * to plugged into a LaTeX align/align* /gather/gather* environment
@@ -25,6 +45,7 @@ export class ExpressionWorking {
     aligned: boolean;
     /** @type {boolean} */
     equalStart: boolean;
+    get expression(): Expression;
     /**
      * sub in
      * @param {{[key: string]: number|Fraction}} x - the values to sub in with the key being the variable signature.
@@ -37,6 +58,12 @@ export class ExpressionWorking {
     }, options?: {
         intertext?: string | undefined;
     } | undefined): ExpressionWorking;
+    /**
+     * square
+     * @returns {ExpressionWorking} - reference to this ExpressionWorking
+     * only works for binomial expressions (with two terms) now
+     */
+    square(): ExpressionWorking;
     /**
      * factorize
      * @param {{intertext?: string, variable?: string}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
@@ -62,6 +89,9 @@ export class ExpressionWorking {
      * @returns {ExpressionWorking} - a reference to this equation
      * WARNING: mutates the current instance. the lhs/rhs is the latest after the method
      */
+    rationalize(options?: {
+        intertext?: string | undefined;
+    } | undefined): ExpressionWorking;
     /**
      * combines rational terms into a single rational term
      * @param {{intertext: string}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
@@ -121,20 +151,13 @@ export class ExpressionWorking {
      * WARNING: mutates current instance
      */
     clear(): ExpressionWorking;
+    /**
+     * @param {Expression} x
+     * @returns {ExpressionWorking}
+     */
+    multiplySurdExpression(x: Expression): ExpressionWorking;
 }
-declare class UnsimplifiedExpression {
-    /** @param {(number|Fraction|string|Term|(number|Fraction|string|{variable: string, power: number|Fraction}|[string,number|Fraction]|Term)[])[]} terms - terms of the expression
-     * */
-    constructor(...terms: (number | Fraction | string | Term | (number | Fraction | string | {
-        variable: string;
-        power: number | Fraction;
-    } | [string, number | Fraction] | Term)[])[]);
-    exp: Expression;
-    terms: Term[];
-    simplify(): Expression;
-}
+import { Term } from "../../core/index.js";
 import { Expression } from "../../core/index.js";
 import { Fraction } from "../../core/index.js";
-import { Term } from "../../core/index.js";
-export {};
 //# sourceMappingURL=expression-working.d.ts.map

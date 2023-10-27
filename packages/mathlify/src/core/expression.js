@@ -25,7 +25,7 @@ export class Expression {
   /**
    * @constructor
    * Creates an Expression instance
-   * @param {(number|Fraction|string|Term|(number|Fraction|string|{variable: string, power: number|Fraction}|[string,number|Fraction]|Term)[])[]} terms - terms of the expression
+   * @param {(number|Fraction|string|Term|(number|Fraction|string|[string,number|Fraction]|Term)[])[]} terms - terms of the expression
    */
   constructor(...terms) {
     if (terms.length === 0) {
@@ -242,12 +242,22 @@ export class Expression {
       const newTerms = [];
       this.terms.forEach((term) => {
         x.terms.forEach((xTerm) => {
-          newTerms.push(term.times(xTerm));
+          if (xTerm.type !== "term" && term.type === "term") {
+            // extensions take precedence
+            newTerms.push(xTerm.times(term));
+          } else {
+            newTerms.push(term.times(xTerm));
+          }
         });
       });
       return new Expression(...newTerms);
     }
-    const newTerms = this.terms.map((term) => term.times(x));
+    const newTerms = this.terms.map((term) => {
+      if (x instanceof Term && x.type !== "term" && term.type === "term") {
+        return x.times(term);
+      }
+      return term.times(x);
+    });
     return new Expression(...newTerms);
   }
 

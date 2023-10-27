@@ -7,6 +7,7 @@
 export function powerMapToTerm(powerMap: Map<string, Fraction> | undefined, coeff: Fraction | null): Term;
 /**
  * @typedef {import('./types.js').TermType} TermType
+ * @typedef {import('./expression.js').Expression} Expression
  */
 /** Term class
  * @class
@@ -20,6 +21,18 @@ export function powerMapToTerm(powerMap: Map<string, Fraction> | undefined, coef
  * @property {TermType} type - mathlify term class
  */
 export class Term {
+    /**
+     * gcd of n terms
+     * @param {(Term|Expression)[]} terms
+     * @returns {Term} the gcd of the terms
+     */
+    static gcd(...terms: (Term | Expression)[]): Term;
+    /**
+     * lcm of n terms
+     * @param {(Term|Expression)[]} terms
+     * @returns {Term} the lcm of the terms
+     */
+    static lcm(...terms: (Term | Expression)[]): Term;
     /**
      * re-instantiate Term class instance from JSON object literal
      * @param {TermJSON} t JSON object literal obtained from JSON.parse
@@ -173,5 +186,6 @@ export class Term {
     toJSON(): import("./types.js").TermJSON;
 }
 export type TermType = import('./types.js').TermType;
+export type Expression = import('./expression.js').Expression;
 import { Fraction } from "./fraction.js";
 //# sourceMappingURL=term.d.ts.map
