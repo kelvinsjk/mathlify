@@ -1,8 +1,9 @@
 export {
-	solveQuadraticSurd,
-	solveQuadraticNumerical,
-	solveQuadratic,
-	factorizeQuadratic,
-	discriminant,
-} from './quadratic.js';
-export { completeSquare } from './completeSquare.js';
+  solveQuadraticSurd,
+  solveQuadraticNumerical,
+  solveQuadratic,
+  factorizeQuadratic,
+  factorizeQuadraticIntoPolynomials,
+  discriminant,
+} from "./quadratic.js";
+export { completeSquare } from "./completeSquare.js";

@@ -139,6 +139,58 @@ export function factorizeQuadratic(poly, options) {
 }
 
 /**
+ * factorize quadratic
+ * @param {Polynomial|Expression} poly
+ * @param {{variable?: string}} [options] - options to specify the variable
+ * @returns {[Polynomial, Polynomial]} - the factorized form
+ */
+export function factorizeQuadraticIntoPolynomials(poly, options) {
+  const newPoly = castToPoly(poly, options);
+  if (newPoly.degree !== 2) {
+    throw new Error(`${poly} is not a quadratic polynomial`);
+  }
+  try {
+    const [x1, x2] = solveQuadratic(newPoly, 0, options);
+    // (a1 x - b1)(a2 x - b2)
+    const a1 = x1.den;
+    const b1 = x1.negative().num;
+    const a2 = x2.den;
+    const b2 = x2.negative().num;
+    const expansionCoeff = a1 * a2;
+    const multiple = newPoly.coeffs[2].divide(expansionCoeff);
+    if (multiple.is.negative()) {
+      if (b1 < 0) {
+        return [
+          new Polynomial([b1 * -1, a1 * -1], {
+            variable: newPoly.variable,
+            ascending: true,
+          }).times(multiple.abs()),
+          new Polynomial([a2, b2], { variable: newPoly.variable }),
+        ];
+      } else if (b2 < 0) {
+        return [
+          new Polynomial([a1, b1], { variable: newPoly.variable }).times(
+            multiple.abs()
+          ),
+          new Polynomial([b2 * -1, a2 * -1], {
+            variable: newPoly.variable,
+            ascending: true,
+          }),
+        ];
+      }
+    }
+    return [
+      new Polynomial([a1, b1], { variable: newPoly.variable }).times(multiple),
+      new Polynomial([a2, b2], { variable: newPoly.variable }),
+    ];
+  } catch (e) {
+    throw new Error(
+      `Unable to factorize ${poly}. No rational roots detected ${e}`
+    );
+  }
+}
+
+/**
  * solve quadratic polynomial/equations
  * @param {Polynomial|number|Fraction|Expression} poly - the polynomial to be solved/left hand side of the equation
  * @param {Polynomial|number|Fraction|Expression} [rhs] - the right hand side of the equation (defaults to 0)

@@ -59,10 +59,10 @@ export class ExpressionProduct extends Term {
     resetCoeff(): ExpressionProduct;
     /**
      * times
-     * @param {number|Fraction|string|Term|ExpressionProduct} x - the multiplier
+     * @param {number|Fraction|string|Term|Expression|ExpressionProduct} x - the multiplier
      * @returns {ExpressionProduct} - the ExpressionProduct multiplied by x
      */
-    times(x: number | Fraction | string | Term | ExpressionProduct): ExpressionProduct;
+    times(x: number | Fraction | string | Term | Expression | ExpressionProduct): ExpressionProduct;
     /**
      * divide expansion terms
      * @param {ExpressionProduct} x - the divisor

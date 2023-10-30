@@ -1,1 +1,1 @@
-export { longDivision } from "./longDivision.js";
+export { longDivide } from "./longDivision.js";

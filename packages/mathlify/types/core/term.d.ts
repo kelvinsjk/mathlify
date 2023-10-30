@@ -121,11 +121,11 @@ export class Term {
         toFraction: () => Fraction;
     };
     /**
-     * @param {number|Fraction|string|Term|[string,number|Fraction]} x the other term to multiply with
+     * @param {number|Fraction|string|Term|[string,number|Fraction]|Expression} x the other term to multiply with
      * @param {{fractionalDisplayMode: "never"|"auto"|"always"}} [options] - the fractional display mode to set on the result (defaults to mode of this)
      * @returns {Term} the product of the two terms
      */
-    times(x: number | Fraction | string | Term | [string, number | Fraction], options?: {
+    times(x: number | Fraction | string | Term | [string, number | Fraction] | Expression, options?: {
         fractionalDisplayMode: "never" | "auto" | "always";
     } | undefined): Term;
     /**
@@ -136,11 +136,11 @@ export class Term {
         fractionalDisplayMode: "never" | "auto" | "always";
     } | undefined): Term;
     /**
-     * @param {number|Fraction|string|Term} x - the other term to divide with
+     * @param {number|Fraction|string|Term|Expression} x - the other term to divide with
      * @param {{fractionalDisplayMode: "never"|"auto"|"always"}} [options] - the fractional display mode to set on the result (defaults to mode of this)
      * @returns {Term} the quotient this divided by x
      */
-    divide(x: number | Fraction | string | Term, options?: {
+    divide(x: number | Fraction | string | Term | Expression, options?: {
         fractionalDisplayMode: "never" | "auto" | "always";
     } | undefined): Term;
     /**
@@ -187,5 +187,5 @@ export class Term {
 }
 export type TermType = import('./types.js').TermType;
 export type Expression = import('./expression.js').Expression;
-import { Fraction } from "./fraction.js";
+import { Fraction } from './fraction.js';
 //# sourceMappingURL=term.d.ts.map

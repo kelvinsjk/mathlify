@@ -11,8 +11,9 @@ export {
   solveQuadraticSurd,
   solveQuadraticNumerical,
   factorizeQuadratic,
+  factorizeQuadraticIntoPolynomials,
   completeSquare,
   discriminant,
 } from "./quadratic/index.js";
-export { longDivision } from "./polynomials/index.js";
+export { longDivide } from "./polynomials/index.js";
 export { castToPoly } from "./utils/castToPoly.js";

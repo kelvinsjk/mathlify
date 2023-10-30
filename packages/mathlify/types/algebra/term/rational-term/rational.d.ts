@@ -11,11 +11,11 @@ export class RationalTerm extends Term {
      * @constructor
      * Creates a Rational Term instance
      * @param {Expression|number|Fraction|string|Term|(number|Fraction|string|Term)[]} numerator - the numerator
-     * @param {ExpressionProduct|Expression|number|Fraction|string|Term} [denominator=1] - the denominator
+     * @param {ExpressionProduct|Expression|number|Fraction|string|Term|[Expression, number|Fraction]} [denominator=1] - the denominator
      * @param {{coeff: Fraction|number}} [options] - options for coefficient (default {coeff: 1}). Only tested for 1 and -1, use with care
      * @throws {Error} if denominator is zero
      */
-    constructor(numerator: Expression | number | Fraction | string | Term | (number | Fraction | string | Term)[], denominator?: string | number | Fraction | Expression | Term | ExpressionProduct | undefined, options?: {
+    constructor(numerator: Expression | number | Fraction | string | Term | (number | Fraction | string | Term)[], denominator?: string | number | Fraction | Expression | Term | ExpressionProduct | [Expression, number | Fraction] | undefined, options?: {
         coeff: Fraction | number;
     } | undefined);
     /** @type {Expression} */

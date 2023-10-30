@@ -420,49 +420,6 @@ export class Polynomial extends Expression {
     return integral.subIn(upper).minus(integral.subIn(lower));
   }
 
-  // /**
-  //  * @param {number|Fraction} x the value to sub in
-  //  * @returns {[string, Fraction]} a string representing the intermediate step of subbing in x, and the resultant polynomial
-  //  */
-  // subInWorking(x) {
-  //   const xFrac = numberToFraction(x);
-  //   const coeffs = [...this.coeffs];
-  //   if (this.descending) {
-  //     coeffs.reverse();
-  //   }
-  //   /** @type {boolean} */
-  //   let first = true;
-  //   const working = coeffs.reduce((prev, coeff, i) => {
-  //     if (coeff.is.zero()) {
-  //       return prev;
-  //     }
-  //     const power = this.ascending ? i : this.degree - i;
-  //     const addition = coeff.is.positive();
-  //     let term = "";
-  //     if (power === 0) {
-  //       term = `${coeff.abs().toTex()}`;
-  //     } else if (power === 1) {
-  //       const xBrackets =
-  //         `${xFrac.toTex()}`.length === 1 && coeff.abs().is.one()
-  //           ? `${xFrac.toTex()}`
-  //           : `\\left(${xFrac.toTex()}\\right)`;
-  //       term = `${new Term(coeff.abs(), xBrackets).toTex()}`;
-  //     } else {
-  //       const xBrackets =
-  //         `${xFrac.toTex()}`.length === 1 && coeff.abs().is.one()
-  //           ? `${xFrac.toTex()}`
-  //           : `\\left(${xFrac.toTex()}\\right)`;
-  //       term = `${new Term(coeff.abs(), [xBrackets, power]).toTex()}`;
-  //     }
-  //     if (first) {
-  //       first = false;
-  //       return addition ? term : `- ${term}`;
-  //     }
-  //     return prev + (addition ? ` + ${term}` : ` - ${term}`);
-  //   }, "");
-  //   return [working, this.subIn(x)];
-  // }
-
   /**
    * @param {number} degree
    * @param {{variable?: string, ascending?: boolean, coeff?: number|Fraction}} [options] defaults to {variable:'x', ascending: false, coeff: 1}
@@ -478,6 +435,22 @@ export class Polynomial extends Expression {
       coeffs.unshift(coeff);
     }
     return new Polynomial(coeffs, options);
+  }
+
+  /**
+   * fromRoot method. Given a root, returns the linear polynomial with that root
+   * @param {number|Fraction} root
+   * @param {{variable?: string, ascending?: boolean}} [options] defaults to {variable:'x', ascending: false}
+   * @returns {Polynomial} the linear polynomial with the given root
+   */
+  static fromRoot(root, options) {
+    root = numberToFraction(root);
+    if (options?.ascending) {
+      return root.is.positive()
+        ? new Polynomial([root.num, -root.den], options)
+        : new Polynomial([-root.num, root.den], options);
+    }
+    return new Polynomial([root.den, -root.num], options);
   }
 
   /** @typedef {import('./types.d.ts').PolynomialJSON} PolynomialJSON */

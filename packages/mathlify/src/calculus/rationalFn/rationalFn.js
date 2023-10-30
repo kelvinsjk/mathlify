@@ -5,7 +5,7 @@ import {
   ExpansionTerm,
   RationalTerm,
   castToPoly,
-  longDivision,
+  longDivide,
 } from "../../algebra/index.js";
 
 /**
@@ -138,7 +138,8 @@ export class RationalFn extends RationalTerm {
    * @return {Expression}
    */
   longDivide() {
-    return longDivision(this.numFn.times(this.coeff), this.denFn);
+    const { exp } = longDivide(this.numFn.times(this.coeff), this.denFn);
+    return exp;
   }
 
   /**
@@ -157,9 +158,9 @@ export class RationalFn extends RationalTerm {
         ? this.denFn.square()
         : new ExpansionTerm([this.denFn, 2]);
     if (options?.divisor) {
-      numResult = castToPoly(longDivision(numResult, options.divisor));
+      numResult = castToPoly(longDivide(numResult, options.divisor).exp);
       denResult = castToPoly(
-        longDivision(this.denFn.square(), options.divisor)
+        longDivide(this.denFn.square(), options.divisor).exp
       );
     }
     return new RationalTerm(numResult, denResult);

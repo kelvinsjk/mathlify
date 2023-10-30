@@ -1,15 +1,22 @@
 /**
  * partial fractions
- * @param {RationalFn} rational
- * @param {Polynomial} [denFactor] - for cubic denominators, we require a known linear factor to proceed
- * @returns {{working: string, result: Expression}}
- * WARNING: assumes that denominator has integral coefficients and has gcd==1.
+ * @param {number|Fraction|string|Polynomial} num
+ * @param {(Polynomial|string|[string|Polynomial, 2])[]|Polynomial|ExpressionProduct} den
+ * - if polynomial provided, then expect reducible polynomial of degree 2.
+ * Else expect an array of irreducible factors
+ * @returns {{working: {start: string, substitutions: [Fraction, string][], comparing: string, final: string}, result: Expression}}
  */
-export function partialFraction(rational: RationalFn, denFactor?: Polynomial | undefined): {
-    working: string;
+export function partialFractionsWorking(num: number | Fraction | string | Polynomial, den: (Polynomial | string | [string | Polynomial, 2])[] | Polynomial | ExpressionProduct): {
+    working: {
+        start: string;
+        substitutions: [Fraction, string][];
+        comparing: string;
+        final: string;
+    };
     result: Expression;
 };
-import { RationalFn } from "../../calculus/rationalFn/rationalFn.js";
+import { Fraction } from "../../core/index.js";
 import { Polynomial } from "../../core/index.js";
+import { ExpressionProduct } from "../../algebra/index.js";
 import { Expression } from "../../core/index.js";
 //# sourceMappingURL=partial-fractions.d.ts.map

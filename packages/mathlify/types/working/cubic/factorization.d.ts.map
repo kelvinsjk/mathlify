@@ -1,0 +1,1 @@
+{"version":3,"file":"factorization.d.ts","sourceRoot":"","sources":["../../../src/working/cubic/factorization.js"],"names":[],"mappings":"AAQA;;;;;;GAMG;AACH,6CALW,UAAU,QACV,MAAM,GAAC,QAAQ,GAAC,UAAU;eACd,CAAC,MAAM,EAAE,MAAM,EAAE,MAAM,CAAC;;aACxB,CAAC,UAAU,EAAE,UAAU,EAAE,UAAU,CAAC,CAAC;SAAO,iBAAiB;aAAW,MAAM;eAAa,UAAU;EA4C3H;2BAnDsD,YAAY;yBAAZ,YAAY;kCAD5D,eAAe"}

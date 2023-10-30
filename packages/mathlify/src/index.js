@@ -15,6 +15,7 @@ export {
   solveQuadraticSurd,
   solveQuadraticNumerical,
   factorizeQuadratic,
+  factorizeQuadraticIntoPolynomials,
   completeSquare,
   //! Misc: factorize
   factorizeExpression,
@@ -22,7 +23,8 @@ export {
   castExpression,
   //TODO: move these 3 below to "working" module
   UnsimplifiedTerm,
-  longDivision,
+  longDivide,
+  castToPoly,
 } from "./algebra/index.js";
 export { SquareRoot } from "./surds/index.js";
 export { xPolynomial } from "./extended/index.js";
@@ -51,19 +53,20 @@ export {
   solveLinearInequality,
   solveQuadraticInequality,
   ExpressionWorking,
-  BinomialGeneralTerm,
-  partialFraction,
+  //BinomialGeneralTerm,
+  partialFractionsWorking,
+  factorizeCubicWorking,
 } from "./working/index.js";
-export {
-  RationalFn,
-  GeneralFn,
-  PowerFn,
-  ExpFn,
-  LnFn,
-  SinFn,
-  CosFn,
-  dydx,
-  d2ydx2,
-  PolynomialLike,
-} from "./calculus/index.js";
+// export {
+//   RationalFn,
+//   GeneralFn,
+//   PowerFn,
+//   ExpFn,
+//   LnFn,
+//   SinFn,
+//   CosFn,
+//   dydx,
+//   d2ydx2,
+//   PolynomialLike,
+// } from "./calculus/index.js";
 export { Circle, Point } from "./coordinate-geometry/index.js";

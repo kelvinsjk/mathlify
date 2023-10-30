@@ -16,6 +16,16 @@ export class Polynomial extends Expression {
         coeff?: number | Fraction | undefined;
     } | undefined): Polynomial;
     /**
+     * fromRoot method. Given a root, returns the linear polynomial with that root
+     * @param {number|Fraction} root
+     * @param {{variable?: string, ascending?: boolean}} [options] defaults to {variable:'x', ascending: false}
+     * @returns {Polynomial} the linear polynomial with the given root
+     */
+    static fromRoot(root: number | Fraction, options?: {
+        variable?: string | undefined;
+        ascending?: boolean | undefined;
+    } | undefined): Polynomial;
+    /**
      * re-instantiate Polynomial class instance from JSON object literal
      * @param {PolynomialJSON} p JSON object literal obtained from JSON.parse
      * @returns {Polynomial} Term class instance

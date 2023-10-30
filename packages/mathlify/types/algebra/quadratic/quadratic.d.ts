@@ -31,6 +31,15 @@ export function factorizeQuadratic(poly: Polynomial | Expression, options?: {
     variable?: string | undefined;
 } | undefined): ExpressionProduct;
 /**
+ * factorize quadratic
+ * @param {Polynomial|Expression} poly
+ * @param {{variable?: string}} [options] - options to specify the variable
+ * @returns {[Polynomial, Polynomial]} - the factorized form
+ */
+export function factorizeQuadraticIntoPolynomials(poly: Polynomial | Expression, options?: {
+    variable?: string | undefined;
+} | undefined): [Polynomial, Polynomial];
+/**
  * solve quadratic polynomial/equations
  * @param {Polynomial|number|Fraction|Expression} poly - the polynomial to be solved/left hand side of the equation
  * @param {Polynomial|number|Fraction|Expression} [rhs] - the right hand side of the equation (defaults to 0)
