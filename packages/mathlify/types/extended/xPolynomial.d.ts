@@ -40,12 +40,8 @@ export class xPolynomial extends Expression {
      * @returns {xPolynomial} the negative of the polynomial
      */
     negative(): xPolynomial;
-    /**
-     * Polynomial subtraction
-     * @param {xPolynomial|Polynomial|number|Fraction} x - polynomial to be subtracted
-     * @returns {xPolynomial} - the difference this minus x
-     */
     minus(x: xPolynomial | Polynomial | number | Fraction): xPolynomial;
+    minus(x: Expression): Expression;
     times(x: xPolynomial | Polynomial | number | Fraction): xPolynomial;
     times(x: Term | Expression | string): Expression;
     /**

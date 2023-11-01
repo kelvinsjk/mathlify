@@ -56,6 +56,9 @@ export {
   //BinomialGeneralTerm,
   partialFractionsWorking,
   factorizeCubicWorking,
+  binomialExpansionWorking,
+  BinomialGeneralTermWorking,
+  expansionWorking,
 } from "./working/index.js";
 // export {
 //   RationalFn,

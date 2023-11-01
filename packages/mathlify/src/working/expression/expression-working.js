@@ -55,6 +55,19 @@ export class UnsimplifiedExpression {
     return new Expression(...terms);
   }
   /**
+   * removes terms from this UnsimplifiedExpression
+   * @param {number[]} args - the index of the terms to be removed (0-indexed)
+   * @returns {UnsimplifiedExpression}
+   */
+  filter(...args) {
+    const terms = this.terms.filter((_, i) => !args.includes(i));
+    return new UnsimplifiedExpression(
+      ...terms.map(([term, addition]) => {
+        return { term, addition };
+      })
+    );
+  }
+  /**
    * to string
    */
   toString() {

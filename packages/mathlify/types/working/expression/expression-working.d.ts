@@ -14,6 +14,12 @@ export class UnsimplifiedExpression {
      */
     simplify(): Expression;
     /**
+     * removes terms from this UnsimplifiedExpression
+     * @param {number[]} args - the index of the terms to be removed (0-indexed)
+     * @returns {UnsimplifiedExpression}
+     */
+    filter(...args: number[]): UnsimplifiedExpression;
+    /**
      * to string
      */
     toString(): string;

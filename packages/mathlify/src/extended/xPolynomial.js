@@ -102,16 +102,28 @@ export class xPolynomial extends Expression {
     });
   }
 
-  /**
-   * Polynomial subtraction
+  /** @overload
    * @param {xPolynomial|Polynomial|number|Fraction} x - polynomial to be subtracted
    * @returns {xPolynomial} - the difference this minus x
+   */
+  /** @overload
+   * @param {Expression} x - polynomial to be subtracted
+   * @returns {Expression} - the difference this minus x
+   */
+  /**
+   * Polynomial subtraction
+   * @param {xPolynomial|Polynomial|number|Fraction|Expression} x - polynomial to be subtracted
+   * @returns {Expression} - the difference this minus x
    */
   minus(x) {
     if (typeof x === "number" || typeof x === "string") {
       x = new xPolynomial([x]);
     }
-    return this.plus(x.negative());
+    if (x instanceof xPolynomial || x instanceof Polynomial) {
+      return this.plus(x.negative());
+    } else {
+      return super.plus(x.negative());
+    }
   }
 
   /**

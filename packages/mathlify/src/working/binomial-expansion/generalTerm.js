@@ -3,149 +3,174 @@
 // the terms array removes any such terms with zero coefficients
 
 import { numberToFraction } from "../../utils/toFraction.js";
-import { ExpansionTerm } from "../../algebra/index.js";
+import { ExpressionProduct } from "../../algebra/index.js";
 import { Polynomial, Term, Fraction, Expression } from "../../core/index.js";
 import { nCr } from "../../numerical/index.js";
 
-/** Binomial General Term class
- * @property {Fraction|string} coeff1
- * @property {number} power1
- * @property {Fraction|string} coeff2
- * @property {number} power2
- * @property {number} n
- */
-export class BinomialGeneralTerm extends ExpansionTerm {
-  /** @type {Fraction|string} coeff1 */
+export class BinomialGeneralTermWorking {
+  /** @type {Fraction|Term} */
   coeff1;
-  /** @type {number} power1 */
-  power1;
-  /** @type {Fraction|string} coeff2 */
+  /** @type {number} */
+  pow1;
+  /** @type {Fraction|Term} */
   coeff2;
-  /** @type {number} power2 */
-  power2;
-  /** @type {number} n  */
+  /** @type {number} */
+  pow2;
+  /** @type {number} */
   n;
-  /** @type {Term} term1 */
+  /** @type {string} */
+  variable;
+  /** @type {Term} */
+  generalTerm;
+  /** @type {Term} */
   term1;
-  /** @type {Term} term2 */
+  /** @type {Term} */
   term2;
+  /** @type {ExpressionProduct} */
+  binomial;
+  /** @type {Polynomial} */
+  power;
+  /** @type {boolean} */
+  aligned;
+
   /**
-   * @constructor
-   * Creates a Binomial General Term instance instance
-   * @param {number|Fraction|string} coeff1
-   * @param {number} power1
-   * @param {number|Fraction|string} coeff2
-   * @param {number} power2
+   * @param {number|Fraction|string|Term} coeff1
+   * @param {number} pow1
+   * @param {number|Fraction|string|Term} coeff2
+   * @param {number} pow2
    * @param {number} n
+   * @param {{variable?: string, aligned?: boolean}} [options]
    */
-  constructor(coeff1, power1, coeff2, power2, n) {
-    const term1 = new Term(coeff1, ["x", power1]).setDisplayMode("always");
-    const term2 = new Term(coeff2, ["x", power2]).setDisplayMode("always");
-    super([new Expression(term1, term2), n]);
-    this.coeff1 =
-      typeof coeff1 === "number" ? numberToFraction(coeff1) : coeff1;
-    this.power1 = power1;
-    this.coeff2 =
-      typeof coeff2 === "number" ? numberToFraction(coeff2) : coeff2;
-    this.power2 = power2;
+  constructor(coeff1, pow1, coeff2, pow2, n, options) {
+    if (typeof coeff1 === "number") {
+      coeff1 = numberToFraction(coeff1);
+    } else if (typeof coeff1 === "string") {
+      coeff1 = new Term(coeff1);
+    }
+    if (typeof coeff2 === "number") {
+      coeff2 = numberToFraction(coeff2);
+    } else if (typeof coeff2 === "string") {
+      coeff2 = new Term(coeff2);
+    }
+    this.coeff1 = coeff1;
+    this.pow1 = pow1;
+    this.coeff2 = coeff2;
+    this.pow2 = pow2;
     this.n = n;
+    this.power = new Polynomial([n * pow1, pow2 - pow1], {
+      ascending: true,
+      variable: "r",
+    });
+    const variable = options?.variable ?? "x";
+    this.variable = variable;
+    const term1 =
+      coeff1 instanceof Term
+        ? coeff1.times(new Term([variable, pow1]))
+        : new Term(coeff1, [variable, pow1]);
+    const term2 =
+      coeff2 instanceof Term
+        ? coeff2.times(new Term([variable, pow2]))
+        : new Term(coeff2, [variable, pow2]);
     this.term1 = term1;
     this.term2 = term2;
+    this.binomial = new ExpressionProduct([new Expression(term1, term2), n]);
+    // term1.fractionalDisplayMode
+    this.generalTerm = new Term(
+      `{${n} \\choose r}`,
+      `\\left( ${term1.setDisplayMode("never")} \\right)^{${n}-r}`,
+      `\\left( ${term2} \\right)^r`
+    );
+    this.aligned = options?.aligned ?? false;
   }
 
-  /**
-   * power
-   * @return {Polynomial}
-   */
-  power() {
-    // p1*(n-r) + p2*r
-    // p1*n + (p2-p1)*r
-    return new Polynomial([this.power1 * this.n, this.power2 - this.power1], {
-      variable: "r",
-      ascending: true,
-    });
-  }
-
-  /**
-   * coeff
-   * @return {string}
-   */
-  coefficient() {
-    const c1 =
+  toString() {
+    const equal = this.aligned ? "&=" : "=";
+    const negativePowerStep =
+      this.pow1 < 0 || this.pow2 < 0
+        ? `\n\t ${equal} ${new ExpressionProduct([
+            new Expression(this.term1, this.term2),
+            this.n,
+          ])} \\\\`
+        : "";
+    let coeff1String =
       `${this.coeff1}` === "1"
         ? ""
         : `${this.coeff1}`.length > 1
-        ? `\\left(${this.coeff1}\\right)`
+        ? `\\left( ${this.coeff1} \\right)`
         : `${this.coeff1}`;
-    const c2 =
+    if (coeff1String) {
+      coeff1String += `^{${this.n}-r}`;
+    }
+    let coeff2String =
       `${this.coeff2}` === "1"
         ? ""
         : `${this.coeff2}`.length > 1
-        ? `\\left(${this.coeff2}\\right)`
+        ? `\\left( ${this.coeff2} \\right)`
         : `${this.coeff2}`;
-    const c1String = c1 === "" ? "" : ` ${c1}^{${this.n}-r}`;
-    const c2String = c2 === "" ? "" : ` ${c2}^r`;
-    return `{${this.n} \\choose r}${c1String}${c2String}`;
+    if (coeff2String) {
+      coeff2String += `^{r}`;
+    }
+    const coeffString = `${coeff1String}${coeff2String}`;
+    const pow1 = new Polynomial([this.n, -1], {
+      ascending: true,
+      variable: "r",
+    }).times(this.pow1);
+    return `${this.binomial} \\\\ ${negativePowerStep}
+      ${equal} ${this.generalTerm} \\\\
+      ${equal} {${this.n} \\choose r} ${coeffString}
+      \\left( ${this.variable}^{${pow1}} \\right) 
+      \\left( ${this.variable}\\right)^{${new Polynomial("r").times(
+        this.pow2
+      )}} \\\\
+      ${equal} {${this.n} \\choose r} ${coeffString} ${this.variable}^{${
+        this.power
+      }}`;
   }
 
   /**
-   * coeff
    * @param {number|Fraction} r
-   * @return {Fraction}
+   * @returns {{working: string, term: Term, coeff: Term|Fraction}}
    */
-  coefficientFraction(r) {
-    if (this.coeff1 instanceof Fraction && this.coeff2 instanceof Fraction) {
-      return this.coeff1
-        .pow(this.n - r.valueOf())
-        .times(this.coeff2.pow(r.valueOf()))
-        .times(nCr(this.n, r.valueOf()));
+  at(r) {
+    r = r.valueOf();
+    const choose = nCr(this.n, r);
+    const nMinusR = this.n - r;
+    const coeff1 = this.coeff1.pow(nMinusR);
+    const coeff2 = this.coeff2.pow(r);
+    const coeff = (
+      coeff1 instanceof Term ? coeff1.times(coeff2) : coeff2.times(coeff1)
+    ).times(choose);
+    const power = this.power.subIn(r);
+    const term =
+      coeff instanceof Term
+        ? coeff.times(new Term([this.variable, power]))
+        : new Term(coeff, [this.variable, power]);
+    let coeff1String =
+      `${this.coeff1}` === "1"
+        ? ""
+        : `${this.coeff1}`.length > 1
+        ? `\\left( ${this.coeff1} \\right)`
+        : `${this.coeff1}`;
+    if (coeff1String) {
+      coeff1String += `^{${this.n}-${r}}`;
     }
-    throw new Error(`coeff1 and coeff2 must be fractions`);
-  }
-
-  /**
-   * general term
-   * @param {{working?: boolean, aligned?: boolean}} [options] defaults to {working: true, aligned: true}
-   * @returns {string}
-   */
-  generalTerm(options) {
-    const { working, aligned } = { working: true, aligned: true, ...options };
-    let string = "";
-    if (working) {
-      const t1Brackets =
-        `${this.term1}` === "x"
-          ? `${this.term1}`
-          : `\\left(${this.term1}\\right)`;
-      const t2Brackets =
-        `${this.term2}` === "x"
-          ? `${this.term2}`
-          : `\\left(${this.term2}\\right)`;
-      string += `{${this.n} \\choose r} ${t1Brackets}^{${this.n}-r} ${t2Brackets}^r \\\\`;
-      if (aligned) {
-        string += `&= `;
-      }
-      const c1 =
-        `${this.coeff1}` === "1"
-          ? ""
-          : `${this.coeff1}`.length > 1
-          ? `\\left(${this.coeff1}\\right)`
-          : `${this.coeff1}`;
-      const c2 =
-        `${this.coeff2}` === "1"
-          ? ""
-          : `${this.coeff2}`.length > 1
-          ? `\\left(${this.coeff2}\\right)`
-          : `${this.coeff2}`;
-      const c1String = c1 === "" ? "" : ` ${c1}^{${this.n}-r}`;
-      const c2String = c2 === "" ? "" : ` ${c2}^r`;
-      const x1 = this.power1 === 1 ? "x" : `\\left(x^{${this.power1}}\\right)`;
-      const x2 = this.power2 === 1 ? "x" : `\\left(x^{${this.power2}}\\right)`;
-      string += `{${this.n} \\choose r} ${c1String} ${x1}^{${this.n}-r} ${c2String} ${x2}^r  \\\\`;
-      if (aligned) {
-        string += `&= `;
-      }
+    let coeff2String =
+      `${this.coeff2}` === "1"
+        ? ""
+        : `${this.coeff2}`.length > 1
+        ? `\\left( ${this.coeff2} \\right)`
+        : `${this.coeff2}`;
+    if (coeff2String) {
+      coeff2String += `^{${r}}`;
     }
-    string += `${this.coefficient()} x^{${this.power()}}`;
-    return string;
+    const coeffString = `${coeff1String}${coeff2String}`;
+    const working = `{${this.n} \\choose ${r}} ${coeffString} ${
+      this.variable
+    }^{${this.power.replaceXWith(`(${r})`)}} `;
+    return {
+      working,
+      term,
+      coeff,
+    };
   }
 }
