@@ -78,6 +78,7 @@ export class Circle {
   }
 
   /**
+   * eqn of the form x^2 + y^2 + ax + by + c = 0
    * @param {number|Fraction} xCoeff
    * @param {number|Fraction} yCoeff
    * @param {number|Fraction} constantTerm
