@@ -12,6 +12,8 @@ export type TermType =
   | "expansion-term"
   | "rational-fn"
   | "power-fn"
+  | "exp-term"
+  | "ln-term"
   | "exp-fn"
   | "ln-fn"
   | "sin-fn"

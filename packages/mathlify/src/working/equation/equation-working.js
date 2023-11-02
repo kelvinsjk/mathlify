@@ -5,7 +5,8 @@
 
 import { Fraction, Term, Expression, Polynomial } from "../../core/index.js";
 import {
-  ExpansionTerm,
+  //ExpansionTerm,
+  ExpressionProduct,
   RationalTerm,
   // TODO: handle PowerTerm and ExpansionTerm
   // PowerTerm, ExpansionTerm
@@ -426,6 +427,29 @@ export class EquationWorking {
     }
   }
 
+  /**
+   * changes order of terms
+   * @param {number[]} args - the index of the terms to be simplified (0-indexed)
+   * @param {{intertext?: string, side?: 'lhs'|'rhs'|'both', hide?: boolean}} [options] - options object defaulting to {side: 'lhs'}
+   * @returns {EquationWorking} - a reference to this equation
+   * WARNING: mutates current instance
+   */
+  changeOrder(args, options) {
+    insertIntertext(this, options);
+    const side = options?.side ?? "lhs";
+    if (side !== "rhs") {
+      this.lhs = this.lhs.changeOrder(args);
+    }
+    if (side !== "lhs") {
+      this.rhs = this.rhs.changeOrder(args);
+    }
+    if (!options?.hide) {
+      this.lhsArray.push(this.lhs);
+      this.rhsArray.push(this.rhs);
+    }
+    return this;
+  }
+
   //! Methods for ExpansionTerm
   /**
    * @param {{intertext?: string, hide?: boolean}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
@@ -575,7 +599,7 @@ function expandExpansionTerm(expression) {
   /** @type {Term[]} */
   const terms = [];
   expression.terms.forEach((term) => {
-    if (term instanceof ExpansionTerm) {
+    if (term instanceof ExpressionProduct) {
       terms.push(...term.expand().terms);
     } else {
       terms.push(term);

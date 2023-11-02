@@ -98,15 +98,25 @@ export class LnFn extends Term {
     plus(x: LnFn): LnFn;
     /**
      * @param {LnFn} x -
-     * @returns {string}
+     * @returns {{exp: string, num: Polynomial, den: Polynomial, arg: RationalFn, coeff: Fraction}}
      */
-    minus(x: LnFn): string;
+    minus(x: LnFn): {
+        exp: string;
+        num: Polynomial;
+        den: Polynomial;
+        arg: RationalFn;
+        coeff: Fraction;
+    };
     /**
      * change base
      * @param {number|string} newBase - the new base
-     * @returns {[LnFn, LnFn, RationalTerm]} the new numerator and denominator, as well as the fraction in RationalTerm class
+     * @returns {{num: LnFn, den: LnFn, rational: RationalTerm}} the new numerator and denominator, as well as the fraction in RationalTerm class
      */
-    changeBase(newBase: number | string): [LnFn, LnFn, RationalTerm];
+    changeBase(newBase: number | string): {
+        num: LnFn;
+        den: LnFn;
+        rational: RationalTerm;
+    };
     times(x: number | Fraction): LnFn;
     times(x: string | Term): Term;
     divide(x: number | Fraction): LnFn;
@@ -138,6 +148,6 @@ export class LnFn extends Term {
 import { Term } from "../../core";
 import { Polynomial } from "../../core";
 import { Fraction } from "../../core";
-import { RationalTerm } from "../../algebra";
 import { RationalFn } from "../rationalFn/rationalFn";
+import { RationalTerm } from "../../algebra";
 //# sourceMappingURL=expLog.d.ts.map

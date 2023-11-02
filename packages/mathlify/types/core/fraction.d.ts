@@ -24,6 +24,12 @@ export class Fraction {
      */
     static lcm(...fractions: (Fraction | number)[]): Fraction;
     /**
+     * factorize n fractions, returning the common factor and a list of integers after factorization
+     * @param  {...(Fraction|number)} fractions
+     * @returns {[Fraction[], Fraction]} [list of integers after factorization, common factor]
+     */
+    static factorize(...fractions: (Fraction | number)[]): [Fraction[], Fraction];
+    /**
      * max of n fractions
      * @param  {...(Fraction|number)} fractions
      * @returns {Fraction} max of the fractions

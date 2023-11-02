@@ -60,16 +60,17 @@ export {
   BinomialGeneralTermWorking,
   expansionWorking,
 } from "./working/index.js";
-// export {
-//   RationalFn,
-//   GeneralFn,
-//   PowerFn,
-//   ExpFn,
-//   LnFn,
-//   SinFn,
-//   CosFn,
-//   dydx,
-//   d2ydx2,
-//   PolynomialLike,
-// } from "./calculus/index.js";
+export { LnTerm } from "./exp-log/index.js";
+export {
+  //   RationalFn,
+  //   GeneralFn,
+  //   PowerFn,
+  //   ExpFn,
+  LnFn,
+  //   SinFn,
+  //   CosFn,
+  //   dydx,
+  //   d2ydx2,
+  //   PolynomialLike,
+} from "./calculus/index.js";
 export { Circle, Point } from "./coordinate-geometry/index.js";

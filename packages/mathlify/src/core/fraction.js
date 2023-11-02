@@ -392,6 +392,18 @@ export class Fraction {
     return new Fraction(lcm(...numerators), gcd(...dens));
   }
   /**
+   * factorize n fractions, returning the common factor and a list of integers after factorization
+   * @param  {...(Fraction|number)} fractions
+   * @returns {[Fraction[], Fraction]} [list of integers after factorization, common factor]
+   */
+  static factorize(...fractions) {
+    const fractionsArray = fractions.map((x) => numberToFraction(x));
+    const gcd = Fraction.gcd(...fractions);
+    const allNegative = fractions.every((x) => x.valueOf() < 0);
+    const factor = allNegative ? gcd.negative() : gcd;
+    return [fractionsArray.map((x) => x.divide(factor)), factor];
+  }
+  /**
    * max of n fractions
    * @param  {...(Fraction|number)} fractions
    * @returns {Fraction} max of the fractions

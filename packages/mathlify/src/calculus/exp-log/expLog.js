@@ -305,7 +305,7 @@ export class LnFn extends Term {
 
   /**
    * @param {LnFn} x -
-   * @returns {string}
+   * @returns {{exp: string, num: Polynomial, den: Polynomial, arg: RationalFn, coeff: Fraction}}
    */
   minus(x) {
     if (this.base !== x.base) {
@@ -314,30 +314,36 @@ export class LnFn extends Term {
       );
     }
     if (this.coeff.is.equalTo(x.coeff)) {
-      return `${new Term(
-        this.coeff,
-        `${this.log} ${new RationalFn(this.fx, x.fx)}`
-      )}`;
+      const arg = new RationalFn(this.fx, x.fx);
+      return {
+        exp: `${new Term(this.coeff, `${this.log} ${arg}`)}`,
+        coeff: this.coeff,
+        num: this.fx,
+        den: x.fx,
+        arg,
+      };
     }
     const thisTerm = this.coeffToPower();
     x = x.coeffToPower();
-    return `${this.log} ${new RationalFn(thisTerm.fx, x.fx)}`;
+    const arg = new RationalFn(thisTerm.fx, x.fx);
+    return {
+      exp: `${this.log} ${new RationalFn(thisTerm.fx, x.fx)}`,
+      coeff: Fraction.ONE,
+      num: thisTerm.fx,
+      den: x.fx,
+      arg,
+    };
   }
 
   /**
    * change base
    * @param {number|string} newBase - the new base
-   * @returns {[LnFn, LnFn, RationalTerm]} the new numerator and denominator, as well as the fraction in RationalTerm class
+   * @returns {{num: LnFn, den: LnFn, rational: RationalTerm}} the new numerator and denominator, as well as the fraction in RationalTerm class
    */
   changeBase(newBase) {
-    if (typeof this.base === "string") {
-      throw new Error(
-        `Cannot change base of ${this} because change of base only supported for numeric bases for now`
-      );
-    }
     if (this.base === newBase) {
       const den = new LnFn(this.base, { base: this.base });
-      return [this, den, new RationalTerm(this, den)];
+      return { num: this, den, rational: new RationalTerm(this, den) };
     }
     const numerator = new LnFn(this.fx, {
       base: newBase,
@@ -347,7 +353,11 @@ export class LnFn extends Term {
       base: newBase,
       coeff: this.coeff.den,
     });
-    return [numerator, denominator, new RationalTerm(numerator, denominator)];
+    return {
+      num: numerator,
+      den: denominator,
+      rational: new RationalTerm(numerator, denominator),
+    };
   }
 
   /**

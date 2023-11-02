@@ -39,14 +39,32 @@ export class ExpressionProduct extends Term {
     /** @type {Map<Expression,Fraction>} */
     const expPowerMap = new Map();
     let factor = new Term(1);
+    /** @type {Set<string>} */
+    const variables = new Set();
     exps.forEach((exp) => {
       if (
         typeof exp === "number" ||
         exp instanceof Fraction ||
-        typeof exp === "string" ||
-        exp instanceof Term
+        typeof exp === "string"
       ) {
         factor = factor.times(exp);
+      } else if (exp instanceof Term) {
+        if (exp instanceof ExpressionProduct) {
+          factor = factor.times(exp.factor);
+          exp.expPowerMap.forEach((power, exp) => {
+            if (expPowerMap.has(exp)) {
+              const oldPower = /** @type {!Fraction} */ (expPowerMap.get(exp));
+              expPowerMap.set(exp, oldPower.plus(power));
+            } else {
+              expPowerMap.set(exp, power);
+            }
+            exp.variables.forEach((variable) => {
+              variables.add(variable);
+            });
+          });
+        } else {
+          factor = factor.times(exp);
+        }
       } else {
         if (exp instanceof Expression) {
           exp = [exp, 1];
@@ -56,6 +74,9 @@ export class ExpressionProduct extends Term {
           exp[0] instanceof Expression ? exp[0] : new Expression(exp[0]),
           numberToFraction(exp[1]),
         ];
+        expression.variables.forEach((variable) => {
+          variables.add(variable);
+        });
         if (expression.is.constant()) {
           factor = factor.times(expression.cast.toFraction().pow(power));
         } else if (expression.is.term()) {
@@ -111,6 +132,7 @@ export class ExpressionProduct extends Term {
     this.factor = factor;
     this.exps = expressions;
     this.type = "expression-product";
+    this.variables = [...variables];
   }
 
   /**

@@ -63,7 +63,7 @@ export class Term {
     /** @type {TermType} */
     type: TermType;
     /** @type {string[]} */
-    get variables(): string[];
+    variables: string[];
     /**
      * @param {"never"|"auto"|"always"} mode the fractional handling mode
      * @returns {Term} reference to current term
@@ -187,5 +187,5 @@ export class Term {
 }
 export type TermType = import('./types.js').TermType;
 export type Expression = import('./expression.js').Expression;
-import { Fraction } from './fraction.js';
+import { Fraction } from "./fraction.js";
 //# sourceMappingURL=term.d.ts.map

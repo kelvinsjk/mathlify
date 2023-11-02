@@ -24,8 +24,6 @@ export class BinomialGeneralTermWorking {
     /** @type {string} */
     variable: string;
     /** @type {Term} */
-    generalTerm: Term;
-    /** @type {Term} */
     term1: Term;
     /** @type {Term} */
     term2: Term;
@@ -36,6 +34,7 @@ export class BinomialGeneralTermWorking {
     /** @type {boolean} */
     aligned: boolean;
     toString(): string;
+    get generalTerm(): string;
     /**
      * @param {number|Fraction} r
      * @returns {{working: string, coeffWorking: string, term: Term, coeff: Term|Fraction}}

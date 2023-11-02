@@ -1,5 +1,7 @@
 export { SquareRoot } from "./surds/index.js";
 export { xPolynomial } from "./extended/index.js";
+export { LnTerm } from "./exp-log/index.js";
+export { LnFn } from "./calculus/index.js";
 export { Fraction, Term, Expression, Polynomial } from "./core/index.js";
 export { gcd, lcm, bracket } from "./utils/index.js";
 export { ExpressionProduct, RationalTerm, ExpansionTerm, SLE, SLENumerical, solveLinear, discriminant, solveQuadratic, solveQuadraticSurd, solveQuadraticNumerical, factorizeQuadratic, factorizeQuadraticIntoPolynomials, completeSquare, factorizeExpression, castExpression, UnsimplifiedTerm, longDivide, castToPoly } from "./algebra/index.js";

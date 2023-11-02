@@ -163,6 +163,18 @@ export class EquationWorking {
         hide?: boolean | undefined;
     } | undefined): EquationWorking;
     /**
+     * changes order of terms
+     * @param {number[]} args - the index of the terms to be simplified (0-indexed)
+     * @param {{intertext?: string, side?: 'lhs'|'rhs'|'both', hide?: boolean}} [options] - options object defaulting to {side: 'lhs'}
+     * @returns {EquationWorking} - a reference to this equation
+     * WARNING: mutates current instance
+     */
+    changeOrder(args: number[], options?: {
+        intertext?: string | undefined;
+        side?: "both" | "lhs" | "rhs" | undefined;
+        hide?: boolean | undefined;
+    } | undefined): EquationWorking;
+    /**
      * @param {{intertext?: string, hide?: boolean}} [options] - options object for inserting text between steps. it is recommended we would in the non-aligned environment for this
      * @returns {EquationWorking} - a reference to this equation
      */
