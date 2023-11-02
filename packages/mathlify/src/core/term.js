@@ -459,7 +459,7 @@ export class Term {
 	 */
 	static gcd(...terms) {
 		if (terms.length === 0) {
-			throw new Error(`Cannot find hcf of 0 terms`);
+			throw new Error(`Cannot find gcd of 0 terms`);
 		}
 		if (terms.length === 1) {
 			if (terms[0] instanceof Term) {

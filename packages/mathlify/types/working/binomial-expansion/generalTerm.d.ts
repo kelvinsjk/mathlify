@@ -38,16 +38,17 @@ export class BinomialGeneralTermWorking {
     toString(): string;
     /**
      * @param {number|Fraction} r
-     * @returns {{working: string, term: Term, coeff: Term|Fraction}}
+     * @returns {{working: string, coeffWorking: string, term: Term, coeff: Term|Fraction}}
      */
     at(r: number | Fraction): {
         working: string;
+        coeffWorking: string;
         term: Term;
         coeff: Term | Fraction;
     };
 }
-import { Fraction } from "../../core/index.js";
-import { Term } from "../../core/index.js";
-import { ExpressionProduct } from "../../algebra/index.js";
-import { Polynomial } from "../../core/index.js";
+import { Fraction } from '../../core/index.js';
+import { Term } from '../../core/index.js';
+import { ExpressionProduct } from '../../algebra/index.js';
+import { Polynomial } from '../../core/index.js';
 //# sourceMappingURL=generalTerm.d.ts.map
