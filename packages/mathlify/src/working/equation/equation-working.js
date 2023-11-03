@@ -278,14 +278,17 @@ export class EquationWorking {
       const rhsWorking = rhs.minus(offset);
       let leadingCoeff = lhsWorking.leadingCoeff;
       if (leadingCoeff.is.negative()) {
-        this.lhsArray.push(lhsWorking.times(-1));
-        this.rhsArray.push(rhsWorking.times(-1));
-        // leadingCoeff = leadingCoeff.times(-1);
+        if (`${lhsWorking}` !== `${lhs}`) {
+          this.lhsArray.push(lhsWorking.times(-1));
+          this.rhsArray.push(rhsWorking.times(-1));
+        }
       } else {
-        this.lhsArray.push(lhsWorking);
-        this.rhsArray.push(rhsWorking);
+        if (`${lhsWorking}` !== `${lhs}`) {
+          this.lhsArray.push(lhsWorking);
+          this.rhsArray.push(rhsWorking);
+        }
       }
-      if (leadingCoeff.is.not.one()) {
+      if (leadingCoeff.abs().is.not.one()) {
         this.lhs = lhsWorking.divide(leadingCoeff);
         this.rhs = rhsWorking.divide(leadingCoeff);
         this.lhsArray.push(this.lhs);

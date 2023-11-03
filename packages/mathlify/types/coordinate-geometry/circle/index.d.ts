@@ -28,11 +28,14 @@ export class Circle {
      * @returns {string}
      */
     toString(): string;
-    /**
-     * returns (lhs of) equation of circle in general form
-     * @returns {Expression}
-     */
-    get generalForm(): Expression;
+    toGeneralForm(options: {
+        rhsConstant: true;
+    }): {
+        lhs: Expression;
+        rhs: Fraction;
+        eqn: string;
+    };
+    toGeneralForm(): Expression;
     /**
      *
      * @param {Point} point
@@ -41,8 +44,8 @@ export class Circle {
     tangentTo(point: Point): Polynomial;
 }
 export type Fraction = import('../../core/index.js').Fraction;
-import { Point } from '../point/index.js';
-import { SquareRoot } from '../../surds/index.js';
-import { Expression } from '../../core/index.js';
-import { Polynomial } from '../../core/index.js';
+import { Point } from "../point/index.js";
+import { SquareRoot } from "../../surds/index.js";
+import { Expression } from "../../core/index.js";
+import { Polynomial } from "../../core/index.js";
 //# sourceMappingURL=index.d.ts.map
