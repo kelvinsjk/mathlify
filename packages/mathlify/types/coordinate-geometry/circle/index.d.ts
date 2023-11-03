@@ -5,12 +5,13 @@
  */
 export class Circle {
     /**
+     * eqn of the form x^2 + y^2 + ax + by + c = 0
      * @param {number|Fraction} xCoeff
      * @param {number|Fraction} yCoeff
-     * @param {number|Fraction} constantTerm
+     * @param {number|Fraction} constant
      * @returns {Circle}
      */
-    static fromGeneralForm(xCoeff: number | Fraction, yCoeff: number | Fraction, constantTerm: number | Fraction): Circle;
+    static fromGeneralForm(xCoeff: number | Fraction, yCoeff: number | Fraction, constant: number | Fraction): Circle;
     /**
      * @constructor
      * Creates a Circle instance from center and radius/another point
@@ -31,7 +32,7 @@ export class Circle {
      * returns (lhs of) equation of circle in general form
      * @returns {Expression}
      */
-    toGeneralForm(): Expression;
+    get generalForm(): Expression;
     /**
      *
      * @param {Point} point
@@ -40,8 +41,8 @@ export class Circle {
     tangentTo(point: Point): Polynomial;
 }
 export type Fraction = import('../../core/index.js').Fraction;
-import { Point } from "../point/index.js";
-import { SquareRoot } from "../../surds/index.js";
-import { Expression } from "../../core/index.js";
-import { Polynomial } from "../../core/index.js";
+import { Point } from '../point/index.js';
+import { SquareRoot } from '../../surds/index.js';
+import { Expression } from '../../core/index.js';
+import { Polynomial } from '../../core/index.js';
 //# sourceMappingURL=index.d.ts.map
