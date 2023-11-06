@@ -39,20 +39,18 @@ export class GeneralFn extends Expression {
 
 	/**
 	 * differentiate
-	 * @param {{divisor?: Polynomial}} [options] - options to take out common divisor from both numerator and denominator (for RationalFn only)
 	 * @returns {Expression} - the derivative of the general function
 	 */
-	differentiate(options) {
-		const derivatives = this.fnTerms.map((term) => term.differentiate(options));
+	differentiate() {
+		const derivatives = this.fnTerms.map((term) => term.differentiate());
 		return new Expression(...toTerms(derivatives));
 	}
 
 	/**
 	 * differentiate to function
-	 * @param {{divisor?: Polynomial}} [options] - options to take out common divisor from both numerator and denominator (for RationalFn only)
 	 * @returns {GeneralFn} - the derivative of the general function
 	 */
-	differentiateToFn(options) {
+	differentiateToFn() {
 		const derivatives = this.fnTerms.map((term) => {
 			if (term instanceof PowerFn) {
 				const derivative = term.differentiate();
@@ -63,9 +61,6 @@ export class GeneralFn extends Expression {
 				} else {
 					return derivative;
 				}
-			} else if (term instanceof RationalFn) {
-				// RationalFn
-				return term.differentiateToFn(options);
 			} else {
 				return term.differentiate();
 			}

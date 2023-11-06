@@ -81,7 +81,7 @@ export class ExpressionProduct extends Term {
      */
     expand(): Expression;
 }
-import { Term } from "../../../core/index.js";
-import { Expression } from "../../../core/index.js";
-import { Fraction } from "../../../core/index.js";
+import { Term } from '../../../core/index.js';
+import { Expression } from '../../../core/index.js';
+import { Fraction } from '../../../core/index.js';
 //# sourceMappingURL=expression-product.d.ts.map

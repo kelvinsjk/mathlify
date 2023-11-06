@@ -1,81 +1,82 @@
-export { Fraction, Term, Expression, Polynomial } from "./core/index.js";
-export { gcd, lcm, bracket } from "./utils/index.js";
+export { Fraction, Term, Expression, Polynomial } from './core/index.js';
+export { gcd, lcm, bracket } from './utils/index.js';
 export {
-  //! Special Term type
-  ExpressionProduct,
-  RationalTerm,
-  ExpansionTerm,
-  //! Linear equations
-  SLE,
-  SLENumerical,
-  solveLinear,
-  //! Quadratics
-  discriminant,
-  solveQuadratic,
-  solveQuadraticSurd,
-  solveQuadraticNumerical,
-  factorizeQuadratic,
-  factorizeQuadraticIntoPolynomials,
-  completeSquare,
-  //! Misc: factorize
-  factorizeExpression,
-  //! Misc: casting
-  castExpression,
-  //TODO: move these 3 below to "working" module
-  UnsimplifiedTerm,
-  longDivide,
-  castToPoly,
-} from "./algebra/index.js";
-export { SquareRoot } from "./surds/index.js";
-export { xPolynomial } from "./extended/index.js";
+	//! Special Term type
+	ExpressionProduct,
+	RationalTerm,
+	ExpansionTerm,
+	//! Linear equations
+	SLE,
+	SLENumerical,
+	solveLinear,
+	//! Quadratics
+	discriminant,
+	solveQuadratic,
+	solveQuadraticSurd,
+	solveQuadraticNumerical,
+	factorizeQuadratic,
+	factorizeQuadraticIntoPolynomials,
+	completeSquare,
+	//! Misc: factorize
+	factorizeExpression,
+	//! Misc: casting
+	castExpression,
+	//TODO: move these 3 below to "working" module
+	UnsimplifiedTerm,
+	longDivide,
+	castToPoly,
+} from './algebra/index.js';
+export { SquareRoot } from './surds/index.js';
+export { xPolynomial } from './extended/index.js';
 export {
-  determinant,
-  determinantNumerical,
-  cramersRule,
-  cramersRuleNumerical,
-  factorial,
-  nCr,
-} from "./numerical/index.js";
+	determinant,
+	determinantNumerical,
+	cramersRule,
+	cramersRuleNumerical,
+	factorial,
+	nCr,
+} from './numerical/index.js';
 export {
-  getRandomInt,
-  getRandomInts,
-  getRandomFraction,
-  getRandomFractions,
-} from "./random/index.js";
+	getRandomInt,
+	getRandomInts,
+	getRandomFraction,
+	getRandomFractions,
+} from './random/index.js';
 export {
-  // rewrite done
-  UnsimplifiedExpression,
-  // rewrite to implement again
-  EquationWorking,
-  InequalityWorking,
-  RationalInequalityWorking,
-  solveRationalInequality,
-  solveLinearInequality,
-  solveQuadraticInequality,
-  ExpressionWorking,
-  //BinomialGeneralTerm,
-  partialFractionsWorking,
-  factorizeCubicWorking,
-  binomialExpansionWorking,
-  BinomialGeneralTermWorking,
-  expansionWorking,
-  gradientWorking,
-  lineWorking,
-  midPointWorking,
-  areaWorking,
-  distanceWorking,
-} from "./working/index.js";
-export { LnTerm } from "./exp-log/index.js";
+	// rewrite done
+	UnsimplifiedExpression,
+	// rewrite to implement again
+	EquationWorking,
+	InequalityWorking,
+	RationalInequalityWorking,
+	solveRationalInequality,
+	solveLinearInequality,
+	solveQuadraticInequality,
+	ExpressionWorking,
+	//BinomialGeneralTerm,
+	partialFractionsWorking,
+	factorizeCubicWorking,
+	binomialExpansionWorking,
+	BinomialGeneralTermWorking,
+	expansionWorking,
+	gradientWorking,
+	lineWorking,
+	midPointWorking,
+	areaWorking,
+	distanceWorking,
+	quotientRuleWorking,
+} from './working/index.js';
+export { LnTerm } from './exp-log/index.js';
 export {
-  //   RationalFn,
-  //   GeneralFn,
-  //   PowerFn,
-  //   ExpFn,
-  LnFn,
-  //   SinFn,
-  //   CosFn,
-  //   dydx,
-  //   d2ydx2,
-  //   PolynomialLike,
-} from "./calculus/index.js";
-export { Circle, Point } from "./coordinate-geometry/index.js";
+	RationalFn,
+	//   GeneralFn,
+	//   PowerFn,
+	//   ExpFn,
+	LnFn,
+	//   SinFn,
+	//   CosFn,
+	//   dydx,
+	//   d2ydx2,
+	//   PolynomialLike,
+} from './calculus/index.js';
+export { Circle, Point } from './coordinate-geometry/index.js';

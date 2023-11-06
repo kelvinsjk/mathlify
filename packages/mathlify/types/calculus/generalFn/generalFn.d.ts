@@ -18,20 +18,14 @@ export class GeneralFn extends Expression {
     type: "general-fn";
     /**
      * differentiate
-     * @param {{divisor?: Polynomial}} [options] - options to take out common divisor from both numerator and denominator (for RationalFn only)
      * @returns {Expression} - the derivative of the general function
      */
-    differentiate(options?: {
-        divisor?: Polynomial | undefined;
-    } | undefined): Expression;
+    differentiate(): Expression;
     /**
      * differentiate to function
-     * @param {{divisor?: Polynomial}} [options] - options to take out common divisor from both numerator and denominator (for RationalFn only)
      * @returns {GeneralFn} - the derivative of the general function
      */
-    differentiateToFn(options?: {
-        divisor?: Polynomial | undefined;
-    } | undefined): GeneralFn;
+    differentiateToFn(): GeneralFn;
 }
 import { Expression } from '../../core/index.js';
 import { Polynomial } from '../../core/index.js';

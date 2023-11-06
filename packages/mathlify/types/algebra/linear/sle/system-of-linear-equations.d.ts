@@ -40,9 +40,7 @@ export class SLE {
     solve(options: {
         returnFraction: true;
     }): Fraction[];
-    solve(options?: {
-        returnFraction: false;
-    } | undefined): string[];
+    solve(options?: undefined): string[];
 }
 /**
  * SLE class representing a system of linear equations
@@ -89,6 +87,6 @@ export class SLENumerical {
         returnNumber: false;
     } | undefined): string[];
 }
-import { Fraction } from "../../../core/index.js";
-import { Expression } from "../../../core/index.js";
+import { Fraction } from '../../../core/index.js';
+import { Expression } from '../../../core/index.js';
 //# sourceMappingURL=system-of-linear-equations.d.ts.map
