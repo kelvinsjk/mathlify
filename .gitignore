@@ -12,5 +12,6 @@ node_modules/
 ./packages/mathlify/src/__tests__/demos
 # mathlify-plus
 packages/mathlify-plus/
+packages/mathlify-x/
 # math-pro
 sites/math-pro/
