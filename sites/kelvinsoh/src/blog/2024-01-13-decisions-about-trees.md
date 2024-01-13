@@ -23,7 +23,7 @@ non-trivial.
 
 ## Avoiding trees fully
 
-In my first go at developing Mathlify I tried to avoid using trees entirely. We forego general
+In my first go at developing Mathlify I tried to avoid using trees entirely. We forgo general
 expressiveness for the ease of working with our expressions.
 
 As I was learning about class-based object-oriented programming, I set up Mathlify to consist of
@@ -53,7 +53,7 @@ Instead of a full tree of unary and binary operations, I will try to use the fol
 - $n$-ary `Product` operator
 - Binary `Exponent` operator
 - Unary `Function` operator
-- Number and Symbol leaf nodes
+- `Number` and `Symbol` leaf nodes
 
 The hope is this will provide a happy medium and I look forward to sharing my work in this blog in this aspect.
 I am also taking this opportunity to learn and experiment in Rust before porting any final results to JavaScript.
