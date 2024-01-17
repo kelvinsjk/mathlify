@@ -7,6 +7,6 @@ export { ExpressionProduct, RationalTerm, ExpansionTerm, SLE, SLENumerical, solv
 export { determinant, determinantNumerical, cramersRule, cramersRuleNumerical, factorial, nCr } from "./numerical/index.js";
 export { getRandomInt, getRandomInts, getRandomFraction, getRandomFractions } from "./random/index.js";
 export { UnsimplifiedExpression, EquationWorking, InequalityWorking, RationalInequalityWorking, solveRationalInequality, solveLinearInequality, solveQuadraticInequality, ExpressionWorking, partialFractionsWorking, factorizeCubicWorking, binomialExpansionWorking, BinomialGeneralTermWorking, expansionWorking, gradientWorking, lineWorking, midPointWorking, areaWorking, distanceWorking, quotientRuleWorking } from "./working/index.js";
-export { RationalFn, LnFn } from "./calculus/index.js";
+export { RationalFn, GeneralFn, ExpFn, LnFn, SinFn, CosFn, dydx, d2ydx2, PolynomialLike } from "./calculus/index.js";
 export { Circle, Point } from "./coordinate-geometry/index.js";
 //# sourceMappingURL=index.d.ts.map

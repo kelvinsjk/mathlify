@@ -13,8 +13,6 @@ export class GeneralFn extends Expression {
     /** @type {(Polynomial|RationalFn|PowerFn|ExpFn|LnFn|SinFn|CosFn)[]} */
     fnTerms: (Polynomial | RationalFn | PowerFn | ExpFn | LnFn | SinFn | CosFn)[];
     /** @type {"general-fn"} */
-    kind: "general-fn";
-    /** @type {"general-fn"} */
     type: "general-fn";
     /**
      * differentiate
@@ -27,12 +25,12 @@ export class GeneralFn extends Expression {
      */
     differentiateToFn(): GeneralFn;
 }
-import { Expression } from '../../core/index.js';
-import { Polynomial } from '../../core/index.js';
-import { RationalFn } from '../rationalFn/rationalFn.js';
-import { PowerFn } from '../powerFn/powerFn.js';
-import { ExpFn } from '../exp-log/expLog.js';
-import { LnFn } from '../exp-log/expLog.js';
-import { SinFn } from '../trig/sinCos.js';
-import { CosFn } from '../trig/sinCos.js';
+import { Expression } from "../../core/index.js";
+import { Polynomial } from "../../core/index.js";
+import { RationalFn } from "../rationalFn/rationalFn.js";
+import { PowerFn } from "../powerFn/powerFn.js";
+import { ExpFn } from "../exp-log/expLog.js";
+import { LnFn } from "../exp-log/expLog.js";
+import { SinFn } from "../trig/sinCos.js";
+import { CosFn } from "../trig/sinCos.js";
 //# sourceMappingURL=generalFn.d.ts.map

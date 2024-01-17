@@ -41,6 +41,18 @@ export class RationalFn extends RationalTerm {
      * @return {Expression}
      */
     longDivide(): Expression;
+    resetCoeff(): RationalFn;
+    /**
+     * sub in Fraction/number
+     * @param {number|Fraction} x
+     * @returns {Fraction}
+     */
+    subInFraction(x: number | Fraction): Fraction;
+    /**
+     * @param {Polynomial|string|(number|Fraction)[]} x polynomial to replace variable with
+     * @returns {RationalFn} the new polynomial after replacement
+     */
+    replaceXWith(x: Polynomial | string | (number | Fraction)[]): RationalFn;
     /**
      * negative
      * @returns {RationalFn} the negative of the expression
@@ -49,7 +61,7 @@ export class RationalFn extends RationalTerm {
 }
 export type Term = import('../../core/index.js').Term;
 export type Expression = import('../../core/index.js').Expression;
-import { RationalTerm } from '../../algebra/index.js';
-import { Polynomial } from '../../core/index.js';
-import { Fraction } from '../../core/index.js';
+import { RationalTerm } from "../../algebra/index.js";
+import { Polynomial } from "../../core/index.js";
+import { Fraction } from "../../core/index.js";
 //# sourceMappingURL=rationalFn.d.ts.map

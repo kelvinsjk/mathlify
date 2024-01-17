@@ -1,24 +1,17 @@
-/**
- * @typedef {import('../../core/index.js').Fraction} Fraction
- */
-
 import { RationalTerm } from "../../algebra";
-import { Term, Expression } from "../../core";
+import { Term, Expression, Fraction } from "../../core";
 import { numberToFraction } from "../../utils";
 
 /** Expression class
  * @property {Map<Fraction,Fraction>} coeffsMap - the coefficients. {power: coefficient}
  * @property {string} variable - the variable
- * @property {"polynomial-like"} kind - mathlify expression class kind
- * @property {"polynomial-like"} type - mathlify expression class type
+ * @property {"polynomial-like"} type - mathlify expression class kind
  */
 export class PolynomialLike extends Expression {
   /** @type {Map<Fraction,Fraction>} */
   coeffsMap;
   /** @type {string} */
   variable;
-  /** @type {"polynomial-like"} */
-  kind;
   /** @type {"polynomial-like"} */
   type;
   /**
@@ -90,7 +83,6 @@ export class PolynomialLike extends Expression {
     super(...terms);
     this.coeffsMap = coeffsMap;
     this.variable = variable;
-    this.kind = "polynomial-like";
     this.type = "polynomial-like";
   }
 
@@ -181,32 +173,34 @@ export class PolynomialLike extends Expression {
     return super.minus(x);
   }
 
-  ///**
-  // * sub in a Fraction
-  // * @overload
-  // * @param {Fraction|number} x - the values to sub in
-  // * @returns {Fraction} - Fraction
-  // */
-  ///**
-  // * @overload
-  // * @param {{[key: string]: number|Fraction}} x - the values to sub in with the key being the variable signature.
-  // * @returns {Expression} - the new Expression (WARNING: you are unlikely to want to use this method)
-  // */
-  ///**
-  // * sub in a value for a variable
-  // * @param {{[key: string]: number|Fraction}|number|Fraction} x - the value to sub in
-  // * @returns {Expression|Fraction} - the new Expression
-  // * @example new Expression(2,'x').subIn({x: 3}) returns new Expression(6)
-  // */
-  //subIn(x) {
-  //	if (typeof x === 'number' || x instanceof Fraction) {
-  //		const xFrac = numberToFraction(x);
-  //		return this.coeffs.reduce((prev, coeff, i) => {
-  //			return prev.plus(coeff.times(xFrac.pow(i)));
-  //		});
-  //	}
-  //	return super.subIn(x);
-  //}
+  /**
+   * sub in a Fraction
+   * @overload
+   * @param {Fraction|number} x - the values to sub in
+   * @returns {Fraction} - Fraction
+   */
+  /**
+   * @overload
+   * @param {{[key: string]: number|Fraction}} x - the values to sub in with the key being the variable signature.
+   * @returns {Expression} - the new Expression (WARNING: you are unlikely to want to use this method)
+   */
+  /**
+   * sub in a value for a variable
+   * @param {{[key: string]: number|Fraction}|number|Fraction} x - the value to sub in
+   * @returns {Expression|Fraction} - the new Expression
+   * @example new Expression(2,'x').subIn({x: 3}) returns new Expression(6)
+   */
+  subIn(x) {
+    if (typeof x === "number" || x instanceof Fraction) {
+      const xFrac = numberToFraction(x);
+      let y = Fraction.ZERO;
+      for (let [power, coeff] of this.coeffsMap) {
+        y = y.plus(xFrac.pow(power).times(coeff));
+      }
+      return y;
+    }
+    return super.subIn(x);
+  }
 
   // /**
   //  * replace x with a polynomial

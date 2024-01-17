@@ -205,14 +205,22 @@ export class RationalTerm extends Term {
   };
 
   /**
-   * toString
+   * toTex
    * @returns {string} - the LaTeX string representation of the Expression
    */
-  toString() {
+  toTex() {
     if (`${this.den}` === "1") {
       return `${this.num.times(this.coeff)}`;
     }
     const sign = this.coeff.is.negative() ? "- " : "";
     return `${sign}\\frac{${this.num}}{${this.den}}`;
+  }
+
+  /**
+   * toString
+   * @returns {string} - the LaTeX string representation of the Expression
+   */
+  toString() {
+    return this.toTex();
   }
 }
