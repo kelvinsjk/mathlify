@@ -48,3 +48,10 @@ product $x^{-1}$ into an `Exponent` node removes the flag. Thus, at the moment, 
 the `Product` simplification of singletons if the `fraction_mode` is set to `false`. In the future (especially
 when we move back to JavaScript from the current Rust based experiments), we may want to have the `fraction_mode`
 flag at the root of our expression.
+
+## (Edit) Implementing quotients after all
+
+After the original post, I was thinking about how working with (algebraic)
+fractions form a big part of every students' algebra journey. With that
+in mind, I have decided to implement the `Quotient` class with the relevant
+methods to handle them.
