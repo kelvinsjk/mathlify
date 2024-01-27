@@ -1,0 +1,1 @@
+export { default as component } from "../../../../src/routes/0/2/01-addition-negative-integers/+page.svelte";
