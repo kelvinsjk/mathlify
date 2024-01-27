@@ -1,0 +1,1 @@
+export { default as component } from "../../../../src/routes/1/1/05-dividing-integers/+page.svelte";
