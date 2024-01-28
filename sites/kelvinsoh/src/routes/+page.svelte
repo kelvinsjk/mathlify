@@ -1,3 +1,7 @@
+<svelte:head>
+	<title>Kelvin Soh</title>
+</svelte:head>
+
 <div class="prose">
   <h1>About me</h1>
   <p>
