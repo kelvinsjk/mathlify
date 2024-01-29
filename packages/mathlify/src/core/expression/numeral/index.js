@@ -6,13 +6,16 @@ export { Fraction };
  * @property {Fraction} number
  */
 export class Numeral {
+	/** @type {Fraction} */
+	number;
 	/**
 	 * @constructor
 	 * Creates a Numeral
-	 * note: fractions are automatically simplified
+	 * note: fractions are automatically simplified by default
 	 * @param {number|Fraction|[number,number]} number - either the fraction or the numerator of the fraction
+	 * @param {{verbatim: boolean}} [options] - default: `{verbatim: false}`
 	 */
-	constructor(number) {
+	constructor(number, options) {
 		if (typeof number === 'number') {
 			number = new Fraction(number);
 		} else if (Array.isArray(number)) {
@@ -21,15 +24,18 @@ export class Numeral {
 			number = number.clone();
 		}
 		this.number = number;
-		this.simplify();
+		const { verbatim } = { verbatim: false, ...options };
+		if (!verbatim) this.simplify();
 	}
 
 	/**
 	 * simplifies this fraction
 	 * warning: mutates current instance
+	 * @returns {this}
 	 */
 	simplify() {
 		this.number.simplify();
+		return this;
 	}
 
 	/**
@@ -37,5 +43,12 @@ export class Numeral {
 	 */
 	toString() {
 		return this.number.toString();
+	}
+
+	/**
+	 * @returns {Numeral}
+	 */
+	clone() {
+		return new Numeral(this.number.clone(), { verbatim: true });
 	}
 }

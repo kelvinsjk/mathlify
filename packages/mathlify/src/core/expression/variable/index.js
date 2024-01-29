@@ -18,4 +18,11 @@ export class Variable {
 	toString() {
 		return this.name;
 	}
+
+	/**
+	 * @returns {Variable}
+	 */
+	clone() {
+		return new Variable(this.name);
+	}
 }

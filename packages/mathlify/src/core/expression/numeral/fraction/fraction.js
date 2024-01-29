@@ -44,6 +44,7 @@ export class Fraction {
 	// (2) gcd(num, den) = 1
 	simplify() {
 		this._hoist_negative();
+		// extract gcd
 		const divisor = gcd(this.num, this.den);
 		this.num /= divisor;
 		this.den /= divisor;
@@ -98,6 +99,46 @@ export class Fraction {
 	 */
 	toPrecision(precision) {
 		return this.valueOf().toPrecision(precision);
+	}
+
+	//! Boolean checks
+	is = {
+		/**
+		 * @returns {boolean}
+		 */
+		positive: () => this.valueOf() > 0,
+		/**
+		 * @returns {boolean}
+		 */
+		negative: () => this.valueOf() < 0,
+		/**
+		 * @returns {boolean}
+		 */
+		zero: () => this.valueOf() === 0,
+		/**
+		 * @returns {boolean}
+		 */
+		nonzero: () => this.valueOf() !== 0,
+		/**
+		 * @returns {boolean}
+		 */
+		integer: () => Number.isInteger(this.valueOf()),
+		/**
+		 * @returns {boolean}
+		 */
+		nonnegative: () => this.valueOf() >= 0,
+	};
+
+	//! Arithmetic methods
+	/**
+	 * sum of two fractions
+	 * @param {Fraction} x - the fraction to add
+	 * @returns {Fraction}
+	 */
+	plus(x) {
+		const sum = new Fraction(this.num * x.den + x.num * this.den, this.den * x.den);
+		sum.simplify();
+		return sum;
 	}
 
 	//! Static methods
