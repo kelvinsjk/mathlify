@@ -13,10 +13,11 @@
 		"postversion": "git commit -m 'new version' && git push && git push --tags",
 		"format": "prettier --write \"src/**/*.ts\"",
 		"lint": "eslint --ignore-path .gitignore",
+		"vdev": "vite dev",
 		"dev": "vitest",
 		"build": "vite build",
 		"preview": "vite preview",
-		"test": "vitest --coverage"
+		"test": "vitest --config ./vitest.config.ts --coverage"
 	},
 	"repository": {
 		"type": "git",
@@ -40,6 +41,7 @@
 		"@vitest/coverage-v8": "^1.2.2",
 		"eslint": "^8.56.0",
 		"prettier": "^3.2.4",
+		"temml": "^0.10.22",
 		"typescript": "^5.3.3",
 		"vite": "^5.0.12",
 		"vitest": "^1.2.2"
