@@ -6,7 +6,6 @@
 	"type": "module",
 	"types": "lib/types.d.ts",
 	"scripts": {
-		"dev": "parcel watch",
 		"prepare": "pnpm run build",
 		"prepublishOnly": "pnpm run test && pnpm run lint",
 		"preversion": "pnpm run lint",
@@ -14,12 +13,10 @@
 		"postversion": "git commit -m 'new version' && git push && git push --tags",
 		"format": "prettier --write \"src/**/*.ts\"",
 		"lint": "eslint --ignore-path .gitignore",
-		"build": "parcel build",
-		"test": "uvu -r tsm src/__tests__",
-		"test:new": "uvu -r tsm src/__tests__/newTests",
-		"test:debug": "uvu -r tsm src/__tests__/prototype",
-		"test:coverage": "c8 --include=src pnpm test",
-		"test:coverage2": "c8 --include=src pnpm test:new"
+		"dev": "vitest",
+		"build": "vite build",
+		"preview": "vite preview",
+		"test": "vitest --coverage"
 	},
 	"repository": {
 		"type": "git",
@@ -38,12 +35,13 @@
 	},
 	"homepage": "https://github.com/kelvinsjk/mathlify#readme",
 	"devDependencies": {
-		"@typescript-eslint/eslint-plugin": "^5.0.0",
-		"@typescript-eslint/parser": "^5.0.0",
-		"c8": "^7.10.0",
-		"eslint": "^8.0.1",
-		"prettier": "^2.4.1",
-		"typescript": "^4.4.4",
-		"uvu": "^0.5.2"
+		"@typescript-eslint/eslint-plugin": "^6.19.1",
+		"@typescript-eslint/parser": "^6.19.1",
+		"@vitest/coverage-v8": "^1.2.2",
+		"eslint": "^8.56.0",
+		"prettier": "^3.2.4",
+		"typescript": "^5.3.3",
+		"vite": "^5.0.12",
+		"vitest": "^1.2.2"
 	}
 }
