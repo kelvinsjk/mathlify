@@ -56,14 +56,15 @@ export class Sum {
 	 * WARNING: mutates current instance
 	 */
 	simplify(options) {
-		const { product, numeral, sum } = {
+		const { product, numeral, sum, quotient } = {
 			product: true,
 			numeral: true,
 			sum: true,
+			quotient: true,
 			...options,
 		};
 		for (let term of this.terms) {
-			term.simplify({ product, numeral, sum });
+			term.simplify({ product, numeral, sum, quotient });
 		}
 		if (sum) {
 			this._flatten();

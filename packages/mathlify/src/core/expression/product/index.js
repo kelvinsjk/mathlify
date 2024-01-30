@@ -80,19 +80,20 @@ export class Product {
 	}
 
 	/**
-	 * @param {{product?: boolean, numeral?: boolean, sum?: boolean}} [options]
+	 * @param {{product?: boolean, numeral?: boolean, sum?: boolean, quotient?: boolean}} [options]
 	 * @returns {this}
 	 * WARNING: mutates current instance
 	 */
 	simplify(options) {
-		const { product, numeral, sum } = {
+		const { product, numeral, sum, quotient } = {
 			product: true,
 			numeral: true,
 			sum: true,
+			quotient: true,
 			...options,
 		};
 		for (let factor of this.factors) {
-			factor.simplify({ product, numeral, sum });
+			factor.simplify({ product, numeral, sum, quotient });
 		}
 		if (product) {
 			this._flatten();

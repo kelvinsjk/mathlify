@@ -1,4 +1,4 @@
-import { Expression, Sum, Product, Numeral } from '../core/index.js';
+import { Expression, Sum, Product, Quotient, Numeral } from '../core/index.js';
 
 /** @typedef {[number, '/', number]} FractionShorthand */
 /** @typedef {['()', Expression|number|string|FractionShorthand]} BracketShorthand */
@@ -93,6 +93,39 @@ export function productVerbatim(...factors) {
 }
 
 /**
+ *
+ * @param {Expression|string|number} exp
+ * @returns {Expression}
+ */
+export function brackets(exp) {
+	return Expression.brackets(exp);
+}
+
+/**
+ * creates a quotient as an expression.
+ * by default, the quotient is simplified.
+ * product shorthand: [a,b] represents the product ab
+ * fraction shorthand: [a, '/', b] represents the fraction a/b
+ * brackets shorthand: ['()', a] represents the bracketed expression (a)
+ * TODO: exponent shorthand
+ * @param {Expression|number|string|FractionShorthand|BracketShorthand} num
+ * @param {Expression|number|string|FractionShorthand|BracketShorthand} den
+ * @param {{verbatim?: boolean}} [options] - options. verbatim: if true, do not simplify the quotient.
+ * @returns {Expression}
+ */
+export function quotient(num, den, options) {
+	const { verbatim } = {
+		verbatim: true,
+		...options,
+	};
+	const numerator = unpack_shorthand_single(num);
+	const denominator = unpack_shorthand_single(den);
+	const q = new Expression(new Quotient(numerator, denominator));
+	if (!verbatim) q.simplify();
+	return q;
+}
+
+/**
  * @param {...(Expression|number|string|FractionShorthand|BracketShorthand|(Expression|number|string|FractionShorthand|BracketShorthand)[])} exp
  * @returns {Expression|number|string|(Expression|number|string)[]}
  */
@@ -106,7 +139,7 @@ function unpack_shorthand(exp) {
 			const term = exp[1];
 			if (Array.isArray(term)) {
 				if (term.length === 3) {
-					return fraction(term[0], term[2]);
+					return Expression.brackets(fraction(term[0], term[2]));
 				} else {
 					throw new Error('unexpected nested brackets');
 				}
@@ -140,6 +173,36 @@ function unpack_shorthand(exp) {
 		}
 	} else {
 		if (exp === undefined) throw new Error('invalid shorthand');
+		return exp;
+	}
+}
+
+/**
+ *
+ * @param {Expression|number|string|FractionShorthand|BracketShorthand} exp
+ * @returns {Expression|number|string}
+ */
+function unpack_shorthand_single(exp) {
+	if (Array.isArray(exp)) {
+		if (exp.length === 3 && exp[1] === '/' && typeof exp[0] === 'number' && typeof exp[2] === 'number') {
+			// fraction
+			return fraction(exp[0], exp[2]);
+		} else if (exp.length === 2 && exp[0] === '()') {
+			// brackets
+			const term = exp[1];
+			if (Array.isArray(term)) {
+				if (term.length === 3) {
+					return Expression.brackets(fraction(term[0], term[2]));
+				} else {
+					throw new Error('unexpected nested brackets');
+				}
+			} else {
+				return Expression.brackets(term);
+			}
+		} else {
+			throw new Error('unexpected array');
+		}
+	} else {
 		return exp;
 	}
 }
