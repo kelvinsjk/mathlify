@@ -1,1 +1,1 @@
-export { Expression, Sum, Variable, Numeral, Fraction } from './core/index.js';
+export { sum, sumVerbatim, product, productVerbatim, fraction } from './macros/index.js';

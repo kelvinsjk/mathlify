@@ -17,10 +17,17 @@ In this post, we list out all the steps the Mathlify library does to "simplify" 
 - Combines `Numeral`s such that there are at most one `Numeral` in a `Sum`.
 - Nested sums are flattened.
 
+## Product
+
+- Combines `Numeral`s to become a `coeff` at the start of the product
+- Nested products are flattened
+
 ## Expression
 
 The `Expression` class allow us to modify the underlying type
 
+- Any `Bracket` class are changed to the underlying type.
 - An empty `Sum` will be changed to a `Numeral` of 0.
 - A singleton `Sum` will be changed to the underlying type.
-- Any `Bracket` class are changed to the underlying type.
+- An empty `Product` will be changed to a `Numeral` of its `coeff`
+- A product with a single factor and `coeff` of 1 will be changed to the underlying type

@@ -1,5 +1,6 @@
-import { Expression, Fraction, Sum, Numeral, Variable } from '.';
+import { Expression, Fraction, Sum, Numeral, Variable, Product } from '.';
 import { test, expect } from 'vitest';
+import { Brackets } from './fn';
 
 test('expression cloning', () => {
 	const x = new Expression('x');
@@ -32,6 +33,11 @@ test('expression simplification', () => {
 	x.simplify();
 	expect(x.expression instanceof Sum).toBe(false);
 	expect(x.expression instanceof Variable).toBe(true);
+	const y = new Expression(new Product('y'));
+	expect(y.expression instanceof Product).toBe(true);
+	y.simplify();
+	expect(y.expression instanceof Product).toBe(false);
+	expect(y.expression instanceof Variable).toBe(true);
 });
 
 test('brackets', () => {
@@ -50,4 +56,21 @@ test('brackets', () => {
 	expect(`${twoMinus5}`).toBe(`2 - 5`);
 	twoMinus5.simplify();
 	expect(`${twoMinus5}`).toBe(`- 3`);
+});
+
+test('expression casting', () => {
+	const x = new Expression('x');
+	expect(() => x.try.into.sum()).toThrow();
+	expect(() => x.try.into.product()).toThrow();
+	expect(() => x.try.into.numeral()).toThrow();
+	expect(() => x.try.into.brackets()).toThrow();
+	expect(x.try.into.variable() instanceof Variable).toBe(true);
+	const two = new Expression(2);
+	expect(() => two.try.into.variable()).toThrow();
+	const negativeTwo = Expression.brackets(-2);
+	expect(negativeTwo.try.into.brackets() instanceof Brackets).toBe(true);
+	const two2 = new Expression(new Sum(2));
+	expect(two2.try.into.sum() instanceof Sum).toBe(true);
+	const two3 = new Expression(new Product(2));
+	expect(two3.try.into.product() instanceof Product).toBe(true);
 });

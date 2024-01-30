@@ -1,4 +1,5 @@
-import { gcd } from './gcd';
+import { gcd } from './gcd.js';
+import { lcm } from './lcm.js';
 
 /**
  * Fraction class representing a rational number
@@ -28,26 +29,35 @@ export class Fraction {
 		this.den = den;
 	}
 
-	// simplifies fraction by making
-	// denominator positive, hoisting negatives
-	// to the numerator if necessary
-	// WARNING: mutates current instance
+	/**
+	 * simplifies fraction by making
+	 * denominator positive, hoisting negatives
+	 * to the numerator if necessary
+	 * @returns {this}
+	 * WARNING: mutates current instance
+	 *
+	 *  */
 	_hoist_negative() {
 		if (this.den < 0) {
 			this.num *= -1;
 			this.den *= -1;
 		}
+		return this;
 	}
 
-	// simplifies fraction such that
-	// (1) denominators are positive
-	// (2) gcd(num, den) = 1
+	/**
+	 * simplifies fraction such that
+	 * (1) denominators are positive
+	 * (2) gcd(num, den) = 1
+	 * @returns {this}
+	 */
 	simplify() {
 		this._hoist_negative();
 		// extract gcd
 		const divisor = gcd(this.num, this.den);
 		this.num /= divisor;
 		this.den /= divisor;
+		return this;
 	}
 
 	/**
@@ -103,30 +113,22 @@ export class Fraction {
 
 	//! Boolean checks
 	is = {
-		/**
-		 * @returns {boolean}
-		 */
+		/** @returns {boolean} */
 		positive: () => this.valueOf() > 0,
-		/**
-		 * @returns {boolean}
-		 */
+		/** @returns {boolean} */
 		negative: () => this.valueOf() < 0,
-		/**
-		 * @returns {boolean}
-		 */
+		/** @returns {boolean} */
 		zero: () => this.valueOf() === 0,
-		/**
-		 * @returns {boolean}
-		 */
-		nonzero: () => this.valueOf() !== 0,
-		/**
-		 * @returns {boolean}
-		 */
+		/** @returns {boolean} */
+		nonzero: () => !this.is.zero(),
+		/** @returns {boolean} */
 		integer: () => Number.isInteger(this.valueOf()),
-		/**
-		 * @returns {boolean}
-		 */
+		/** @returns {boolean} */
 		nonnegative: () => this.valueOf() >= 0,
+		/** @returns {boolean} */
+		one: () => this.num === this.den,
+		/** @returns {boolean} */
+		negative_one: () => this.num === -this.den,
 	};
 
 	//! Arithmetic methods
@@ -140,6 +142,23 @@ export class Fraction {
 		sum.simplify();
 		return sum;
 	}
+	/**
+	 * product of two fractions
+	 * @param {Fraction} x - the fraction to multiply
+	 * @returns {Fraction}
+	 */
+	times(x) {
+		const product = new Fraction(this.num * x.num, this.den * x.den);
+		product.simplify();
+		return product;
+	}
+	/**
+	 * absolute value of this fraction
+	 * @returns {Fraction}
+	 */
+	abs() {
+		return new Fraction(Math.abs(this.num), Math.abs(this.den));
+	}
 
 	//! Static methods
 
@@ -150,5 +169,61 @@ export class Fraction {
 	 */
 	static sign(frac) {
 		return Math.sign(frac.valueOf());
+	}
+
+	/**
+	 * (absolute) gcd of fractions
+	 * @param {...Fraction} fractions
+	 * @returns {Fraction}
+	 */
+	static gcd(...fractions) {
+		if (fractions.length === 0) {
+			throw new RangeError('no fractions received in gcd');
+		}
+		if (fractions.length === 1) {
+			const f = fractions[0];
+			if (f.is.zero()) {
+				throw new RangeError('gcd(0) is undefined');
+			}
+			return f.abs();
+		}
+		if (fractions.length === 2) {
+			const [a, b] = fractions;
+			return new Fraction(gcd(a.num, b.num), lcm(a.den, b.den)).simplify();
+		}
+		let divisor = fractions[0];
+		fractions.shift();
+		for (let frac of fractions) {
+			divisor = Fraction.gcd(divisor, frac);
+		}
+		return divisor;
+	}
+
+	/**
+	 * lcm of fractions
+	 * @param {...Fraction} fractions
+	 * @returns {Fraction}
+	 */
+	static lcm(...fractions) {
+		if (fractions.length === 0) {
+			throw new RangeError('no fractions received in lcm');
+		}
+		if (fractions.length === 1) {
+			const f = fractions[0];
+			if (f.is.zero()) {
+				throw new RangeError('lcm(0) is undefined');
+			}
+			return f.abs();
+		}
+		if (fractions.length === 2) {
+			const [a, b] = fractions;
+			return new Fraction(lcm(a.num, b.num), gcd(a.den, b.den)).simplify();
+		}
+		let multiple = fractions[0];
+		fractions.shift();
+		for (let frac of fractions) {
+			multiple = Fraction.lcm(multiple, frac);
+		}
+		return multiple;
 	}
 }
