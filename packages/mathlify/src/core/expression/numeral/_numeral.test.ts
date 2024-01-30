@@ -13,4 +13,10 @@ test('numeral', () => {
 	expect(`${half}`).toBe('\\frac{1}{2}');
 	expect(`${half2}`).toBe('\\frac{2}{4}');
 	expect(`${half3}`).toBe('\\frac{1}{2}');
+	const negativeHalf = new Numeral([-1, 2]);
+	expect(`${negativeHalf}`).toBe('- \\frac{1}{2}');
+	expect(`${negativeHalf.abs()}`).toBe('\\frac{1}{2}');
+	expect(`${negativeHalf.plus(1)}`).toBe('\\frac{1}{2}');
+	expect(`${negativeHalf.plus(half)}`).toBe('0');
+	expect(`${negativeHalf.times(2)}`).toBe('- 1');
 });

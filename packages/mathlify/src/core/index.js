@@ -1,1 +1,1 @@
-export { Expression, Sum, Variable, Numeral, Fraction } from './expression/index.js';
+export { Expression, Sum, Product, Variable, Numeral, Fraction } from './expression/index.js';

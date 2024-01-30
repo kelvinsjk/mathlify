@@ -13,7 +13,7 @@ export class Numeral {
 	 * Creates a Numeral
 	 * note: fractions are automatically simplified by default
 	 * @param {number|Fraction|[number,number]} number - either the fraction or the numerator of the fraction
-	 * @param {{verbatim: boolean}} [options] - default: `{verbatim: false}`
+	 * @param {{verbatim?: boolean}} [options] - default: `{verbatim: false}`
 	 */
 	constructor(number, options) {
 		if (typeof number === 'number') {
@@ -51,4 +51,44 @@ export class Numeral {
 	clone() {
 		return new Numeral(this.number.clone(), { verbatim: true });
 	}
+
+	// ! arithmetic methods
+	/**
+	 * @param {Numeral|number|Fraction} x
+	 * @returns {Numeral}
+	 */
+	plus(x) {
+		if (typeof x === 'number') {
+			x = new Fraction(x);
+		} else if (x instanceof Numeral) {
+			x = x.number;
+		}
+		return new Numeral(this.number.plus(x));
+	}
+	/**
+	 * @param {Numeral|number|Fraction} x
+	 * @returns {Numeral}
+	 */
+	times(x) {
+		if (typeof x === 'number') {
+			x = new Fraction(x);
+		} else if (x instanceof Numeral) {
+			x = x.number;
+		}
+		return new Numeral(this.number.times(x));
+	}
+	/** @returns {Numeral} */
+	abs() {
+		return new Numeral(this.number.abs());
+	}
+
+	//! Boolean methods
+	is = {
+		/** @returns {boolean} */
+		one: () => this.number.is.one(),
+		/** @returns {boolean} */
+		negative_one: () => this.number.is.negative_one(),
+		/** @returns {boolean} */
+		zero: () => this.number.is.zero(),
+	};
 }

@@ -2,6 +2,7 @@ import { Variable } from '../variable/index.js';
 import { Numeral } from '../numeral/index.js';
 import { Expression } from '../index.js';
 import { Fraction } from '../numeral/fraction/index.js';
+import { Product } from '../product/index.js';
 
 /**
  * Sum Class
@@ -12,7 +13,7 @@ export class Sum {
 	terms;
 	/**
 	 * Creates a Sum
-	 * @param {...(Expression|Sum|Variable|string|Numeral|Fraction|number)} terms
+	 * @param {...(Expression|Sum|Product|Variable|string|Numeral|Fraction|number)} terms
 	 */
 	constructor(...terms) {
 		const termsExp = terms.map((t) => {
@@ -31,9 +32,9 @@ export class Sum {
 		let str = `${firstTerm}`;
 		for (let term of this.terms.slice(1)) {
 			const exp = term.expression;
-			if (exp instanceof Numeral && exp.number.is.negative()) {
-				// negative sign is already included in the numeral
-				str += ` ${exp.number}`;
+			if ((exp instanceof Numeral && exp.number.is.negative()) || (exp instanceof Product && exp.is.negative())) {
+				// negative sign is already included
+				str += ` ${exp}`;
 			} else {
 				str += ` + ${term}`;
 			}
@@ -50,16 +51,25 @@ export class Sum {
 	}
 
 	/**
+	 * @param {{product?: boolean, numeral?: boolean, sum?: boolean}} [options]
 	 * @returns {this}
 	 * WARNING: mutates current instance
 	 */
-	simplify() {
+	simplify(options) {
+		const { product, numeral, sum } = {
+			product: true,
+			numeral: true,
+			sum: true,
+			...options,
+		};
 		for (let term of this.terms) {
-			term.simplify();
+			term.simplify({ product, numeral, sum });
 		}
-		this._flatten();
-		this._combine_numerals();
-		this._remove_zeroes();
+		if (sum) {
+			this._flatten();
+			this._combine_numerals();
+			this._remove_zeroes();
+		}
 		return this;
 	}
 
@@ -116,6 +126,9 @@ export class Sum {
 			if (exp instanceof Sum) {
 				exp._flatten();
 				terms.push(...exp.terms);
+			} else if (exp instanceof Product) {
+				exp._flatten();
+				terms.push(term);
 			} else {
 				terms.push(term);
 			}
