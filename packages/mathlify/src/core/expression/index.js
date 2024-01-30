@@ -3,17 +3,18 @@
 import { Variable } from './variable/index.js';
 import { Numeral, Fraction } from './numeral/index.js';
 import { Sum } from './sum/index.js';
+import { Quotient } from './quotient/index.js';
 import { Fn, Brackets } from './fn/index.js';
 import { Product } from './product/index.js';
 import { lcm } from './numeral/fraction/lcm.js';
-export { Variable, Numeral, Fraction, Sum, Product };
+export { Variable, Numeral, Fraction, Sum, Product, Quotient };
 
 /** Expression Class
  * @property {Sum|Product|Quotient|Exponent|Variable|Numeral|Brackets} expression the tree representation of the expression
  *
  */
 export class Expression {
-	/** @type {Sum|Product|Variable|Numeral|Fn} */
+	/** @type {Sum|Product|Quotient|Variable|Numeral|Fn} */
 	expression;
 	/** @type {string} */
 	multiplicationSign = '';
@@ -22,7 +23,7 @@ export class Expression {
 	 * Creates an Expression
 	 * from Sums, Products, Quotients,
 	 * Exponents, Variables and Numerals
-	 * @param {Sum|Product|Variable|string|Numeral|Fraction|number|Fn} expression
+	 * @param {Sum|Product|Quotient|Variable|string|Numeral|Fraction|number|Fn} expression
 	 */
 	constructor(expression) {
 		// convert primitive types
@@ -48,7 +49,7 @@ export class Expression {
 
 	/**
 	 * simplifies the expression
-	 * @param {{brackets?: boolean, product?: boolean, sum?: boolean, numeral?: boolean}} [options] - options for which types to simplify. if not provided, all will be true. if object provided, all will be false unless indicated.
+	 * @param {{brackets?: boolean, product?: boolean, sum?: boolean, quotient?: boolean, numeral?: boolean}} [options] - options for which types to simplify. if not provided, all will be true. if object provided, all will be false unless indicated.
 	 * @returns {this}
 	 * WARNING: mutates current instance
 	 * TODO: product/sum/numeral only works for top level. consider making it recursive
@@ -60,13 +61,15 @@ export class Expression {
 				product: true,
 				sum: true,
 				numeral: true,
+				quotient: true,
 			};
 		}
-		const { brackets, product, sum, numeral } = {
+		const { brackets, product, sum, numeral, quotient } = {
 			brackets: false,
 			product: false,
 			sum: false,
 			numeral: false,
+			quotient: false,
 			...options,
 		};
 		if (brackets) {
@@ -75,23 +78,24 @@ export class Expression {
 		if (numeral && this.expression instanceof Numeral) {
 			this.expression.simplify();
 		}
-		if (this.expression instanceof Sum || this.expression instanceof Product) {
-			this.expression.simplify({ product, sum, numeral });
+		if (this.expression instanceof Sum || this.expression instanceof Product || this.expression instanceof Quotient) {
+			this.expression.simplify({ product, sum, numeral, quotient });
 		}
-		this._remove_singletons({ product, sum });
+		this._remove_singletons({ product, sum, quotient });
 		return this;
 	}
 
 	/**
 	 * removes singleton
-	 * @param {{product?: boolean, sum?: boolean}} [options] - options for which types to simplify. all true by default
+	 * @param {{product?: boolean, sum?: boolean, quotient?: boolean}} [options] - options for which types to simplify. all true by default
 	 * @returns {this}
 	 * WARNING: mutates current instance
 	 */
 	_remove_singletons(options) {
-		const { product, sum } = {
+		const { product, sum, quotient } = {
 			product: true,
 			sum: true,
+			quotient: true,
 			...options,
 		};
 		if (sum && this.expression instanceof Sum) {
@@ -105,6 +109,20 @@ export class Expression {
 				this.expression = this.expression.coeff;
 			} else if (this.expression.factors.length === 1 && this.expression.coeff.is.one()) {
 				this.expression = this.expression.factors[0].expression;
+			}
+		} else if (quotient && this.expression instanceof Quotient) {
+			if (this.expression.num.expression instanceof Numeral && this.expression.num.expression.number.is.zero()) {
+				// zero numerator
+				this.expression = new Numeral(0);
+			} else if (this.expression.den.expression instanceof Numeral && this.expression.den.expression.number.is.one()) {
+				// one denominator
+				this.expression = this.expression.num.expression;
+			} else if (
+				this.expression.num.expression instanceof Numeral &&
+				this.expression.den.expression instanceof Numeral
+			) {
+				// both numerator and denominator are numerals: change to fraction
+				this.expression = this.expression.num.expression.divide(this.expression.den.expression);
 			}
 		}
 		return this;
@@ -200,7 +218,9 @@ export class Expression {
 	 * @returns {Expression}
 	 */
 	clone() {
-		return new Expression(this.expression.clone());
+		let exp = new Expression(this.expression.clone());
+		exp.multiplicationSign = this.multiplicationSign;
+		return exp;
 	}
 
 	/**

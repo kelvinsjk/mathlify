@@ -153,6 +153,24 @@ export class Fraction {
 		return product;
 	}
 	/**
+	 * reciprocal of this fraction
+	 * @returns {Fraction}
+	 */
+	reciprocal() {
+		if (this.is.zero()) throw new RangeError('reciprocal of 0 is undefined');
+		const reciprocal = new Fraction(this.den, this.num);
+		reciprocal.simplify();
+		return reciprocal;
+	}
+	/**
+	 * division
+	 * @param {Fraction} x - the fraction to divide by
+	 */
+	divide(x) {
+		if (x.is.zero()) throw new RangeError('division by 0 is undefined');
+		return this.times(x.reciprocal());
+	}
+	/**
 	 * absolute value of this fraction
 	 * @returns {Fraction}
 	 */

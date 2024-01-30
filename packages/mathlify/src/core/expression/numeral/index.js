@@ -77,6 +77,25 @@ export class Numeral {
 		}
 		return new Numeral(this.number.times(x));
 	}
+	/**
+	 * @returns {Numeral}
+	 */
+	reciprocal() {
+		return new Numeral(this.number.reciprocal());
+	}
+	/**
+	 * @param {Numeral|number|Fraction} x
+	 * @returns {Numeral}
+	 */
+	divide(x) {
+		if (typeof x === 'number') {
+			x = new Fraction(x);
+		} else if (x instanceof Numeral) {
+			x = x.number;
+		}
+		return new Numeral(this.number.divide(x));
+	}
+
 	/** @returns {Numeral} */
 	abs() {
 		return new Numeral(this.number.abs());
