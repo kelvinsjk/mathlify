@@ -14,7 +14,7 @@ road map
 
 - The `Sqrt` class as a `Fn`
 - The `Exponent` class
-- $\frac{-2}{3}$ is currently typeset as $- \frac{2}{3}$. We will use the `Quotient` class to typeset the former.
+- Decimals as `Float` within the `Numeral` class
 
 ## Not on roadmap
 
@@ -23,7 +23,14 @@ road map
 - Mixed product signs. We currently default to typesetting products
   as `ab`, but this can be modified to `a ${sign} b` where `sign` can be customized (we forsee $\cdot$ and $\times$ as the common use-cases).
   Mixing two or more signs are not planned.
+- Using a custom multiplication sign means differences will no longer be rendered correctly: hence $a-b$ will be rendered as $a- 1 \times b$.
+- For multiplication of fractions, a typical approach is to cancel common factors before multiplying. We plan to only multiply all numerators
+  and denominators first before applying cancellation
 
 ## Undecided
 
 - Prime factorization
+
+## Workarounds
+
+- $\frac{-2}{3}$ is currently typeset as $- \frac{2}{3}$. We will use the `Quotient` class to typeset the former.

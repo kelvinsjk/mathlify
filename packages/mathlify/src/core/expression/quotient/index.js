@@ -28,10 +28,11 @@ export class Quotient {
 	}
 
 	/**
+	 * @param {{multiplicationSign?: string, mixedFractions?: boolean}} [options] - default to ''
 	 * @returns {string}
 	 */
-	toString() {
-		return `\\frac{${this.num}}{${this.den}}`;
+	toString(options) {
+		return `\\frac{${this.num.toString(options)}}{${this.den.toString(options)}}`;
 	}
 
 	/**
@@ -42,22 +43,21 @@ export class Quotient {
 	}
 
 	/**
-	 * @param {{product?: boolean, numeral?: boolean, sum?: boolean, quotient?: boolean}} [options]
+	 * @param {{product?: boolean, numeral?: boolean, sum?: boolean, quotient?: boolean, brackets?: boolean}} [options]
 	 * @returns {this}
 	 * WARNING: mutates current instance
 	 */
 	simplify(options) {
-		const { product, numeral, sum, quotient } = {
+		const { product, numeral, sum, quotient, brackets } = {
+			brackets: true,
 			product: true,
 			numeral: true,
 			sum: true,
 			quotient: true,
 			...options,
 		};
-		if (quotient) {
-			this.num.simplify({ product, numeral, sum, quotient });
-			this.den.simplify({ product, numeral, sum, quotient });
-		}
+		this.num.simplify({ product, numeral, sum, quotient, brackets });
+		this.den.simplify({ product, numeral, sum, quotient, brackets });
 		return this;
 	}
 }

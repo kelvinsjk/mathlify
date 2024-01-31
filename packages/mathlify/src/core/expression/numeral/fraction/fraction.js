@@ -78,9 +78,11 @@ export class Fraction {
 
 	/**
 	 * returns the latex string representing this fraction
+	 * @param {{mixedFractions?: boolean}} [options] - default: `{mixedFractions: false}`
 	 * @returns {string}
 	 */
-	toString() {
+	toString(options) {
+		let { mixedFractions } = { mixedFractions: false, ...options };
 		const num = this.num < 0 ? `- ${-this.num}` : `${this.num}`;
 		if (this.den === 1) {
 			return num;
@@ -89,9 +91,14 @@ export class Fraction {
 			// \\frac{(sign) num}{(sign) den}
 			const den = `- ${-this.den}`;
 			return `\\frac{${num}}{${den}}`;
+		}
+		// (sign) \\frac{num}{den}
+		const sign = Fraction.sign(this) === 1 ? '' : '- ';
+		if (mixedFractions && Math.abs(this.valueOf()) > 1) {
+			const whole = Math.floor(this.abs().valueOf());
+			const num = Math.abs(this.num) % this.den;
+			return `${sign}${whole}\\frac{${num}}{${this.den}}`;
 		} else {
-			// (sign) \\frac{num}{den}
-			const sign = Fraction.sign(this) === 1 ? '' : '- ';
 			const num = Math.abs(this.num);
 			return `${sign}\\frac{${num}}{${this.den}}`;
 		}
@@ -176,6 +183,13 @@ export class Fraction {
 	 */
 	abs() {
 		return new Fraction(Math.abs(this.num), Math.abs(this.den));
+	}
+	/**
+	 * negation of this fraction
+	 * @returns {Fraction}
+	 */
+	negative() {
+		return new Fraction(-this.num, this.den);
 	}
 
 	//! Static methods

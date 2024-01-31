@@ -115,7 +115,7 @@ export function brackets(exp) {
  */
 export function quotient(num, den, options) {
 	const { verbatim } = {
-		verbatim: true,
+		verbatim: false,
 		...options,
 	};
 	const numerator = unpack_shorthand_single(num);
@@ -129,14 +129,15 @@ export function quotient(num, den, options) {
  * @param {...(Expression|number|string|FractionShorthand|BracketShorthand|(Expression|number|string|FractionShorthand|BracketShorthand)[])} exp
  * @returns {Expression|number|string|(Expression|number|string)[]}
  */
-function unpack_shorthand(exp) {
-	if (Array.isArray(exp)) {
-		if (exp.length === 3 && exp[1] === '/' && typeof exp[0] === 'number' && typeof exp[2] === 'number') {
+function unpack_shorthand(...exp) {
+	let e = exp[0];
+	if (Array.isArray(e)) {
+		if (e.length === 3 && e[1] === '/' && typeof e[0] === 'number' && typeof e[2] === 'number') {
 			// fraction
-			return fraction(exp[0], exp[2]);
-		} else if (exp.length === 2 && exp[0] === '()') {
+			return fraction(e[0], e[2]);
+		} else if (e.length === 2 && e[0] === '()') {
 			// brackets
-			const term = exp[1];
+			const term = e[1];
 			if (Array.isArray(term)) {
 				if (term.length === 3) {
 					return Expression.brackets(fraction(term[0], term[2]));
@@ -150,7 +151,7 @@ function unpack_shorthand(exp) {
 			// product/sum array
 			/** @type {(Expression|number|string)[]} */
 			const termsExp = [];
-			for (const term of exp) {
+			for (const term of e) {
 				if (Array.isArray(term)) {
 					// bracket/fraction shorthand
 					if (term.length === 3 && term[1] === '/' && typeof term[0] === 'number' && typeof term[2] === 'number') {
@@ -172,8 +173,7 @@ function unpack_shorthand(exp) {
 			return termsExp;
 		}
 	} else {
-		if (exp === undefined) throw new Error('invalid shorthand');
-		return exp;
+		return e;
 	}
 }
 

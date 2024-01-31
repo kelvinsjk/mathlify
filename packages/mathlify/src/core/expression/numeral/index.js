@@ -39,10 +39,11 @@ export class Numeral {
 	}
 
 	/**
+	 * @param {{mixedFractions?: boolean}} [options] - default: `{mixedFractions: false}`
 	 * @returns {string}
 	 */
-	toString() {
-		return this.number.toString();
+	toString(options) {
+		return this.number.toString(options);
 	}
 
 	/**
@@ -95,10 +96,13 @@ export class Numeral {
 		}
 		return new Numeral(this.number.divide(x));
 	}
-
 	/** @returns {Numeral} */
 	abs() {
 		return new Numeral(this.number.abs());
+	}
+	/** @returns {Numeral} */
+	negative() {
+		return new Numeral(this.number.negative());
 	}
 
 	//! Boolean methods

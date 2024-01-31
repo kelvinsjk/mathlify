@@ -23,20 +23,21 @@ export class Sum {
 	}
 
 	/**
+	 * @param {{multiplicationSign?: string, mixedFractions?: boolean}} [options]
 	 * @returns {string}
 	 */
-	toString() {
+	toString(options) {
 		if (this.terms.length === 0) return '0';
 		if (this.terms.length === 1) return this.terms[0].toString();
 		const firstTerm = this.terms[0];
-		let str = `${firstTerm}`;
+		let str = `${firstTerm.toString(options)}`;
 		for (let term of this.terms.slice(1)) {
 			const exp = term.expression;
 			if ((exp instanceof Numeral && exp.number.is.negative()) || (exp instanceof Product && exp.is.negative())) {
 				// negative sign is already included
-				str += ` ${exp}`;
+				str += ` ${exp.toString(options)}`;
 			} else {
-				str += ` + ${term}`;
+				str += ` + ${term.toString(options)}`;
 			}
 		}
 		return str;

@@ -41,3 +41,27 @@ test('fraction boolean checks', () => {
 	expect(negativeHalf.is.zero()).toBe(false);
 	expect(negativeHalf.is.nonnegative()).toBe(false);
 });
+
+test('fraction gcd, lcm', () => {
+	const zero = new Fraction(0);
+	const sixFifth = new Fraction(6, 5);
+	const twoThird = new Fraction(2, 3);
+	const oneSixth = new Fraction(1, 6);
+	expect(() => Fraction.gcd()).toThrow();
+	expect(() => Fraction.gcd(zero)).toThrow();
+	expect(`${Fraction.gcd(sixFifth)}`).toBe(`\\frac{6}{5}`);
+	expect(`${Fraction.gcd(sixFifth, zero)}`).toBe(`\\frac{6}{5}`);
+	expect(`${Fraction.gcd(zero, sixFifth, twoThird)}`).toBe('\\frac{2}{15}');
+
+	expect(() => Fraction.lcm()).toThrow();
+	expect(() => Fraction.lcm(zero)).toThrow();
+	expect(`${Fraction.lcm(sixFifth)}`).toBe(`\\frac{6}{5}`);
+	expect(`${Fraction.lcm(sixFifth, twoThird, oneSixth)}`).toBe('6');
+});
+
+test('fraction arithmetic', () => {
+	const zero = new Fraction(0);
+	const half = new Fraction(1, 2);
+	expect(() => zero.reciprocal()).to.throw();
+	expect(() => half.divide(zero)).to.throw();
+});
