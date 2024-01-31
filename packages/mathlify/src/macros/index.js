@@ -182,7 +182,7 @@ function unpack_shorthand(...exp) {
  * @param {Expression|number|string|FractionShorthand|BracketShorthand} exp
  * @returns {Expression|number|string}
  */
-function unpack_shorthand_single(exp) {
+export function unpack_shorthand_single(exp) {
 	if (Array.isArray(exp)) {
 		if (exp.length === 3 && exp[1] === '/' && typeof exp[0] === 'number' && typeof exp[2] === 'number') {
 			// fraction

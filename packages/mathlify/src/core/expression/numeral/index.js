@@ -104,6 +104,12 @@ export class Numeral {
 	negative() {
 		return new Numeral(this.number.negative());
 	}
+	/**
+	 * @returns {this}
+	 */
+	subIn() {
+		return this;
+	}
 
 	//! Boolean methods
 	is = {

@@ -31,6 +31,7 @@ The `Expression` class allow us to modify the underlying type
 - A singleton `Sum` will be changed to the underlying type.
 - An empty `Product` will be changed to a `Numeral` of its `coeff`
 - A product with a single factor and `coeff` of 1 will be changed to the underlying type
+- A product with a `coeff` of 0 will be changed to a `Numeral` 0.
 - A `Quotient` with a numerator of `Numeral` 0 will be changed 0
 - A `Quotient` with a denominator of `Numeral` 1 will be changed to the underlying numerator type
 - A `Quotient` with `Numerals` on both numerator and denominator will be changed to a `Numeral` class

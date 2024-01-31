@@ -1,6 +1,8 @@
 import { Brackets } from './brackets/index.js';
 export { Brackets };
 
+/** @typedef {import('../index.js').Expression} Expression */
+
 /**
  * Fn class
  * @property {Brackets} fn
@@ -29,5 +31,16 @@ export class Fn {
 	 */
 	clone() {
 		return new Fn(this.fn.clone());
+	}
+
+	/**
+	 * @param {Object.<string, Expression>} scope - variables to be replaced in the expression
+	 * @param {{verbatim: boolean}} options - default to automatic simplification
+	 * @returns {this}
+	 * warning: mutates the class instance
+	 */
+	subIn(scope, options) {
+		this.fn.subIn(scope, options);
+		return this;
 	}
 }

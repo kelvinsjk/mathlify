@@ -33,4 +33,15 @@ export class Brackets {
 	clone() {
 		return new Brackets(this.expression.clone());
 	}
+
+	/**
+	 * @param {Object.<string, Expression>} scope - variables to be replaced in the expression
+	 * @param {{verbatim: boolean}} options - default to automatic simplification
+	 * @returns {this}
+	 * warning: mutates the class instance
+	 */
+	subIn(scope, options) {
+		this.expression.subIn(scope, options);
+		return this;
+	}
 }

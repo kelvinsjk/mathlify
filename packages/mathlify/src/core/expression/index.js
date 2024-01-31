@@ -8,6 +8,10 @@ import { Fn, Brackets } from './fn/index.js';
 import { Product } from './product/index.js';
 import { lcm } from './numeral/fraction/lcm.js';
 export { Variable, Numeral, Fraction, Sum, Product, Quotient };
+import { unpack_shorthand_single } from '../../macros/index.js';
+
+/** @typedef {import('../../macros/index.js').BracketShorthand} BracketShorthand */
+/** @typedef {import('../../macros/index.js').FractionShorthand} FractionShorthand */
 
 /** Expression Class
  * @property {Sum|Product|Quotient|Exponent|Variable|Numeral|Brackets} expression the tree representation of the expression
@@ -55,7 +59,6 @@ export class Expression {
 	 * @param {{brackets?: boolean, product?: boolean, sum?: boolean, quotient?: boolean, numeral?: boolean}} [options] - options for which types to simplify. if not provided, all will be true. if object provided, all will be false unless indicated.
 	 * @returns {this}
 	 * WARNING: mutates current instance
-	 * TODO: product/sum/numeral only works for top level. consider making it recursive
 	 */
 	simplify(options) {
 		if (options === undefined) {
@@ -110,6 +113,8 @@ export class Expression {
 		} else if (product && this.expression instanceof Product) {
 			if (this.expression.factors.length === 0) {
 				this.expression = this.expression.coeff;
+			} else if (this.expression.coeff.is.zero()) {
+				this.expression = new Numeral(0);
 			} else if (this.expression.factors.length === 1 && this.expression.coeff.is.one()) {
 				this.expression = this.expression.factors[0].expression;
 			}
@@ -166,6 +171,33 @@ export class Expression {
 		} else {
 			throw new Error('negative not supported for this type at the moment');
 		}
+	}
+
+	/**
+	 * @param {Object.<string, Expression|string|number|BracketShorthand|FractionShorthand>} scope - variables to be replaced in the expression
+	 * @param {{verbatim?: boolean}} [options] - default to automatic simplification
+	 * @returns {this}
+	 * warning: mutates the class instance
+	 */
+	subIn(scope, options) {
+		const { verbatim } = { verbatim: false, ...options };
+		/** @type {Object.<string,Expression>} */
+		const scope_exp = {};
+		for (const [key, value] of Object.entries(scope)) {
+			const val = unpack_shorthand_single(value);
+			const val_exp = val instanceof Expression ? val : new Expression(val);
+			scope_exp[key] = val_exp;
+		}
+		if (this.expression instanceof Variable) {
+			const name = this.expression.name;
+			if (name in scope_exp) {
+				this.expression = scope_exp[name].expression;
+			}
+		} else {
+			this.expression.subIn(scope_exp, { verbatim });
+		}
+		if (!verbatim) this.simplify();
+		return this;
 	}
 
 	/**
