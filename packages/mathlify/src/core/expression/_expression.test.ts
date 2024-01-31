@@ -1,6 +1,7 @@
-import { Expression, Fraction, Sum, Numeral, Variable, Product } from '.';
+import { Expression, Fraction, Sum, Numeral, Variable, Product, Quotient } from '.';
 import { test, expect } from 'vitest';
 import { Brackets } from './fn';
+import { e } from 'vitest/dist/reporters-1evA5lom';
 
 test('expression cloning', () => {
 	const x = new Expression('x');
@@ -38,6 +39,14 @@ test('expression simplification', () => {
 	y.simplify();
 	expect(y.expression instanceof Product).toBe(false);
 	expect(y.expression instanceof Variable).toBe(true);
+	// simplification of quotient
+	const zero2 = new Expression(new Quotient(0, 'x'));
+	expect(`${zero2}`).toBe('\\frac{0}{x}');
+	expect(zero2.expression instanceof Quotient).toBe(true);
+	zero2.simplify();
+	expect(`${zero2}`).toBe('0');
+	expect(zero2.expression instanceof Quotient).toBe(false);
+	expect(zero2.expression instanceof Numeral).toBe(true);
 });
 
 test('brackets', () => {
@@ -58,19 +67,35 @@ test('brackets', () => {
 	expect(`${twoMinus5}`).toBe(`- 3`);
 });
 
-test('expression casting', () => {
-	const x = new Expression('x');
-	expect(() => x.try.into.sum()).toThrow();
-	expect(() => x.try.into.product()).toThrow();
-	expect(() => x.try.into.numeral()).toThrow();
-	expect(() => x.try.into.brackets()).toThrow();
-	expect(x.try.into.variable() instanceof Variable).toBe(true);
-	const two = new Expression(2);
-	expect(() => two.try.into.variable()).toThrow();
-	const negativeTwo = Expression.brackets(-2);
-	expect(negativeTwo.try.into.brackets() instanceof Brackets).toBe(true);
-	const two2 = new Expression(new Sum(2));
-	expect(two2.try.into.sum() instanceof Sum).toBe(true);
-	const two3 = new Expression(new Product(2));
-	expect(two3.try.into.product() instanceof Product).toBe(true);
+test('expression lcm', () => {
+	expect(() => Expression.denominator_lcm()).toThrow();
+	const half = new Expression(new Fraction(1, 2));
+	expect(() => half._common_denominator()).toThrow();
+	expect(() => half._combine_fraction()).toThrow();
+	const xOver3 = new Expression(new Fraction(2, 3));
+	const negative1_10 = new Expression(new Product(-1, new Fraction(1, 10)));
+	expect(Expression.denominator_lcm(half, xOver3, negative1_10).toString()).toBe('30');
+	const y = new Expression('y');
+	const sum = new Expression(new Sum(negative1_10, y));
+	sum.combine_fraction();
+	expect(`${sum}`).toBe('\\frac{- 1 + 10y}{10}');
+	const sum2 = new Expression(new Sum(y, negative1_10));
+	sum2.combine_fraction();
+	expect(`${sum2}`).toBe('\\frac{10y - 1}{10}');
+	const xz = new Expression(new Product('x', 'z'));
+	const yPlusXZ = new Expression(new Sum('y', xz, half));
+	yPlusXZ.combine_fraction();
+	expect(`${yPlusXZ}`).toBe('\\frac{2y + 2xz + 1}{2}');
+	const sum3 = new Expression(new Sum(half, y));
+	sum3.combine_fraction();
+	expect(`${sum3}`).toBe('\\frac{1 + 2y}{2}');
+	expect(`${Expression.denominator_lcm(y)}`).toBe('1');
+});
+
+test('expression arithmetic', () => {
+	const xy = new Expression(new Product('x', 'y'));
+	expect(`${xy}`).toBe('xy');
+	expect(`${xy.negative()}`).toBe('- xy');
+	const q = new Expression(new Quotient('x', 'y'));
+	expect(() => q.negative()).toThrow();
 });

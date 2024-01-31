@@ -35,8 +35,8 @@ export class Product {
 		if (firstTerm instanceof Numeral) {
 			firstTerm = new Expression(firstTerm);
 		}
-		if (firstTerm instanceof Expression && firstTerm.is.numeral()) {
-			coeff = firstTerm.try.into.numeral();
+		if (firstTerm instanceof Expression && firstTerm.expression instanceof Numeral) {
+			coeff = firstTerm.expression;
 			terms.shift();
 		}
 		this.factors = terms.map((t) => {
@@ -46,12 +46,13 @@ export class Product {
 	}
 
 	/**
-	 * @param {{multiplicationSign?: string}} [options] - default to ''
+	 * @param {{multiplicationSign?: string, mixedFractions?: boolean}} [options] - default to ''
 	 * @returns {string}
 	 */
 	toString(options) {
-		const { multiplicationSign } = {
+		const { multiplicationSign, mixedFractions } = {
 			multiplicationSign: '',
+			mixedFractions: false,
 			...options,
 		};
 		if (this.factors.length === 0) return this.coeff.toString();
@@ -64,9 +65,9 @@ export class Product {
 			const sign = str === '' ? '' : multiplicationSign;
 			if ((exp instanceof Numeral && exp.number.is.negative()) || (exp instanceof Sum && exp.terms.length > 1)) {
 				// these should have brackets
-				str += `${sign}\\left( ${term} \\right)`;
+				str += `${sign}\\left( ${term.toString(options)} \\right)`;
 			} else {
-				str += `${sign}${term}`;
+				str += `${sign}${term.toString(options)}`;
 			}
 		}
 		return str;

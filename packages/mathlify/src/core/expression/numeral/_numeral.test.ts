@@ -19,4 +19,7 @@ test('numeral', () => {
 	expect(`${negativeHalf.plus(1)}`).toBe('\\frac{1}{2}');
 	expect(`${negativeHalf.plus(half)}`).toBe('0');
 	expect(`${negativeHalf.times(2)}`).toBe('- 1');
+
+	expect(`${negativeHalf.reciprocal()}`).toBe('- 2');
+	expect(`${negativeHalf.divide(3)}`).toBe('- \\frac{1}{6}');
 });

@@ -1,10 +1,11 @@
-import { sum, sumVerbatim, fraction } from '../../../src/';
+import { sum, sumVerbatim, fraction, brackets, product } from '../../../src/';
 import { test, expect } from 'vitest';
 import { Numeral } from '../../../src/core';
 
 test('add/subtract fractions', () => {
 	const a = fraction(1, 24);
 	const b = fraction(1, 6);
+	const c = fraction(8, 9);
 	// a + b
 	const aPlusB = sumVerbatim(a, b);
 	const aPlusBV2 = aPlusB.clone();
@@ -20,50 +21,64 @@ test('add/subtract fractions', () => {
 	aPlusBV2._combine_fraction();
 	expect(`${aPlusBV2}`).toBe('\\frac{5}{24}');
 	expect(aPlusBV2.expression instanceof Numeral).toBe(true);
-
 	// a - b
-	const twoMinus5 = sumVerbatim(2, -5);
-	expect(`${twoMinus5}`).toBe('2 - 5');
-	twoMinus5.simplify();
-	expect(`${twoMinus5}`).toBe('- 3');
+	const aMinusB = sumVerbatim(a, [-1, b]);
+	expect(`${aMinusB}`).toBe('\\frac{1}{24} - \\frac{1}{6}');
+	aMinusB._common_denominator();
+	expect(`${aMinusB}`).toBe('\\frac{1}{24} - \\frac{4}{24}');
+	aMinusB._combine_fraction({ verbatim: true });
+	expect(`${aMinusB}`).toBe('\\frac{1 - 4}{24}');
+	aMinusB.simplify({ sum: true, product: true });
+	expect(`${aMinusB}`).toBe('\\frac{- 3}{24}');
+	aMinusB.simplify();
+	expect(`${aMinusB}`).toBe('- \\frac{1}{8}');
 	// -a + b
-	const negativeTwoPlus5 = sumVerbatim(-2, 5);
-	expect(`${negativeTwoPlus5}`).toBe('- 2 + 5');
-	negativeTwoPlus5.simplify();
-	expect(`${negativeTwoPlus5}`).toBe('3');
+	const negativeAPlusB = sumVerbatim([-1, a], b);
+	expect(`${negativeAPlusB}`).toBe('- \\frac{1}{24} + \\frac{1}{6}');
+	negativeAPlusB._common_denominator();
+	expect(`${negativeAPlusB}`).toBe('- \\frac{1}{24} + \\frac{4}{24}');
+	negativeAPlusB._combine_fraction({ verbatim: true });
+	expect(`${negativeAPlusB}`).toBe('\\frac{- 1 + 4}{24}');
+	negativeAPlusB.simplify({ sum: true, product: true });
+	expect(`${negativeAPlusB}`).toBe('\\frac{3}{24}');
+	negativeAPlusB.simplify();
+	expect(`${negativeAPlusB}`).toBe('\\frac{1}{8}');
 	// -a - b
-	const negativeTwoMinus5 = sumVerbatim(-2, -5);
-	expect(`${negativeTwoMinus5}`).toBe('- 2 - 5');
-	negativeTwoMinus5.simplify();
-	expect(`${negativeTwoMinus5}`).toBe('- 7');
+	const negativeAMinusB = sumVerbatim([-1, a], [-1, b]);
+	expect(`${negativeAMinusB}`).toBe('- \\frac{1}{24} - \\frac{1}{6}');
+	negativeAMinusB._common_denominator();
+	expect(`${negativeAMinusB}`).toBe('- \\frac{1}{24} - \\frac{4}{24}');
+	negativeAMinusB._combine_fraction({ verbatim: true });
+	expect(`${negativeAMinusB}`).toBe('\\frac{- 1 - 4}{24}');
+	negativeAMinusB.simplify({ sum: true, product: true });
+	expect(`${negativeAMinusB}`).toBe('\\frac{- 5}{24}');
+	negativeAMinusB.simplify();
+	expect(`${negativeAMinusB}`).toBe('- \\frac{5}{24}');
 	// a + (-b)
-	const twoPlusNegative5 = sumVerbatim(2, ['()', -5]);
-	expect(`${twoPlusNegative5}`).toBe('2 + \\left( - 5 \\right)');
-	twoPlusNegative5._remove_brackets();
-	expect(`${twoPlusNegative5}`).toBe('2 - 5');
-	twoPlusNegative5.simplify();
-	expect(`${twoPlusNegative5}`).toBe('- 3');
-	// (-a) + (-b)
-	const negativeTwoPlusNegative5 = sumVerbatim(['()', -2], ['()', -5]);
-	expect(`${negativeTwoPlusNegative5}`).toBe('\\left( - 2 \\right) + \\left( - 5 \\right)');
-	negativeTwoPlusNegative5._remove_brackets();
-	expect(`${negativeTwoPlusNegative5}`).toBe('- 2 - 5');
-	negativeTwoPlusNegative5.simplify();
-	expect(`${negativeTwoPlusNegative5}`).toBe('- 7');
-	// a - (-b)
-	const twoMinusNegative5 = sumVerbatim(2, [-1, ['()', -5]]);
-	expect(`${twoMinusNegative5}`).toBe('2 - \\left( - 5 \\right)');
-	twoMinusNegative5._remove_brackets();
-	twoMinusNegative5.simplify({ product: true });
-	expect(`${twoMinusNegative5}`).toBe('2 + 5');
-	twoMinusNegative5.simplify();
-	expect(`${twoMinusNegative5}`).toBe('7');
-	// (-a) - (-b)
-	const negativeTwoMinusNegative5 = sumVerbatim(['()', -2], [-1, ['()', -5]]);
-	expect(`${negativeTwoMinusNegative5}`).toBe('\\left( - 2 \\right) - \\left( - 5 \\right)');
-	negativeTwoMinusNegative5._remove_brackets();
-	negativeTwoMinusNegative5.simplify({ product: true });
-	expect(`${negativeTwoMinusNegative5}`).toBe('- 2 + 5');
-	negativeTwoMinusNegative5.simplify();
-	expect(`${negativeTwoMinusNegative5}`).toBe('3');
+	const aPlusNegativeB = sumVerbatim(a, ['()', b.negative()]);
+	expect(`${aPlusNegativeB}`).toBe('\\frac{1}{24} + \\left( - \\frac{1}{6} \\right)');
+	aPlusNegativeB._remove_brackets();
+	expect(`${aPlusNegativeB}`).toBe('\\frac{1}{24} - \\frac{1}{6}');
+	aPlusNegativeB._common_denominator();
+	expect(`${aPlusNegativeB}`).toBe('\\frac{1}{24} - \\frac{4}{24}');
+	aPlusNegativeB._combine_fraction({ verbatim: true });
+	expect(`${aPlusNegativeB}`).toBe('\\frac{1 - 4}{24}');
+	aPlusNegativeB.simplify({ sum: true, product: true });
+	expect(`${aPlusNegativeB}`).toBe('\\frac{- 3}{24}');
+	aPlusNegativeB.simplify();
+	expect(`${aPlusNegativeB}`).toBe('- \\frac{1}{8}');
+	// b - (-c)
+	const bMinusNegativeC = sumVerbatim(b, [-1, ['()', c.negative()]]);
+	expect(`${bMinusNegativeC}`).toBe('\\frac{1}{6} - \\left( - \\frac{8}{9} \\right)');
+	bMinusNegativeC.simplify({ brackets: true, product: true });
+	expect(`${bMinusNegativeC}`).toBe('\\frac{1}{6} + \\frac{8}{9}');
+	bMinusNegativeC._common_denominator();
+	expect(`${bMinusNegativeC}`).toBe('\\frac{3}{18} + \\frac{16}{18}');
+	bMinusNegativeC._combine_fraction({ verbatim: true });
+	expect(`${bMinusNegativeC}`).toBe('\\frac{3 + 16}{18}');
+	bMinusNegativeC.simplify({ sum: true, product: true });
+	expect(`${bMinusNegativeC}`).toBe('\\frac{19}{18}');
+	bMinusNegativeC.simplify();
+	bMinusNegativeC.mixedFractions = true;
+	expect(`${bMinusNegativeC}`).toBe('1\\frac{1}{18}');
 });
