@@ -3,6 +3,7 @@ import { Numeral } from '../numeral/index.js';
 import { Expression } from '../index.js';
 import { Fraction } from '../numeral/fraction/index.js';
 import { Sum } from '../sum/index.js';
+import { Quotient } from '../quotient/index.js';
 
 /**
  * Product Class
@@ -17,7 +18,7 @@ export class Product {
 	/**
 	 * Creates a Product
 	 * First argument, if of Numeral|Fraction|number type, is taken as the coefficient
-	 * @param {...(Expression|Sum|Product|Variable|string|Numeral|Fraction|number)} terms
+	 * @param {...(Expression|Sum|Quotient|Product|Variable|string|Numeral|Fraction|number)} terms
 	 */
 	constructor(...terms) {
 		if (terms.length === 0) {

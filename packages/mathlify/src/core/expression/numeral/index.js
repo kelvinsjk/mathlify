@@ -109,5 +109,7 @@ export class Numeral {
 		negative_one: () => this.number.is.negative_one(),
 		/** @returns {boolean} */
 		zero: () => this.number.is.zero(),
+		/** @returns {boolean} */
+		negative: () => this.number.is.negative(),
 	};
 }
