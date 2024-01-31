@@ -171,4 +171,17 @@ export class Product {
 	//	const factors = this.factors.map((factor) => factor.clone());
 	//	return new Product(this.coeff.abs(), ...factors);
 	//}
+
+	/**
+	 * @param {Object.<string, Expression>} scope - variables to be replaced in the expression
+	 * @param {{verbatim: boolean}} options
+	 * @returns {this}
+	 * warning: mutates the class instance
+	 */
+	subIn(scope, options) {
+		for (const factor of this.factors) {
+			factor.subIn(scope, options);
+		}
+		return this;
+	}
 }

@@ -138,4 +138,17 @@ export class Sum {
 		this.terms = terms;
 		return this;
 	}
+
+	/**
+	 * @param {Object.<string, Expression>} scope - variables to be replaced in the expression
+	 * @param {{verbatim: boolean}} options
+	 * @returns {this}
+	 * warning: mutates the class instance
+	 */
+	subIn(scope, options) {
+		for (const term of this.terms) {
+			term.subIn(scope, options);
+		}
+		return this;
+	}
 }

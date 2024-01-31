@@ -60,4 +60,16 @@ export class Quotient {
 		this.den.simplify({ product, numeral, sum, quotient, brackets });
 		return this;
 	}
+
+	/**
+	 * @param {Object.<string, Expression>} scope - variables to be replaced in the expression
+	 * @param {{verbatim: boolean}} options
+	 * @returns {this}
+	 * warning: mutates the class instance
+	 */
+	subIn(scope, options) {
+		this.num.subIn(scope, options);
+		this.den.subIn(scope, options);
+		return this;
+	}
 }
