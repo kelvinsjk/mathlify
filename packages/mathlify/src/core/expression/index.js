@@ -149,7 +149,7 @@ export class Expression {
 		return this;
 	}
 
-	/** boolean methods */
+	//! boolean methods
 	is = {
 		/** @returns {boolean} */
 		sum: () => this.expression instanceof Sum,
@@ -167,7 +167,7 @@ export class Expression {
 		brackets: () => this.expression instanceof Fn && this.expression.fn instanceof Brackets,
 	};
 
-	/** methods that may throw */
+	//! methods that may throw
 	try = {
 		/** casting methods */
 		into: {
@@ -221,6 +221,118 @@ export class Expression {
 		let exp = new Expression(this.expression.clone());
 		exp.multiplicationSign = this.multiplicationSign;
 		return exp;
+	}
+
+	/**
+	 * common denominator:
+	 * for a sum, convert all terms to quotients with the same denominator
+	 * @returns {this} - a sum with quotients with same denominator as its terms
+	 * Warning: mutates current instance
+	 */
+	_common_denominator() {
+		const sum = this.expression;
+		if (!(sum instanceof Sum)) {
+			throw new Error('common denominator only supported for sums');
+		}
+		const den = Expression.denominator_lcm(...sum.terms).expression;
+		if (!(den instanceof Numeral)) {
+			throw new Error('common denominator expected to be numeral at the moment');
+		}
+		if (den.is.one()) {
+			return this;
+		}
+		/** @type {Expression[]} */
+		const terms = [];
+		for (const term of sum.terms) {
+			const t = term.expression;
+			if (t instanceof Numeral) {
+				terms.push(new Expression(new Quotient(t.times(den), den)));
+			} else if (t instanceof Quotient) {
+				const termDen = t.den;
+				if (!(termDen instanceof Numeral)) {
+					throw new Error('quotients expected to have numeral denominator at the moment');
+				}
+				const multiple = termDen.divide(den);
+				const product = new Product(multiple, t.num).simplify();
+				terms.push(new Expression(new Quotient(product, den)));
+			} else if (t instanceof Product && t.coeff.is.negative()) {
+				if (t.factors.length === 1 && t.factors[0] instanceof Quotient) {
+					const q = t.factors[0];
+					const termDen = q.den;
+					if (!(termDen instanceof Numeral)) {
+						throw new Error('quotients expected to have numeral denominator at the moment');
+					}
+					const multiple = termDen.divide(den).times(t.coeff.abs());
+					const product = new Product(multiple, q.num).simplify();
+					terms.push(new Expression(new Product(-1, new Quotient(product, den))));
+				} else {
+					const product = new Product(den.times(t.coeff.abs()), term).simplify();
+					terms.push(new Expression(new Product(-1, new Quotient(product, den))));
+				}
+			} else {
+				const product = new Product(den, term).simplify();
+				terms.push(new Expression(new Quotient(product, den)));
+			}
+		}
+		sum.terms = terms;
+		return this;
+	}
+
+	/**
+	 * combines fraction, with full simplification
+	 * @returns {this}
+	 * Warning: mutates current instance
+	 */
+	combine_fraction() {
+		this._common_denominator();
+		return this._combine_fraction();
+	}
+
+	/**
+	 * combines into one fraction
+	 * (to be used strictly after 'this._common_denominator()` is called. will not work otherwise
+	 * @param {{verbatim?: boolean}} [options] - simplifies result by default
+	 * @returns {this}
+	 * Warning: mutate current instance
+	 */
+	_combine_fraction(options) {
+		const { verbatim } = { verbatim: false, ...options };
+		/** @type {(Expression|Product)[]} */
+		const terms = [];
+		const sum = this.expression;
+		if (!(sum instanceof Sum)) {
+			throw new Error('common denominator only supported for sums');
+		}
+		/** @type {Numeral|undefined} */
+		let den = undefined;
+		for (const term of sum.terms) {
+			const t = term.expression;
+			if (t instanceof Quotient) {
+				let tDen = t.den.expression;
+				if (!(tDen instanceof Numeral)) {
+					throw new Error('only numeral denominators supported at the moment');
+				}
+				den = den ?? tDen;
+				terms.push(t.num);
+			} else if (t instanceof Product && t.coeff.is.negative()) {
+				if (t.factors.length !== 1) {
+					throw new Error('unexpected number of factors received.');
+				}
+				const q = t.factors[0];
+				if (!(q instanceof Quotient)) {
+					throw new Error('unexpected type received');
+				}
+				terms.push(new Product(-1, q.num));
+			} else {
+				throw new Error('unexpected term received: did you run _common_denominator() right before this step?');
+			}
+		}
+		if (den === undefined) {
+			throw new Error('unexpected denominator: did you run _common_denominator() right before this step?');
+		}
+		this.expression = new Quotient(new Sum(...terms), den);
+		if (!verbatim) this.simplify();
+		return this;
 	}
 
 	/**
