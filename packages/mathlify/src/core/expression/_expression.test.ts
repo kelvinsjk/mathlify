@@ -1,4 +1,4 @@
-import { Expression, Fraction, Sum, Numeral, Variable, Product, Quotient } from '.';
+import { Expression, Fraction, Sum, Numeral, Variable, Product, Quotient, Exponent } from '.';
 import { test, expect } from 'vitest';
 import { Brackets } from './fn';
 
@@ -105,8 +105,8 @@ test('expression arithmetic', () => {
 });
 
 test('lexical string', () => {
-	const xPlusY = new Sum('x', new Brackets('z'), 'y');
-	const yPlusX = new Sum('y', 'x', new Brackets('z'));
+	const xPlusY = new Sum('x', Expression.brackets('z'), 'y');
+	const yPlusX = new Sum('y', 'x', Expression.brackets('z'));
 	const xy = new Product('x', 'y');
 	const yx = new Product('y', 'x');
 	const q1 = new Expression(new Quotient(xPlusY, xy));
@@ -117,6 +117,29 @@ test('lexical string', () => {
 
 test('expansion', () => {
 	const sum = new Expression(new Sum('x', 'y'));
-	sum._expand();
+	sum._expand_product();
 	expect(`${sum}`).toBe('x + y');
+});
+
+test('simplify exponent', () => {
+	let q = new Expression(
+		new Product(
+			2,
+			'x',
+			new Exponent('x', 2),
+			new Exponent('y', 0),
+			new Exponent(new Fraction(2, 3), -2),
+			new Exponent(new Sum('x', 'y'), 1),
+		),
+	);
+	expect(`${q}`).toBe('2xx^2y^0\\frac{2}{3}^{- 2}\\left( x + y \\right)^1');
+	q.simplify();
+	expect(`${q}`).toBe('\\frac{9}{2}x^3\\left( x + y \\right)');
+});
+
+test('gcd', () => {
+	const sixX2YZ2 = new Expression(new Product(6, new Exponent('x', 2), 'y', new Exponent('z', 2)));
+	const tenZ3X = new Expression(new Product(10, new Exponent('z', 3), 'x'));
+	const gcd = Expression._gcdTwo(sixX2YZ2, tenZ3X);
+	expect(`${gcd}`).toBe('2xz^2');
 });

@@ -1,7 +1,8 @@
-import { Expression, Sum, Product, Quotient, Numeral } from '../core/index.js';
+import { Expression, Sum, Product, Quotient, Numeral, Exponent } from '../core/index.js';
 
 /** @typedef {[number, '/', number]} FractionShorthand */
 /** @typedef {['()', Expression|number|string|FractionShorthand]} BracketShorthand */
+/** @typedef {[Expression|string, number]} PowerShorthand */
 
 /**
  * creates a fraction as an expression
@@ -22,8 +23,8 @@ export function fraction(num, den = 1, options) {
  * product shorthand: [a,b] represents the product ab
  * fraction shorthand: [a, '/', b] represents the fraction a/b
  * brackets shorthand: ['()', a] represents the bracketed expression (a)
- * TODO: exponent shorthand
- * @param {...(Expression|number|string|FractionShorthand|BracketShorthand|(Expression|number|string|FractionShorthand|BracketShorthand)[])} terms
+ * exponent shorthand: [a, n] where n must be a number and a cannot be '()'
+ * @param {...(Expression|number|string|FractionShorthand|BracketShorthand|PowerShorthand|(Expression|number|string|FractionShorthand|BracketShorthand|PowerShorthand)[])} terms
  * @returns {Expression}
  */
 export function sum(...terms) {
@@ -37,8 +38,8 @@ export function sum(...terms) {
  * product shorthand: [a,b] represents the product ab
  * fraction shorthand: [a, '/', b] represents the fraction a/b
  * brackets shorthand: ['()', a] represents the bracketed expression (a)
- * TODO: exponent shorthand
- * @param {...(Expression|number|string|FractionShorthand|BracketShorthand|(Expression|number|string|FractionShorthand|BracketShorthand)[])} terms
+ * exponent shorthand: [a, n] where n must be a number and a cannot be '()'
+ * @param {...(Expression|number|string|FractionShorthand|BracketShorthand|PowerShorthand|(Expression|number|string|FractionShorthand|BracketShorthand|PowerShorthand)[])} terms
  * @returns {Expression}
  */
 export function sumVerbatim(...terms) {
@@ -61,8 +62,8 @@ export function sumVerbatim(...terms) {
  * sum shorthand: [a,b] represents the sum a+b
  * fraction shorthand: [a, '/', b] represents the fraction a/b
  * brackets shorthand: ['()', a] represents the bracketed expression (a)
- * TODO: exponent shorthand
- * @param {...(Expression|number|string|FractionShorthand|BracketShorthand|(Expression|number|string|FractionShorthand|BracketShorthand)[])} factors
+ * exponent shorthand: [a, n] where n must be a number and a cannot be '()'
+ * @param {...(Expression|number|string|FractionShorthand|BracketShorthand|PowerShorthand|(Expression|number|string|FractionShorthand|BracketShorthand|PowerShorthand)[])} factors
  */
 export function product(...factors) {
 	const exp = productVerbatim(...factors);
@@ -75,8 +76,8 @@ export function product(...factors) {
  * sum shorthand: [a,b] represents the sum a+b
  * fraction shorthand: [a, '/', b] represents the fraction a/b
  * brackets shorthand: ['()', a] represents the bracketed expression (a)
- * TODO: exponent shorthand
- * @param {...(Expression|number|string|FractionShorthand|BracketShorthand|(Expression|number|string|FractionShorthand|BracketShorthand)[])} factors
+ * exponent shorthand: [a, n] where n must be a number and a cannot be '()'
+ * @param {...(Expression|number|string|FractionShorthand|BracketShorthand|PowerShorthand|(Expression|number|string|FractionShorthand|BracketShorthand|PowerShorthand)[])} factors
  */
 export function productVerbatim(...factors) {
 	/** @type {(Expression|number|string)[]} */
@@ -126,7 +127,7 @@ export function quotient(num, den, options) {
 }
 
 /**
- * @param {...(Expression|number|string|FractionShorthand|BracketShorthand|(Expression|number|string|FractionShorthand|BracketShorthand)[])} exp
+ * @param {...(Expression|number|string|FractionShorthand|BracketShorthand|PowerShorthand|(Expression|number|string|FractionShorthand|BracketShorthand|PowerShorthand)[])} exp
  * @returns {Expression|number|string|(Expression|number|string)[]}
  */
 function unpack_shorthand(...exp) {
@@ -147,6 +148,12 @@ function unpack_shorthand(...exp) {
 			} else {
 				return Expression.brackets(term);
 			}
+		} else if (e.length === 2 && typeof e[1] === 'number' && (typeof e[0] === 'string' || e[0] instanceof Expression)) {
+			// exponent
+			const [base, power] = e;
+			const baseExp = base instanceof Expression ? base : new Expression(base);
+			const exp = new Exponent(baseExp, power);
+			return new Expression(exp);
 		} else {
 			// product/sum array
 			/** @type {(Expression|number|string)[]} */
@@ -162,8 +169,18 @@ function unpack_shorthand(...exp) {
 						(term[1] instanceof Expression || typeof term[1] === 'number' || typeof term[1] === 'string')
 					) {
 						termsExp.push(Expression.brackets(term[1]));
+					} else if (
+						term.length === 2 &&
+						typeof term[1] === 'number' &&
+						(typeof term[0] === 'string' || term[0] instanceof Expression)
+					) {
+						// exponent
+						const [base, power] = term;
+						const baseExp = base instanceof Expression ? base : new Expression(base);
+						const exp = new Exponent(baseExp, power);
+						termsExp.push(new Expression(exp));
 					} else {
-						throw new Error('unexpected nested product/sum');
+						throw new Error('unexpected nested arrays');
 					}
 				} else {
 					// regular term
@@ -179,7 +196,7 @@ function unpack_shorthand(...exp) {
 
 /**
  *
- * @param {Expression|number|string|FractionShorthand|BracketShorthand} exp
+ * @param {Expression|number|string|FractionShorthand|BracketShorthand|PowerShorthand} exp
  * @returns {Expression|number|string}
  */
 export function unpack_shorthand_single(exp) {
@@ -199,6 +216,16 @@ export function unpack_shorthand_single(exp) {
 			} else {
 				return Expression.brackets(term);
 			}
+		} else if (
+			exp.length === 2 &&
+			typeof exp[1] === 'number' &&
+			(typeof exp[0] === 'string' || exp[0] instanceof Expression)
+		) {
+			// exponent
+			const [base, power] = exp;
+			const baseExp = base instanceof Expression ? base : new Expression(base);
+			const exponent = new Exponent(baseExp, power);
+			return new Expression(exponent);
 		} else {
 			throw new Error('unexpected array');
 		}

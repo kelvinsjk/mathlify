@@ -160,6 +160,25 @@ export class Fraction {
 		return product;
 	}
 	/**
+	 * power of this fraction
+	 * @param {number|Fraction} n - the power to raise to
+	 * @returns {Fraction}
+	 */
+	pow(n) {
+		if (n instanceof Fraction) {
+			n = n.valueOf();
+		}
+		if (!Number.isInteger(n)) {
+			throw new RangeError('fractional exponents not supported at the moment');
+		}
+		const reciprocal = n < 0;
+		let val = this.clone();
+		for (let i = 1; i < Math.abs(n); i++) {
+			val = val.times(this);
+		}
+		return reciprocal ? val.reciprocal() : val;
+	}
+	/**
 	 * reciprocal of this fraction
 	 * @returns {Fraction}
 	 */

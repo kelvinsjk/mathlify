@@ -4,6 +4,10 @@ import { Expression } from '../../index.js';
 /** @typedef {import('../../numeral/fraction/index.js').Fraction} Fraction */
 /** @typedef {import('../../variable/index.js').Variable} Variable */
 /** @typedef {import('../../sum/index.js').Sum} Sum */
+/** @typedef {import('../../product/index.js').Product} Product */
+/** @typedef {import('../../quotient/index.js').Quotient} Quotient*/
+/** @typedef {import('../../exponent/index.js').Exponent} Exponent*/
+/** @typedef {import('../../index.js').ExpressionType} ExpressionType */
 
 /**
  * Brackets Class
@@ -14,7 +18,7 @@ export class Brackets {
 	expression;
 	/**
 	 * Creates a Bracketed term
-	 * @param {Expression|Sum|Variable|string|Numeral|Fraction|number} expression
+	 * @param {Expression|ExpressionType|string|Fraction|number} expression
 	 */
 	constructor(expression) {
 		this.expression = expression instanceof Expression ? expression : new Expression(expression);

@@ -47,3 +47,10 @@ test('combine like terms: fractional coefficients', () => {
 	q.expand();
 	expect(`${q}`).toBe('x + \\frac{3}{2} + 2y');
 });
+
+test('combine like terms: quadratic expressions', () => {
+	let q = sumVerbatim([-3, ['x', 2]], 'x', -1, [-2, 'x'], ['x', 2], [-3, 'x'], -5);
+	expect(`${q}`).toBe('- 3x^2 + x - 1 - 2x + x^2 - 3x - 5');
+	q.simplify();
+	expect(`${q}`).toBe('- 2x^2 - 4x - 6');
+});
