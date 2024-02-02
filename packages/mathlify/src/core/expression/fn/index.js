@@ -27,6 +27,13 @@ export class Fn {
 	}
 
 	/**
+	 * @returns {string}
+	 */
+	toLexicalString() {
+		return this.fn.toLexicalString();
+	}
+
+	/**
 	 * @returns {Fn}
 	 */
 	clone() {

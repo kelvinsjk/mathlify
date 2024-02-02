@@ -19,6 +19,11 @@ export class Variable {
 		return this.name;
 	}
 
+	/** @returns {string} */
+	toLexicalString() {
+		return this.name;
+	}
+
 	/**
 	 * @returns {Variable}
 	 */

@@ -74,6 +74,30 @@ export class Product {
 	}
 
 	/**
+	 * @param {{coeff?: boolean}} [options] - whether to include coefficient. default: true
+	 * @returns {string}
+	 */
+	toLexicalString(options) {
+		const { coeff } = { coeff: true, ...options };
+		const str = coeff ? this.coeff.toLexicalString() : '';
+		return (
+			str +
+			this.factors
+				.map((factor) => factor.toLexicalString())
+				.toSorted()
+				.join('*')
+		);
+	}
+
+	/**
+	 * @returns {Expression} new expression with coefficient set to 1. Simplified by default
+	 */
+	toUnit() {
+		const factors = this.factors.map((factor) => factor.clone());
+		return new Expression(new Product(1, ...factors)).simplify();
+	}
+
+	/**
 	 * @returns {Product}
 	 */
 	clone() {
@@ -127,7 +151,7 @@ export class Product {
 	}
 
 	/**
-	 * flattens sum
+	 * flattens product
 	 * @returns {this}
 	 * WARNING: mutates current instance
 	 */

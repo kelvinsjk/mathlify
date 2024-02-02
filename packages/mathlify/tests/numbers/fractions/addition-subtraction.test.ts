@@ -33,7 +33,7 @@ test('add/subtract fractions', () => {
 	aMinusB.simplify();
 	expect(`${aMinusB}`).toBe('- \\frac{1}{8}');
 	// -a + b
-	const negativeAPlusB = sumVerbatim([-1, a], b);
+	const negativeAPlusB = sumVerbatim(a.negative(), b);
 	expect(`${negativeAPlusB}`).toBe('- \\frac{1}{24} + \\frac{1}{6}');
 	negativeAPlusB._common_denominator();
 	expect(`${negativeAPlusB}`).toBe('- \\frac{1}{24} + \\frac{4}{24}');
@@ -44,7 +44,7 @@ test('add/subtract fractions', () => {
 	negativeAPlusB.simplify();
 	expect(`${negativeAPlusB}`).toBe('\\frac{1}{8}');
 	// -a - b
-	const negativeAMinusB = sumVerbatim([-1, a], [-1, b]);
+	const negativeAMinusB = sumVerbatim(a.negative(), b.negative());
 	expect(`${negativeAMinusB}`).toBe('- \\frac{1}{24} - \\frac{1}{6}');
 	negativeAMinusB._common_denominator();
 	expect(`${negativeAMinusB}`).toBe('- \\frac{1}{24} - \\frac{4}{24}');

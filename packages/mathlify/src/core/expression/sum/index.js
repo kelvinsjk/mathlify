@@ -3,6 +3,8 @@ import { Numeral } from '../numeral/index.js';
 import { Expression } from '../index.js';
 import { Fraction } from '../numeral/fraction/index.js';
 import { Product } from '../product/index.js';
+import { Quotient } from '../quotient/index.js';
+import { Brackets, Fn } from '../fn/index.js';
 
 /**
  * Sum Class
@@ -13,7 +15,7 @@ export class Sum {
 	terms;
 	/**
 	 * Creates a Sum
-	 * @param {...(Expression|Sum|Product|Variable|string|Numeral|Fraction|number)} terms
+	 * @param {...(Expression|Sum|Product|Variable|string|Numeral|Fraction|number|Quotient|Fn|Brackets)} terms
 	 */
 	constructor(...terms) {
 		const termsExp = terms.map((t) => {
@@ -44,6 +46,16 @@ export class Sum {
 	}
 
 	/**
+	 * @returns {string}
+	 */
+	toLexicalString() {
+		return this.terms
+			.map((term) => term.toLexicalString())
+			.toSorted()
+			.join('+');
+	}
+
+	/**
 	 * @returns {Sum}
 	 */
 	clone() {
@@ -69,33 +81,9 @@ export class Sum {
 		}
 		if (sum) {
 			this._flatten();
-			this._combine_numerals();
+			this._combine_like_terms();
 			this._remove_zeroes();
 		}
-		return this;
-	}
-
-	/**
-	 * combines numerals in the sum, such that there is at most one numeral
-	 * WARNING: mutates current instance
-	 * @returns {this}
-	 */
-	_combine_numerals() {
-		/** @type {number[]} */
-		const indices_of_numerals = [];
-		let sum = new Fraction(0);
-		for (let i = 0; i < this.terms.length; i++) {
-			const exp = this.terms[i].expression;
-			if (exp instanceof Numeral) {
-				indices_of_numerals.push(i);
-				sum = sum.plus(exp.number);
-			}
-		}
-		if (indices_of_numerals.length <= 1) return this;
-		const first_index = indices_of_numerals[0];
-		this.terms[first_index].expression = new Numeral(sum);
-		indices_of_numerals.shift();
-		this.terms = this.terms.filter((_, i) => !indices_of_numerals.includes(i));
 		return this;
 	}
 
@@ -136,6 +124,61 @@ export class Sum {
 			}
 		}
 		this.terms = terms;
+		return this;
+	}
+
+	/**
+	 * combine like terms
+	 * @returns {this}
+	 * WARNING: mutates current instance
+	 */
+	_combine_like_terms() {
+		// lexical string: [indices, coeff, expression]
+		/** @type {Object.<string,[number[],Numeral,Expression]>} */
+		const termMap = {};
+		/** @type {string[]} */
+		const orderedKeys = [];
+		for (const [i, term] of this.terms.entries()) {
+			const key = term.expression instanceof Numeral ? 'numeral' : term.toLexicalString({ coeff: false });
+			const val = termMap[key];
+			if (val) {
+				val[0].push(i);
+				const exp = term.expression;
+				if (exp instanceof Product) {
+					val[1] = val[1].plus(exp.coeff);
+				} else if (exp instanceof Numeral) {
+					val[1] = val[1].plus(exp.number);
+				} else {
+					val[1] = val[1].plus(1);
+				}
+			} else {
+				orderedKeys.push(key);
+				const exp = term.expression;
+				if (exp instanceof Product) {
+					termMap[key] = [[i], exp.coeff, exp.toUnit()];
+				} else if (exp instanceof Numeral) {
+					termMap[key] = [[i], exp.clone(), term.clone()];
+				} else {
+					termMap[key] = [[i], new Numeral(1), term.clone()];
+				}
+			}
+		}
+		/** @type {number[]} */
+		const indicesToRemove = [];
+		for (const key of orderedKeys) {
+			const [indices, coeff, expression] = termMap[key];
+			if (indices.length > 1) {
+				const firstIndex = indices[0];
+				if (key === 'numeral') {
+					this.terms[firstIndex].expression = coeff;
+				} else {
+					this.terms[firstIndex].expression = new Product(coeff, expression).simplify();
+				}
+				indices.shift();
+				indicesToRemove.push(...indices);
+			}
+		}
+		this.terms = this.terms.filter((_, i) => !indicesToRemove.includes(i));
 		return this;
 	}
 
