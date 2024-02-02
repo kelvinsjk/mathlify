@@ -18,7 +18,7 @@
 		"build": "vite build",
 		"preview": "vite preview",
 		"test": "vitest --config ./vitest.config.ts --coverage",
-		"subin": "vitest subin"
+		"expand": "vitest expansion"
 	},
 	"repository": {
 		"type": "git",

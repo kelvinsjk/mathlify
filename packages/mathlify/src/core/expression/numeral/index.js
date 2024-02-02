@@ -128,5 +128,31 @@ export class Numeral {
 		zero: () => this.number.is.zero(),
 		/** @returns {boolean} */
 		negative: () => this.number.is.negative(),
+		/** @returns {boolean} */
+		nonzero: () => this.number.is.nonzero(),
 	};
+
+	//! Static methods
+	/**
+	 * @param {Numeral|number|Fraction} x
+	 * @param {Numeral|number|Fraction} y
+	 * @returns {Numeral}
+	 */
+	static min(x, y) {
+		if (x.valueOf() <= y.valueOf()) {
+			return x instanceof Numeral ? x.clone() : new Numeral(x).clone();
+		}
+		return y instanceof Numeral ? y.clone() : new Numeral(y).clone();
+	}
+
+	/**
+	 * @param {Numeral|number|Fraction} x
+	 * @param {Numeral|number|Fraction} y
+	 * @returns {Numeral}
+	 */
+	static gcd(x, y) {
+		const xFrac = x instanceof Numeral ? x.number : x instanceof Fraction ? x : new Fraction(x);
+		const yFrac = y instanceof Numeral ? y.number : y instanceof Fraction ? y : new Fraction(y);
+		return new Numeral(Fraction.gcd(xFrac, yFrac));
+	}
 }

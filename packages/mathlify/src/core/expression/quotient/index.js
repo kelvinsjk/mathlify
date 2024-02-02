@@ -1,9 +1,12 @@
-import { Variable } from '../variable/index.js';
-import { Numeral } from '../numeral/index.js';
 import { Expression } from '../index.js';
-import { Fraction } from '../numeral/fraction/index.js';
-import { Product } from '../product/index.js';
-import { Sum } from '../sum/index.js';
+
+/** @typedef {import('../numeral/index.js').Numeral} Numeral */
+/** @typedef {import('../numeral/fraction/index.js').Fraction} Fraction */
+/** @typedef {import('../variable/index.js').Variable} Variable */
+/** @typedef {import('../sum/index.js').Sum} Sum */
+/** @typedef {import('../product/index.js').Product} Product */
+/** @typedef {import('../exponent/index.js').Exponent} Exponent*/
+/** @typedef {import('../index.js').ExpressionType} ExpressionType */
 
 /**
  * Quotient Class
@@ -17,8 +20,8 @@ export class Quotient {
 	den;
 	/**
 	 * Creates a Quotient
-	 * @param {Expression|Sum|Product|Variable|string|Numeral|Fraction|number} num
-	 * @param {Expression|Sum|Product|Variable|string|Numeral|Fraction|number} den
+	 * @param {Expression|ExpressionType|string|Fraction|number} num
+	 * @param {Expression|ExpressionType|string|Fraction|number} den
 	 */
 	constructor(num, den) {
 		num = num instanceof Expression ? num : new Expression(num);

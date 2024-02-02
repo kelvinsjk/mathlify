@@ -57,3 +57,27 @@ test('expansion', () => {
 	q.expand();
 	expect(`${q}`).toBe('- 6x + 12ay - 9ax');
 });
+
+test('expansion 2', () => {
+	let q = product(sum([3, 'a'], 'b'), sum([2, 'x'], [-1, 'y'], 3));
+	expect(`${q}`).toBe('\\left( 3a + b \\right)\\left( 2x - y + 3 \\right)');
+	q.expand();
+	expect(`${q}`).toBe('6ax - 3ay + 9a + 2bx - by + 3b');
+
+	q = sum(product(3, 'x', sum('x', 9)), product(-1, 'x', sum([2, 'x'], 3)));
+	expect(`${q}`).toBe('3x\\left( x + 9 \\right) - x\\left( 2x + 3 \\right)');
+	q.expand({ verbatim: true });
+	expect(`${q}`).toBe('3x^2 + 27x - 2x^2 - 3x');
+	q.simplify();
+	expect(`${q}`).toBe('x^2 + 24x');
+
+	q = product(sum([2, 'x'], 1), sum('x', -3));
+	expect(`${q}`).toBe('\\left( 2x + 1 \\right)\\left( x - 3 \\right)');
+	q.expand({ verbatim: true });
+	expect(`${q}`).toBe('2x^2 - 6x + x - 3');
+	q.simplify();
+	expect(`${q}`).toBe('2x^2 - 5x - 3');
+	q = product(sum([2, 'x'], 1), sum('x', -3));
+	q.expand();
+	expect(`${q}`).toBe('2x^2 - 5x - 3');
+});

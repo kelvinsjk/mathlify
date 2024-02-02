@@ -1,27 +1,29 @@
-import { Variable } from '../variable/index.js';
-import { Numeral } from '../numeral/index.js';
 import { Expression } from '../index.js';
-import { Fraction } from '../numeral/fraction/index.js';
+import { Numeral } from '../numeral/index.js';
 import { Product } from '../product/index.js';
-import { Quotient } from '../quotient/index.js';
-import { Brackets, Fn } from '../fn/index.js';
+
+/** @typedef {import('../numeral/fraction/index.js').Fraction} Fraction */
+/** @typedef {import('../variable/index.js').Variable} Variable */
+/** @typedef {import('../quotient/index.js').Quotient} Quotient*/
+/** @typedef {import('../exponent/index.js').Exponent} Exponent*/
+/** @typedef {import('../index.js').ExpressionType} ExpressionType */
 
 /**
  * Sum Class
- * @property {Expression[]} terms - the terms in the sum
+ * @property {Expression[]} _termsExp - the terms in the sum
  * */
 export class Sum {
 	/**@type {Expression[]} */
-	terms;
+	_termsExp;
 	/**
 	 * Creates a Sum
-	 * @param {...(Expression|Sum|Product|Variable|string|Numeral|Fraction|number|Quotient|Fn|Brackets)} terms
+	 * @param {...(Expression|ExpressionType|string|Fraction|number)} terms
 	 */
 	constructor(...terms) {
 		const termsExp = terms.map((t) => {
 			return t instanceof Expression ? t : new Expression(t);
 		});
-		this.terms = termsExp;
+		this._termsExp = termsExp;
 	}
 
 	/**
@@ -33,11 +35,10 @@ export class Sum {
 		if (this.terms.length === 1) return this.terms[0].toString();
 		const firstTerm = this.terms[0];
 		let str = `${firstTerm.toString(options)}`;
-		for (let term of this.terms.slice(1)) {
-			const exp = term.expression;
-			if ((exp instanceof Numeral && exp.number.is.negative()) || (exp instanceof Product && exp.is.negative())) {
+		for (const term of this.terms.slice(1)) {
+			if ((term instanceof Numeral && term.is.negative()) || (term instanceof Product && term.is.negative())) {
 				// negative sign is already included
-				str += ` ${exp.toString(options)}`;
+				str += ` ${term.toString(options)}`;
 			} else {
 				str += ` + ${term.toString(options)}`;
 			}
@@ -49,7 +50,7 @@ export class Sum {
 	 * @returns {string}
 	 */
 	toLexicalString() {
-		return this.terms
+		return this._termsExp
 			.map((term) => term.toLexicalString())
 			.toSorted()
 			.join('+');
@@ -59,25 +60,27 @@ export class Sum {
 	 * @returns {Sum}
 	 */
 	clone() {
-		const terms = this.terms.map((term) => term.clone());
+		const terms = this._termsExp.map((term) => term.clone());
 		return new Sum(...terms);
 	}
 
 	/**
-	 * @param {{product?: boolean, numeral?: boolean, sum?: boolean}} [options]
+	 * @param {import('../index.js').SimplifyOptions} [options]
 	 * @returns {this}
 	 * WARNING: mutates current instance
 	 */
 	simplify(options) {
-		const { product, numeral, sum, quotient } = {
+		const { product, numeral, sum, quotient, exponent, brackets } = {
 			product: true,
 			numeral: true,
 			sum: true,
 			quotient: true,
+			exponent: true,
+			brackets: true,
 			...options,
 		};
-		for (let term of this.terms) {
-			term.simplify({ product, numeral, sum, quotient });
+		for (let term of this._termsExp) {
+			term.simplify({ product, numeral, sum, quotient, exponent, brackets });
 		}
 		if (sum) {
 			this._flatten();
@@ -93,7 +96,7 @@ export class Sum {
 	 * WARNING: mutates current instance
 	 */
 	_remove_zeroes() {
-		this.terms = this.terms.filter((term) => {
+		this._termsExp = this._termsExp.filter((term) => {
 			const exp = term.expression;
 			if (exp instanceof Numeral) {
 				return exp.number.is.nonzero();
@@ -109,21 +112,20 @@ export class Sum {
 	 * WARNING: mutates current instance
 	 */
 	_flatten() {
-		/** @type {Expression[]} */
+		/** @type {ExpressionType[]} */
 		const terms = [];
 		for (const term of this.terms) {
-			const exp = term.expression;
-			if (exp instanceof Sum) {
-				exp._flatten();
-				terms.push(...exp.terms);
-			} else if (exp instanceof Product) {
-				exp._flatten();
+			if (term instanceof Sum) {
+				term._flatten();
+				terms.push(...term.terms);
+			} else if (term instanceof Product) {
+				term._flatten();
 				terms.push(term);
 			} else {
 				terms.push(term);
 			}
 		}
-		this.terms = terms;
+		this._termsExp = terms.map((term) => new Expression(term));
 		return this;
 	}
 
@@ -139,27 +141,25 @@ export class Sum {
 		/** @type {string[]} */
 		const orderedKeys = [];
 		for (const [i, term] of this.terms.entries()) {
-			const key = term.expression instanceof Numeral ? 'numeral' : term.toLexicalString({ coeff: false });
+			const key = term instanceof Numeral ? 'numeral' : term.toLexicalString({ coeff: false });
 			const val = termMap[key];
 			if (val) {
 				val[0].push(i);
-				const exp = term.expression;
-				if (exp instanceof Product) {
-					val[1] = val[1].plus(exp.coeff);
-				} else if (exp instanceof Numeral) {
-					val[1] = val[1].plus(exp.number);
+				if (term instanceof Product) {
+					val[1] = val[1].plus(term.coeff);
+				} else if (term instanceof Numeral) {
+					val[1] = val[1].plus(term.number);
 				} else {
 					val[1] = val[1].plus(1);
 				}
 			} else {
 				orderedKeys.push(key);
-				const exp = term.expression;
-				if (exp instanceof Product) {
-					termMap[key] = [[i], exp.coeff, exp.toUnit()];
-				} else if (exp instanceof Numeral) {
-					termMap[key] = [[i], exp.clone(), term.clone()];
+				if (term instanceof Product) {
+					termMap[key] = [[i], term.coeff, term.toUnit()];
+				} else if (term instanceof Numeral) {
+					termMap[key] = [[i], term.clone(), new Expression(1)];
 				} else {
-					termMap[key] = [[i], new Numeral(1), term.clone()];
+					termMap[key] = [[i], new Numeral(1), new Expression(term).clone()];
 				}
 			}
 		}
@@ -170,15 +170,14 @@ export class Sum {
 			if (indices.length > 1) {
 				const firstIndex = indices[0];
 				if (key === 'numeral') {
-					this.terms[firstIndex].expression = coeff;
+					this._termsExp[firstIndex].expression = coeff;
 				} else {
-					this.terms[firstIndex].expression = new Product(coeff, expression).simplify();
+					this._termsExp[firstIndex].expression = new Product(coeff, expression).simplify();
 				}
-				indices.shift();
-				indicesToRemove.push(...indices);
+				indicesToRemove.push(...indices.slice(1));
 			}
 		}
-		this.terms = this.terms.filter((_, i) => !indicesToRemove.includes(i));
+		this._termsExp = this._termsExp.filter((_, i) => !indicesToRemove.includes(i));
 		return this;
 	}
 
@@ -189,9 +188,17 @@ export class Sum {
 	 * warning: mutates the class instance
 	 */
 	subIn(scope, options) {
-		for (const term of this.terms) {
+		for (const term of this._termsExp) {
 			term.subIn(scope, options);
 		}
 		return this;
+	}
+
+	/**
+	 * exposes the factors underneath the expression wrapper
+	 * @returns {ExpressionType[]}
+	 */
+	get terms() {
+		return this._termsExp.map((term) => term.expression);
 	}
 }
