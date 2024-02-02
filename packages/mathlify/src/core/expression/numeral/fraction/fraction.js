@@ -233,27 +233,28 @@ export class Fraction {
 
 	/**
 	 * lcm of fractions
-	 * @param {...Fraction} fractions
+	 * @param {...(Fraction|number)} fractions
 	 * @returns {Fraction}
 	 */
 	static lcm(...fractions) {
-		if (fractions.length === 0) {
+		const fs = fractions.map((f) => (f instanceof Fraction ? f : new Fraction(f)));
+		if (fs.length === 0) {
 			throw new RangeError('no fractions received in lcm');
 		}
-		if (fractions.length === 1) {
-			const f = fractions[0];
+		if (fs.length === 1) {
+			const f = fs[0];
 			if (f.is.zero()) {
 				throw new RangeError('lcm(0) is undefined');
 			}
 			return f.abs();
 		}
-		if (fractions.length === 2) {
-			const [a, b] = fractions;
+		if (fs.length === 2) {
+			const [a, b] = fs;
 			return new Fraction(lcm(a.num, b.num), gcd(a.den, b.den)).simplify();
 		}
-		let multiple = fractions[0];
-		fractions.shift();
-		for (let frac of fractions) {
+		let multiple = fs[0];
+		fs.shift();
+		for (let frac of fs) {
 			multiple = Fraction.lcm(multiple, frac);
 		}
 		return multiple;

@@ -14,7 +14,7 @@ import { unpack_shorthand_single } from '../../macros/index.js';
 /** @typedef {import('../../macros/index.js').FractionShorthand} FractionShorthand */
 
 /** Expression Class
- * @property {Sum|Product|Quotient|Exponent|Variable|Numeral|Brackets} expression the tree representation of the expression
+ * @property {Sum|Product|Quotient|Exponent|Variable|Numeral|Fn} expression the tree representation of the expression
  *
  */
 export class Expression {
@@ -29,7 +29,7 @@ export class Expression {
 	 * Creates an Expression
 	 * from Sums, Products, Quotients,
 	 * Exponents, Variables and Numerals
-	 * @param {Sum|Product|Quotient|Variable|string|Numeral|Fraction|number|Fn} expression
+	 * @param {Sum|Product|Quotient|Variable|string|Numeral|Fraction|number|Fn|Brackets} expression
 	 */
 	constructor(expression) {
 		// convert primitive types
@@ -37,6 +37,8 @@ export class Expression {
 			expression = new Variable(expression);
 		} else if (typeof expression === 'number' || expression instanceof Fraction) {
 			expression = new Numeral(expression, { verbatim: true });
+		} else if (expression instanceof Brackets) {
+			expression = new Fn(expression);
 		}
 		this.expression = expression;
 	}
@@ -52,6 +54,14 @@ export class Expression {
 			...options,
 		};
 		return this.expression.toString(options);
+	}
+
+	/**
+	 * @param {{coeff?: boolean}} [options] - whether to include coefficient for a product. default: true
+	 * @returns {string}
+	 * */
+	toLexicalString(options) {
+		return this.expression.toLexicalString(options);
 	}
 
 	/**
@@ -157,6 +167,78 @@ export class Expression {
 		return this;
 	}
 
+	/**
+	 * expands either products, or products within a sum
+	 * @param {{verbatim?: boolean}} [options] - default to automatic simplification
+	 * @returns {this}
+	 */
+	expand(options) {
+		const exp = this.expression;
+		if (exp instanceof Product) {
+			for (const factor of exp.factors) {
+				factor.expand(options);
+			}
+			return this._expand(options);
+		} else if (exp instanceof Sum) {
+			for (const term of exp.terms) {
+				term.expand(options);
+			}
+			exp._flatten();
+		} else if (exp instanceof Quotient) {
+			exp.num.expand(options);
+			exp.den.expand(options);
+		}
+		const { verbatim } = { verbatim: false, ...options };
+		if (!verbatim) this.simplify();
+		return this;
+	}
+
+	/**
+	 * expands products
+	 * @param {{verbatim?: boolean}} [options] - default to automatic simplification
+	 * @returns {this}
+	 */
+	_expand(options) {
+		const exp = this.expression;
+		if (!(exp instanceof Product)) {
+			return this;
+		}
+		/** @type {Sum[]} */
+		const sums = [];
+		/** @type {Expression[]} */
+		const others = [];
+		for (const term of exp.factors) {
+			const exp = term.expression;
+			if (exp instanceof Sum) {
+				sums.push(exp);
+			} else {
+				others.push(term);
+			}
+		}
+		if (sums.length === 0 || (sums.length === 1 && exp.coeff.is.one())) return this;
+		/** @type {Product[]} */
+		let terms = sums[0].terms.map((term) => {
+			return new Product(exp.coeff, ...others, term).simplify();
+		});
+		sums.shift();
+		for (const sum of sums) {
+			/** @type {Product[]} */
+			const new_terms = [];
+			for (const t of sum.terms) {
+				for (const term of terms) {
+					new_terms.push(new Product(term.coeff, term, t).simplify());
+				}
+			}
+			terms = new_terms;
+		}
+		const sum = new Sum(...terms);
+		sum._flatten();
+		this.expression = sum;
+		const { verbatim } = { verbatim: false, ...options };
+		if (!verbatim) sum.simplify();
+		return this;
+	}
+
 	//! arithmetic methods
 	/**
 	 * negative of expression
@@ -210,6 +292,18 @@ export class Expression {
 	}
 
 	/**
+	 * combines fraction, with full simplification
+	 * @returns {this}
+	 * Warning: mutates current instance
+	 */
+	combine_fraction() {
+		this._common_denominator();
+		this._combine_fraction();
+		this.expand();
+		return this;
+	}
+
+	/**
 	 * common denominator:
 	 * for a sum, convert all terms to quotients with the same denominator
 	 * @returns {this} - a sum with quotients with same denominator as its terms
@@ -238,23 +332,23 @@ export class Expression {
 					terms.push(new Expression(new Quotient(t.times(den), den)));
 				}
 			} else if (t instanceof Quotient) {
-				const termDen = t.den;
+				const termDen = t.den.expression;
 				if (!(termDen instanceof Numeral)) {
 					throw new Error('quotients expected to have numeral denominator at the moment');
 				}
-				const multiple = termDen.divide(den);
+				const multiple = den.divide(termDen);
 				const product = new Product(multiple, t.num).simplify();
 				terms.push(new Expression(new Quotient(product, den)));
 			} else if (t instanceof Product && t.coeff.is.negative()) {
-				if (t.factors.length === 1 && t.factors[0] instanceof Quotient) {
-					const q = t.factors[0];
-					const termDen = q.den;
+				if (t.factors.length === 1 && t.factors[0].expression instanceof Quotient) {
+					const q = t.factors[0].expression;
+					const termDen = q.den.expression;
 					if (!(termDen instanceof Numeral)) {
 						throw new Error('quotients expected to have numeral denominator at the moment');
 					}
-					const multiple = termDen.divide(den).times(t.coeff.abs());
+					const multiple = den.divide(termDen).times(t.coeff.abs());
 					const product = new Product(multiple, q.num).simplify();
-					terms.push(new Expression(new Product(-1, new Quotient(product, den))));
+					terms.push(new Expression(new Product(-1, new Quotient(product, den)).simplify()));
 				} else {
 					const product = new Product(den.times(t.coeff.abs()), ...t.factors).simplify();
 					terms.push(new Expression(new Product(-1, new Quotient(product, den))));
@@ -266,16 +360,6 @@ export class Expression {
 		}
 		sum.terms = terms;
 		return this;
-	}
-
-	/**
-	 * combines fraction, with full simplification
-	 * @returns {this}
-	 * Warning: mutates current instance
-	 */
-	combine_fraction() {
-		this._common_denominator();
-		return this._combine_fraction();
 	}
 
 	/**
@@ -309,15 +393,12 @@ export class Expression {
 					throw new Error('unexpected number of factors received.');
 				}
 				const q = t.factors[0].expression;
-				if (!(q instanceof Quotient)) {
+				if (q instanceof Quotient && q.den.expression instanceof Numeral) {
+					den = den ?? q.den.expression;
+					terms.push(new Product(-1, q.num));
+				} else {
 					throw new Error('unexpected type received');
 				}
-				const qDen = q.den.expression;
-				if (!(qDen instanceof Numeral)) {
-					throw new Error('only numeral denominators supported at the moment');
-				}
-				den = den ?? qDen;
-				terms.push(new Product(-1, q.num));
 			} else {
 				throw new Error('unexpected term received: did you run _common_denominator() right before this step?');
 			}
@@ -352,14 +433,14 @@ export class Expression {
 			let exp = expressions[0];
 			if (exp.expression instanceof Numeral) {
 				return new Expression(new Numeral(exp.expression.number.den).abs());
+			} else if (exp.expression instanceof Quotient && exp.expression.den.expression instanceof Numeral) {
+				return new Expression(new Numeral(exp.expression.den.expression.number).abs());
 			} else if (
 				exp.expression instanceof Product &&
 				exp.expression.coeff.is.negative() &&
-				exp.expression.factors.length === 1 &&
-				exp.expression.factors[0].expression instanceof Numeral
+				exp.expression.factors.length === 1
 			) {
-				const num = exp.expression.factors[0].expression;
-				return new Expression(new Numeral(num.number.den).abs());
+				return Expression.denominator_lcm(exp.expression.factors[0]);
 			} else {
 				return new Expression(1);
 			}
@@ -369,46 +450,87 @@ export class Expression {
 			if (a.expression instanceof Numeral) {
 				if (b.expression instanceof Numeral) {
 					return new Expression(new Numeral(lcm(a.expression.number.den, b.expression.number.den)));
+				} else if (b.expression instanceof Quotient && b.expression.den.expression instanceof Numeral) {
+					return new Expression(new Numeral(Fraction.lcm(a.expression.number.den, b.expression.den.expression.number)));
 				} else if (
 					b.expression instanceof Product &&
 					b.expression.coeff.is.negative() &&
 					b.expression.factors.length === 1 &&
-					b.expression.factors[0].expression instanceof Numeral
+					b.expression.factors[0].expression instanceof Quotient &&
+					b.expression.factors[0].expression.den.expression instanceof Numeral
 				) {
-					const bNum = b.expression.factors[0].expression;
-					return new Expression(new Numeral(lcm(a.expression.number.den, bNum.number.den)));
+					return new Expression(
+						new Numeral(
+							Fraction.lcm(a.expression.number.den, b.expression.factors[0].expression.den.expression.number),
+						),
+					);
+				}
+				return Expression.denominator_lcm(a);
+			} else if (a.expression instanceof Quotient && a.expression.den.expression instanceof Numeral) {
+				if (b.expression instanceof Numeral) {
+					return new Expression(new Numeral(Fraction.lcm(a.expression.den.expression.number, b.expression.number.den)));
+				} else if (b.expression instanceof Quotient && b.expression.den.expression instanceof Numeral) {
+					return new Expression(
+						new Numeral(Fraction.lcm(a.expression.den.expression.number, b.expression.den.expression.number)),
+					);
+				} else if (
+					b.expression instanceof Product &&
+					b.expression.coeff.is.negative() &&
+					b.expression.factors.length === 1 &&
+					b.expression.factors[0].expression instanceof Quotient &&
+					b.expression.factors[0].expression.den.expression instanceof Numeral
+				) {
+					return new Expression(
+						new Numeral(
+							Fraction.lcm(
+								a.expression.den.expression.number,
+								b.expression.factors[0].expression.den.expression.number,
+							),
+						),
+					);
 				}
 				return Expression.denominator_lcm(a);
 			} else if (
 				a.expression instanceof Product &&
 				a.expression.coeff.is.negative() &&
 				a.expression.factors.length === 1 &&
-				a.expression.factors[0].expression instanceof Numeral
+				a.expression.factors[0].expression instanceof Quotient &&
+				a.expression.factors[0].expression.den.expression instanceof Numeral
 			) {
-				const aNum = a.expression.factors[0].expression;
 				if (b.expression instanceof Numeral) {
-					return new Expression(new Numeral(lcm(aNum.number.den, b.expression.number.den)));
+					return new Expression(
+						new Numeral(
+							Fraction.lcm(a.expression.factors[0].expression.den.expression.number, b.expression.number.den),
+						),
+					);
+				} else if (b.expression instanceof Quotient && b.expression.den.expression instanceof Numeral) {
+					return new Expression(
+						new Numeral(
+							Fraction.lcm(
+								a.expression.factors[0].expression.den.expression.number,
+								b.expression.den.expression.number,
+							),
+						),
+					);
 				} else if (
 					b.expression instanceof Product &&
 					b.expression.coeff.is.negative() &&
 					b.expression.factors.length === 1 &&
-					b.expression.factors[0].expression instanceof Numeral
+					b.expression.factors[0].expression instanceof Quotient &&
+					b.expression.factors[0].expression.den.expression instanceof Numeral
 				) {
-					const bNum = b.expression.factors[0].expression;
-					return new Expression(new Numeral(lcm(aNum.number.den, bNum.number.den)));
+					return new Expression(
+						new Numeral(
+							Fraction.lcm(
+								a.expression.factors[0].expression.den.expression.number,
+								b.expression.factors[0].expression.den.expression.number,
+							),
+						),
+					);
 				}
 				return Expression.denominator_lcm(a);
 			} else {
-				if (
-					b.expression instanceof Numeral ||
-					(b.expression instanceof Product &&
-						b.expression.coeff.is.negative() &&
-						b.expression.factors.length === 1 &&
-						b.expression.factors[0].expression instanceof Numeral)
-				) {
-					return Expression.denominator_lcm(b);
-				}
-				return new Expression(1);
+				return Expression.denominator_lcm(b);
 			}
 		}
 		let multiple = Expression.denominator_lcm(expressions[0], expressions[1]);

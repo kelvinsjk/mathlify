@@ -28,6 +28,13 @@ export class Brackets {
 	}
 
 	/**
+	 * @returns {string}
+	 */
+	toLexicalString() {
+		return `(${this.expression.toLexicalString()})`;
+	}
+
+	/**
 	 * @returns {Brackets}
 	 */
 	clone() {

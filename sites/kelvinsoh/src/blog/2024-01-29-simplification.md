@@ -14,8 +14,10 @@ In this post, we list out all the steps the Mathlify library does to "simplify" 
 
 ## Sum
 
-- Combines `Numeral`s such that there are at most one `Numeral` in a `Sum`.
+- Combines like terms into a `Product` of a numerical coefficient and the term
+- `_combine_like_terms()` also combines `Numeral`s such that there are at most one `Numeral` in a `Sum`.
 - Nested sums are flattened.
+- Numerals of 0s are removed.
 
 ## Product
 

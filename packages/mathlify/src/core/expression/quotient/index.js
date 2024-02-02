@@ -35,6 +35,11 @@ export class Quotient {
 		return `\\frac{${this.num.toString(options)}}{${this.den.toString(options)}}`;
 	}
 
+	/** @returns {string} */
+	toLexicalString() {
+		return `(${this.num.toLexicalString()})/(${this.den.toLexicalString()})`;
+	}
+
 	/**
 	 * @returns {Quotient}
 	 */

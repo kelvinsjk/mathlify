@@ -1,7 +1,6 @@
 import { Expression, Fraction, Sum, Numeral, Variable, Product, Quotient } from '.';
 import { test, expect } from 'vitest';
 import { Brackets } from './fn';
-import { e } from 'vitest/dist/reporters-1evA5lom';
 
 test('expression cloning', () => {
 	const x = new Expression('x');
@@ -73,7 +72,7 @@ test('expression lcm', () => {
 	expect(() => half._common_denominator()).toThrow();
 	expect(() => half._combine_fraction()).toThrow();
 	const xOver3 = new Expression(new Fraction(2, 3));
-	const negative1_10 = new Expression(new Product(-1, new Fraction(1, 10)));
+	const negative1_10 = new Expression(new Fraction(-1, 10));
 	expect(Expression.denominator_lcm(half, xOver3, negative1_10).toString()).toBe('30');
 	const y = new Expression('y');
 	const sum = new Expression(new Sum(negative1_10, y));
@@ -90,6 +89,11 @@ test('expression lcm', () => {
 	sum3.combine_fraction();
 	expect(`${sum3}`).toBe('\\frac{1 + 2y}{2}');
 	expect(`${Expression.denominator_lcm(y)}`).toBe('1');
+
+	const sum4 = new Expression(new Sum('x', 'y'));
+	sum4._common_denominator();
+	expect(`${sum4}`).toBe('x + y');
+	expect(() => sum4.combine_fraction()).toThrow();
 });
 
 test('expression arithmetic', () => {
@@ -98,4 +102,21 @@ test('expression arithmetic', () => {
 	expect(`${xy.negative()}`).toBe('- xy');
 	const q = new Expression(new Quotient('x', 'y'));
 	expect(() => q.negative()).toThrow();
+});
+
+test('lexical string', () => {
+	const xPlusY = new Sum('x', new Brackets('z'), 'y');
+	const yPlusX = new Sum('y', 'x', new Brackets('z'));
+	const xy = new Product('x', 'y');
+	const yx = new Product('y', 'x');
+	const q1 = new Expression(new Quotient(xPlusY, xy));
+	const q2 = new Expression(new Quotient(yPlusX, yx));
+	expect(q1.toLexicalString()).toBe('((z)+x+y)/(1x*y)');
+	expect(q1.toLexicalString()).toBe(q2.toLexicalString());
+});
+
+test('expansion', () => {
+	const sum = new Expression(new Sum('x', 'y'));
+	sum._expand();
+	expect(`${sum}`).toBe('x + y');
 });

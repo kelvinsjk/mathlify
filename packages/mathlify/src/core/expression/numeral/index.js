@@ -47,6 +47,13 @@ export class Numeral {
 	}
 
 	/**
+	 * @returns {string}
+	 */
+	toLexicalString() {
+		return this.toString();
+	}
+
+	/**
 	 * @returns {Numeral}
 	 */
 	clone() {
