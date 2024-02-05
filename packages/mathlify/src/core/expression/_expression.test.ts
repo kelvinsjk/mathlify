@@ -137,9 +137,11 @@ test('simplify exponent', () => {
 	expect(`${q}`).toBe('\\frac{9}{2}x^3\\left( x + y \\right)');
 });
 
-test('gcd', () => {
+test('expression gcd/lcm', () => {
 	const sixX2YZ2 = new Expression(new Product(6, new Exponent('x', 2), 'y', new Exponent('z', 2)));
 	const tenZ3X = new Expression(new Product(10, new Exponent('z', 3), 'x'));
 	const gcd = Expression._gcdTwo(sixX2YZ2, tenZ3X);
 	expect(`${gcd}`).toBe('2xz^2');
+	const lcm = Expression._lcmTwo(sixX2YZ2, tenZ3X);
+	expect(`${lcm}`).toBe('30x^2yz^3');
 });
