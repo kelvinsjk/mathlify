@@ -349,46 +349,26 @@ export class Expression {
 			throw new Error('common denominator only supported for sums');
 		}
 		const den = Expression.denominator_lcm(...sum._termsExp).expression;
-		if (!(den instanceof Numeral)) {
-			throw new Error('common denominator expected to be numeral at the moment');
-		}
-		if (den.is.one()) {
+		if (den instanceof Numeral && den.is.one()) {
 			return this;
 		}
 		/** @type {Expression[]} */
 		const terms = [];
 		for (const term of sum.terms) {
-			if (term instanceof Numeral) {
-				if (term.is.negative()) {
-					terms.push(new Expression(new Product(-1, new Quotient(term.times(den).abs(), den))));
-				} else {
-					terms.push(new Expression(new Quotient(term.times(den), den)));
-				}
+			if (term instanceof Numeral && term.is.negative()) {
+				terms.push(new Expression(new Product(-1, new Quotient(new Product(term.abs(), den), den))));
 			} else if (term instanceof Quotient) {
-				const termDen = term.den.expression;
-				if (!(termDen instanceof Numeral)) {
-					throw new Error('quotients expected to have numeral denominator at the moment');
-				}
-				const multiple = den.divide(termDen);
-				const product = new Product(multiple, term.num).simplify();
-				terms.push(new Expression(new Quotient(product, den)));
+				//TODO: figure out multiple
+				terms.push(new Expression(new Quotient(new Product(term.num.clone(), den), den)));
 			} else if (term instanceof Product && term.coeff.is.negative()) {
-				if (term._factorsExp.length === 1 && term.factors[0] instanceof Quotient) {
-					const q = term.factors[0];
-					const termDen = q.den.expression;
-					if (!(termDen instanceof Numeral)) {
-						throw new Error('quotients expected to have numeral denominator at the moment');
-					}
-					const multiple = den.divide(termDen).times(term.coeff.abs());
-					const product = new Product(multiple, q.num).simplify();
-					terms.push(new Expression(new Product(-1, new Quotient(product, den)).simplify()));
+				if (term.factors.length === 1 && term.factors[0] instanceof Quotient) {
+					//TODO: figure out multiple
+					terms.push(new Expression(new Quotient(new Product(term.factors[0].num.clone(), den), den)));
 				} else {
-					const product = new Product(den.times(term.coeff.abs()), ...term.factors).simplify();
-					terms.push(new Expression(new Product(-1, new Quotient(product, den))));
+					terms.push(new Expression(new Product(-1, new Quotient(new Product(term.coeff.abs(), den), den))));
 				}
 			} else {
-				const product = new Product(den, term).simplify();
-				terms.push(new Expression(new Quotient(product, den)));
+				terms.push(new Expression(new Quotient(new Product(term, den), den)));
 			}
 		}
 		sum._termsExp = terms;
@@ -463,105 +443,30 @@ export class Expression {
 			throw new Error('Cannot find denominator lcm of empty array');
 		}
 		if (expressions.length === 1) {
-			let exp = expressions[0];
-			if (exp.expression instanceof Numeral) {
-				return new Expression(new Numeral(exp.expression.number.den).abs());
-			} else if (exp.expression instanceof Quotient && exp.expression.den.expression instanceof Numeral) {
-				return new Expression(new Numeral(exp.expression.den.expression.number).abs());
-			} else if (
-				exp.expression instanceof Product &&
-				exp.expression.coeff.is.negative() &&
-				exp.expression.factors.length === 1
-			) {
-				return Expression.denominator_lcm(exp.expression._factorsExp[0]);
+			let exp = expressions[0].expression;
+			if (exp instanceof Numeral) {
+				return new Expression(new Numeral(exp.number.den).abs());
+			} else if (exp instanceof Quotient) {
+				return new Expression(exp.den.expression.clone());
+			} else if (exp instanceof Product && exp.coeff.is.negative() && exp.factors.length === 1) {
+				return Expression.denominator_lcm(exp._factorsExp[0]);
 			} else {
 				return new Expression(1);
 			}
 		}
 		if (expressions.length === 2) {
 			const [a, b] = expressions;
-			if (a.expression instanceof Numeral) {
-				if (b.expression instanceof Numeral) {
-					return new Expression(new Numeral(lcm(a.expression.number.den, b.expression.number.den)));
-				} else if (b.expression instanceof Quotient && b.expression.den.expression instanceof Numeral) {
-					return new Expression(new Numeral(Fraction.lcm(a.expression.number.den, b.expression.den.expression.number)));
-				} else if (
-					b.expression instanceof Product &&
-					b.expression.coeff.is.negative() &&
-					b.expression.factors.length === 1 &&
-					b.expression.factors[0] instanceof Quotient &&
-					b.expression.factors[0].den.expression instanceof Numeral
-				) {
-					return new Expression(
-						new Numeral(Fraction.lcm(a.expression.number.den, b.expression.factors[0].den.expression.number)),
-					);
-				}
-				return Expression.denominator_lcm(a);
-			} else if (a.expression instanceof Quotient && a.expression.den.expression instanceof Numeral) {
-				if (b.expression instanceof Numeral) {
-					return new Expression(new Numeral(Fraction.lcm(a.expression.den.expression.number, b.expression.number.den)));
-				} else if (b.expression instanceof Quotient && b.expression.den.expression instanceof Numeral) {
-					return new Expression(
-						new Numeral(Fraction.lcm(a.expression.den.expression.number, b.expression.den.expression.number)),
-					);
-				} else if (
-					b.expression instanceof Product &&
-					b.expression.coeff.is.negative() &&
-					b.expression.factors.length === 1 &&
-					b.expression.factors[0] instanceof Quotient &&
-					b.expression.factors[0].den.expression instanceof Numeral
-				) {
-					return new Expression(
-						new Numeral(
-							Fraction.lcm(a.expression.den.expression.number, b.expression.factors[0].den.expression.number),
-						),
-					);
-				}
-				return Expression.denominator_lcm(a);
-			} else if (
-				a.expression instanceof Product &&
-				a.expression.coeff.is.negative() &&
-				a.expression.factors.length === 1 &&
-				a.expression.factors[0] instanceof Quotient &&
-				a.expression.factors[0].den.expression instanceof Numeral
-			) {
-				if (b.expression instanceof Numeral) {
-					return new Expression(
-						new Numeral(Fraction.lcm(a.expression.factors[0].den.expression.number, b.expression.number.den)),
-					);
-				} else if (b.expression instanceof Quotient && b.expression.den.expression instanceof Numeral) {
-					return new Expression(
-						new Numeral(
-							Fraction.lcm(a.expression.factors[0].den.expression.number, b.expression.den.expression.number),
-						),
-					);
-				} else if (
-					b.expression instanceof Product &&
-					b.expression.coeff.is.negative() &&
-					b.expression.factors.length === 1 &&
-					b.expression.factors[0] instanceof Quotient &&
-					b.expression.factors[0].den.expression instanceof Numeral
-				) {
-					return new Expression(
-						new Numeral(
-							Fraction.lcm(
-								a.expression.factors[0].den.expression.number,
-								b.expression.factors[0].den.expression.number,
-							),
-						),
-					);
-				}
-				return Expression.denominator_lcm(a);
-			} else {
-				return Expression.denominator_lcm(b);
-			}
+			const aDen = Expression.denominator_lcm(a);
+			const bDen = Expression.denominator_lcm(b);
+			return Expression._lcmTwo(aDen, bDen);
 		}
-		let multiple = Expression.denominator_lcm(expressions[0], expressions[1]);
-		expressions.shift();
-		expressions.shift();
-		for (const exp of expressions) {
-			const reciprocal = new Expression(new Quotient(1, multiple)).simplify();
-			multiple = Expression.denominator_lcm(reciprocal, exp);
+		// more than 2 expressions
+		const dens = expressions.map((exp) => Expression.denominator_lcm(exp));
+		let multiple = Expression._lcmTwo(dens[0], dens[1]);
+		dens.shift();
+		dens.shift();
+		for (const exp of dens) {
+			multiple = Expression._lcmTwo(multiple, exp);
 		}
 		return multiple;
 	}
@@ -600,7 +505,6 @@ export class Expression {
 			if (b instanceof Exponent && b.power instanceof Numeral) {
 				return Expression._gcdTwo(exp2, exp1);
 			} else if (b instanceof Product) {
-				console.log('here');
 				// lexical string: [power, expression, modified?]
 				/** @type {Object.<string,[Numeral,Expression,true?]>} */
 				const termMap = {};
@@ -666,6 +570,129 @@ export class Expression {
 				return exp1.clone();
 			}
 			return new Expression(1);
+		}
+	}
+
+	/**
+	 * get lcm of two expressions
+	 * @param {Expression} exp1
+	 * @param {Expression} exp2
+	 * @returns {Expression}
+	 */
+	static _lcmTwo(exp1, exp2) {
+		const a = exp1.expression;
+		const b = exp2.expression;
+		if (a instanceof Exponent && a.power instanceof Numeral) {
+			if (b instanceof Exponent && b.power instanceof Numeral) {
+				if (a.base.toLexicalString() === b.base.toLexicalString()) {
+					return new Expression(new Exponent(a.base.clone(), Numeral.max(a.power, b.power)));
+				}
+				return new Expression(new Product(exp1.clone(), exp2.clone())).simplify();
+			} else if (b instanceof Product) {
+				/** @type {ExpressionType[]} */
+				const factors = [];
+				/** @type {boolean} */
+				let noCommonFactor = true;
+				for (const f of b.factors) {
+					if (
+						f instanceof Exponent &&
+						f.power instanceof Numeral &&
+						a.base.toLexicalString() === f.base.toLexicalString()
+					) {
+						factors.push(new Exponent(a.base, Numeral.max(a.power, f.power)));
+						noCommonFactor = false;
+					} else {
+						factors.push(f);
+					}
+				}
+				if (noCommonFactor) {
+					factors.unshift(a);
+				}
+				return new Expression(new Product(b.coeff, ...factors)).simplify();
+			} else {
+				if (a.base.toLexicalString() == exp2.toLexicalString()) {
+					return exp2.clone();
+				}
+				return new Expression(new Product(exp1.clone(), exp2.clone())).simplify();
+			}
+		} else if (a instanceof Product) {
+			if (b instanceof Numeral) {
+				return Expression._lcmTwo(exp2, exp1);
+			} else if (b instanceof Exponent && b.power instanceof Numeral) {
+				return Expression._lcmTwo(exp2, exp1);
+			} else if (b instanceof Product) {
+				// lexical string: [power, expression]
+				/** @type {Object.<string,[Numeral,Expression]>} */
+				const termMap = {};
+				/** @type {string[]} */
+				const orderedKeys = [];
+				// loop through a
+				for (const factor of a.factors) {
+					if (factor instanceof Exponent && factor.power instanceof Numeral) {
+						const key = factor.base.toLexicalString();
+						orderedKeys.push(key);
+						termMap[key] = [factor.power, factor.baseExp.clone()];
+					} else {
+						const key = factor.toLexicalString();
+						orderedKeys.push(key);
+						termMap[key] = [new Numeral(1), new Expression(factor.clone())];
+					}
+				}
+				// loop through b
+				for (const factor of b.factors) {
+					if (factor instanceof Exponent && factor.power instanceof Numeral) {
+						const key = factor.base.toLexicalString();
+						const val = termMap[key];
+						if (val) {
+							val[0] = Numeral.max(factor.power, val[0]);
+						} else {
+							termMap[key] = [factor.power, factor.baseExp.clone()];
+							orderedKeys.push(key);
+						}
+					} else {
+						const key = factor.toLexicalString();
+						const val = termMap[key];
+						if (val) {
+							val[0] = Numeral.max(1, val[0]);
+						} else {
+							termMap[key] = [new Numeral(1), new Expression(factor.clone())];
+							orderedKeys.push(key);
+						}
+					}
+				}
+				/** @type {Expression[]} */
+				const factors = [];
+				for (const key of orderedKeys) {
+					const val = termMap[key];
+					if (val) {
+						const [power, expression] = val;
+						if (power.is.one()) {
+							factors.push(expression);
+						} else if (power.is.nonzero()) {
+							factors.push(new Expression(new Exponent(expression, power)));
+						}
+					}
+				}
+				return new Expression(new Product(Numeral.lcm(a.coeff, b.coeff), ...factors)).simplify();
+			} else {
+				if (exp1.toLexicalString() === exp2.toLexicalString()) {
+					return exp1.clone();
+				}
+				return new Expression(new Product(exp1.clone(), exp2.clone())).simplify();
+			}
+		} else if (a instanceof Numeral) {
+			if (b instanceof Numeral) {
+				return new Expression(Numeral.lcm(a, b));
+			} else if (b instanceof Product) {
+				return new Expression(new Product(Numeral.lcm(a, b.coeff), ...b.factors)).simplify();
+			} else {
+				return new Expression(new Product(a, exp2.clone())).simplify();
+			}
+		} else {
+			if (exp1.toLexicalString() === exp2.toLexicalString()) {
+				return exp1.clone();
+			}
+			return new Expression(new Product(exp1.clone(), exp2.clone())).simplify();
 		}
 	}
 }

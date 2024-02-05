@@ -145,6 +145,19 @@ export class Numeral {
 		return y instanceof Numeral ? y.clone() : new Numeral(y).clone();
 	}
 
+	//! Static methods
+	/**
+	 * @param {Numeral|number|Fraction} x
+	 * @param {Numeral|number|Fraction} y
+	 * @returns {Numeral}
+	 */
+	static max(x, y) {
+		if (x.valueOf() >= y.valueOf()) {
+			return x instanceof Numeral ? x.clone() : new Numeral(x).clone();
+		}
+		return y instanceof Numeral ? y.clone() : new Numeral(y).clone();
+	}
+
 	/**
 	 * @param {Numeral|number|Fraction} x
 	 * @param {Numeral|number|Fraction} y
@@ -154,5 +167,16 @@ export class Numeral {
 		const xFrac = x instanceof Numeral ? x.number : x instanceof Fraction ? x : new Fraction(x);
 		const yFrac = y instanceof Numeral ? y.number : y instanceof Fraction ? y : new Fraction(y);
 		return new Numeral(Fraction.gcd(xFrac, yFrac));
+	}
+
+	/**
+	 * @param {Numeral|number|Fraction} x
+	 * @param {Numeral|number|Fraction} y
+	 * @returns {Numeral}
+	 */
+	static lcm(x, y) {
+		const xFrac = x instanceof Numeral ? x.number : x instanceof Fraction ? x : new Fraction(x);
+		const yFrac = y instanceof Numeral ? y.number : y instanceof Fraction ? y : new Fraction(y);
+		return new Numeral(Fraction.lcm(xFrac, yFrac));
 	}
 }
