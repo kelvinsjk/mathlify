@@ -1,6 +1,6 @@
 import { Expression, Fraction, Sum, Numeral, Variable, Product, Quotient, Exponent } from '.';
 import { test, expect } from 'vitest';
-import { Brackets } from './fn';
+import { Brackets, Fn } from './fn';
 
 test('expression cloning', () => {
 	const x = new Expression('x');
@@ -46,6 +46,12 @@ test('expression simplification', () => {
 	expect(`${zero2}`).toBe('0');
 	expect(zero2.expression instanceof Quotient).toBe(false);
 	expect(zero2.expression instanceof Numeral).toBe(true);
+	const x2 = new Expression(new Quotient('x', 1));
+	expect(`${x2}`).toBe('\\frac{x}{1}');
+	expect(x2.expression instanceof Quotient).toBe(true);
+	x2.simplify();
+	expect(x2.expression instanceof Quotient).toBe(false);
+	expect(x2.expression instanceof Variable).toBe(true);
 });
 
 test('brackets', () => {
@@ -64,6 +70,10 @@ test('brackets', () => {
 	expect(`${twoMinus5}`).toBe(`2 - 5`);
 	twoMinus5.simplify();
 	expect(`${twoMinus5}`).toBe(`- 3`);
+	const exp = new Expression(new Brackets(5));
+	expect(`${exp}`).toBe(`\\left( 5 \\right)`);
+	const y = Expression.brackets(new Fn(new Brackets('y')));
+	expect(`${y}`).toBe(`\\left( y \\right)`);
 });
 
 test('expression lcm', () => {
@@ -93,7 +103,8 @@ test('expression lcm', () => {
 	const sum4 = new Expression(new Sum('x', 'y'));
 	sum4._common_denominator();
 	expect(`${sum4}`).toBe('x + y');
-	expect(() => sum4.combine_fraction()).toThrow();
+	sum4.combine_fraction();
+	expect(sum4.toString()).toBe('x + y');
 });
 
 test('expression arithmetic', () => {
@@ -144,4 +155,46 @@ test('expression gcd/lcm', () => {
 	expect(`${gcd}`).toBe('2xz^2');
 	const lcm = Expression._lcmTwo(sixX2YZ2, tenZ3X);
 	expect(`${lcm}`).toBe('30x^2yz^3');
+	const a2b = new Expression(new Product(new Exponent('a', 2), 'b'));
+	expect(`${Expression._lcmTwo(sixX2YZ2, a2b)}`).toBe('6x^2yz^2a^2b');
+
+	const eX = new Expression(new Exponent('e', 'x'));
+	expect(`${Expression._gcdTwo(eX, sixX2YZ2)}`).toBe('1');
+
+	const x = new Expression('x');
+	const x2 = new Expression(new Exponent('x', 2));
+	const xHalf = new Expression(new Exponent('x', new Fraction(1, 2)));
+	const x3 = new Expression(new Exponent('x', 3));
+	const w4 = new Expression(new Exponent('w', 4));
+	const y = new Expression('y');
+	const xY = new Expression(new Exponent('x', 'y'));
+	const xSuperPower = new Expression(new Exponent(new Exponent('x', 'y'), 3));
+	expect(`${Expression._lcmTwo(x2, x3)}`).toBe('x^3');
+	expect(`${Expression._gcdTwo(x2, x3)}`).toBe('x^2');
+	expect(`${Expression._gcdTwo(x2, w4)}`).toBe('1');
+	expect(`${Expression._gcdTwo(x2, sixX2YZ2)}`).toBe('x^2');
+	expect(`${Expression._lcmTwo(x3, sixX2YZ2)}`).toBe('6x^3yz^2');
+	expect(`${Expression._gcdTwo(sixX2YZ2, w4)}`).toBe('1');
+	expect(`${xSuperPower}`).toBe('x^y^3');
+	expect(`${Expression._gcdTwo(xSuperPower, xY)}`).toBe('x^y');
+	expect(`${Expression._gcdTwo(xSuperPower, y)}`).toBe('1');
+	const xPlusY = new Expression(new Sum('x', 'y'));
+	const yPlusX = new Expression(new Sum('y', 'x'));
+	expect(`${Expression._gcdTwo(xPlusY, yPlusX)}`).toBe('x + y');
+	expect(`${Expression._gcdTwo(xPlusY, y)}`).toBe('1');
+	const two = new Expression(2);
+	expect(`${Expression._gcdTwo(sixX2YZ2, two)}`).toBe('2');
+	expect(`${Expression._lcmTwo(sixX2YZ2, two)}`).toBe('6x^2yz^2');
+	const threeYPlusX = new Expression(new Product(3, yPlusX));
+	const threeYPlusX2 = new Expression(new Product(3, new Exponent(yPlusX, 2)));
+	expect(`${Expression._gcdTwo(threeYPlusX2, xPlusY)}`).toBe('x + y');
+	expect(`${Expression._gcdTwo(threeYPlusX, xPlusY)}`).toBe('x + y');
+	expect(`${Expression._gcdTwo(threeYPlusX, y)}`).toBe('1');
+	expect(`${Expression._lcmTwo(threeYPlusX, xPlusY)}`).toBe('3\\left( y + x \\right)');
+	expect(`${Expression._lcmTwo(threeYPlusX, x2)}`).toBe('3\\left( y + x \\right)x^2');
+	expect(`${Expression._lcmTwo(x2, w4)}`).toBe('x^2w^4');
+	expect(`${Expression._lcmTwo(x2, x)}`).toBe('x^2');
+	expect(`${Expression._lcmTwo(xHalf, x)}`).toBe('x');
+	expect(`${Expression._lcmTwo(y, x2)}`).toBe('x^2y');
+	expect(`${Expression._lcmTwo(xPlusY, y)}`).toBe('\\left( x + y \\right)y');
 });

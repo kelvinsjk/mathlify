@@ -1,4 +1,4 @@
-import { product, brackets, quotient } from '.';
+import { product, brackets, quotient, sum } from '.';
 import { test, expect } from 'vitest';
 
 test('macros', () => {
@@ -25,4 +25,7 @@ test('macros', () => {
 	expect(() => product([[]])).toThrow();
 	q = product([['()', 'x']]);
 	expect(`${q}`).toBe('x');
+
+	q = quotient([sum('x', 'y'), 3], 2);
+	expect(`${q}`).toBe('\\frac{\\left( x + y \\right)^3}{2}');
 });

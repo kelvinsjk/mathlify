@@ -1,4 +1,4 @@
-import { sum, product, sumVerbatim, Expression } from '../../../src/';
+import { sum, product, sumVerbatim, Expression, productVerbatim } from '../../../src/';
 import { test, expect } from 'vitest';
 
 test('combine like terms', () => {
@@ -53,4 +53,12 @@ test('combine like terms: quadratic expressions', () => {
 	expect(`${q}`).toBe('- 3x^2 + x - 1 - 2x + x^2 - 3x - 5');
 	q.simplify();
 	expect(`${q}`).toBe('- 2x^2 - 4x - 6');
+
+	q = sumVerbatim([sum('x', 'y'), 3], [sum('y', 'x'), 3]);
+	expect(`${q}`).toBe('\\left( x + y \\right)^3 + \\left( y + x \\right)^3');
+	q.simplify();
+	expect(`${q}`).toBe('2\\left( x + y \\right)^3');
+
+	q = product(2, ['k', [sum('x', 'y'), 2]]);
+	expect(`${q}`).toBe('2\\left( k + \\left( x + y \\right)^2 \\right)');
 });

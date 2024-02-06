@@ -66,23 +66,14 @@ export class Numeral {
 	 * @returns {Numeral}
 	 */
 	plus(x) {
-		if (typeof x === 'number') {
-			x = new Fraction(x);
-		} else if (x instanceof Numeral) {
-			x = x.number;
-		}
-		return new Numeral(this.number.plus(x));
+		return new Numeral(this.number.plus(numberToFraction(x)));
 	}
 	/**
 	 * @param {Numeral|number|Fraction} x
 	 * @returns {Numeral}
 	 */
 	times(x) {
-		if (typeof x === 'number') {
-			x = new Fraction(x);
-		} else if (x instanceof Numeral) {
-			x = x.number;
-		}
+		x = numberToFraction(x);
 		return new Numeral(this.number.times(x));
 	}
 	/**
@@ -96,11 +87,7 @@ export class Numeral {
 	 * @returns {Numeral}
 	 */
 	divide(x) {
-		if (typeof x === 'number') {
-			x = new Fraction(x);
-		} else if (x instanceof Numeral) {
-			x = x.number;
-		}
+		x = numberToFraction(x);
 		return new Numeral(this.number.divide(x));
 	}
 	/** @returns {Numeral} */
@@ -110,6 +97,13 @@ export class Numeral {
 	/** @returns {Numeral} */
 	negative() {
 		return new Numeral(this.number.negative());
+	}
+	/**
+	 * @param {Numeral|number|Fraction} x
+	 * @returns {Numeral}
+	 * */
+	minus(x) {
+		return this.plus(numberToFraction(x).negative());
 	}
 	/**
 	 * @returns {this}
@@ -132,6 +126,11 @@ export class Numeral {
 		nonzero: () => this.number.is.nonzero(),
 	};
 
+	/** @returns {number} */
+	valueOf() {
+		return this.number.valueOf();
+	}
+
 	//! Static methods
 	/**
 	 * @param {Numeral|number|Fraction} x
@@ -145,7 +144,6 @@ export class Numeral {
 		return y instanceof Numeral ? y.clone() : new Numeral(y).clone();
 	}
 
-	//! Static methods
 	/**
 	 * @param {Numeral|number|Fraction} x
 	 * @param {Numeral|number|Fraction} y
@@ -164,8 +162,8 @@ export class Numeral {
 	 * @returns {Numeral}
 	 */
 	static gcd(x, y) {
-		const xFrac = x instanceof Numeral ? x.number : x instanceof Fraction ? x : new Fraction(x);
-		const yFrac = y instanceof Numeral ? y.number : y instanceof Fraction ? y : new Fraction(y);
+		const xFrac = numberToFraction(x);
+		const yFrac = numberToFraction(y);
 		return new Numeral(Fraction.gcd(xFrac, yFrac));
 	}
 
@@ -175,8 +173,19 @@ export class Numeral {
 	 * @returns {Numeral}
 	 */
 	static lcm(x, y) {
-		const xFrac = x instanceof Numeral ? x.number : x instanceof Fraction ? x : new Fraction(x);
-		const yFrac = y instanceof Numeral ? y.number : y instanceof Fraction ? y : new Fraction(y);
+		const xFrac = numberToFraction(x);
+		const yFrac = numberToFraction(y);
 		return new Numeral(Fraction.lcm(xFrac, yFrac));
 	}
+}
+
+/**
+ * @param {Numeral|number|Fraction} x
+ * @returns {Fraction}
+ */
+function numberToFraction(x) {
+	if (typeof x === 'number') {
+		x = new Fraction(x);
+	}
+	return x instanceof Numeral ? x.number : x;
 }
