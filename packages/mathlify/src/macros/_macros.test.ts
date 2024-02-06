@@ -1,4 +1,4 @@
-import { product, brackets, quotient, sum } from '.';
+import { product, brackets, quotient, sum, sumVerbatim } from '.';
 import { test, expect } from 'vitest';
 
 test('macros', () => {
@@ -28,4 +28,7 @@ test('macros', () => {
 
 	q = quotient([sum('x', 'y'), 3], 2);
 	expect(`${q}`).toBe('\\frac{\\left( x + y \\right)^3}{2}');
+
+	q = sumVerbatim(2, brackets(['-', 'x']));
+	expect(`${q}`).toBe('2 + \\left( - x \\right)');
 });

@@ -1,4 +1,4 @@
-import { sum, quotient, product, fraction, sumVerbatim } from '../../../../src/';
+import { sum, quotient, product, sumVerbatim } from '../../../../src';
 import { test, expect } from 'vitest';
 
 test('algebraic fractions', () => {
