@@ -1,7 +1,7 @@
 import { Expression, Sum, Product, Quotient, Numeral, Exponent } from '../core/index.js';
 
-/** @typedef {[number, '/', number]} FractionShorthand */
-/** @typedef {['()', Expression|number|string|FractionShorthand]} BracketShorthand */
+/** @typedef {[number|string|Expression, '/', number|string|Expression]} QuotientShorthand */
+/** @typedef {['()', Expression|number|string|QuotientShorthand]} BracketShorthand */
 /** @typedef {[Expression|string, number]} PowerShorthand */
 
 /**
@@ -24,7 +24,7 @@ export function fraction(num, den = 1, options) {
  * fraction shorthand: [a, '/', b] represents the fraction a/b
  * brackets shorthand: ['()', a] represents the bracketed expression (a)
  * exponent shorthand: [a, n] where n must be a number and a cannot be '()'
- * @param {...(Expression|number|string|FractionShorthand|BracketShorthand|PowerShorthand|(Expression|number|string|FractionShorthand|BracketShorthand|PowerShorthand)[])} terms
+ * @param {...(Expression|number|string|QuotientShorthand|BracketShorthand|PowerShorthand|(Expression|number|string|QuotientShorthand|BracketShorthand|PowerShorthand)[])} terms
  * @returns {Expression}
  */
 export function sum(...terms) {
@@ -39,7 +39,7 @@ export function sum(...terms) {
  * fraction shorthand: [a, '/', b] represents the fraction a/b
  * brackets shorthand: ['()', a] represents the bracketed expression (a)
  * exponent shorthand: [a, n] where n must be a number and a cannot be '()'
- * @param {...(Expression|number|string|FractionShorthand|BracketShorthand|PowerShorthand|(Expression|number|string|FractionShorthand|BracketShorthand|PowerShorthand)[])} terms
+ * @param {...(Expression|number|string|QuotientShorthand|BracketShorthand|PowerShorthand|(Expression|number|string|QuotientShorthand|BracketShorthand|PowerShorthand)[])} terms
  * @returns {Expression}
  */
 export function sumVerbatim(...terms) {
@@ -63,7 +63,7 @@ export function sumVerbatim(...terms) {
  * fraction shorthand: [a, '/', b] represents the fraction a/b
  * brackets shorthand: ['()', a] represents the bracketed expression (a)
  * exponent shorthand: [a, n] where n must be a number and a cannot be '()'
- * @param {...(Expression|number|string|FractionShorthand|BracketShorthand|PowerShorthand|(Expression|number|string|FractionShorthand|BracketShorthand|PowerShorthand)[])} factors
+ * @param {...(Expression|number|string|QuotientShorthand|BracketShorthand|PowerShorthand|(Expression|number|string|QuotientShorthand|BracketShorthand|PowerShorthand)[])} factors
  */
 export function product(...factors) {
 	const exp = productVerbatim(...factors);
@@ -77,7 +77,7 @@ export function product(...factors) {
  * fraction shorthand: [a, '/', b] represents the fraction a/b
  * brackets shorthand: ['()', a] represents the bracketed expression (a)
  * exponent shorthand: [a, n] where n must be a number and a cannot be '()'
- * @param {...(Expression|number|string|FractionShorthand|BracketShorthand|PowerShorthand|(Expression|number|string|FractionShorthand|BracketShorthand|PowerShorthand)[])} factors
+ * @param {...(Expression|number|string|QuotientShorthand|BracketShorthand|PowerShorthand|(Expression|number|string|QuotientShorthand|BracketShorthand|PowerShorthand)[])} factors
  */
 export function productVerbatim(...factors) {
 	/** @type {(Expression|number|string)[]} */
@@ -109,8 +109,8 @@ export function brackets(exp) {
  * fraction shorthand: [a, '/', b] represents the fraction a/b
  * brackets shorthand: ['()', a] represents the bracketed expression (a)
  * TODO: exponent shorthand
- * @param {Expression|number|string|FractionShorthand|BracketShorthand|PowerShorthand} num
- * @param {Expression|number|string|FractionShorthand|BracketShorthand|PowerShorthand} den
+ * @param {Expression|number|string|QuotientShorthand|BracketShorthand|PowerShorthand} num
+ * @param {Expression|number|string|QuotientShorthand|BracketShorthand|PowerShorthand} den
  * @param {{verbatim?: boolean}} [options] - options. verbatim: if true, do not simplify the quotient.
  * @returns {Expression}
  */
@@ -127,7 +127,7 @@ export function quotient(num, den, options) {
 }
 
 /**
- * @param {...(Expression|number|string|FractionShorthand|BracketShorthand|PowerShorthand|(Expression|number|string|FractionShorthand|BracketShorthand|PowerShorthand)[])} exp
+ * @param {...(Expression|number|string|QuotientShorthand|BracketShorthand|PowerShorthand|(Expression|number|string|QuotientShorthand|BracketShorthand|PowerShorthand)[])} exp
  * @returns {Expression|number|string|(Expression|number|string)[]}
  */
 function unpack_shorthand(...exp) {
@@ -141,7 +141,8 @@ function unpack_shorthand(...exp) {
 			const term = e[1];
 			if (Array.isArray(term)) {
 				if (term.length === 3) {
-					return Expression.brackets(fraction(term[0], term[2]));
+					const [num, _, den] = term;
+					return Expression.brackets(quotient(num, den)).simplify();
 				} else {
 					throw new Error('unexpected nested brackets');
 				}
@@ -196,7 +197,7 @@ function unpack_shorthand(...exp) {
 
 /**
  *
- * @param {Expression|number|string|FractionShorthand|BracketShorthand|PowerShorthand} exp
+ * @param {Expression|number|string|QuotientShorthand|BracketShorthand|PowerShorthand} exp
  * @returns {Expression|number|string}
  */
 export function unpack_shorthand_single(exp) {
@@ -209,7 +210,8 @@ export function unpack_shorthand_single(exp) {
 			const term = exp[1];
 			if (Array.isArray(term)) {
 				if (term.length === 3) {
-					return Expression.brackets(fraction(term[0], term[2]));
+					const [num, _, den] = term;
+					return Expression.brackets(quotient(num, den));
 				} else {
 					throw new Error('unexpected nested brackets');
 				}
