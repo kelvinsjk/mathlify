@@ -18,7 +18,7 @@ test('expansion', () => {
 	expect(`${q}`).toBe('3\\left( x + 2 \\right)');
 	q.expand();
 	expect(`${q}`).toBe('3x + 6');
-	q = product(-1, [product(2, 'y'), product(-1, 'x')]);
+	q = product(-1, [product(2, 'y'), ['-', 'x']]);
 	expect(`${q}`).toBe('- \\left( 2y - x \\right)');
 	q.expand();
 	expect(`${q}`).toBe('- 2y + x');
@@ -44,7 +44,7 @@ test('expansion', () => {
 	expect(`${q2}`).toBe(`6x + 2y + x - y`);
 	q2.simplify();
 	expect(`${q2}`).toBe('7x + y');
-	q = sum(product(2, sum('x', [3, 'y'])), product(-1, xPlus2));
+	q = sum(product(2, sum('x', [3, 'y'])), ['-', xPlus2]);
 	expect(`${q}`).toBe('2\\left( x + 3y \\right) - \\left( x + 2 \\right)');
 	q.expand({ verbatim: true });
 	q.simplify({ product: true });
