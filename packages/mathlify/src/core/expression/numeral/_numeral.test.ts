@@ -23,3 +23,10 @@ test('numeral', () => {
 	expect(`${negativeHalf.reciprocal()}`).toBe('- 2');
 	expect(`${negativeHalf.divide(3)}`).toBe('- \\frac{1}{6}');
 });
+
+test('numeral static methods', () => {
+	expect(`${Numeral.min(new Numeral(1), 2)}`).toBe('1');
+	expect(`${Numeral.min(new Numeral(1), -3)}`).toBe('- 3');
+	expect(`${Numeral.max(2, 3)}`).toBe('3');
+	expect(`${Numeral.max(4, 3)}`).toBe('4');
+});

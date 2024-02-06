@@ -57,6 +57,7 @@ test('fraction gcd, lcm', () => {
 	expect(() => Fraction.lcm(zero)).toThrow();
 	expect(`${Fraction.lcm(sixFifth)}`).toBe(`\\frac{6}{5}`);
 	expect(`${Fraction.lcm(sixFifth, twoThird, oneSixth)}`).toBe('6');
+	expect(`${Fraction.lcm(sixFifth, 2)}`).toBe('6');
 });
 
 test('fraction arithmetic', () => {
@@ -64,4 +65,6 @@ test('fraction arithmetic', () => {
 	const half = new Fraction(1, 2);
 	expect(() => zero.reciprocal()).to.throw();
 	expect(() => half.divide(zero)).to.throw();
+	expect(() => half.pow(half)).to.throw();
+	expect(`${half.pow(2)}`).toBe('\\frac{1}{4}');
 });

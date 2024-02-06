@@ -2,7 +2,7 @@ import { Product } from '.';
 import { Sum } from '../sum';
 //import { Variable } from '../variable';
 //import { Numeral, Fraction } from '../numeral';
-import { Expression } from '..';
+import { Exponent, Expression } from '..';
 
 import { test, expect } from 'vitest';
 
@@ -39,4 +39,9 @@ test('product simplification', () => {
 	const sixXYPlus2 = new Sum(sixXY, 2);
 	sixXYPlus2.simplify();
 	expect(`${sixXYPlus2}`).toBe('6xy + 2');
+
+	const x = new Product(new Exponent('x', 2), 'y', new Exponent('x', -1), new Exponent('y', -1));
+	expect(`${x}`).toBe('x^2yx^{- 1}y^{- 1}');
+	x.simplify();
+	expect(`${x}`).toBe('x');
 });

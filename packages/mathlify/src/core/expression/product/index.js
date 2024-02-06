@@ -178,13 +178,13 @@ export class Product {
 			const [indices, power, base] = termMap[key];
 			if (indices.length > 1) {
 				// combine
-				const newExponent = power.is.zero()
-					? new Expression(1)
-					: power.is.one()
-						? base
-						: new Expression(new Exponent(base, power));
-				this._factorsExp[indices[0]] = newExponent;
-				indicesToRemove.push(...indices.slice(1));
+				if (power.is.zero()) {
+					indicesToRemove.push(...indices);
+				} else {
+					const newExponent = power.is.one() ? base : new Expression(new Exponent(base, power));
+					this._factorsExp[indices[0]] = newExponent;
+					indicesToRemove.push(...indices.slice(1));
+				}
 			}
 		}
 		this._factorsExp = this._factorsExp.filter((_, i) => !indicesToRemove.includes(i));

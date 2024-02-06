@@ -109,8 +109,8 @@ export function brackets(exp) {
  * fraction shorthand: [a, '/', b] represents the fraction a/b
  * brackets shorthand: ['()', a] represents the bracketed expression (a)
  * TODO: exponent shorthand
- * @param {Expression|number|string|FractionShorthand|BracketShorthand} num
- * @param {Expression|number|string|FractionShorthand|BracketShorthand} den
+ * @param {Expression|number|string|FractionShorthand|BracketShorthand|PowerShorthand} num
+ * @param {Expression|number|string|FractionShorthand|BracketShorthand|PowerShorthand} den
  * @param {{verbatim?: boolean}} [options] - options. verbatim: if true, do not simplify the quotient.
  * @returns {Expression}
  */
