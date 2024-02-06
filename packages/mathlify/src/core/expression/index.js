@@ -9,7 +9,7 @@ export { Variable, Numeral, Fraction, Sum, Product, Quotient, Exponent };
 import { unpack_shorthand_single } from '../../macros/index.js';
 
 /** @typedef {import('../../macros/index.js').BracketShorthand} BracketShorthand */
-/** @typedef {import('../../macros/index.js').FractionShorthand} FractionShorthand */
+/** @typedef {import('../../macros/index.js').QuotientShorthand} FractionShorthand */
 /** @typedef {Sum|Product|Quotient|Exponent|Variable|Numeral|Fn} ExpressionType */
 /** @typedef {{brackets?: boolean, product?: boolean, sum?: boolean, quotient?: boolean, numeral?: boolean, exponent?: boolean}} SimplifyOptions */
 
