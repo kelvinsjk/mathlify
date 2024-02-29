@@ -38,6 +38,8 @@ export class Numeral {
     constructor(number: number | Fraction | [number, number], options?: {
         verbatim?: boolean | undefined;
     } | undefined);
+    /** @type {'numeral'} */
+    type: 'numeral';
     /** @type {Fraction} */
     number: Fraction;
     /**

@@ -10,4 +10,4 @@ export {
 	Fn,
 	Brackets,
 } from './expression/index.js';
-//export { GeneralPolynomial, Polynomial } from './polynomial/index.js';
+export { GeneralPolynomial, Polynomial } from './polynomial/index.js';

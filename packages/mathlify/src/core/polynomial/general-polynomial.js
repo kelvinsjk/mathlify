@@ -30,14 +30,22 @@ export class GeneralPolynomial extends Expression {
 			coeffs.pop();
 		}
 		// construct terms
-		const x = new Variable(options?.variable || 'x');
-		const terms = coeffs.map((coeff, i) => {
-			return i === 0 ? coeff : i === 1 ? new Product(coeff, x) : new Product(coeff, new Exponent(x, i));
-		});
+		const name = options?.variable || 'x';
+		const x = new Expression(new Variable(name));
+		const terms = coeffs
+			.map((coeff, i) => {
+				return i === 0
+					? coeff
+					: i === 1
+						? new Product(new Expression(coeff), x)
+						: new Product(new Expression(coeff), new Expression(new Exponent(x, new Expression(i))));
+			})
+			.map((term) => new Expression(term));
 		if (!options?.ascending) terms.reverse();
 		super(new Sum(...terms));
+		this.simplify();
 		this.coeffs = coeffs;
-		this.variable = x.name;
+		this.variable = name;
 		this.ascending = options?.ascending ?? false;
 	}
 }

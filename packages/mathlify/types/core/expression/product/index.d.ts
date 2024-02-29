@@ -14,6 +14,8 @@ export class Product {
      * @param {Expression[]|[number|Numeral, ...Expression[]]} factors
      */
     constructor(...factors: Expression[] | [number | Numeral, ...Expression[]]);
+    /** @type {'product'} */
+    type: 'product';
     /** @type {Numeral} */
     coeff: Numeral;
     /**@type {Expression[]} */
@@ -38,11 +40,6 @@ export class Product {
      */
     toUnit(): Expression;
     /**
-     * @param {number|Numeral} x
-     * @returns {Product}
-     */
-    _multiply_into_coeff(x: number | Numeral): Product;
-    /**
      * @param {Expression} x
      * @returns {Product}
      */
@@ -57,6 +54,13 @@ export class Product {
      * WARNING: mutates current instance
      */
     simplify(options?: import("../index.js").SimplifyOptions | undefined): this;
+    /**
+     * extracts numeric factors into coefficient
+     * combines singletons and exponents with numeric powers into an exponent
+     * eg. combines $4 \cdot x \cdot x^2 \cdot 3$ into $12x^3$
+     * @returns {this}
+     */
+    _combine_factors(): this;
     /**
      * flattens product
      * @returns {this}

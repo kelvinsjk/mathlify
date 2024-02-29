@@ -1,3 +1,4 @@
+/** @typedef {import('../index.js').Expression} Expression */
 /** @typedef {import('../numeral/index.js').Numeral} Numeral */
 /** @typedef {import('../numeral/fraction/index.js').Fraction} Fraction */
 /** @typedef {import('../variable/index.js').Variable} Variable */
@@ -13,10 +14,12 @@
 export class Quotient {
     /**
      * Creates a Quotient
-     * @param {Expression|ExpressionType|string|Fraction|number} num
-     * @param {Expression|ExpressionType|string|Fraction|number} den
+     * @param {Expression} num
+     * @param {Expression} den
      */
-    constructor(num: Expression | ExpressionType | string | Fraction | number, den: Expression | ExpressionType | string | Fraction | number);
+    constructor(num: Expression, den: Expression);
+    /** @type {'quotient'} */
+    type: 'quotient';
     /**@type {Expression} */
     num: Expression;
     /**@type {Expression} */
@@ -59,6 +62,7 @@ export class Quotient {
         verbatim: boolean;
     }): Quotient;
 }
+export type Expression = import('../index.js').Expression;
 export type Numeral = import('../numeral/index.js').Numeral;
 export type Fraction = import('../numeral/fraction/index.js').Fraction;
 export type Variable = import('../variable/index.js').Variable;
@@ -66,5 +70,4 @@ export type Sum = import('../sum/index.js').Sum;
 export type Product = import('../product/index.js').Product;
 export type Exponent = import('../exponent/index.js').Exponent;
 export type ExpressionType = import('../index.js').ExpressionType;
-import { Expression } from '../index.js';
 //# sourceMappingURL=index.d.ts.map

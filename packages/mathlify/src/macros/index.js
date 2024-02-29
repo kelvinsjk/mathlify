@@ -1,5 +1,15 @@
-import { to_Expression } from '../core/expression/utils/type-coercions.js';
-import { Expression, Sum, Product, Quotient, Numeral, Exponent, Brackets, Fn } from '../core/index.js';
+export { polynomial } from './polynomials.js';
+import {
+	Expression,
+	Sum,
+	Product,
+	Quotient,
+	Numeral,
+	Exponent,
+	Brackets,
+	Fn,
+	to_Expression,
+} from '../core/expression/index.js';
 
 /** @typedef {[number|string|Expression, '/', number|string|Expression]} QuotientShorthand */
 /** @typedef {['-', number|string|Expression|PowerShorthand]} NegativeShorthand */
@@ -47,14 +57,14 @@ export function sum(...terms) {
  * @returns {Expression}
  */
 export function sumVerbatim(...terms) {
-	/** @type {(Expression|number|string)[]} */
+	/** @type {(Expression)[]} */
 	const termsExp = [];
 	for (const term of terms) {
 		const unpacked_term = unpack_shorthand(term);
 		if (Array.isArray(unpacked_term)) {
 			termsExp.push(productVerbatim(...unpacked_term));
 		} else {
-			termsExp.push(unpacked_term);
+			termsExp.push(to_Expression(unpacked_term));
 		}
 	}
 	return new Expression(new Sum(...termsExp));
@@ -131,7 +141,7 @@ export function quotient(num, den, options) {
 	};
 	const numerator = unpack_shorthand_single(num);
 	const denominator = unpack_shorthand_single(den);
-	const q = new Expression(new Quotient(numerator, denominator));
+	const q = new Expression(new Quotient(to_Expression(numerator), to_Expression(denominator)));
 	if (!verbatim) q.simplify();
 	return q;
 }
@@ -194,7 +204,7 @@ function unpack_shorthand(...exp) {
 			const [_, term] = e;
 			const int = unpack_shorthand_single(term);
 			const exp = int instanceof Expression ? int : new Expression(int);
-			return new Expression(new Product(exp)._multiply_into_coeff(-1));
+			return new Expression(new Product(-1, exp));
 		} else {
 			// product/sum array
 			/** @type {(Expression|number|string)[]} */
@@ -227,7 +237,7 @@ function unpack_shorthand(...exp) {
 						const [_, t] = term;
 						const int = unpack_shorthand_single(t);
 						const exp = int instanceof Expression ? int : new Expression(int);
-						termsExp.push(new Expression(new Product(exp)._multiply_into_coeff(-1)));
+						termsExp.push(new Expression(new Product(-1, exp)));
 					} else {
 						throw new Error('unexpected nested arrays');
 					}
@@ -281,7 +291,7 @@ export function unpack_shorthand_single(exp) {
 			const [_, term] = exp;
 			const int = unpack_shorthand_single(term);
 			const e = int instanceof Expression ? int : new Expression(int);
-			return new Expression(new Product(e)._multiply_into_coeff(-1));
+			return new Expression(new Product(-1, e));
 		} else {
 			throw new Error('unexpected array');
 		}

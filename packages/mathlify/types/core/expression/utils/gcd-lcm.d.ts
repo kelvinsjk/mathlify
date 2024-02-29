@@ -1,3 +1,4 @@
+/** @typedef {import('../index.js').Expression} Expression */
 /** @typedef {import('../index.js').ExpressionType} ExpressionType */
 /**
  * get denominator lcm of expressions
@@ -18,6 +19,6 @@ export function expression_lcm_two(exp1: Expression, exp2: Expression): Expressi
  * @returns {Expression}
  */
 export function expression_gcd(...exps: Expression[]): Expression;
+export type Expression = import('../index.js').Expression;
 export type ExpressionType = import('../index.js').ExpressionType;
-import { Expression } from '../index.js';
 //# sourceMappingURL=gcd-lcm.d.ts.map

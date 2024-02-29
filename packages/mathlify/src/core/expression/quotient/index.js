@@ -1,6 +1,6 @@
-import { Expression } from '../index.js';
-import { to_Expression } from '../utils/type-coercions.js';
+//import { Expression } from '../index.js';
 
+/** @typedef {import('../index.js').Expression} Expression */
 /** @typedef {import('../numeral/index.js').Numeral} Numeral */
 /** @typedef {import('../numeral/fraction/index.js').Fraction} Fraction */
 /** @typedef {import('../variable/index.js').Variable} Variable */
@@ -23,12 +23,12 @@ export class Quotient {
 	den;
 	/**
 	 * Creates a Quotient
-	 * @param {Expression|ExpressionType|string|Fraction|number} num
-	 * @param {Expression|ExpressionType|string|Fraction|number} den
+	 * @param {Expression} num
+	 * @param {Expression} den
 	 */
 	constructor(num, den) {
-		this.num = to_Expression(num);
-		this.den = to_Expression(den);
+		this.num = num;
+		this.den = den;
 	}
 
 	/**

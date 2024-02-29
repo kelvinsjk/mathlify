@@ -1,1 +1,1 @@
-{"version":3,"file":"combine-fraction.d.ts","sourceRoot":"","sources":["../../../../src/core/expression/utils/combine-fraction.js"],"names":[],"mappings":"AAIA;;GAEG;AACH,wCAFW,UAAU,QA4CpB;AAED;;;;GAIG;AACH,sCAHW,UAAU,GACR,QAAQ,GAAC,SAAS,CA6B9B;2BAnF2D,aAAa;yBAAb,aAAa"}
+{"version":3,"file":"combine-fraction.d.ts","sourceRoot":"","sources":["../../../../src/core/expression/utils/combine-fraction.js"],"names":[],"mappings":"AAOA,8DAA8D;AAE9D;;GAEG;AACH,wCAFW,UAAU,QAuDpB;AAED;;;;GAIG;AACH,sCAHW,UAAU,GACR,QAAQ,GAAC,SAAS,CA8B9B;yBA7Fa,OAAO,aAAa,EAAE,UAAU;yBAJrB,sBAAsB"}

@@ -1,6 +1,6 @@
-import { Sum } from '../sum/index.js';
-import { Product } from '../product/index.js';
+// import { Sum } from '../sum/index.js';
 import { Numeral } from '../numeral/index.js';
+//import { Product } from '../product/index.js';
 
 /** @typedef {import('../index.js').Expression} Expression */
 /** @typedef {import('../numeral/fraction/index.js').Fraction} Fraction */
@@ -50,8 +50,8 @@ export class Exponent {
 		}
 		let baseStr = this.base.toString(options);
 		if (
-			this.base instanceof Sum ||
-			this.base instanceof Product ||
+			this.base.type === 'sum' ||
+			this.base.type === 'product' ||
 			(this.base instanceof Numeral && this.base.is.negative())
 		) {
 			baseStr = `\\left( ${baseStr} \\right)`;

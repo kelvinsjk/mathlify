@@ -1,3 +1,4 @@
+/** @typedef {import('../../index.js').Expression} Expression */
 /** @typedef {import('../../numeral/index.js').Numeral} Numeral */
 /** @typedef {import('../../numeral/fraction/index.js').Fraction} Fraction */
 /** @typedef {import('../../variable/index.js').Variable} Variable */
@@ -13,9 +14,9 @@
 export class Brackets {
     /**
      * Creates a Bracketed term
-     * @param {Expression|ExpressionType|string|Fraction|number} expression
+     * @param {Expression} expression
      */
-    constructor(expression: Expression | ExpressionType | string | Fraction | number);
+    constructor(expression: Expression);
     /**@type {Expression} */
     expression: Expression;
     /**
@@ -41,6 +42,7 @@ export class Brackets {
         verbatim: boolean;
     }): Brackets;
 }
+export type Expression = import('../../index.js').Expression;
 export type Numeral = import('../../numeral/index.js').Numeral;
 export type Fraction = import('../../numeral/fraction/index.js').Fraction;
 export type Variable = import('../../variable/index.js').Variable;
@@ -49,5 +51,4 @@ export type Product = import('../../product/index.js').Product;
 export type Quotient = import('../../quotient/index.js').Quotient;
 export type Exponent = import('../../exponent/index.js').Exponent;
 export type ExpressionType = import('../../index.js').ExpressionType;
-import { Expression } from '../../index.js';
 //# sourceMappingURL=index.d.ts.map

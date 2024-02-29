@@ -15,6 +15,8 @@ export class Exponent {
      * @param {Expression} power
      */
     constructor(base: Expression, power: Expression);
+    /** @type {'exponent'} */
+    type: 'exponent';
     /**@type {Expression} */
     baseExp: Expression;
     /**@type {Expression} */

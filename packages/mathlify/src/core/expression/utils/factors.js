@@ -1,9 +1,8 @@
 import { Product } from '../product/index.js';
 import { Numeral } from '../numeral/index.js';
 import { Exponent } from '../exponent/index.js';
-import { Expression } from '../index.js';
 
-///** @typedef {import('../index.js').Expression} Expression */
+/** @typedef {import('../index.js').Expression} Expression */
 /** @typedef {import('../index.js').ExpressionType} ExpressionType */
 
 // lcm divide: divides a product by a factor.
@@ -17,14 +16,15 @@ import { Expression } from '../index.js';
 export function divide_by_factor(quotient, divisor) {
 	if (quotient.expression instanceof Numeral) {
 		// assumes that divisor is a numeral
-		return new Product()._multiply_into_coeff(quotient.expression.divide(/** @type {Numeral} */ (divisor)));
+		return new Product(quotient.expression.divide(/** @type {Numeral} */ (divisor)));
 	}
 	const product = quotient.expression instanceof Product ? quotient.expression : new Product(quotient);
 	if (divisor instanceof Numeral) {
-		return new Product(...product._factorsExp)._multiply_into_coeff(product.coeff.divide(divisor));
+		return new Product(product.coeff.divide(divisor), ...product._factorsExp);
 	} else if (divisor instanceof Exponent) {
 		/** @type {Expression[]} */
 		const factors = [];
+		const dummy = product._factorsExp[0];
 		for (const factor of product._factorsExp) {
 			if (
 				factor.expression instanceof Exponent &&
@@ -33,18 +33,19 @@ export function divide_by_factor(quotient, divisor) {
 				divisor.power instanceof Numeral
 			) {
 				factors.push(
-					new Expression(
-						new Exponent(factor.expression.baseExp, new Expression(factor.expression.power.minus(divisor.power))),
+					dummy._new_exp(
+						new Exponent(factor.expression.baseExp, dummy._new_exp(factor.expression.power.minus(divisor.power))),
 					),
 				);
 			} else {
 				factors.push(factor);
 			}
 		}
-		return new Product(...factors)._multiply_into_coeff(product.coeff);
+		return new Product(product.coeff, ...factors);
 	} else if (divisor instanceof Product) {
 		/** @type {Expression[]} */
 		const factors = [];
+		const dummy = product._factorsExp[0];
 		for (const factor of product._factorsExp) {
 			let divided = false;
 			if (factor.expression instanceof Exponent && factor.expression.power instanceof Numeral) {
@@ -55,10 +56,10 @@ export function divide_by_factor(quotient, divisor) {
 						divisorFactor.power instanceof Numeral
 					) {
 						factors.push(
-							new Expression(
+							dummy._new_exp(
 								new Exponent(
 									factor.expression.baseExp,
-									new Expression(factor.expression.power.minus(divisorFactor.power)),
+									dummy._new_exp(factor.expression.power.minus(divisorFactor.power)),
 								),
 							),
 						);
@@ -66,7 +67,7 @@ export function divide_by_factor(quotient, divisor) {
 						break;
 					} else if (divisorFactor.toLexicalString() === factor.expression.base.toLexicalString()) {
 						factors.push(
-							new Expression(new Exponent(factor.expression.baseExp, new Expression(factor.expression.power.minus(1)))),
+							dummy._new_exp(new Exponent(factor.expression.baseExp, dummy._new_exp(factor.expression.power.minus(1)))),
 						);
 						divided = true;
 						break;
@@ -84,22 +85,23 @@ export function divide_by_factor(quotient, divisor) {
 				factors.push(factor);
 			}
 		}
-		return new Product(...factors)._multiply_into_coeff(product.coeff.divide(divisor.coeff));
+		return new Product(product.coeff.divide(divisor.coeff), ...factors);
 	} else {
 		/** @type {Expression[]} */
 		const factors = [];
+		const dummy = product._factorsExp[0];
 		for (const factor of product.factors) {
 			if (
 				factor instanceof Exponent &&
 				factor.base.toLexicalString() === divisor.toLexicalString() &&
 				factor.power instanceof Numeral
 			) {
-				factors.push(new Expression(new Exponent(factor.baseExp, new Expression(factor.power.minus(1)))));
+				factors.push(dummy._new_exp(new Exponent(factor.baseExp, dummy._new_exp(factor.power.minus(1)))));
 			} else if (factor.toLexicalString() !== divisor.toLexicalString()) {
-				factors.push(new Expression(factor));
+				factors.push(dummy._new_exp(factor));
 				// remaining case: if factor = divisor, will be divided out, so no need to include in factors
 			}
 		}
-		return new Product(...factors)._multiply_into_coeff(product.coeff);
+		return new Product(product.coeff, ...factors);
 	}
 }

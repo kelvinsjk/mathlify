@@ -7,18 +7,18 @@ test('product', () => {
 	expect(`${one}`).toBe('1');
 	const one2 = new Product(new Expression(1));
 	expect(`${one2}`).toBe('1');
-	const negativeX = new Product(new Expression('x'))._multiply_into_coeff(-1);
+	const negativeX = new Product(-1, new Expression('x'));
 	expect(`${negativeX}`).toBe('- x');
 	const negX = new Expression(negativeX);
 	negX.multiplicationSign = ' \\times ';
 	expect(`${negX}`).toBe('- 1 \\times x');
 	negativeX.simplify();
 	expect(`${negativeX}`).toBe('- x');
-	const xPlusY = new Sum('x', 'y');
+	const xPlusY = new Sum(new Expression('x'), new Expression('y'));
 	const negativeXPlusY = new Product(new Expression(xPlusY), new Expression(-1)).simplify();
 	negativeXPlusY.simplify();
 	expect(`${negativeXPlusY}`).toBe('- \\left( x + y \\right)');
-	const sum = new Sum(1, negativeX);
+	const sum = new Sum(new Expression(1), new Expression(negativeX));
 	expect(`${sum}`).toBe('1 - x');
 });
 
@@ -36,7 +36,7 @@ test('product simplification', () => {
 	sixXY.simplify();
 	expect(`${sixXY}`).toBe('6xy');
 	expect(sixXY.factors.length).toBe(2);
-	const sixXYPlus2 = new Sum(sixXY, 2);
+	const sixXYPlus2 = new Sum(new Expression(sixXY), new Expression(2));
 	sixXYPlus2.simplify();
 	expect(`${sixXYPlus2}`).toBe('6xy + 2');
 
