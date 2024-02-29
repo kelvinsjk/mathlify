@@ -1,4 +1,5 @@
 import { Expression } from '../../index.js';
+import { to_Expression } from '../../utils/type-coercions.js';
 
 /** @typedef {import('../../numeral/index.js').Numeral} Numeral */
 /** @typedef {import('../../numeral/fraction/index.js').Fraction} Fraction */
@@ -21,7 +22,7 @@ export class Brackets {
 	 * @param {Expression|ExpressionType|string|Fraction|number} expression
 	 */
 	constructor(expression) {
-		this.expression = expression instanceof Expression ? expression : new Expression(expression);
+		this.expression = to_Expression(expression);
 	}
 
 	/**
@@ -35,7 +36,7 @@ export class Brackets {
 	 * @returns {string}
 	 */
 	toLexicalString() {
-		return `(${this.expression.toLexicalString()})`;
+		return `(${this.expression._to_lexical_string()})`;
 	}
 
 	/**
@@ -48,11 +49,9 @@ export class Brackets {
 	/**
 	 * @param {Object.<string, Expression>} scope - variables to be replaced in the expression
 	 * @param {{verbatim: boolean}} options - default to automatic simplification
-	 * @returns {this}
-	 * warning: mutates the class instance
+	 * @returns {Brackets}
 	 */
 	subIn(scope, options) {
-		this.expression.subIn(scope, options);
-		return this;
+		return new Brackets(this.expression.subIn(scope, options));
 	}
 }

@@ -3,6 +3,8 @@
  * @property {string} name - the string representation of the variable
  * */
 export class Variable {
+	/** @type {'variable'} */
+	type = 'variable';
 	/**
 	 * @constructor
 	 * Creates a Variable

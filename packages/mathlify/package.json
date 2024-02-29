@@ -4,7 +4,9 @@
 	"description": "bringing mathematics into the digital age",
 	"source": "src/index.js",
 	"type": "module",
-	"types": "lib/types.d.ts",
+	"types": "types/index.d.ts",
+	"main": "src/index.js",
+	"module": "src/index.js",
 	"scripts": {
 		"prepare": "pnpm run build",
 		"prepublishOnly": "pnpm run test && pnpm run lint",
@@ -18,7 +20,9 @@
 		"build": "vite build",
 		"preview": "vite preview",
 		"test": "vitest --config ./vitest.config.ts --coverage",
-		"fractions": "vitest _expression"
+		"fractions": "vitest _expression",
+		"types": "tsc",
+		"cleanTypes": "rm -rf ./types && tsc"
 	},
 	"repository": {
 		"type": "git",

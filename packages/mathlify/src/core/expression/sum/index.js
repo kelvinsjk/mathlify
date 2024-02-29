@@ -1,6 +1,7 @@
 import { Expression } from '../index.js';
 import { Numeral } from '../numeral/index.js';
 import { Product } from '../product/index.js';
+import { to_Expression } from '../utils/type-coercions.js';
 
 /** @typedef {import('../numeral/fraction/index.js').Fraction} Fraction */
 /** @typedef {import('../variable/index.js').Variable} Variable */
@@ -13,6 +14,8 @@ import { Product } from '../product/index.js';
  * @property {Expression[]} _termsExp - the terms in the sum
  * */
 export class Sum {
+	/** @type {'sum'} */
+	type = 'sum';
 	/**@type {Expression[]} */
 	_termsExp;
 	/**
@@ -20,10 +23,9 @@ export class Sum {
 	 * @param {...(Expression|ExpressionType|string|Fraction|number)} terms
 	 */
 	constructor(...terms) {
-		const termsExp = terms.map((t) => {
-			return t instanceof Expression ? t : new Expression(t);
+		this._termsExp = terms.map((t) => {
+			return to_Expression(t);
 		});
-		this._termsExp = termsExp;
 	}
 
 	/**
@@ -51,7 +53,7 @@ export class Sum {
 	 */
 	toLexicalString() {
 		return this._termsExp
-			.map((term) => term.toLexicalString())
+			.map((term) => term._to_lexical_string())
 			.toSorted()
 			.join('+');
 	}
@@ -100,6 +102,8 @@ export class Sum {
 			const exp = term.expression;
 			if (exp instanceof Numeral) {
 				return exp.number.is.nonzero();
+			} else if (exp instanceof Product) {
+				return exp.coeff.is.nonzero();
 			}
 			return true;
 		});
@@ -157,7 +161,7 @@ export class Sum {
 				if (term instanceof Product) {
 					termMap[key] = [[i], term.coeff, term.toUnit()];
 				} else if (term instanceof Numeral) {
-					termMap[key] = [[i], term.clone(), new Expression(1)];
+					termMap[key] = [[i], term.clone(), new Expression(new Numeral(1))];
 				} else {
 					termMap[key] = [[i], new Numeral(1), new Expression(term).clone()];
 				}
@@ -172,7 +176,9 @@ export class Sum {
 				if (key === 'numeral') {
 					this._termsExp[firstIndex].expression = coeff;
 				} else {
-					this._termsExp[firstIndex].expression = new Product(coeff, expression).simplify();
+					const p = new Product(expression);
+					p.coeff = coeff;
+					this._termsExp[firstIndex].expression = p.simplify();
 				}
 				indicesToRemove.push(...indices.slice(1));
 			}
@@ -184,13 +190,21 @@ export class Sum {
 	/**
 	 * @param {Object.<string, Expression>} scope - variables to be replaced in the expression
 	 * @param {{verbatim: boolean}} options
-	 * @returns {this}
-	 * warning: mutates the class instance
+	 * @returns {Sum}
 	 */
 	subIn(scope, options) {
-		for (const term of this._termsExp) {
-			term.subIn(scope, options);
-		}
+		const terms = this._termsExp.map((term) => term.subIn(scope, options));
+		return new Sum(...terms);
+	}
+
+	/**
+	 * rearranges the terms in place
+	 * @param {number[]} order - index of term to be placed in order. eg [1, 0, 2] means the we new terms be the original 2nd, 1st, 3rd terms
+	 * @returns {this}
+	 */
+	rearrange(order) {
+		if (this.terms.length !== order.length) throw new Error('Invalid indices length');
+		this._termsExp = order.map((i) => this._termsExp[i]);
 		return this;
 	}
 

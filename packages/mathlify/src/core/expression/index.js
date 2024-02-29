@@ -5,8 +5,22 @@ import { Quotient } from './quotient/index.js';
 import { Fn, Brackets } from './fn/index.js';
 import { Product } from './product/index.js';
 import { Exponent } from './exponent/index.js';
-export { Variable, Numeral, Fraction, Sum, Product, Quotient, Exponent };
-import { unpack_shorthand_single } from '../../macros/index.js';
+export { Variable, Numeral, Fraction, Sum, Product, Quotient, Exponent, Fn, Brackets };
+import {
+	remove_nested_brackets,
+	remove_singletons,
+	resolveOptions,
+	simplify_exponent,
+	expand_expression,
+	expand_product,
+	sub_in,
+	to_ExpressionType,
+	common_denominator,
+	combine_fraction,
+	expression_lcm_two,
+	expression_gcd,
+	divide_by_factor,
+} from './utils/index.js';
 
 /** @typedef {import('../../macros/index.js').BracketShorthand} BracketShorthand */
 /** @typedef {import('../../macros/index.js').QuotientShorthand} FractionShorthand */
@@ -26,21 +40,13 @@ export class Expression {
 	mixedFractions = false;
 
 	/**
-	 * Creates an Expression
-	 * from Sums, Products, Quotients,
-	 * Exponents, Variables and Numerals
-	 * @param {ExpressionType|string|Fraction|number|Brackets} expression
+	 * Creates an Expression.
+	 * We recommend using the provided macros (eg sum, product, etc)
+	 * to create expressions rather than using the constructor directly
+	 * @param {ExpressionType|number|string} expression
 	 */
 	constructor(expression) {
-		// convert primitive types
-		if (typeof expression === 'string') {
-			expression = new Variable(expression);
-		} else if (typeof expression === 'number' || expression instanceof Fraction) {
-			expression = new Numeral(expression, { verbatim: true });
-		} else if (expression instanceof Brackets) {
-			expression = new Fn(expression);
-		}
-		this.expression = expression;
+		this.expression = to_ExpressionType(expression);
 	}
 
 	/**
@@ -48,20 +54,21 @@ export class Expression {
 	 * @returns {string}
 	 */
 	toString(options) {
-		options = {
+		return this.expression.toString({
 			multiplicationSign: this.multiplicationSign,
 			mixedFractions: this.mixedFractions,
 			...options,
-		};
-		return this.expression.toString(options);
+		});
 	}
 
 	/**
-	 * @param {{coeff?: boolean}} [options] - whether to include coefficient for a product. default: true
-	 * @returns {string}
-	 * */
-	toLexicalString(options) {
-		return this.expression.toLexicalString(options);
+	 * @returns {Expression}
+	 */
+	clone() {
+		let exp = new Expression(this.expression.clone());
+		exp.mixedFractions = this.mixedFractions;
+		exp.multiplicationSign = this.multiplicationSign;
+		return exp;
 	}
 
 	/**
@@ -71,31 +78,9 @@ export class Expression {
 	 * WARNING: mutates current instance
 	 */
 	simplify(options) {
-		if (options === undefined) {
-			options = {
-				brackets: true,
-				product: true,
-				sum: true,
-				numeral: true,
-				quotient: true,
-				exponent: true,
-			};
-		}
-		const { brackets, product, sum, numeral, quotient, exponent } = {
-			brackets: false,
-			product: false,
-			sum: false,
-			numeral: false,
-			quotient: false,
-			exponent: false,
-			...options,
-		};
-		if (brackets) {
-			this._remove_brackets();
-		}
-		if (numeral && this.expression instanceof Numeral) {
-			this.expression.simplify();
-		}
+		const { brackets, product, sum, numeral, quotient, exponent } = resolveOptions(options);
+		if (brackets) this._remove_brackets();
+		if (numeral && this.expression instanceof Numeral) this.expression.simplify();
 		if (
 			this.expression instanceof Sum ||
 			this.expression instanceof Product ||
@@ -104,225 +89,22 @@ export class Expression {
 		) {
 			this.expression.simplify({ product, sum, numeral, quotient, exponent, brackets });
 		}
-		if (exponent) {
-			this._simplify_exponent();
-		}
+		if (exponent) this._simplify_exponent({ product, sum, numeral, quotient, exponent, brackets });
+		if (product) this._combine_factors_in_product();
 		this._remove_singletons({ product, sum, quotient });
 		return this;
 	}
 
 	/**
-	 * removes singleton
-	 * @param {{product?: boolean, sum?: boolean, quotient?: boolean}} [options] - options for which types to simplify. all true by default
-	 * @returns {this}
-	 * WARNING: mutates current instance
-	 */
-	_remove_singletons(options) {
-		const { product, sum, quotient } = {
-			product: true,
-			sum: true,
-			quotient: true,
-			...options,
-		};
-		if (sum && this.expression instanceof Sum) {
-			if (this.expression.terms.length === 0) {
-				this.expression = new Numeral(0);
-			} else if (this.expression.terms.length === 1) {
-				this.expression = this.expression.terms[0];
-			}
-		} else if (product && this.expression instanceof Product) {
-			if (this.expression._factorsExp.length === 0) {
-				this.expression = this.expression.coeff;
-			} else if (this.expression.coeff.is.zero()) {
-				this.expression = new Numeral(0);
-			} else if (this.expression._factorsExp.length === 1 && this.expression.coeff.is.one()) {
-				this.expression = this.expression.factors[0];
-			}
-		} else if (quotient && this.expression instanceof Quotient) {
-			if (this.expression.num.expression instanceof Numeral && this.expression.num.expression.number.is.zero()) {
-				// zero numerator
-				this.expression = new Numeral(0);
-			} else if (this.expression.den.expression instanceof Numeral && this.expression.den.expression.number.is.one()) {
-				// one denominator
-				this.expression = this.expression.num.expression;
-			} else if (
-				this.expression.num.expression instanceof Numeral &&
-				this.expression.den.expression instanceof Numeral
-			) {
-				// both numerator and denominator are numerals: change to fraction
-				this.expression = this.expression.num.expression.divide(this.expression.den.expression);
-			}
-		}
-		return this;
-	}
-
-	/**
-	 * removes brackets
-	 * @returns {this}
-	 * WARNING: mutates current instance
-	 */
-	_remove_brackets() {
-		if (this.expression instanceof Sum) {
-			for (const term of this.expression._termsExp) {
-				term._remove_brackets();
-			}
-		} else if (this.expression instanceof Product) {
-			for (const factor of this.expression._factorsExp) {
-				factor._remove_brackets();
-			}
-		}
-		if (this.expression instanceof Fn) {
-			this.expression = this.expression.fn.expression.expression;
-		}
-		return this;
-	}
-
-	/**
-	 * simplifies exponents:
-	 * numeral^integer -> numeral
-	 * base^0 -> 1
-	 * base^1 -> base
-	 * @returns {this}
-	 * WARNING: mutates current instance
-	 */
-	_simplify_exponent() {
-		const exp = this.expression;
-		if (!(exp instanceof Exponent)) {
-			return this;
-		}
-		const { base, power } = exp;
-		if (base instanceof Numeral && power instanceof Numeral && power.number.is.integer()) {
-			this.expression = new Numeral(base.number.pow(power.number));
-		} else if (power instanceof Numeral && power.number.is.zero()) {
-			this.expression = new Numeral(1);
-		} else if (power instanceof Numeral && power.number.is.one()) {
-			this.expression = base;
-		}
-		return this;
-	}
-
-	/**
 	 * expands either products, or products within a sum
-	 * @param {{verbatim?: boolean, numerator?: boolean}} [options] - default to automatic simplification
+	 * @param {{verbatim?: boolean, numeratorOnly?: boolean}} [options] - default to automatic simplification
+	 * numeratorOnly: only expands numerator and leaves denominator as is
 	 * @returns {this}
 	 */
 	expand(options) {
-		const exp = this.expression;
-		if (exp instanceof Product) {
-			for (const factor of exp._factorsExp) {
-				factor.expand(options);
-			}
-			return this._expand_product(options);
-		} else if (exp instanceof Sum) {
-			for (const term of exp._termsExp) {
-				term.expand(options);
-			}
-			exp._flatten();
-		} else if (exp instanceof Quotient) {
-			const { numerator } = { numerator: false, ...options };
-			exp.num.expand(options);
-			if (!numerator) exp.den.expand(options);
-		}
-		const { verbatim } = { verbatim: false, ...options };
-		if (!verbatim) this.simplify();
+		expand_expression(this, options);
+		if (!options?.verbatim) this.simplify();
 		return this;
-	}
-
-	/**
-	 * expands products
-	 * @param {{verbatim?: boolean}} [options] - default to automatic simplification
-	 * @returns {this}
-	 */
-	_expand_product(options) {
-		const exp = this.expression;
-		if (!(exp instanceof Product)) {
-			return this;
-		}
-		/** @type {Sum[]} */
-		const sums = [];
-		/** @type {ExpressionType[]} */
-		const others = [];
-		for (const term of exp.factors) {
-			if (term instanceof Sum) {
-				sums.push(term);
-			} else {
-				others.push(term);
-			}
-		}
-		if (sums.length === 0 || (sums.length === 1 && exp.coeff.is.one())) return this;
-		/** @type {Product[]} */
-		let terms = sums[0].terms.map((term) => {
-			return new Product(exp.coeff, ...others, term).simplify();
-		});
-		sums.shift();
-		for (const sum of sums) {
-			/** @type {Product[]} */
-			const new_terms = [];
-			for (const term of terms) {
-				for (const t of sum.terms) {
-					new_terms.push(new Product(term, t).simplify());
-				}
-			}
-			terms = new_terms;
-		}
-		const sum = new Sum(...terms);
-		sum._flatten();
-		this.expression = sum;
-		const { verbatim } = { verbatim: false, ...options };
-		if (!verbatim) sum.simplify();
-		return this;
-	}
-
-	//! arithmetic methods
-	/**
-	 * negative of expression
-	 * @returns {Expression}
-	 */
-	negative() {
-		const exp = this.expression;
-		if (exp instanceof Numeral) {
-			return new Expression(exp.negative());
-		} else if (exp instanceof Product) {
-			return new Expression(new Product(-1, ...exp.factors));
-		} else {
-			throw new Error('negative not supported for this type at the moment');
-		}
-	}
-
-	/**
-	 * @param {Object.<string, Expression|string|number|BracketShorthand|FractionShorthand>} scope - variables to be replaced in the expression
-	 * @param {{verbatim?: boolean}} [options] - default to automatic simplification
-	 * @returns {this}
-	 * warning: mutates the class instance
-	 */
-	subIn(scope, options) {
-		const { verbatim } = { verbatim: false, ...options };
-		/** @type {Object.<string,Expression>} */
-		const scope_exp = {};
-		for (const [key, value] of Object.entries(scope)) {
-			const val = unpack_shorthand_single(value);
-			const val_exp = val instanceof Expression ? val : new Expression(val);
-			scope_exp[key] = val_exp;
-		}
-		if (this.expression instanceof Variable) {
-			const name = this.expression.name;
-			if (name in scope_exp) {
-				this.expression = scope_exp[name].expression;
-			}
-		} else {
-			this.expression.subIn(scope_exp, { verbatim });
-		}
-		if (!verbatim) this.simplify();
-		return this;
-	}
-
-	/**
-	 * @returns {Expression}
-	 */
-	clone() {
-		let exp = new Expression(this.expression.clone());
-		exp.multiplicationSign = this.multiplicationSign;
-		return exp;
 	}
 
 	/**
@@ -333,10 +115,150 @@ export class Expression {
 	combine_fraction() {
 		this._common_denominator();
 		this._combine_fraction();
-		this.expand({ numerator: true });
+		this.expand({ numeratorOnly: true });
+		this._remove_common_factors();
 		return this;
 	}
 
+	/**
+	 * rearranges the terms of a sum in place
+	 * @param {number[]} order
+	 * @returns {this}
+	 */
+	rearrange(order) {
+		if (this.expression instanceof Sum) this.expression.rearrange(order);
+		return this;
+	}
+
+	/**
+	 * factorizes a sum into a product by extracting common factors
+	 * @param {{verbatim?: boolean}} [options] - by default, will expand any inner products and combine like terms. use verbatim to prevent this
+	 * @returns {this}
+	 */
+	factorize(options) {
+		if (!(this.expression instanceof Sum)) return this;
+		const commonFactor = Expression.gcd(...this.expression._termsExp);
+		if (commonFactor.expression instanceof Numeral && commonFactor.expression.is.one()) return this;
+		const factorizedTerms = this.expression._termsExp.map((term) => divide_by_factor(term, commonFactor.expression));
+		/** @type {Expression|Sum} */
+		let sum = new Sum(...factorizedTerms);
+		if (!options?.verbatim) {
+			sum = new Expression(sum).expand().factorize();
+		}
+		this.expression = new Product(
+			new Expression(commonFactor.expression),
+			sum instanceof Sum ? new Expression(sum) : sum,
+		);
+		this.expression.simplify();
+		return this;
+	}
+
+	//! arithmetic methods - unlike the previous methods, these do not mutate the current instance
+	/**
+	 * negative of expression
+	 * @returns {Expression}
+	 */
+	negative() {
+		const exp = this.expression;
+		if (exp instanceof Numeral || exp instanceof Product) return new Expression(exp.negative());
+		throw new Error('negative not supported for this type at the moment');
+	}
+
+	/**
+	 * @param {Object.<string, Expression|string|number|FractionShorthand>} scope - variables to be replaced in the expression
+	 * @param {{verbatim?: boolean}} [options] - default to automatic simplification
+	 * @returns {Expression}
+	 */
+	subIn(scope, options) {
+		return sub_in(this, scope, options);
+	}
+
+	//! these methods provide quick access to the underlying expression-subtypes
+	/** @returns {[Expression, Expression]} */
+	getQuotientTerms() {
+		const exp = this.expression;
+		if (exp instanceof Quotient) {
+			return [exp.num, exp.den];
+		}
+		throw new Error('Expression is not a quotient');
+	}
+	/** @returns {Numeral} */
+	getNumeral() {
+		const exp = this.expression;
+		if (exp instanceof Numeral) {
+			return exp;
+		}
+		throw new Error('Expression is not a numeral');
+	}
+	/** @return {[Numeral, Expression[]]} */
+	getProductTerms() {
+		const exp = this.expression;
+		if (exp instanceof Product) {
+			return [exp.coeff, exp._factorsExp];
+		}
+		throw new Error('Expression is not a product');
+	}
+
+	//! methods meant primarily for internal used are prefixed with _ and in snake_case
+	/**
+	 * @param {{coeff?: boolean}} [options] - whether to include coefficient for a product. default: true
+	 * @returns {string}
+	 * */
+	_to_lexical_string(options) {
+		return this.expression.toLexicalString(options);
+	}
+	/**
+	 * expands products
+	 * @param {{verbatim?: boolean}} [options] - default to automatic simplification
+	 * @returns {this}
+	 */
+	_expand_product(options) {
+		const sum = expand_product(this);
+		if (sum !== undefined) this.expression = sum;
+		if (!options?.verbatim) this.simplify();
+		return this;
+	}
+
+	//! the following 3 methods are used in the simplify method
+	/**
+	 * removes singleton
+	 * @param {{product?: boolean, sum?: boolean, quotient?: boolean}} [options] - options for which types to simplify. all true by default
+	 * @returns {this}
+	 * WARNING: mutates current instance
+	 */
+	_remove_singletons(options) {
+		const exp = remove_singletons(this, { product: true, sum: true, quotient: true, ...options });
+		if (exp !== undefined) this.expression = exp;
+		return this;
+	}
+	/**
+	 * removes brackets
+	 * @returns {this}
+	 * WARNING: mutates current instance
+	 */
+	_remove_brackets() {
+		remove_nested_brackets(this);
+		if (this.expression instanceof Fn && this.expression.fn instanceof Brackets) {
+			this.expression = this.expression.fn.expression.expression;
+		}
+		return this;
+	}
+	/**
+	 * simplifies exponents:
+	 * numeral^integer -> numeral
+	 * base^0 -> 1
+	 * base^1 -> base
+	 * @param {SimplifyOptions} [options] - options for which types to simplify. if not provided, all will be true. if object provided, all will be false unless indicated.
+	 * @returns {this}
+	 * WARNING: mutates current instance
+	 */
+	_simplify_exponent(options) {
+		const exp = simplify_exponent(this, options);
+		if (exp !== undefined) this.expression = exp;
+		return this;
+	}
+
+	//! the following 3 methods are used in the combine_fraction method
 	/**
 	 * common denominator:
 	 * for a sum, convert all terms to quotients with the same denominator
@@ -344,48 +266,9 @@ export class Expression {
 	 * Warning: mutates current instance
 	 */
 	_common_denominator() {
-		const sum = this.expression;
-		if (!(sum instanceof Sum)) {
-			throw new Error('common denominator only supported for sums');
-		}
-		const denExp = Expression.denominator_lcm(...sum._termsExp);
-		const den = denExp.expression;
-		if (den instanceof Numeral && den.is.one()) {
-			return this;
-		}
-		/** @type {Expression[]} */
-		const terms = [];
-		for (const term of sum.terms) {
-			if (term instanceof Numeral) {
-				if (term.is.negative()) {
-					terms.push(new Expression(new Product(-1, new Quotient(new Product(term.abs(), den).simplify(), den))));
-				} else {
-					terms.push(new Expression(new Quotient(new Product(term, den).simplify(), den)));
-				}
-			} else if (term instanceof Quotient) {
-				const multiple = lcm_divide(denExp, term.den.expression);
-				const num = new Expression(new Product(multiple.coeff, term.num, ...multiple.factors)).simplify();
-				terms.push(new Expression(new Quotient(num, den)));
-			} else if (term instanceof Product && term.coeff.is.negative()) {
-				if (term.factors.length === 1 && term.factors[0] instanceof Quotient) {
-					const multiple = lcm_divide(denExp, term.factors[0].den.expression);
-					const num = new Expression(new Product(multiple.coeff, term.factors[0].num, ...multiple.factors)).simplify();
-					terms.push(new Expression(new Product(-1, new Quotient(num, den))));
-				} else {
-					terms.push(
-						new Expression(
-							new Product(-1, new Quotient(new Product(term.coeff.abs(), ...term.factors, den).simplify(), den)),
-						),
-					);
-				}
-			} else {
-				terms.push(new Expression(new Quotient(new Product(term, den).simplify(), den)));
-			}
-		}
-		sum._termsExp = terms;
+		common_denominator(this);
 		return this;
 	}
-
 	/**
 	 * combines into one fraction
 	 * (to be used strictly after 'this._common_denominator()` is called. will not work otherwise
@@ -394,195 +277,103 @@ export class Expression {
 	 * Warning: mutate current instance
 	 */
 	_combine_fraction(options) {
-		const { verbatim } = { verbatim: false, ...options };
-		/** @type {(Expression|Product)[]} */
-		const terms = [];
-		const sum = this.expression;
-		if (!(sum instanceof Sum)) {
-			throw new Error('common denominator only supported for sums');
-		}
-		/** @type {Expression|undefined} */
-		let den = undefined;
-		for (const term of sum.terms) {
-			if (term instanceof Quotient) {
-				den = den ?? term.den;
-				terms.push(term.num);
-			} else if (
-				term instanceof Product &&
-				term.coeff.is.negative() &&
-				term.factors.length === 1 &&
-				term.factors[0] instanceof Quotient
-			) {
-				const q = term.factors[0];
-				den = den ?? q.den;
-				terms.push(new Product(-1, q.num));
+		const quotient = combine_fraction(this);
+		if (quotient !== undefined) this.expression = quotient;
+		if (!options?.verbatim) this.simplify();
+		return this;
+	}
+	/**
+	 * removes common factors
+	 * @returns {this}
+	 * Warning: mutates current instance
+	 */
+	_remove_common_factors() {
+		try {
+			const [num, den] = this.getQuotientTerms().map((x) => x.clone().factorize());
+			const gcd = Expression.gcd(num, den);
+			if (gcd.expression instanceof Numeral && gcd.expression.is.one()) return this;
+			const newNum = new Expression(divide_by_factor(num, gcd.expression)).simplify();
+			const newDen = new Expression(divide_by_factor(den, gcd.expression)).simplify();
+			if (newDen instanceof Numeral && newDen.is.one()) {
+				this.expression = newNum.expression;
+			} else {
+				this.expression = new Quotient(newNum.expression, newDen.expression);
 			}
-			//! assumption: no other cases should be possible
-		}
-		if (den === undefined) {
+			return this;
+		} catch {
 			return this;
 		}
-		this.expression = new Quotient(new Sum(...terms), den);
-		if (!verbatim) this.simplify();
+	}
+
+	/**
+	 * extracts numeric factors into coefficient
+	 * combines singletons and exponents with numeric powers into an exponent
+	 * eg. combines $4 \cdot x \cdot x^2 \cdot 3$ into $12x^3$
+	 * @returns {this}
+	 */
+	_combine_factors_in_product() {
+		if (!(this.expression instanceof Product)) return this;
+		const p = this.expression;
+		// lexical string: [indices, power, base expression]
+		/** @type {Object.<string,[number[],Numeral,Expression]>} */
+		const termMap = {};
+		/** @type {string[]} */
+		const orderedKeys = [];
+		/** @type {number[]} */
+		const indicesToRemove = [];
+		for (const [i, factor] of p.factors.entries()) {
+			if (factor instanceof Exponent && factor.power instanceof Numeral) {
+				const key = factor.base.toLexicalString();
+				const val = termMap[key];
+				if (val) {
+					val[0].push(i);
+					val[1] = val[1].plus(factor.power);
+				} else {
+					orderedKeys.push(key);
+					termMap[key] = [[i], factor.power, factor.baseExp.clone()];
+				}
+			} else if (factor instanceof Numeral) {
+				// extracts numeric factors into coefficient
+				p.coeff = p.coeff.times(factor);
+				indicesToRemove.push(i);
+			} else {
+				const key = factor.toLexicalString();
+				const val = termMap[key];
+				if (val) {
+					val[0].push(i);
+					val[1] = val[1].plus(1);
+				} else {
+					orderedKeys.push(key);
+					termMap[key] = [[i], new Numeral(1), p._factorsExp[i]];
+				}
+			}
+		}
+		for (const key of orderedKeys) {
+			const [indices, power, base] = termMap[key];
+			if (indices.length > 1) {
+				// combine
+				if (power.is.zero()) {
+					indicesToRemove.push(...indices);
+				} else {
+					const newExponent = power.is.one() ? base : new Expression(new Exponent(base, new Expression(power)));
+					p._factorsExp[indices[0]] = newExponent;
+					indicesToRemove.push(...indices.slice(1));
+				}
+			}
+		}
+		p._factorsExp = p._factorsExp.filter((_, i) => !indicesToRemove.includes(i));
 		return this;
 	}
 
+	//! static methods
 	/**
-	 * creates a bracketed expression
-	 * @param {Expression|ExpressionType|string|Fraction|number} expression
+	 * get gcd of expressions
+	 * @param {Expression[]} exps
 	 * @returns {Expression}
+	 * WARNING: returns negative gcd if all terms are negative
 	 */
-	static brackets(expression) {
-		const fn = expression instanceof Fn ? expression : new Fn(new Brackets(expression));
-		return new Expression(fn);
-	}
-
-	/**
-	 * get denominator lcm of expressions
-	 * @param {...Expression} expressions
-	 * @returns {Expression}
-	 */
-	static denominator_lcm(...expressions) {
-		if (expressions.length === 0) {
-			throw new Error('Cannot find denominator lcm of empty array');
-		}
-		if (expressions.length === 1) {
-			let exp = expressions[0].expression;
-			if (exp instanceof Numeral) {
-				return new Expression(new Numeral(exp.number.den).abs());
-			} else if (exp instanceof Quotient) {
-				return new Expression(exp.den.expression.clone());
-			} else if (exp instanceof Product && exp.coeff.is.negative() && exp.factors.length === 1) {
-				return Expression.denominator_lcm(exp._factorsExp[0]);
-			} else {
-				return new Expression(1);
-			}
-		}
-		if (expressions.length === 2) {
-			const [a, b] = expressions;
-			const aDen = Expression.denominator_lcm(a);
-			const bDen = Expression.denominator_lcm(b);
-			return Expression._lcmTwo(aDen, bDen);
-		}
-		// more than 2 expressions
-		const dens = expressions.map((exp) => Expression.denominator_lcm(exp));
-		let multiple = Expression._lcmTwo(dens[0], dens[1]);
-		dens.shift();
-		dens.shift();
-		for (const exp of dens) {
-			multiple = Expression._lcmTwo(multiple, exp);
-		}
-		return multiple;
-	}
-
-	/**
-	 * get gcd of two expressions
-	 * @param {Expression} exp1
-	 * @param {Expression} exp2
-	 * @returns {Expression}
-	 */
-	static _gcdTwo(exp1, exp2) {
-		const a = exp1.expression;
-		const b = exp2.expression;
-		if (a instanceof Exponent && a.power instanceof Numeral) {
-			if (b instanceof Exponent && b.power instanceof Numeral) {
-				if (a.base.toLexicalString() === b.base.toLexicalString()) {
-					return new Expression(new Exponent(a.base.clone(), Numeral.min(a.power, b.power)));
-				}
-				return new Expression(1);
-			} else if (b instanceof Product) {
-				for (const factor of b.factors) {
-					if (factor instanceof Exponent && factor.power instanceof Numeral) {
-						if (factor.base.toLexicalString() === a.base.toLexicalString()) {
-							return new Expression(new Exponent(a.base.clone(), Numeral.min(a.power, factor.power)));
-						}
-					}
-				}
-				return new Expression(1);
-			} else {
-				if (a.base.toLexicalString() == exp2.toLexicalString()) {
-					return exp2.clone();
-				}
-				return new Expression(1);
-			}
-		} else if (a instanceof Product) {
-			if (b instanceof Exponent && b.power instanceof Numeral) {
-				return Expression._gcdTwo(exp2, exp1);
-			} else if (b instanceof Product) {
-				// lexical string: [power, expression, modified?]
-				/** @type {Object.<string,[Numeral,Expression,true?]>} */
-				const termMap = {};
-				/** @type {string[]} */
-				const orderedKeys = [];
-				// loop through a
-				for (const factor of a.factors) {
-					if (factor instanceof Exponent && factor.power instanceof Numeral) {
-						const key = factor.base.toLexicalString();
-						orderedKeys.push(key);
-						termMap[key] = [factor.power, factor.baseExp.clone()];
-					} else {
-						const key = factor.toLexicalString();
-						orderedKeys.push(key);
-						termMap[key] = [new Numeral(1), new Expression(factor.clone())];
-					}
-				}
-				// loop through b
-				for (const factor of b.factors) {
-					if (factor instanceof Exponent && factor.power instanceof Numeral) {
-						const key = factor.base.toLexicalString();
-						const val = termMap[key];
-						if (val) {
-							val[0] = Numeral.min(factor.power, val[0]);
-							val[2] = true;
-						}
-					} else {
-						const key = factor.toLexicalString();
-						const val = termMap[key];
-						if (val) {
-							val[0] = Numeral.min(1, val[0]);
-							val[2] = true;
-						}
-					}
-				}
-				for (const [key, val] of Object.entries(termMap)) {
-					if (val[2] === undefined) {
-						delete termMap[key];
-					}
-				}
-				/** @type {Expression[]} */
-				const factors = [];
-				for (const key of orderedKeys) {
-					const val = termMap[key];
-					if (val) {
-						const [power, expression] = val;
-						if (power.is.one()) {
-							factors.push(expression);
-						} else if (power.is.nonzero()) {
-							factors.push(new Expression(new Exponent(expression, power)));
-						}
-					}
-				}
-				return new Expression(new Product(Numeral.gcd(a.coeff, b.coeff), ...factors)).simplify();
-			} else if (b instanceof Numeral) {
-				return new Expression(Numeral.gcd(a.coeff, b));
-			} else {
-				for (const factor of a.factors) {
-					if (factor instanceof Exponent && factor.power instanceof Numeral) {
-						if (factor.base.toLexicalString() === b.toLexicalString()) {
-							return exp2.clone();
-						}
-					} else if (factor.toLexicalString() === b.toLexicalString()) {
-						return exp2.clone();
-					}
-				}
-				return new Expression(1);
-			}
-		} else {
-			if (exp1.toLexicalString() === exp2.toLexicalString()) {
-				return exp1.clone();
-			}
-			return new Expression(1);
-		}
+	static gcd(...exps) {
+		return expression_gcd(...exps);
 	}
 
 	/**
@@ -591,213 +382,7 @@ export class Expression {
 	 * @param {Expression} exp2
 	 * @returns {Expression}
 	 */
-	static _lcmTwo(exp1, exp2) {
-		const a = exp1.expression;
-		const b = exp2.expression;
-		if (a instanceof Product) {
-			if (b instanceof Product) {
-				// lexical string: [power, expression]
-				/** @type {Object.<string,[Numeral,Expression]>} */
-				const termMap = {};
-				/** @type {string[]} */
-				const orderedKeys = [];
-				// loop through a
-				for (const factor of a.factors) {
-					if (factor instanceof Exponent && factor.power instanceof Numeral) {
-						const key = factor.base.toLexicalString();
-						orderedKeys.push(key);
-						termMap[key] = [factor.power, factor.baseExp.clone()];
-					} else {
-						const key = factor.toLexicalString();
-						orderedKeys.push(key);
-						termMap[key] = [new Numeral(1), new Expression(factor.clone())];
-					}
-				}
-				// loop through b
-				for (const factor of b.factors) {
-					if (factor instanceof Exponent && factor.power instanceof Numeral) {
-						const key = factor.base.toLexicalString();
-						const val = termMap[key];
-						if (val) {
-							val[0] = Numeral.max(factor.power, val[0]);
-						} else {
-							termMap[key] = [factor.power, factor.baseExp.clone()];
-							orderedKeys.push(key);
-						}
-					} else {
-						const key = factor.toLexicalString();
-						const val = termMap[key];
-						if (val) {
-							val[0] = Numeral.max(1, val[0]);
-						} else {
-							termMap[key] = [new Numeral(1), new Expression(factor.clone())];
-							orderedKeys.push(key);
-						}
-					}
-				}
-				/** @type {Expression[]} */
-				const factors = [];
-				for (const key of orderedKeys) {
-					const val = termMap[key];
-					if (val) {
-						const [power, expression] = val;
-						if (power.is.one()) {
-							factors.push(expression);
-						} else if (power.is.nonzero()) {
-							factors.push(new Expression(new Exponent(expression, power)));
-						}
-					}
-				}
-				return new Expression(new Product(Numeral.lcm(a.coeff, b.coeff), ...factors)).simplify();
-			} else if (b instanceof Numeral) {
-				return new Expression(new Product(Numeral.lcm(a.coeff, b), ...a.factors)).simplify();
-			} else {
-				/** @type {ExpressionType[]} */
-				const factors = [];
-				/** @type {boolean} */
-				let noCommonFactor = true;
-				for (const f of a.factors) {
-					if (
-						f instanceof Exponent &&
-						f.power instanceof Numeral &&
-						b instanceof Exponent &&
-						b.power instanceof Numeral &&
-						f.base.toLexicalString() === b.base.toLexicalString()
-					) {
-						factors.push(new Exponent(f.base, Numeral.max(f.power, b.power)));
-						noCommonFactor = false;
-					} else if (
-						f instanceof Exponent &&
-						f.power instanceof Numeral &&
-						f.base.toLexicalString() === b.toLexicalString()
-					) {
-						factors.push(new Exponent(f.base, Numeral.max(f.power, new Numeral(1))));
-						noCommonFactor = false;
-					} else if (f.toLexicalString() === b.toLexicalString()) {
-						factors.push(f.clone());
-						noCommonFactor = false;
-					} else {
-						factors.push(f);
-					}
-				}
-				if (noCommonFactor) {
-					factors.push(b);
-				}
-				return new Expression(new Product(a.coeff, ...factors)).simplify();
-			}
-		} else if (b instanceof Product) {
-			return Expression._lcmTwo(exp2, exp1);
-		} else if (a instanceof Exponent && a.power instanceof Numeral) {
-			if (b instanceof Exponent && b.power instanceof Numeral) {
-				if (a.base.toLexicalString() === b.base.toLexicalString()) {
-					return new Expression(new Exponent(a.base.clone(), Numeral.max(a.power, b.power)));
-				}
-				return new Expression(new Product(exp1.clone(), exp2.clone())).simplify();
-			} else {
-				if (a.base.toLexicalString() === b.toLexicalString()) {
-					return a.power.valueOf() >= 1 ? exp1.clone() : exp2.clone();
-				}
-				return new Expression(new Product(exp1.clone(), exp2.clone())).simplify();
-			}
-		} else if (b instanceof Exponent && b.power instanceof Numeral) {
-			return Expression._lcmTwo(exp2, exp1);
-		} else if (a instanceof Numeral) {
-			if (b instanceof Numeral) {
-				return new Expression(Numeral.lcm(a, b));
-			}
-			return new Expression(new Product(a, exp2.clone())).simplify();
-		} else if (b instanceof Numeral) {
-			return Expression._lcmTwo(exp2, exp1);
-		} else {
-			if (exp1.toLexicalString() === exp2.toLexicalString()) {
-				return exp1.clone();
-			}
-			return new Expression(new Product(exp1.clone(), exp2.clone())).simplify();
-		}
-	}
-}
-
-// lcm divide: divides a product by a factor.
-// assumes that the divisor is a factor of the product
-/**
- *
- * @param {Expression} lcm
- * @param {ExpressionType} divisor
- * @returns {Product} - quotient as simplified product
- */
-function lcm_divide(lcm, divisor) {
-	if (lcm.expression instanceof Numeral) {
-		// assumes that divisor is a numeral
-		return new Product(lcm.expression.divide(/** @type {Numeral} */ (divisor)));
-	}
-	const product = lcm.expression instanceof Product ? lcm.expression : new Product(lcm.expression);
-	if (divisor instanceof Numeral) {
-		return new Product(product.coeff.divide(divisor), ...product.factors);
-	} else if (divisor instanceof Exponent) {
-		/** @type {ExpressionType[]} */
-		const factors = [];
-		for (const factor of product.factors) {
-			if (
-				factor instanceof Exponent &&
-				factor.base.toLexicalString() === divisor.base.toLexicalString() &&
-				factor.power instanceof Numeral &&
-				divisor.power instanceof Numeral
-			) {
-				factors.push(new Exponent(factor.base, factor.power.minus(divisor.power)));
-			} else {
-				factors.push(factor);
-			}
-		}
-		return new Product(product.coeff, ...factors);
-	} else if (divisor instanceof Product) {
-		/** @type {ExpressionType[]} */
-		const factors = [];
-		for (const factor of product.factors) {
-			let divided = false;
-			if (factor instanceof Exponent && factor.power instanceof Numeral) {
-				for (const divisorFactor of divisor.factors) {
-					if (
-						divisorFactor instanceof Exponent &&
-						divisorFactor.base.toLexicalString() === factor.base.toLexicalString() &&
-						divisorFactor.power instanceof Numeral
-					) {
-						factors.push(new Exponent(factor.base, factor.power.minus(divisorFactor.power)));
-						divided = true;
-						break;
-					} else if (divisorFactor.toLexicalString() === factor.base.toLexicalString()) {
-						factors.push(new Exponent(factor.base, factor.power.minus(1)));
-						divided = true;
-						break;
-					}
-				}
-			} else {
-				for (const divisorFactor of divisor.factors) {
-					if (factor.toLexicalString() === divisorFactor.toLexicalString()) {
-						divided = true;
-						break;
-					}
-				}
-			}
-			if (!divided) {
-				factors.push(factor);
-			}
-		}
-		return new Product(product.coeff.divide(divisor.coeff), ...factors);
-	} else {
-		/** @type {ExpressionType[]} */
-		const factors = [];
-		for (const factor of product.factors) {
-			if (
-				factor instanceof Exponent &&
-				factor.base.toLexicalString() === divisor.toLexicalString() &&
-				factor.power instanceof Numeral
-			) {
-				factors.push(new Exponent(factor.base, factor.power.minus(1)));
-			} else if (factor.toLexicalString() !== divisor.toLexicalString()) {
-				factors.push(factor);
-				// remaining case: if factor = divisor, will be divided out, so no need to include in factors
-			}
-		}
-		return new Product(product.coeff, ...factors);
+	static lcm(exp1, exp2) {
+		return expression_lcm_two(exp1, exp2);
 	}
 }

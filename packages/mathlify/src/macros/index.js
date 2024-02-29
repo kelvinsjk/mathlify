@@ -1,4 +1,5 @@
-import { Expression, Sum, Product, Quotient, Numeral, Exponent } from '../core/index.js';
+import { to_Expression } from '../core/expression/utils/type-coercions.js';
+import { Expression, Sum, Product, Quotient, Numeral, Exponent, Brackets, Fn } from '../core/index.js';
 
 /** @typedef {[number|string|Expression, '/', number|string|Expression]} QuotientShorthand */
 /** @typedef {['-', number|string|Expression|PowerShorthand]} NegativeShorthand */
@@ -85,14 +86,18 @@ export function product(...factors) {
  * |(Expression|number|string|NegativeShorthand|QuotientShorthand|BracketShorthand|PowerShorthand)[])} factors
  */
 export function productVerbatim(...factors) {
-	/** @type {(Expression|number|string)[]} */
+	/** @type {(Expression)[]} */
 	const factorsExp = [];
 	for (const term of factors) {
 		const unpacked_term = unpack_shorthand(term);
 		if (Array.isArray(unpacked_term)) {
 			factorsExp.push(sumVerbatim(...unpacked_term));
 		} else {
-			factorsExp.push(unpacked_term);
+			if (unpacked_term instanceof Expression) {
+				factorsExp.push(unpacked_term);
+			} else {
+				factorsExp.push(new Expression(unpacked_term));
+			}
 		}
 	}
 	return new Expression(new Product(...factorsExp));
@@ -104,15 +109,16 @@ export function productVerbatim(...factors) {
  * @returns {Expression}
  */
 export function brackets(exp) {
-	return Expression.brackets(unpack_shorthand_single(exp));
+	return new Expression(new Fn(new Brackets(to_Expression(unpack_shorthand_single(exp)))));
 }
 
 /**
  * creates a quotient as an expression.
  * by default, the quotient is simplified.
- * product shorthand: [a,b] represents the product ab
- * fraction shorthand: [a, '/', b] represents the fraction a/b
+ * negative shorthand: ['-', x] represents the negative value -x
+ * quotient shorthand: [a, '/', b] represents the quotient a/b
  * brackets shorthand: ['()', a] represents the bracketed expression (a)
+ * power shorthand: [a, n] where n must be a number represents the exponentiation a^n
  * @param {Expression|number|string|NegativeShorthand|QuotientShorthand|BracketShorthand|PowerShorthand} num
  * @param {Expression|number|string|NegativeShorthand|QuotientShorthand|BracketShorthand|PowerShorthand} den
  * @param {{verbatim?: boolean}} [options] - options. verbatim: if true, do not simplify the quotient.
@@ -131,6 +137,31 @@ export function quotient(num, den, options) {
 }
 
 /**
+ * creates a exponent as an expression.
+ * by default, the exponent is simplified.
+ * negative shorthand: ['-', x] represents the negative value -x
+ * quotient shorthand: [a, '/', b] represents the quotient a/b
+ * brackets shorthand: ['()', a] represents the bracketed expression (a)
+ * power shorthand: [a, n] where n must be a number represents the exponentiation a^n
+ * @param {Expression|number|string|NegativeShorthand|QuotientShorthand|BracketShorthand|PowerShorthand} base
+ * @param {Expression|number|string|NegativeShorthand|QuotientShorthand|BracketShorthand|PowerShorthand} power
+ * @param {{verbatim?: boolean}} [options] - options. verbatim: if true, do not simplify the quotient.
+ * @returns {Expression}
+ */
+export function exponent(base, power, options) {
+	const { verbatim } = {
+		verbatim: false,
+		...options,
+	};
+	const numerator = to_Expression(unpack_shorthand_single(base));
+	const denominator = to_Expression(unpack_shorthand_single(power));
+	const q = new Expression(new Exponent(numerator, denominator));
+	if (!verbatim) q.simplify();
+	return q;
+}
+
+//! utility functions to unpack shorthand argument notation
+/**
  * @param {...(Expression|number|string|NegativeShorthand|QuotientShorthand|BracketShorthand|PowerShorthand|(Expression|number|string|NegativeShorthand|QuotientShorthand|BracketShorthand|PowerShorthand)[])} exp
  * @returns {Expression|number|string|(Expression|number|string)[]}
  */
@@ -146,23 +177,24 @@ function unpack_shorthand(...exp) {
 			if (Array.isArray(term)) {
 				if (term.length === 3) {
 					const [num, _, den] = term;
-					return Expression.brackets(quotient(num, den)).simplify();
+					return brackets(quotient(num, den)).simplify();
 				} else {
 					throw new Error('unexpected nested brackets');
 				}
 			} else {
-				return Expression.brackets(term);
+				return brackets(term);
 			}
 		} else if (e.length === 2 && typeof e[1] === 'number' && (typeof e[0] === 'string' || e[0] instanceof Expression)) {
 			// exponent
 			const [base, power] = e;
-			const baseExp = base instanceof Expression ? base : new Expression(base);
-			const exp = new Exponent(baseExp, power);
+			const exp = new Exponent(to_Expression(base), new Expression(power));
 			return new Expression(exp);
 		} else if (e.length === 2 && e[0] === '-') {
 			// negative
 			const [_, term] = e;
-			return new Expression(new Product(-1, unpack_shorthand_single(term)));
+			const int = unpack_shorthand_single(term);
+			const exp = int instanceof Expression ? int : new Expression(int);
+			return new Expression(new Product(exp)._multiply_into_coeff(-1));
 		} else {
 			// product/sum array
 			/** @type {(Expression|number|string)[]} */
@@ -180,7 +212,7 @@ function unpack_shorthand(...exp) {
 						(term[1] instanceof Expression || typeof term[1] === 'number' || typeof term[1] === 'string')
 					) {
 						// brackets
-						termsExp.push(Expression.brackets(term[1]));
+						termsExp.push(brackets(term[1]));
 					} else if (
 						term.length === 2 &&
 						typeof term[1] === 'number' &&
@@ -188,13 +220,14 @@ function unpack_shorthand(...exp) {
 					) {
 						// exponent
 						const [base, power] = term;
-						const baseExp = base instanceof Expression ? base : new Expression(base);
-						const exp = new Exponent(baseExp, power);
+						const exp = new Exponent(to_Expression(base), new Expression(power));
 						termsExp.push(new Expression(exp));
 					} else if (term.length === 2 && term[0] === '-') {
 						// negative
 						const [_, t] = term;
-						termsExp.push(new Expression(new Product(-1, unpack_shorthand_single(t))));
+						const int = unpack_shorthand_single(t);
+						const exp = int instanceof Expression ? int : new Expression(int);
+						termsExp.push(new Expression(new Product(exp)._multiply_into_coeff(-1)));
 					} else {
 						throw new Error('unexpected nested arrays');
 					}
@@ -227,12 +260,12 @@ export function unpack_shorthand_single(exp) {
 			if (Array.isArray(term)) {
 				if (term.length === 3) {
 					const [num, _, den] = term;
-					return Expression.brackets(quotient(num, den));
+					return brackets(quotient(num, den));
 				} else {
 					throw new Error('unexpected nested brackets');
 				}
 			} else {
-				return Expression.brackets(term);
+				return brackets(term);
 			}
 		} else if (
 			exp.length === 2 &&
@@ -241,13 +274,14 @@ export function unpack_shorthand_single(exp) {
 		) {
 			// exponent
 			const [base, power] = exp;
-			const baseExp = base instanceof Expression ? base : new Expression(base);
-			const exponent = new Exponent(baseExp, power);
+			const exponent = new Exponent(to_Expression(base), new Expression(power));
 			return new Expression(exponent);
 		} else if (exp.length === 2 && exp[0] === '-') {
 			// negative
 			const [_, term] = exp;
-			return new Expression(new Product(-1, unpack_shorthand_single(term)));
+			const int = unpack_shorthand_single(term);
+			const e = int instanceof Expression ? int : new Expression(int);
+			return new Expression(new Product(e)._multiply_into_coeff(-1));
 		} else {
 			throw new Error('unexpected array');
 		}

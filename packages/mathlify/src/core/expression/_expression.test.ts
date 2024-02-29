@@ -1,6 +1,7 @@
-import { Expression, Fraction, Sum, Numeral, Variable, Product, Quotient, Exponent } from '.';
+import { Expression, Fraction, Sum, Numeral, Variable, Product, Quotient, Exponent, Fn, Brackets } from '.';
 import { test, expect } from 'vitest';
-import { Brackets, Fn } from './fn';
+//import { to_Expression } from './utils';
+//import { brackets } from '../../macros';
 
 test('expression cloning', () => {
 	const x = new Expression('x');
@@ -14,6 +15,9 @@ test('expression cloning', () => {
 test('expression simplification', () => {
 	// simplification of fraction
 	const half = new Fraction(2, 4);
+	expect(`${half}`).toBe(`\\frac{2}{4}`);
+	const halfSum = new Sum(half);
+	expect(`${halfSum}`).toBe(`\\frac{2}{4}`);
 	const halfExp = new Expression(new Sum(half));
 	expect(`${halfExp}`).toBe(`\\frac{2}{4}`);
 	const halfExp2 = halfExp.clone();
@@ -33,7 +37,7 @@ test('expression simplification', () => {
 	x.simplify();
 	expect(x.expression instanceof Sum).toBe(false);
 	expect(x.expression instanceof Variable).toBe(true);
-	const y = new Expression(new Product('y'));
+	const y = new Expression(new Product(new Expression('y')));
 	expect(y.expression instanceof Product).toBe(true);
 	y.simplify();
 	expect(y.expression instanceof Product).toBe(false);
@@ -56,7 +60,7 @@ test('expression simplification', () => {
 
 test('brackets', () => {
 	const x = new Variable('x');
-	const xPlusNegativeOne = new Expression(new Sum(x, Expression.brackets(-1)));
+	const xPlusNegativeOne = new Expression(new Sum(x, new Expression(new Fn(new Brackets(-1)))));
 	const exp2 = xPlusNegativeOne.clone();
 	expect(`${xPlusNegativeOne}`).toBe(`x + \\left( - 1 \\right)`);
 	xPlusNegativeOne.simplify();
@@ -64,26 +68,25 @@ test('brackets', () => {
 	x.name = 'y';
 	expect(`${xPlusNegativeOne}`).toBe('y - 1');
 	expect(`${exp2}`).toBe('x + \\left( - 1 \\right)');
-	const twoMinus5 = new Expression(new Sum(2, Expression.brackets(-5)));
+	const twoMinus5 = new Expression(new Sum(2, new Expression(new Fn(new Brackets(-5)))));
 	expect(`${twoMinus5}`).toBe(`2 + \\left( - 5 \\right)`);
 	twoMinus5._remove_brackets();
 	expect(`${twoMinus5}`).toBe(`2 - 5`);
 	twoMinus5.simplify();
 	expect(`${twoMinus5}`).toBe(`- 3`);
-	const exp = new Expression(new Brackets(5));
-	expect(`${exp}`).toBe(`\\left( 5 \\right)`);
-	const y = Expression.brackets(new Fn(new Brackets('y')));
-	expect(`${y}`).toBe(`\\left( y \\right)`);
+	//const exp = new Expression(new Brackets(5));
+	//expect(`${exp}`).toBe(`\\left( 5 \\right)`);
 });
 
+import { denominator_lcm } from './utils/gcd-lcm';
 test('expression lcm', () => {
-	expect(() => Expression.denominator_lcm()).toThrow();
-	const half = new Expression(new Fraction(1, 2));
+	expect(() => denominator_lcm()).toThrow();
+	const half = new Expression(new Numeral(new Fraction(1, 2)));
 	expect(() => half._common_denominator()).toThrow();
 	expect(() => half._combine_fraction()).toThrow();
-	const xOver3 = new Expression(new Fraction(2, 3));
-	const negative1_10 = new Expression(new Fraction(-1, 10));
-	expect(Expression.denominator_lcm(half, xOver3, negative1_10).toString()).toBe('30');
+	const xOver3 = new Expression(new Numeral(new Fraction(2, 3)));
+	const negative1_10 = new Expression(new Numeral(new Fraction(-1, 10)));
+	expect(denominator_lcm(half, xOver3, negative1_10).toString()).toBe('30');
 	const y = new Expression('y');
 	const sum = new Expression(new Sum(negative1_10, y));
 	sum.combine_fraction();
@@ -91,14 +94,14 @@ test('expression lcm', () => {
 	const sum2 = new Expression(new Sum(y, negative1_10));
 	sum2.combine_fraction();
 	expect(`${sum2}`).toBe('\\frac{10y - 1}{10}');
-	const xz = new Expression(new Product('x', 'z'));
+	const xz = new Expression(new Product(new Expression('x'), new Expression('z')));
 	const yPlusXZ = new Expression(new Sum('y', xz, half));
 	yPlusXZ.combine_fraction();
 	expect(`${yPlusXZ}`).toBe('\\frac{2y + 2xz + 1}{2}');
 	const sum3 = new Expression(new Sum(half, y));
 	sum3.combine_fraction();
 	expect(`${sum3}`).toBe('\\frac{1 + 2y}{2}');
-	expect(`${Expression.denominator_lcm(y)}`).toBe('1');
+	expect(`${denominator_lcm(y)}`).toBe('1');
 
 	const sum4 = new Expression(new Sum('x', 'y'));
 	sum4._common_denominator();
@@ -108,7 +111,7 @@ test('expression lcm', () => {
 });
 
 test('expression arithmetic', () => {
-	const xy = new Expression(new Product('x', 'y'));
+	const xy = new Expression(new Product(new Expression('x'), new Expression('y')));
 	expect(`${xy}`).toBe('xy');
 	expect(`${xy.negative()}`).toBe('- xy');
 	const q = new Expression(new Quotient('x', 'y'));
@@ -116,14 +119,14 @@ test('expression arithmetic', () => {
 });
 
 test('lexical string', () => {
-	const xPlusY = new Sum('x', Expression.brackets('z'), 'y');
-	const yPlusX = new Sum('y', 'x', Expression.brackets('z'));
-	const xy = new Product('x', 'y');
-	const yx = new Product('y', 'x');
+	const xPlusY = new Sum('x', new Expression(new Fn(new Brackets('z'))), 'y');
+	const yPlusX = new Sum('y', 'x', new Expression(new Fn(new Brackets('z'))));
+	const xy = new Product(new Expression('x'), new Expression('y'));
+	const yx = new Product(new Expression('y'), new Expression('x'));
 	const q1 = new Expression(new Quotient(xPlusY, xy));
 	const q2 = new Expression(new Quotient(yPlusX, yx));
-	expect(q1.toLexicalString()).toBe('((z)+x+y)/(1x*y)');
-	expect(q1.toLexicalString()).toBe(q2.toLexicalString());
+	expect(q1._to_lexical_string()).toBe('((z)+x+y)/(1x*y)');
+	expect(q1._to_lexical_string()).toBe(q2._to_lexical_string());
 });
 
 test('expansion', () => {
@@ -135,13 +138,12 @@ test('expansion', () => {
 test('simplify exponent', () => {
 	let q = new Expression(
 		new Product(
-			2,
-			'x',
-			new Exponent('x', 2),
-			new Exponent('y', 0),
-			new Exponent(new Fraction(2, 3), -2),
-			new Exponent(new Sum('x', 'y'), 1),
-		),
+			new Expression('x'),
+			new Expression(new Exponent(new Expression('x'), new Expression(2))),
+			new Expression(new Exponent(new Expression('y'), new Expression(0))),
+			new Expression(new Exponent(new Expression(new Numeral(new Fraction(2, 3))), new Expression(-2))),
+			new Expression(new Exponent(new Expression(new Sum('x', 'y')), new Expression(1))),
+		)._multiply_into_coeff(2),
 	);
 	expect(`${q}`).toBe('2xx^2y^0\\frac{2}{3}^{- 2}\\left( x + y \\right)^1');
 	q.simplify();
@@ -149,52 +151,83 @@ test('simplify exponent', () => {
 });
 
 test('expression gcd/lcm', () => {
-	const sixX2YZ2 = new Expression(new Product(6, new Exponent('x', 2), 'y', new Exponent('z', 2)));
-	const tenZ3X = new Expression(new Product(10, new Exponent('z', 3), 'x'));
-	const gcd = Expression._gcdTwo(sixX2YZ2, tenZ3X);
+	const sixX2YZ2 = new Expression(
+		new Product(
+			new Expression(6),
+			new Expression(new Exponent(new Expression('x'), new Expression(2))),
+			new Expression('y'),
+			new Expression(new Exponent(new Expression('z'), new Expression(2))),
+		),
+	).simplify();
+	const tenZ3X = new Expression(
+		new Product(
+			new Expression(10),
+			new Expression(new Exponent(new Expression('z'), new Expression(3))),
+			new Expression('x'),
+		),
+	).simplify();
+	const gcd = Expression.gcd(sixX2YZ2, tenZ3X);
 	expect(`${gcd}`).toBe('2xz^2');
-	const lcm = Expression._lcmTwo(sixX2YZ2, tenZ3X);
+	const lcm = Expression.lcm(sixX2YZ2, tenZ3X);
 	expect(`${lcm}`).toBe('30x^2yz^3');
-	const a2b = new Expression(new Product(new Exponent('a', 2), 'b'));
-	expect(`${Expression._lcmTwo(sixX2YZ2, a2b)}`).toBe('6x^2yz^2a^2b');
+	const a2b = new Expression(
+		new Product(new Expression(new Exponent(new Expression('a'), new Expression(2))), new Expression('b')),
+	);
+	expect(`${Expression.lcm(sixX2YZ2, a2b)}`).toBe('6x^2yz^2a^2b');
 
-	const eX = new Expression(new Exponent('e', 'x'));
-	expect(`${Expression._gcdTwo(eX, sixX2YZ2)}`).toBe('1');
+	const eX = new Expression(new Exponent(new Expression('e'), new Expression('x')));
+	expect(`${Expression.gcd(eX, sixX2YZ2)}`).toBe('1');
 
 	const x = new Expression('x');
-	const x2 = new Expression(new Exponent('x', 2));
-	const xHalf = new Expression(new Exponent('x', new Fraction(1, 2)));
-	const x3 = new Expression(new Exponent('x', 3));
-	const w4 = new Expression(new Exponent('w', 4));
+	const x2 = new Expression(new Exponent(new Expression('x'), new Expression(2)));
+	const xHalf = new Expression(new Exponent(new Expression('x'), new Expression(new Numeral(new Fraction(1, 2)))));
+	const x3 = new Expression(new Exponent(new Expression('x'), new Expression(3)));
+	const w4 = new Expression(new Exponent(new Expression('w'), new Expression(4)));
 	const y = new Expression('y');
-	const xY = new Expression(new Exponent('x', 'y'));
-	const xSuperPower = new Expression(new Exponent(new Exponent('x', 'y'), 3));
-	expect(`${Expression._lcmTwo(x2, x3)}`).toBe('x^3');
-	expect(`${Expression._gcdTwo(x2, x3)}`).toBe('x^2');
-	expect(`${Expression._gcdTwo(x2, w4)}`).toBe('1');
-	expect(`${Expression._gcdTwo(x2, sixX2YZ2)}`).toBe('x^2');
-	expect(`${Expression._lcmTwo(x3, sixX2YZ2)}`).toBe('6x^3yz^2');
-	expect(`${Expression._gcdTwo(sixX2YZ2, w4)}`).toBe('1');
+	const xY = new Expression(new Exponent(new Expression('x'), new Expression('y')));
+	const first = new Exponent(new Expression('x'), new Expression('y'));
+	const second = new Exponent(new Expression(first), new Expression(3));
+	const xSuperPower = new Expression(second);
+	expect(`${Expression.lcm(x2, x3)}`).toBe('x^3');
+	expect(`${Expression.gcd(x2, x3)}`).toBe('x^2');
+	expect(`${Expression.gcd(x2, w4)}`).toBe('1');
+	expect(`${Expression.gcd(x2, sixX2YZ2)}`).toBe('x^2');
+	expect(`${Expression.lcm(x3, sixX2YZ2)}`).toBe('6x^3yz^2');
+	expect(`${Expression.gcd(sixX2YZ2, w4)}`).toBe('1');
 	expect(`${xSuperPower}`).toBe('x^y^3');
-	expect(`${Expression._gcdTwo(xSuperPower, xY)}`).toBe('x^y');
-	expect(`${Expression._gcdTwo(xSuperPower, y)}`).toBe('1');
+	expect(`${Expression.gcd(xSuperPower, xY)}`).toBe('x^y');
+	expect(`${Expression.gcd(xSuperPower, y)}`).toBe('1');
 	const xPlusY = new Expression(new Sum('x', 'y'));
 	const yPlusX = new Expression(new Sum('y', 'x'));
-	expect(`${Expression._gcdTwo(xPlusY, yPlusX)}`).toBe('x + y');
-	expect(`${Expression._gcdTwo(xPlusY, y)}`).toBe('1');
+	expect(`${Expression.gcd(xPlusY, yPlusX)}`).toBe('x + y');
+	expect(`${Expression.gcd(xPlusY, y)}`).toBe('1');
 	const two = new Expression(2);
-	expect(`${Expression._gcdTwo(sixX2YZ2, two)}`).toBe('2');
-	expect(`${Expression._lcmTwo(sixX2YZ2, two)}`).toBe('6x^2yz^2');
-	const threeYPlusX = new Expression(new Product(3, yPlusX));
-	const threeYPlusX2 = new Expression(new Product(3, new Exponent(yPlusX, 2)));
-	expect(`${Expression._gcdTwo(threeYPlusX2, xPlusY)}`).toBe('x + y');
-	expect(`${Expression._gcdTwo(threeYPlusX, xPlusY)}`).toBe('x + y');
-	expect(`${Expression._gcdTwo(threeYPlusX, y)}`).toBe('1');
-	expect(`${Expression._lcmTwo(threeYPlusX, xPlusY)}`).toBe('3\\left( y + x \\right)');
-	expect(`${Expression._lcmTwo(threeYPlusX, x2)}`).toBe('3\\left( y + x \\right)x^2');
-	expect(`${Expression._lcmTwo(x2, w4)}`).toBe('x^2w^4');
-	expect(`${Expression._lcmTwo(x2, x)}`).toBe('x^2');
-	expect(`${Expression._lcmTwo(xHalf, x)}`).toBe('x');
-	expect(`${Expression._lcmTwo(y, x2)}`).toBe('x^2y');
-	expect(`${Expression._lcmTwo(xPlusY, y)}`).toBe('\\left( x + y \\right)y');
+	expect(`${Expression.gcd(sixX2YZ2, two)}`).toBe('2');
+	expect(`${Expression.lcm(sixX2YZ2, two)}`).toBe('6x^2yz^2');
+	const threeYPlusX = new Expression(new Product(new Expression(3), yPlusX));
+	const threeYPlusX2 = new Expression(
+		new Product(new Expression(3), new Expression(new Exponent(yPlusX, new Expression(2)))),
+	);
+	expect(`${Expression.gcd(threeYPlusX2, xPlusY)}`).toBe('x + y');
+	expect(`${Expression.gcd(threeYPlusX, xPlusY)}`).toBe('x + y');
+	expect(`${Expression.gcd(threeYPlusX, y)}`).toBe('1');
+	expect(`${Expression.lcm(threeYPlusX, xPlusY)}`).toBe('3\\left( y + x \\right)');
+	expect(`${Expression.lcm(threeYPlusX, x2)}`).toBe('3\\left( y + x \\right)x^2');
+	expect(`${Expression.lcm(x2, w4)}`).toBe('x^2w^4');
+	expect(`${Expression.lcm(x2, x)}`).toBe('x^2');
+	expect(`${Expression.lcm(xHalf, x)}`).toBe('x');
+	expect(`${Expression.lcm(y, x2)}`).toBe('x^2y');
+	expect(`${Expression.lcm(xPlusY, y)}`).toBe('\\left( x + y \\right)y');
+});
+
+test('factorize', () => {
+	let exp = new Expression(
+		new Sum(
+			new Product(new Expression(3), new Expression('x')).simplify(),
+			6,
+			new Product(new Expression(-12), new Expression('y')).simplify(),
+		),
+	);
+	exp.factorize();
+	expect(`${exp}`).toBe('3\\left( x + 2 - 4y \\right)');
 });

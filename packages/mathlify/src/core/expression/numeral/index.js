@@ -6,6 +6,8 @@ export { Fraction };
  * @property {Fraction} number
  */
 export class Numeral {
+	/** @type {'numeral'} */
+	type = 'numeral';
 	/** @type {Fraction} */
 	number;
 	/**
@@ -106,10 +108,10 @@ export class Numeral {
 		return this.plus(numberToFraction(x).negative());
 	}
 	/**
-	 * @returns {this}
+	 * @returns {Numeral}
 	 */
 	subIn() {
-		return this;
+		return this.clone();
 	}
 
 	//! Boolean methods
