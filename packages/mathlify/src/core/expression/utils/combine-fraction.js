@@ -1,6 +1,11 @@
-import { Expression, Sum, Numeral, Product, Quotient } from '../index.js';
+import { Sum } from '../sum/index.js';
+import { Numeral } from '../numeral/index.js';
+import { Product } from '../product/index.js';
+import { Quotient } from '../quotient/index.js';
 import { divide_by_factor } from './factors.js';
 import { denominator_lcm } from './gcd-lcm.js';
+
+/** @typedef {import('../index.js').Expression} Expression  */
 
 /**
  * @param {Expression} exp
@@ -15,35 +20,46 @@ export function common_denominator(exp) {
 	}
 	/** @type {Expression[]} */
 	const terms = [];
+	// for circular dependency workaround
+	const dummy = sum._termsExp[0];
 	for (const term of sum.terms) {
 		if (term instanceof Numeral) {
 			if (term.is.negative()) {
-				const num = new Product(term.abs(), new Expression(den)).simplify();
-				const q = new Quotient(num, den);
-				terms.push(new Expression(new Product(-1, new Expression(q))));
+				const num = new Product(term.abs(), dummy._new_exp(den)).simplify();
+				const q = new Quotient(dummy._new_exp(num), dummy._new_exp(den));
+				terms.push(dummy._new_exp(new Product(-1, dummy._new_exp(q))));
 			} else {
-				terms.push(new Expression(new Quotient(new Product(term, new Expression(den)).simplify(), den)));
+				terms.push(
+					dummy._new_exp(
+						new Quotient(dummy._new_exp(new Product(term, dummy._new_exp(den)).simplify()), dummy._new_exp(den)),
+					),
+				);
 			}
 		} else if (term instanceof Quotient) {
 			const multiple = divide_by_factor(denExp, term.den.expression);
-			const num = new Expression(
-				new Product(term.num, ...multiple._factorsExp)._multiply_into_coeff(multiple.coeff),
-			).simplify();
-			terms.push(new Expression(new Quotient(num, den)));
+			const num = dummy._new_exp(new Product(multiple.coeff, term.num, ...multiple._factorsExp)).simplify();
+			terms.push(dummy._new_exp(new Quotient(num, dummy._new_exp(den))));
 		} else if (term instanceof Product && term.coeff.is.negative()) {
 			if (term.factors.length === 1 && term.factors[0] instanceof Quotient) {
 				const multiple = divide_by_factor(denExp, term.factors[0].den.expression);
-				const num = new Expression(
-					new Product(multiple.coeff, term.factors[0].num, ...multiple._factorsExp),
-				).simplify();
-				terms.push(new Expression(new Product(-1, new Expression(new Quotient(num, den)))));
+				const num = dummy
+					._new_exp(new Product(multiple.coeff, term.factors[0].num, ...multiple._factorsExp))
+					.simplify();
+				terms.push(dummy._new_exp(new Product(-1, dummy._new_exp(new Quotient(num, dummy._new_exp(den))))));
 			} else {
-				const num = new Product(term.coeff.abs(), ...term._factorsExp, new Expression(den)).simplify();
-				const p = new Product(-1, new Expression(new Quotient(num, den)));
-				terms.push(new Expression(p));
+				const num = new Product(term.coeff.abs(), ...term._factorsExp, dummy._new_exp(den)).simplify();
+				const p = new Product(-1, dummy._new_exp(new Quotient(dummy._new_exp(num), dummy._new_exp(den))));
+				terms.push(dummy._new_exp(p));
 			}
 		} else {
-			terms.push(new Expression(new Quotient(new Product(new Expression(term), new Expression(den)).simplify(), den)));
+			terms.push(
+				dummy._new_exp(
+					new Quotient(
+						dummy._new_exp(new Product(dummy._new_exp(term), dummy._new_exp(den)).simplify()),
+						dummy._new_exp(den),
+					),
+				),
+			);
 		}
 	}
 	sum._termsExp = terms;
@@ -55,12 +71,13 @@ export function common_denominator(exp) {
  * @returns {Quotient|undefined}
  */
 export function combine_fraction(exp) {
-	/** @type {(Expression|Product)[]} */
+	/** @type {(Expression)[]} */
 	const terms = [];
 	const sum = exp.expression;
 	if (!(sum instanceof Sum)) {
 		throw new Error('common denominator only supported for sums');
 	}
+	const dummy = sum._termsExp[0];
 	/** @type {Expression|undefined} */
 	let den = undefined;
 	for (const term of sum.terms) {
@@ -75,10 +92,10 @@ export function combine_fraction(exp) {
 		) {
 			const q = term.factors[0];
 			den = den ?? q.den;
-			terms.push(new Product(q.num)._multiply_into_coeff(-1));
+			terms.push(dummy._new_exp(new Product(-1, q.num)));
 		}
 		//! assumption: no other cases should be possible
 	}
 	if (den === undefined) return undefined;
-	return new Quotient(new Sum(...terms), den);
+	return new Quotient(dummy._new_exp(new Sum(...terms)), den);
 }

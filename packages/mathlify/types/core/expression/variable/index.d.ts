@@ -9,6 +9,8 @@ export class Variable {
      * @param {string} name - the string representation of the variable
      */
     constructor(name: string);
+    /** @type {'variable'} */
+    type: 'variable';
     name: string;
     /**
      * @returns {string} `this.name`

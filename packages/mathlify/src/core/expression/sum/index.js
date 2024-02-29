@@ -1,8 +1,8 @@
-import { Expression } from '../index.js';
+//import { Expression } from '../index.js';
 import { Numeral } from '../numeral/index.js';
 import { Product } from '../product/index.js';
-import { to_Expression } from '../utils/type-coercions.js';
 
+/** @typedef {import('../index.js').Expression} Expression */
 /** @typedef {import('../numeral/fraction/index.js').Fraction} Fraction */
 /** @typedef {import('../variable/index.js').Variable} Variable */
 /** @typedef {import('../quotient/index.js').Quotient} Quotient*/
@@ -20,12 +20,10 @@ export class Sum {
 	_termsExp;
 	/**
 	 * Creates a Sum
-	 * @param {...(Expression|ExpressionType|string|Fraction|number)} terms
+	 * @param {...Expression} terms
 	 */
 	constructor(...terms) {
-		this._termsExp = terms.map((t) => {
-			return to_Expression(t);
-		});
+		this._termsExp = terms;
 	}
 
 	/**
@@ -116,20 +114,20 @@ export class Sum {
 	 * WARNING: mutates current instance
 	 */
 	_flatten() {
-		/** @type {ExpressionType[]} */
+		/** @type {Expression[]} */
 		const terms = [];
-		for (const term of this.terms) {
-			if (term instanceof Sum) {
-				term._flatten();
-				terms.push(...term.terms);
-			} else if (term instanceof Product) {
-				term._flatten();
+		for (const term of this._termsExp) {
+			if (term.expression instanceof Sum) {
+				term.expression._flatten();
+				terms.push(...term.expression._termsExp);
+			} else if (term.expression instanceof Product) {
+				term.expression._flatten();
 				terms.push(term);
 			} else {
 				terms.push(term);
 			}
 		}
-		this._termsExp = terms.map((term) => new Expression(term));
+		this._termsExp = terms;
 		return this;
 	}
 
@@ -161,9 +159,10 @@ export class Sum {
 				if (term instanceof Product) {
 					termMap[key] = [[i], term.coeff, term.toUnit()];
 				} else if (term instanceof Numeral) {
-					termMap[key] = [[i], term.clone(), new Expression(new Numeral(1))];
+					// workaround to avoid Expression constructor
+					termMap[key] = [[i], term.clone(), this._termsExp[0]._new_exp(new Numeral(1))];
 				} else {
-					termMap[key] = [[i], new Numeral(1), new Expression(term).clone()];
+					termMap[key] = [[i], new Numeral(1), this._termsExp[0]._new_exp(term.clone())];
 				}
 			}
 		}

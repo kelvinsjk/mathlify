@@ -1,3 +1,4 @@
+/** @typedef {import('../index.js').Expression} Expression  */
 /**
  * @param {Expression} exp
  */
@@ -8,6 +9,6 @@ export function common_denominator(exp: Expression): void;
  * @returns {Quotient|undefined}
  */
 export function combine_fraction(exp: Expression): Quotient | undefined;
-import { Expression } from '../index.js';
-import { Quotient } from '../index.js';
+export type Expression = import('../index.js').Expression;
+import { Quotient } from '../quotient/index.js';
 //# sourceMappingURL=combine-fraction.d.ts.map

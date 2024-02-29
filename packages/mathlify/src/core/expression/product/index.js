@@ -1,7 +1,7 @@
 import { Numeral } from '../numeral/index.js';
 //import { Sum } from '../sum/index.js';
 //import { Fraction } from '../numeral/fraction/index.js';
-//import { Exponent } from '../exponent/index.js';
+import { Exponent } from '../exponent/index.js';
 
 /** @typedef {import('../index.js').Expression} Expression */
 /** @typedef {import('../variable/index.js').Variable} Variable */
@@ -111,16 +111,6 @@ export class Product {
 	}
 
 	/**
-	 * @param {number|Numeral} x
-	 * @returns {Product}
-	 */
-	_multiply_into_coeff(x) {
-		const result = this.clone();
-		result.coeff = result.coeff.times(x);
-		return result;
-	}
-
-	/**
 	 * @param {Expression} x
 	 * @returns {Product}
 	 */
@@ -166,8 +156,67 @@ export class Product {
 		}
 		this._factorsExp = this._factorsExp.filter((_, i) => !indices.includes(i));
 		if (product) {
+			this._combine_factors();
 			this._flatten();
 		}
+		return this;
+	}
+
+	/**
+	 * extracts numeric factors into coefficient
+	 * combines singletons and exponents with numeric powers into an exponent
+	 * eg. combines $4 \cdot x \cdot x^2 \cdot 3$ into $12x^3$
+	 * @returns {this}
+	 */
+	_combine_factors() {
+		// lexical string: [indices, power, base expression]
+		/** @type {Object.<string,[number[],Numeral,Expression]>} */
+		const termMap = {};
+		/** @type {string[]} */
+		const orderedKeys = [];
+		/** @type {number[]} */
+		const indicesToRemove = [];
+		for (const [i, factor] of this.factors.entries()) {
+			if (factor instanceof Exponent && factor.power instanceof Numeral) {
+				const key = factor.base.toLexicalString();
+				const val = termMap[key];
+				if (val) {
+					val[0].push(i);
+					val[1] = val[1].plus(factor.power);
+				} else {
+					orderedKeys.push(key);
+					termMap[key] = [[i], factor.power, factor.baseExp.clone()];
+				}
+			} else if (factor instanceof Numeral) {
+				// extracts numeric factors into coefficient
+				this.coeff = this.coeff.times(factor);
+				indicesToRemove.push(i);
+			} else {
+				const key = factor.toLexicalString();
+				const val = termMap[key];
+				if (val) {
+					val[0].push(i);
+					val[1] = val[1].plus(1);
+				} else {
+					orderedKeys.push(key);
+					termMap[key] = [[i], new Numeral(1), this._factorsExp[i]];
+				}
+			}
+		}
+		for (const key of orderedKeys) {
+			const [indices, power, base] = termMap[key];
+			if (indices.length > 1) {
+				// combine
+				if (power.is.zero()) {
+					indicesToRemove.push(...indices);
+				} else {
+					const newExponent = power.is.one() ? base : base._new_exp(new Exponent(base, base._new_exp(power)));
+					this._factorsExp[indices[0]] = newExponent;
+					indicesToRemove.push(...indices.slice(1));
+				}
+			}
+		}
+		this._factorsExp = this._factorsExp.filter((_, i) => !indicesToRemove.includes(i));
 		return this;
 	}
 

@@ -1,3 +1,15 @@
+/**
+ * to Expression
+ * @param {ExpressionType|string|number|Fraction|Expression} exp
+ * @return {Expression}
+ */
+export function to_Expression(exp: ExpressionType | string | number | Fraction | Expression): Expression;
+/**
+ *
+ * @param {Expression|number|string|FractionShorthand} exp
+ * @returns {Expression|number|string}
+ */
+export function unpack_shorthand_single(exp: Expression | number | string | import("../../macros/index.js").QuotientShorthand): Expression | number | string;
 /** @typedef {import('../../macros/index.js').BracketShorthand} BracketShorthand */
 /** @typedef {import('../../macros/index.js').QuotientShorthand} FractionShorthand */
 /** @typedef {Sum|Product|Quotient|Exponent|Variable|Numeral|Fn} ExpressionType */
@@ -170,12 +182,10 @@ export class Expression {
      */
     _remove_common_factors(): this;
     /**
-     * extracts numeric factors into coefficient
-     * combines singletons and exponents with numeric powers into an exponent
-     * eg. combines $4 \cdot x \cdot x^2 \cdot 3$ into $12x^3$
-     * @returns {this}
+     * @param {ExpressionType} exp
+     * @returns {Expression}
      */
-    _combine_factors_in_product(): this;
+    _new_exp(exp: ExpressionType): Expression;
 }
 export type BracketShorthand = import('../../macros/index.js').BracketShorthand;
 export type FractionShorthand = import('../../macros/index.js').QuotientShorthand;
@@ -188,9 +198,9 @@ export type SimplifyOptions = {
     numeral?: boolean;
     exponent?: boolean;
 };
+import { Fraction } from './numeral/index.js';
 import { Variable } from './variable/index.js';
 import { Numeral } from './numeral/index.js';
-import { Fraction } from './numeral/index.js';
 import { Sum } from './sum/index.js';
 import { Product } from './product/index.js';
 import { Quotient } from './quotient/index.js';

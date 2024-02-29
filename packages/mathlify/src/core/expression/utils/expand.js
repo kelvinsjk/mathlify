@@ -1,8 +1,7 @@
 import { Product } from '../product/index.js';
 import { Sum } from '../sum/index.js';
 import { Quotient } from '../quotient/index.js';
-import { Expression } from '../index.js';
-///** @typedef {import('../index.js').Expression} Expression */
+/** @typedef {import('../index.js').Expression} Expression */
 /** @typedef {import('../index.js').ExpressionType} ExpressionType */
 
 /**
@@ -52,7 +51,7 @@ export function expand_product(expression) {
 	if (sums.length === 0 || (sums.length === 1 && exp.coeff.is.one() && exp.factors.length === 1)) return undefined;
 	/** @type {Product[]} */
 	let terms = sums[0]._termsExp.map((term) => {
-		return new Product(new Expression(new Product(exp.coeff, ...others, term)).simplify());
+		return new Product(term._new_exp(new Product(exp.coeff, ...others, term)).simplify());
 	});
 	sums.shift();
 	for (const sum of sums) {
@@ -65,7 +64,8 @@ export function expand_product(expression) {
 		}
 		terms = new_terms;
 	}
-	const sum = new Sum(...terms).simplify({ product: true, sum: false });
+	const termsExp = terms.map((term) => expression._new_exp(term));
+	const sum = new Sum(...termsExp).simplify({ product: true, sum: false });
 	sum._flatten();
 	return sum;
 }

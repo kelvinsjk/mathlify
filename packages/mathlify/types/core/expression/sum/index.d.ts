@@ -1,3 +1,4 @@
+/** @typedef {import('../index.js').Expression} Expression */
 /** @typedef {import('../numeral/fraction/index.js').Fraction} Fraction */
 /** @typedef {import('../variable/index.js').Variable} Variable */
 /** @typedef {import('../quotient/index.js').Quotient} Quotient*/
@@ -10,9 +11,11 @@
 export class Sum {
     /**
      * Creates a Sum
-     * @param {...(Expression|ExpressionType|string|Fraction|number)} terms
+     * @param {...Expression} terms
      */
-    constructor(...terms: (Expression | ExpressionType | string | Fraction | number)[]);
+    constructor(...terms: Expression[]);
+    /** @type {'sum'} */
+    type: 'sum';
     /**@type {Expression[]} */
     _termsExp: Expression[];
     /**
@@ -77,10 +80,10 @@ export class Sum {
      */
     get terms(): import("../index.js").ExpressionType[];
 }
+export type Expression = import('../index.js').Expression;
 export type Fraction = import('../numeral/fraction/index.js').Fraction;
 export type Variable = import('../variable/index.js').Variable;
 export type Quotient = import('../quotient/index.js').Quotient;
 export type Exponent = import('../exponent/index.js').Exponent;
 export type ExpressionType = import('../index.js').ExpressionType;
-import { Expression } from '../index.js';
 //# sourceMappingURL=index.d.ts.map

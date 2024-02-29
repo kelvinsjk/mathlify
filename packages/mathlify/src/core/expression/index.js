@@ -13,8 +13,6 @@ import {
 	simplify_exponent,
 	expand_expression,
 	expand_product,
-	sub_in,
-	to_ExpressionType,
 	common_denominator,
 	combine_fraction,
 	expression_lcm_two,
@@ -46,7 +44,13 @@ export class Expression {
 	 * @param {ExpressionType|number|string} expression
 	 */
 	constructor(expression) {
-		this.expression = to_ExpressionType(expression);
+		const exp =
+			typeof expression === 'number'
+				? new Numeral(expression)
+				: typeof expression === 'string'
+					? new Variable(expression)
+					: expression;
+		this.expression = exp;
 	}
 
 	/**
@@ -90,7 +94,6 @@ export class Expression {
 			this.expression.simplify({ product, sum, numeral, quotient, exponent, brackets });
 		}
 		if (exponent) this._simplify_exponent({ product, sum, numeral, quotient, exponent, brackets });
-		if (product) this._combine_factors_in_product();
 		this._remove_singletons({ product, sum, quotient });
 		return this;
 	}
@@ -139,7 +142,9 @@ export class Expression {
 		if (!(this.expression instanceof Sum)) return this;
 		const commonFactor = Expression.gcd(...this.expression._termsExp);
 		if (commonFactor.expression instanceof Numeral && commonFactor.expression.is.one()) return this;
-		const factorizedTerms = this.expression._termsExp.map((term) => divide_by_factor(term, commonFactor.expression));
+		const factorizedTerms = this.expression._termsExp
+			.map((term) => divide_by_factor(term, commonFactor.expression))
+			.map((exp) => new Expression(exp));
 		/** @type {Expression|Sum} */
 		let sum = new Sum(...factorizedTerms);
 		if (!options?.verbatim) {
@@ -297,7 +302,7 @@ export class Expression {
 			if (newDen instanceof Numeral && newDen.is.one()) {
 				this.expression = newNum.expression;
 			} else {
-				this.expression = new Quotient(newNum.expression, newDen.expression);
+				this.expression = new Quotient(newNum, newDen);
 			}
 			return this;
 		} catch {
@@ -306,63 +311,11 @@ export class Expression {
 	}
 
 	/**
-	 * extracts numeric factors into coefficient
-	 * combines singletons and exponents with numeric powers into an exponent
-	 * eg. combines $4 \cdot x \cdot x^2 \cdot 3$ into $12x^3$
-	 * @returns {this}
+	 * @param {ExpressionType} exp
+	 * @returns {Expression}
 	 */
-	_combine_factors_in_product() {
-		if (!(this.expression instanceof Product)) return this;
-		const p = this.expression;
-		// lexical string: [indices, power, base expression]
-		/** @type {Object.<string,[number[],Numeral,Expression]>} */
-		const termMap = {};
-		/** @type {string[]} */
-		const orderedKeys = [];
-		/** @type {number[]} */
-		const indicesToRemove = [];
-		for (const [i, factor] of p.factors.entries()) {
-			if (factor instanceof Exponent && factor.power instanceof Numeral) {
-				const key = factor.base.toLexicalString();
-				const val = termMap[key];
-				if (val) {
-					val[0].push(i);
-					val[1] = val[1].plus(factor.power);
-				} else {
-					orderedKeys.push(key);
-					termMap[key] = [[i], factor.power, factor.baseExp.clone()];
-				}
-			} else if (factor instanceof Numeral) {
-				// extracts numeric factors into coefficient
-				p.coeff = p.coeff.times(factor);
-				indicesToRemove.push(i);
-			} else {
-				const key = factor.toLexicalString();
-				const val = termMap[key];
-				if (val) {
-					val[0].push(i);
-					val[1] = val[1].plus(1);
-				} else {
-					orderedKeys.push(key);
-					termMap[key] = [[i], new Numeral(1), p._factorsExp[i]];
-				}
-			}
-		}
-		for (const key of orderedKeys) {
-			const [indices, power, base] = termMap[key];
-			if (indices.length > 1) {
-				// combine
-				if (power.is.zero()) {
-					indicesToRemove.push(...indices);
-				} else {
-					const newExponent = power.is.one() ? base : new Expression(new Exponent(base, new Expression(power)));
-					p._factorsExp[indices[0]] = newExponent;
-					indicesToRemove.push(...indices.slice(1));
-				}
-			}
-		}
-		p._factorsExp = p._factorsExp.filter((_, i) => !indicesToRemove.includes(i));
-		return this;
+	_new_exp(exp) {
+		return new Expression(exp);
 	}
 
 	//! static methods
@@ -384,5 +337,79 @@ export class Expression {
 	 */
 	static lcm(exp1, exp2) {
 		return expression_lcm_two(exp1, exp2);
+	}
+}
+
+// additional functions that rely heavily on calling new Expression class that must be co-located here
+
+/**
+ * @param {Object.<string, Expression|string|number|FractionShorthand>} scope - variables to be replaced in the expression
+ * @returns {Object.<string,Expression>}
+ */
+function resolve_scope(scope) {
+	/** @type {Object.<string,Expression>} */
+	const scope_exp = {};
+	for (const [key, value] of Object.entries(scope)) {
+		scope_exp[key] = to_Expression(unpack_shorthand_single(value));
+	}
+	return scope_exp;
+}
+
+/**
+ * @param {Expression} expression
+ * @param {Object.<string, Expression|string|number|FractionShorthand>} scope - variables to be replaced in the expression
+ * @param {{verbatim?: boolean}} [options] - default to automatic simplification
+ * @returns {Expression}
+ */
+function sub_in(expression, scope, options) {
+	const scope_exp = resolve_scope(scope);
+	/** @type {Expression} */
+	let exp;
+	if (expression.expression instanceof Variable) {
+		const name = expression.expression.name;
+		if (name in scope_exp) {
+			exp = new Expression(scope_exp[name].expression.clone());
+			exp.multiplicationSign = expression.multiplicationSign;
+			exp.mixedFractions = expression.mixedFractions;
+		} else {
+			exp = expression.clone();
+		}
+	} else {
+		exp = new Expression(expression.expression.subIn(scope_exp, { verbatim: false, ...options }));
+		exp.multiplicationSign = expression.multiplicationSign;
+		exp.mixedFractions = expression.mixedFractions;
+	}
+	if (!options?.verbatim) exp.simplify();
+	return exp;
+}
+
+/**
+ * to Expression
+ * @param {ExpressionType|string|number|Fraction|Expression} exp
+ * @return {Expression}
+ */
+export function to_Expression(exp) {
+	if (typeof exp === 'string') {
+		return new Expression(new Variable(exp));
+	} else if (typeof exp === 'number' || exp instanceof Fraction) {
+		return new Expression(new Numeral(exp, { verbatim: true }));
+	} else if (exp instanceof Expression) {
+		return exp;
+	}
+	return new Expression(exp);
+}
+
+/**
+ *
+ * @param {Expression|number|string|FractionShorthand} exp
+ * @returns {Expression|number|string}
+ */
+export function unpack_shorthand_single(exp) {
+	if (Array.isArray(exp)) {
+		// quotient
+		const [num, _, den] = exp;
+		return new Expression(new Quotient(to_Expression(num), to_Expression(den))).simplify();
+	} else {
+		return exp;
 	}
 }

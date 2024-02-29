@@ -11,6 +11,8 @@ export class Fn {
      * @param {Brackets} fn
      */
     constructor(fn: Brackets);
+    /** @type {'fn'} */
+    type: 'fn';
     /** @type {Brackets} */
     fn: Brackets;
     /**

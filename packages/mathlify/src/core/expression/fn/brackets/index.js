@@ -1,6 +1,4 @@
-import { Expression } from '../../index.js';
-import { to_Expression } from '../../utils/type-coercions.js';
-
+/** @typedef {import('../../index.js').Expression} Expression */
 /** @typedef {import('../../numeral/index.js').Numeral} Numeral */
 /** @typedef {import('../../numeral/fraction/index.js').Fraction} Fraction */
 /** @typedef {import('../../variable/index.js').Variable} Variable */
@@ -19,10 +17,10 @@ export class Brackets {
 	expression;
 	/**
 	 * Creates a Bracketed term
-	 * @param {Expression|ExpressionType|string|Fraction|number} expression
+	 * @param {Expression} expression
 	 */
 	constructor(expression) {
-		this.expression = to_Expression(expression);
+		this.expression = expression;
 	}
 
 	/**

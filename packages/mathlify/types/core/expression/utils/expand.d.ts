@@ -1,3 +1,4 @@
+/** @typedef {import('../index.js').Expression} Expression */
 /** @typedef {import('../index.js').ExpressionType} ExpressionType */
 /**
  * expands either products, or products within a sum
@@ -15,7 +16,7 @@ export function expand_expression(expression: Expression, options?: {
  * @returns {Sum|undefined}
  */
 export function expand_product(expression: Expression): Sum | undefined;
+export type Expression = import('../index.js').Expression;
 export type ExpressionType = import('../index.js').ExpressionType;
-import { Expression } from '../index.js';
 import { Sum } from '../sum/index.js';
 //# sourceMappingURL=expand.d.ts.map
