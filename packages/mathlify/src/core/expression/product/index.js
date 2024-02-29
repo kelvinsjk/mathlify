@@ -1,9 +1,9 @@
-import { Expression } from '../index.js';
 import { Numeral } from '../numeral/index.js';
-import { Fraction } from '../numeral/fraction/index.js';
-import { Sum } from '../sum/index.js';
-import { Exponent } from '../exponent/index.js';
+//import { Sum } from '../sum/index.js';
+//import { Fraction } from '../numeral/fraction/index.js';
+//import { Exponent } from '../exponent/index.js';
 
+/** @typedef {import('../index.js').Expression} Expression */
 /** @typedef {import('../variable/index.js').Variable} Variable */
 /** @typedef {import('../quotient/index.js').Quotient} Quotient*/
 /** @typedef {import('../index.js').ExpressionType} ExpressionType */
@@ -15,38 +15,37 @@ import { Exponent } from '../exponent/index.js';
  * @property {Expression[]} factors - the factors in the product
  * */
 export class Product {
+	/** @type {'product'} */
+	type = 'product';
 	/** @type {Numeral} */
 	coeff;
 	/**@type {Expression[]} */
 	_factorsExp;
 	/**
 	 * Creates a Product
-	 * First argument, if of Numeral|Fraction|number type, is taken as the coefficient
-	 * @param {...(Expression|ExpressionType|string|Fraction|number)} terms
+	 * @param {Expression[]|[number|Numeral, ...Expression[]]} factors
 	 */
-	constructor(...terms) {
-		if (terms.length === 0) {
+	constructor(...factors) {
+		if (factors.length === 0) {
 			this.coeff = new Numeral(1);
 			this._factorsExp = [];
 			return;
 		}
-		/** @type {Numeral} */
-		let coeff = new Numeral(1);
-		let firstTerm = terms[0];
-		if (firstTerm instanceof Fraction || typeof firstTerm === 'number') {
-			firstTerm = new Numeral(firstTerm, { verbatim: true });
+		const first_term = factors[0];
+		if (typeof first_term === 'number') {
+			this.coeff = new Numeral(first_term);
+			factors = /** @type {Expression[]}*/ (factors.slice(1));
+		} else if (first_term instanceof Numeral) {
+			this.coeff = first_term;
+			factors = /** @type {Expression[]}*/ (factors.slice(1));
+		} else if (first_term.expression instanceof Numeral) {
+			this.coeff = first_term.expression;
+			factors = /** @type {Expression[]}*/ (factors.slice(1));
+		} else {
+			this.coeff = new Numeral(1);
+			factors = /** @type {Expression[]}*/ (factors);
 		}
-		if (firstTerm instanceof Numeral) {
-			firstTerm = new Expression(firstTerm);
-		}
-		if (firstTerm instanceof Expression && firstTerm.expression instanceof Numeral) {
-			coeff = firstTerm.expression;
-			terms.shift();
-		}
-		this._factorsExp = terms.map((t) => {
-			return t instanceof Expression ? t : new Expression(t);
-		});
-		this.coeff = coeff;
+		this._factorsExp = factors;
 	}
 
 	/**
@@ -64,13 +63,20 @@ export class Product {
 		if (multiplicationSign && this.coeff.is.negative_one()) {
 			str = '- 1';
 		}
-		for (let term of this.factors) {
-			const sign = str === '' ? '' : multiplicationSign;
-			if ((term instanceof Numeral && term.number.is.negative()) || (term instanceof Sum && term.terms.length > 1)) {
+		for (let factor of this.factors) {
+			const times = str === '' ? '' : multiplicationSign;
+			if (
+				(factor instanceof Numeral && factor.number.is.negative()) ||
+				(factor.type === 'sum' && factor.terms.length > 1) ||
+				(factor instanceof Numeral &&
+					(!this.coeff.abs().is.one() || this.factors.length > 1) &&
+					(factor.is.negative() || multiplicationSign === '')) ||
+				(factor instanceof Product && factor.coeff.is.negative())
+			) {
 				// these should have brackets
-				str += `${sign}\\left( ${term.toString(options)} \\right)`;
+				str += `${times}\\left( ${factor.toString({ mixedFractions })} \\right)`;
 			} else {
-				str += `${sign}${term.toString(options)}`;
+				str += `${times}${factor.toString({ mixedFractions })}`;
 			}
 		}
 		return str;
@@ -86,7 +92,7 @@ export class Product {
 		return (
 			str +
 			this._factorsExp
-				.map((factor) => factor.toLexicalString())
+				.map((factor) => factor._to_lexical_string())
 				.toSorted()
 				.join('*')
 		);
@@ -97,7 +103,31 @@ export class Product {
 	 */
 	toUnit() {
 		const factors = this._factorsExp.map((factor) => factor.clone());
-		return new Expression(new Product(1, ...factors)).simplify();
+		// to prevent usage of expression constructor
+		const dummy = factors[0].clone();
+		dummy.expression = new Product(...factors);
+		dummy.expression.coeff = new Numeral(1);
+		return dummy;
+	}
+
+	/**
+	 * @param {number|Numeral} x
+	 * @returns {Product}
+	 */
+	_multiply_into_coeff(x) {
+		const result = this.clone();
+		result.coeff = result.coeff.times(x);
+		return result;
+	}
+
+	/**
+	 * @param {Expression} x
+	 * @returns {Product}
+	 */
+	_multiply_into_factors(x) {
+		const result = this.clone();
+		result._factorsExp.push(x.clone());
+		return result;
 	}
 
 	/**
@@ -105,7 +135,9 @@ export class Product {
 	 */
 	clone() {
 		const factors = this._factorsExp.map((factor) => factor.clone());
-		return new Product(this.coeff.clone(), ...factors);
+		const unit = new Product(...factors);
+		unit.coeff = this.coeff.clone();
+		return unit;
 	}
 
 	/**
@@ -123,71 +155,19 @@ export class Product {
 			brackets: true,
 			...options,
 		};
-		for (let factor of this._factorsExp) {
+		/** @type {number[]} */
+		const indices = [];
+		for (const [i, factor] of this._factorsExp.entries()) {
 			factor.simplify({ product, numeral, sum, quotient, exponent, brackets });
+			if (factor.expression instanceof Numeral) {
+				this.coeff = this.coeff.times(factor.expression);
+				indices.push(i);
+			}
 		}
+		this._factorsExp = this._factorsExp.filter((_, i) => !indices.includes(i));
 		if (product) {
 			this._flatten();
-			this._combine_factors();
 		}
-		return this;
-	}
-
-	/**
-	 * extracts numeric factors into coefficient
-	 * combines singletons and exponents with numeric powers into an exponent
-	 * eg. combines $4 \cdot x \cdot x^2 \cdot 3$ into $12x^3$
-	 * @returns {this}
-	 */
-	_combine_factors() {
-		// lexical string: [indices, power, base expression]
-		/** @type {Object.<string,[number[],Numeral,Expression]>} */
-		const termMap = {};
-		/** @type {string[]} */
-		const orderedKeys = [];
-		/** @type {number[]} */
-		const indicesToRemove = [];
-		for (const [i, factor] of this.factors.entries()) {
-			if (factor instanceof Exponent && factor.power instanceof Numeral) {
-				const key = factor.base.toLexicalString();
-				const val = termMap[key];
-				if (val) {
-					val[0].push(i);
-					val[1] = val[1].plus(factor.power);
-				} else {
-					orderedKeys.push(key);
-					termMap[key] = [[i], factor.power, factor.baseExp.clone()];
-				}
-			} else if (factor instanceof Numeral) {
-				// extracts numeric factors into coefficient
-				this.coeff = this.coeff.times(factor);
-				indicesToRemove.push(i);
-			} else {
-				const key = factor.toLexicalString();
-				const val = termMap[key];
-				if (val) {
-					val[0].push(i);
-					val[1] = val[1].plus(1);
-				} else {
-					orderedKeys.push(key);
-					termMap[key] = [[i], new Numeral(1), this._factorsExp[i]];
-				}
-			}
-		}
-		for (const key of orderedKeys) {
-			const [indices, power, base] = termMap[key];
-			if (indices.length > 1) {
-				// combine
-				if (power.is.zero()) {
-					indicesToRemove.push(...indices);
-				} else {
-					const newExponent = power.is.one() ? base : new Expression(new Exponent(base, power));
-					this._factorsExp[indices[0]] = newExponent;
-					indicesToRemove.push(...indices.slice(1));
-				}
-			}
-		}
-		this._factorsExp = this._factorsExp.filter((_, i) => !indicesToRemove.includes(i));
 		return this;
 	}
 
@@ -198,21 +178,21 @@ export class Product {
 	 */
 	_flatten() {
 		let coeff = this.coeff;
-		/** @type {ExpressionType[]} */
+		/** @type {Expression[]} */
 		let factors = [];
-		for (const term of this.factors) {
-			if (term instanceof Sum) {
-				term._flatten();
+		for (const term of this._factorsExp) {
+			if (term.expression.type === 'sum') {
+				term.expression._flatten();
 				factors.push(term);
-			} else if (term instanceof Product) {
-				term._flatten();
-				coeff = coeff.times(term.coeff);
-				factors = factors.concat(term.factors);
+			} else if (term.expression instanceof Product) {
+				term.expression._flatten();
+				coeff = coeff.times(term.expression.coeff);
+				factors = factors.concat(term.expression._factorsExp);
 			} else {
 				factors.push(term);
 			}
 		}
-		this._factorsExp = factors.map((factor) => new Expression(factor));
+		this._factorsExp = factors;
 		this.coeff = coeff;
 		return this;
 	}
@@ -236,17 +216,21 @@ export class Product {
 	//	return new Product(this.coeff.abs(), ...factors);
 	//}
 
+	/** @returns {Product} */
+	negative() {
+		const result = this.clone();
+		result.coeff = result.coeff.negative();
+		return result;
+	}
+
 	/**
 	 * @param {Object.<string, Expression>} scope - variables to be replaced in the expression
 	 * @param {{verbatim: boolean}} options
-	 * @returns {this}
-	 * warning: mutates the class instance
+	 * @returns {Product}
 	 */
 	subIn(scope, options) {
-		for (const factor of this._factorsExp) {
-			factor.subIn(scope, options);
-		}
-		return this;
+		const factors = this._factorsExp.map((factor) => factor.subIn(scope, options));
+		return new Product(this.coeff, ...factors);
 	}
 
 	////! getters

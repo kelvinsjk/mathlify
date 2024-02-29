@@ -8,6 +8,8 @@ export { Brackets };
  * @property {Brackets} fn
  */
 export class Fn {
+	/** @type {'fn'} */
+	type = 'fn';
 	/** @type {Brackets} */
 	fn;
 	/**
@@ -43,11 +45,9 @@ export class Fn {
 	/**
 	 * @param {Object.<string, Expression>} scope - variables to be replaced in the expression
 	 * @param {{verbatim: boolean}} options - default to automatic simplification
-	 * @returns {this}
-	 * warning: mutates the class instance
+	 * @returns {Fn}
 	 */
 	subIn(scope, options) {
-		this.fn.subIn(scope, options);
-		return this;
+		return new Fn(this.fn.subIn(scope, options));
 	}
 }

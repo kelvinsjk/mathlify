@@ -1,8 +1,8 @@
-import { Expression } from '../index.js';
 import { Sum } from '../sum/index.js';
 import { Product } from '../product/index.js';
+import { Numeral } from '../numeral/index.js';
 
-/** @typedef {import('../numeral/index.js').Numeral} Numeral */
+/** @typedef {import('../index.js').Expression} Expression */
 /** @typedef {import('../numeral/fraction/index.js').Fraction} Fraction */
 /** @typedef {import('../variable/index.js').Variable} Variable */
 /** @typedef {import('../quotient/index.js').Quotient} Quotient*/
@@ -14,18 +14,18 @@ import { Product } from '../product/index.js';
  * @property {Expression} power
  * */
 export class Exponent {
+	/** @type {'exponent'} */
+	type = 'exponent';
 	/**@type {Expression} */
 	baseExp;
 	/**@type {Expression} */
 	powerExp;
 	/**
 	 * Creates a Quotient
-	 * @param {Expression|ExpressionType|string|Fraction|number} base
-	 * @param {Expression|ExpressionType|string|Fraction|number} power
+	 * @param {Expression} base
+	 * @param {Expression} power
 	 */
 	constructor(base, power) {
-		base = base instanceof Expression ? base : new Expression(base);
-		power = power instanceof Expression ? power : new Expression(power);
 		this.baseExp = base;
 		this.powerExp = power;
 	}
@@ -49,7 +49,11 @@ export class Exponent {
 			powerStr = `{${powerStr}}`;
 		}
 		let baseStr = this.base.toString(options);
-		if (this.base instanceof Sum || this.base instanceof Product) {
+		if (
+			this.base instanceof Sum ||
+			this.base instanceof Product ||
+			(this.base instanceof Numeral && this.base.is.negative())
+		) {
 			baseStr = `\\left( ${baseStr} \\right)`;
 		}
 		return `${baseStr}^${powerStr}`;
@@ -64,7 +68,7 @@ export class Exponent {
 	 * @returns {Exponent}
 	 */
 	clone() {
-		return new Exponent(this.base.clone(), this.power.clone());
+		return new Exponent(this.baseExp, this.powerExp);
 	}
 
 	/**
@@ -80,12 +84,9 @@ export class Exponent {
 	/**
 	 * @param {Object.<string, Expression>} scope - variables to be replaced in the expression
 	 * @param {{verbatim: boolean}} options
-	 * @returns {this}
-	 * warning: mutates the class instance
+	 * @returns {Exponent}
 	 */
 	subIn(scope, options) {
-		this.baseExp.subIn(scope, options);
-		this.powerExp.subIn(scope, options);
-		return this;
+		return new Exponent(this.baseExp.subIn(scope, options), this.powerExp.subIn(scope, options));
 	}
 }

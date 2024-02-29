@@ -1,15 +1,11 @@
-import { Sum } from '.';
-import { Variable } from '../variable';
-import { Numeral, Fraction } from '../numeral';
-import { Expression } from '..';
-
+import { Expression, Sum, Variable, Numeral, Fraction } from '../index';
 import { test, expect } from 'vitest';
 
 test('sum', () => {
 	const y = new Variable('y');
 	const xPlusY = new Sum('x', y);
 	expect(`${xPlusY}`).toBe('x + y');
-	const x = new Expression('x');
+	const x = new Expression(new Variable('x'));
 	const xMinus1 = new Sum(x, -1);
 	expect(`${xMinus1}`).toBe('x - 1');
 	const two = new Numeral(2);

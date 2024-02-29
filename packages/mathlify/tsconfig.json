@@ -11,12 +11,13 @@
 		"declaration": true,
 		"declarationDir": "types",
 		"declarationMap": true,
-		"emitDeclarationOnly": true
+		"emitDeclarationOnly": true,
+		"skipLibCheck": true /* should remove if we are writing custom d.ts files in the future */,
 	},
 	"include": ["src"],
 	"exclude": ["node_modules", "**/__tests__/*"],
 	"typedocOptions": {
 		"entryPoints": ["src/index.ts"],
-		"out": "docs"
-	}
+		"out": "docs",
+	},
 }
