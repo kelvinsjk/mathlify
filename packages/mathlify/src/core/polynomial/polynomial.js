@@ -16,17 +16,6 @@ export class Polynomial extends GeneralPolynomial {
 		this.coeffs = coeffs;
 	}
 
-	get options() {
-		return {
-			ascending: this._ascending,
-			variable: this.variable,
-		};
-	}
-
-	get degree() {
-		return this.coeffs.length - 1;
-	}
-
 	/**
 	 * @param {number|Polynomial} p2
 	 * @returns {Polynomial}
@@ -76,14 +65,48 @@ export class Polynomial extends GeneralPolynomial {
 		return this.plus(p2.negative());
 	}
 
+	solve = {
+		/**
+		 * @param {number|Polynomial} [rhs=0]
+		 * @returns {Expression}
+		 */
+		linear: (rhs = 0) => {
+			const lhs = this.minus(rhs);
+			if (this.degree !== 1) throw new Error(`Nonlinear polynomial ${this}=${rhs} received`);
+			const [b, a] = this.coeffs;
+			return new Expression(b.divide(a));
+		},
+		/**
+		 *
+		 * @param {number|Polynomial} [rhs=0]
+		 * @param {*} [options]
+		 * @returns {[Expression, Expression, 'rational']}
+		 */
+		quadratic: (rhs = 0, options) => {
+			const discriminant = this.quadraticDiscriminant().getNumeral();
+			if (discriminant.is.negative()) throw new Error(`Complex solutions not yet supported`);
+			const radical = Math.sqrt(discriminant.valueOf());
+			if (!Number.isInteger(radical)) throw new Error(`Irrational solutions not yet supported`);
+			const [, b, a] = this.coeffs;
+			let root1 = b.negative().minus(radical).divide(a.times(2));
+			let root2 = b.negative().plus(radical).divide(a.times(2));
+			if (root1.valueOf() > root2.valueOf()) {
+				[root1, root2] = [root2, root1];
+			}
+			return [new Expression(root1), new Expression(root2), 'rational'];
+		},
+	};
+
 	/**
 	 * @returns {Polynomial}
 	 */
 	clone() {
-		return new_poly_from_ascending_coeffs(
+		const p = new_poly_from_ascending_coeffs(
 			this.coeffs.map((x) => x.clone()),
 			this.options,
 		);
+		p.expression = this.expression;
+		return p;
 	}
 
 	factorize = {
@@ -110,6 +133,13 @@ export class Polynomial extends GeneralPolynomial {
 			expression.remainingFactor = remainingFactor;
 			return /** @type {Expression & {commonFactor: Polynomial, remainingFactor: Polynomial}} */ (expression);
 		},
+		///**
+		// * @returns {Expression & {factors: [Polynomial, Polynomial], multiple: Numeral}}
+		// */
+		//quadratic: () => {
+		//	const [root1, root2] = this.solve.quadratic();
+		//},
+		//// TODO: Match leading coefficient and avoid fractions if possible
 	};
 }
 

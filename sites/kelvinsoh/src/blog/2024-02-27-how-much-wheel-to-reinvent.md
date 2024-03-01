@@ -65,6 +65,29 @@ These are then coordinated via the following custom libraries
   webapp/webpage up and running, along with the generation of $\LaTeX$ markup
   and PDF.
 
-## Temml/djot
+## Changing into more modern wheel hubs
+
+### MathJax and KaTeX into Temml
+
+I was blown away when I first learned about MathJax from Prof Chan during a
+complex analysis lecture. Up to that point, displaying beautiful and
+professional mathematics (ie not psuedo-markup like x^2 or images) means
+providing download links to pdf files.
+
+I soon switched to KaTeX for faster performance (though MathJax has since caught
+up), but the project has started to feel a bit stagnant and bloated in recent
+years. With MathML getting better support I've now decided on Temml as the way
+forward to generate web-facing mathematics.
+
+### Markdown to djot
+
+Meanwhile, there are the other common text markup features (eg emphasis,
+paragraphing and section headings). $\LaTeX$ and HTML tend to be a bit too
+verbose for content-heavy writing. Markdown is awesome for most applications,
+but trying to create more dynamic math-heavy content around it has led me to
+discover edge cases that are difficult to solve.
+
+I have initially settled on a 'markdown-lite' custom syntax, but I discovered
+Djot and realized they solve many of the
 
 ## Typst
