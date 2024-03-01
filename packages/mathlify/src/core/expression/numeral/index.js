@@ -138,6 +138,10 @@ export class Numeral {
 		positive: () => this.number.is.positive(),
 		/** @returns {boolean} */
 		integer: () => this.number.is.integer(),
+		/**
+		 * @param {number|Numeral|Fraction} x
+		 * @returns {boolean} */
+		equal: (x) => this.minus(x).is.zero(),
 	};
 
 	/** @returns {number} */
