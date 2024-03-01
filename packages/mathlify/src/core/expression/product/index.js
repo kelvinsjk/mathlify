@@ -125,9 +125,7 @@ export class Product {
 	 */
 	clone() {
 		const factors = this._factorsExp.map((factor) => factor.clone());
-		const unit = new Product(...factors);
-		unit.coeff = this.coeff.clone();
-		return unit;
+		return new Product(this.coeff.clone(), ...factors);
 	}
 
 	/**

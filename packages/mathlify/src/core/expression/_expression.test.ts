@@ -242,7 +242,6 @@ test('factorize', () => {
 			new Expression(6),
 			new Expression(new Product(new Expression(-12), new Expression('y')).simplify()),
 		),
-	);
-	exp.factorize();
+	).toFactorized();
 	expect(`${exp}`).toBe('3\\left( x + 2 - 4y \\right)');
 });

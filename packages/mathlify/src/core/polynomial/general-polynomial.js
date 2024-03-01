@@ -8,7 +8,7 @@ export class GeneralPolynomial extends Expression {
 	/** @type {string} */
 	variable;
 	/** @type {boolean} */
-	ascending;
+	_ascending;
 
 	/**
 	 * @param {ExpressionType[]} coeffs
@@ -46,6 +46,19 @@ export class GeneralPolynomial extends Expression {
 		this.simplify();
 		this.coeffs = coeffs;
 		this.variable = name;
-		this.ascending = options?.ascending ?? false;
+		this._ascending = options?.ascending ?? false;
+	}
+
+	/**
+	 * @param {boolean} asc
+	 */
+	set ascending(asc) {
+		if (this._ascending !== asc) {
+			// there might be only 1 term so expression is not a sum
+			try {
+				this.getSumTerms().reverse();
+			} catch {}
+		}
+		this._ascending = asc;
 	}
 }

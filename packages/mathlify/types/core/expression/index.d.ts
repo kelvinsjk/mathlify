@@ -90,11 +90,11 @@ export class Expression {
     /**
      * factorizes a sum into a product by extracting common factors
      * @param {{verbatim?: boolean}} [options] - by default, will expand any inner products and combine like terms. use verbatim to prevent this
-     * @returns {this}
+     * @returns {Expression}
      */
-    factorize(options?: {
+    toFactorized(options?: {
         verbatim?: boolean | undefined;
-    } | undefined): this;
+    } | undefined): Expression;
     /**
      * negative of expression
      * @returns {Expression}
@@ -116,6 +116,8 @@ export class Expression {
     getNumeral(): Numeral;
     /** @return {[Numeral, Expression[]]} */
     getProductTerms(): [Numeral, Expression[]];
+    /** @return {Expression[]} */
+    getSumTerms(): Expression[];
     /**
      * @param {{coeff?: boolean}} [options] - whether to include coefficient for a product. default: true
      * @returns {string}

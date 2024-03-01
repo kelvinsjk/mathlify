@@ -142,6 +142,8 @@ export class Sum {
 		const termMap = {};
 		/** @type {string[]} */
 		const orderedKeys = [];
+		// workaround
+		const dummy = this._termsExp[0];
 		for (const [i, term] of this.terms.entries()) {
 			const key = term instanceof Numeral ? 'numeral' : term.toLexicalString({ coeff: false });
 			const val = termMap[key];
@@ -157,7 +159,7 @@ export class Sum {
 			} else {
 				orderedKeys.push(key);
 				if (term instanceof Product) {
-					termMap[key] = [[i], term.coeff, term.toUnit()];
+					termMap[key] = [[i], term.coeff, term.factors.length === 0 ? dummy._new_exp(new Numeral(1)) : term.toUnit()];
 				} else if (term instanceof Numeral) {
 					// workaround to avoid Expression constructor
 					termMap[key] = [[i], term.clone(), this._termsExp[0]._new_exp(new Numeral(1))];

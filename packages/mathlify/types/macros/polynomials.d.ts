@@ -11,4 +11,5 @@ export function polynomial(coeffs: (number | FractionShorthand)[], options?: {
     variable?: string | undefined;
 } | undefined): Polynomial;
 export type FractionShorthand = [number, '/', number];
+import { Polynomial } from '../core/index.js';
 //# sourceMappingURL=polynomials.d.ts.map

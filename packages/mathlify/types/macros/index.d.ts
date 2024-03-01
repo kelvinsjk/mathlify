@@ -99,9 +99,10 @@ export function exponent(base: Expression | number | string | NegativeShorthand 
  * @returns {Expression|number|string}
  */
 export function unpack_shorthand_single(exp: Expression | number | string | NegativeShorthand | QuotientShorthand | BracketShorthand | PowerShorthand): Expression | number | string;
+export { polynomial } from "./polynomials.js";
 export type QuotientShorthand = [number | string | Expression, '/', number | string | Expression];
 export type NegativeShorthand = ['-', number | string | Expression | [string | Expression, number]];
 export type BracketShorthand = ['()', Expression | number | string | [string | number | Expression, "/", string | number | Expression] | ["-", string | number | Expression | PowerShorthand]];
 export type PowerShorthand = [Expression | string, number];
-import { Expression } from '../core/index.js';
+import { Expression } from '../core/expression/index.js';
 //# sourceMappingURL=index.d.ts.map
