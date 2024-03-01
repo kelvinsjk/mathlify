@@ -244,7 +244,11 @@ export class Fraction {
 		}
 		let divisor = fractions[0];
 		fractions.shift();
-		for (let frac of fractions) {
+		for (const [i, frac] of fractions.entries()) {
+			if (divisor.is.zero() && frac.is.zero()) {
+				if (i === fractions.length - 1) throw new RangeError('gcd of 0s is undefined');
+				continue;
+			}
 			divisor = Fraction.gcd(divisor, frac);
 		}
 		return divisor;

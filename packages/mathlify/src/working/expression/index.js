@@ -80,7 +80,7 @@ export class ExpressionWorking {
 	 * */
 	factorize(options) {
 		const start = this.expression;
-		this.expression = start.clone().factorize({ verbatim: true });
+		this.expression = start.clone().toFactorized({ verbatim: true });
 		addStep(this, options);
 		this.expression = this.expression.clone();
 		const factors = this.expression.getProductTerms()[1];
@@ -92,7 +92,7 @@ export class ExpressionWorking {
 			addStep(this, options);
 		}
 		addStep(this, options);
-		this.expression = start.clone().factorize();
+		this.expression = start.clone().toFactorized();
 		return addStep(this, options);
 	}
 

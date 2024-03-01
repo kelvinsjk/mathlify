@@ -1,5 +1,6 @@
 import { Exponent } from '../exponent/index.js';
 import { Numeral } from '../numeral/index.js';
+import { Product } from '../product/index.js';
 
 /** @typedef {import('../index.js').SimplifyOptions} SimplifyOptions */
 /** @typedef {import('../index.js').ExpressionType} ExpressionType */
@@ -26,5 +27,12 @@ export function simplify_exponent(expression, options) {
 		return new Numeral(1);
 	} else if (power instanceof Numeral && power.number.is.one()) {
 		return base;
+	} else if (power instanceof Numeral && power.is.positive() && power.is.integer() && base instanceof Product) {
+		/** @type {Expression[]} */
+		const factors = [];
+		for (const factor of base._factorsExp) {
+			factors.push(factor._new_exp(new Exponent(factor, factor._new_exp(power.clone()))));
+		}
+		return new Product(base.coeff.pow(power), ...factors);
 	}
 }

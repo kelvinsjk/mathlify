@@ -17,11 +17,10 @@ export class Numeral {
      */
     static max(x: Numeral | number | Fraction, y: Numeral | number | Fraction): Numeral;
     /**
-     * @param {Numeral|number|Fraction} x
-     * @param {Numeral|number|Fraction} y
+     * @param {(Numeral|number|Fraction)[]} numerals
      * @returns {Numeral}
      */
-    static gcd(x: Numeral | number | Fraction, y: Numeral | number | Fraction): Numeral;
+    static gcd(...numerals: (Numeral | number | Fraction)[]): Numeral;
     /**
      * @param {Numeral|number|Fraction} x
      * @param {Numeral|number|Fraction} y
@@ -92,6 +91,11 @@ export class Numeral {
      * */
     minus(x: Numeral | number | Fraction): Numeral;
     /**
+     * @param {Numeral|number|Fraction} n
+     * @returns {Numeral}
+     */
+    pow(n: Numeral | number | Fraction): Numeral;
+    /**
      * @returns {Numeral}
      */
     subIn(): Numeral;
@@ -106,6 +110,10 @@ export class Numeral {
         negative: () => boolean;
         /** @returns {boolean} */
         nonzero: () => boolean;
+        /** @returns {boolean} */
+        positive: () => boolean;
+        /** @returns {boolean} */
+        integer: () => boolean;
     };
     /** @returns {number} */
     valueOf(): number;

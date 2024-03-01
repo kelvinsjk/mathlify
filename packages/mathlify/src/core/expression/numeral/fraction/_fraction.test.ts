@@ -49,6 +49,9 @@ test('fraction gcd, lcm', () => {
 	const oneSixth = new Fraction(1, 6);
 	expect(() => Fraction.gcd()).toThrow();
 	expect(() => Fraction.gcd(zero)).toThrow();
+	expect(() => Fraction.gcd(zero, zero)).toThrow();
+	expect(() => Fraction.gcd(zero, zero, zero)).toThrow();
+	expect(Fraction.gcd(zero, zero, sixFifth).toString()).toBe(`\\frac{6}{5}`);
 	expect(`${Fraction.gcd(sixFifth)}`).toBe(`\\frac{6}{5}`);
 	expect(`${Fraction.gcd(sixFifth, zero)}`).toBe(`\\frac{6}{5}`);
 	expect(`${Fraction.gcd(zero, sixFifth, twoThird)}`).toBe('\\frac{2}{15}');

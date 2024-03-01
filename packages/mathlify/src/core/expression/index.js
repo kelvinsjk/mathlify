@@ -136,9 +136,9 @@ export class Expression {
 	/**
 	 * factorizes a sum into a product by extracting common factors
 	 * @param {{verbatim?: boolean}} [options] - by default, will expand any inner products and combine like terms. use verbatim to prevent this
-	 * @returns {this}
+	 * @returns {Expression}
 	 */
-	factorize(options) {
+	toFactorized(options) {
 		if (!(this.expression instanceof Sum)) return this;
 		const commonFactor = Expression.gcd(...this.expression._termsExp);
 		if (commonFactor.expression instanceof Numeral && commonFactor.expression.is.one()) return this;
@@ -148,14 +148,13 @@ export class Expression {
 		/** @type {Expression|Sum} */
 		let sum = new Sum(...factorizedTerms);
 		if (!options?.verbatim) {
-			sum = new Expression(sum).expand().factorize();
+			sum = new Expression(sum).expand().toFactorized();
 		}
-		this.expression = new Product(
+		const product = new Product(
 			new Expression(commonFactor.expression),
 			sum instanceof Sum ? new Expression(sum) : sum,
-		);
-		this.expression.simplify();
-		return this;
+		).simplify();
+		return new Expression(product);
 	}
 
 	//! arithmetic methods - unlike the previous methods, these do not mutate the current instance
@@ -202,6 +201,14 @@ export class Expression {
 			return [exp.coeff, exp._factorsExp];
 		}
 		throw new Error('Expression is not a product');
+	}
+	/** @return {Expression[]} */
+	getSumTerms() {
+		const exp = this.expression;
+		if (exp instanceof Sum) {
+			return exp._termsExp;
+		}
+		throw new Error('Expression is not a sum');
 	}
 
 	//! methods meant primarily for internal used are prefixed with _ and in snake_case
@@ -294,7 +301,7 @@ export class Expression {
 	 */
 	_remove_common_factors() {
 		try {
-			const [num, den] = this.getQuotientTerms().map((x) => x.clone().factorize());
+			const [num, den] = this.getQuotientTerms().map((x) => x.clone().toFactorized());
 			const gcd = Expression.gcd(num, den);
 			if (gcd.expression instanceof Numeral && gcd.expression.is.one()) return this;
 			const newNum = new Expression(divide_by_factor(num, gcd.expression)).simplify();

@@ -108,6 +108,14 @@ export class Numeral {
 		return this.plus(numberToFraction(x).negative());
 	}
 	/**
+	 * @param {Numeral|number|Fraction} n
+	 * @returns {Numeral}
+	 */
+	pow(n) {
+		n = n instanceof Numeral ? n.number : n;
+		return new Numeral(this.number.pow(n));
+	}
+	/**
 	 * @returns {Numeral}
 	 */
 	subIn() {
@@ -126,6 +134,10 @@ export class Numeral {
 		negative: () => this.number.is.negative(),
 		/** @returns {boolean} */
 		nonzero: () => this.number.is.nonzero(),
+		/** @returns {boolean} */
+		positive: () => this.number.is.positive(),
+		/** @returns {boolean} */
+		integer: () => this.number.is.integer(),
 	};
 
 	/** @returns {number} */
@@ -159,14 +171,12 @@ export class Numeral {
 	}
 
 	/**
-	 * @param {Numeral|number|Fraction} x
-	 * @param {Numeral|number|Fraction} y
+	 * @param {(Numeral|number|Fraction)[]} numerals
 	 * @returns {Numeral}
 	 */
-	static gcd(x, y) {
-		const xFrac = numberToFraction(x);
-		const yFrac = numberToFraction(y);
-		return new Numeral(Fraction.gcd(xFrac, yFrac));
+	static gcd(...numerals) {
+		const fractions = numerals.map((num) => numberToFraction(num));
+		return new Numeral(Fraction.gcd(...fractions));
 	}
 
 	/**

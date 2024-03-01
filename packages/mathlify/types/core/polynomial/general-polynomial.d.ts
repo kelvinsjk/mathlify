@@ -15,7 +15,11 @@ export class GeneralPolynomial extends Expression {
     /** @type {string} */
     variable: string;
     /** @type {boolean} */
-    ascending: boolean;
+    _ascending: boolean;
+    /**
+     * @param {boolean} asc
+     */
+    set ascending(asc: boolean);
 }
 export type ExpressionType = import('../expression/index.js').ExpressionType;
 import { Expression } from '../expression/index.js';
