@@ -1,5 +1,5 @@
 import { GeneralPolynomial } from './general-polynomial.js';
-import { Numeral, Expression, Product } from '../expression/index.js';
+import { Numeral, Expression, Product, Exponent } from '../expression/index.js';
 
 /** The Polynomial class represents single-variable polynomials over the rationals (support for floats to be added in the future using the numeral class) */
 export class Polynomial extends GeneralPolynomial {
@@ -41,7 +41,7 @@ export class Polynomial extends GeneralPolynomial {
 		const poly2 = typeof p2 === 'number' ? new Polynomial([new Numeral(p2)], this.options) : p2;
 		if (this.variable !== poly2.variable) throw new Error('variables do not match');
 		let coeffs = pad_zeros(this.coeffs, poly2.degree + 1);
-		coeffs = coeffs.map((x, i) => x.plus(poly2.coeffs[i]));
+		coeffs = coeffs.map((x, i) => x.plus(poly2.coeffs[i] ?? new Numeral(0)));
 		return new_poly_from_ascending_coeffs(coeffs, this.options);
 	}
 
@@ -81,16 +81,18 @@ export class Polynomial extends GeneralPolynomial {
 		 * @param {number|Polynomial} [rhs=0]
 		 * @param {*} [options]
 		 * @returns {[Expression, Expression, 'rational']}
+		 * such that either root1 = 0 or root1 \leq root2
 		 */
 		quadratic: (rhs = 0, options) => {
-			const discriminant = this.quadraticDiscriminant().getNumeral();
+			const lhs = this.minus(rhs);
+			const discriminant = lhs.quadraticDiscriminant().getNumeral();
 			if (discriminant.is.negative()) throw new Error(`Complex solutions not yet supported`);
 			const radical = Math.sqrt(discriminant.valueOf());
 			if (!Number.isInteger(radical)) throw new Error(`Irrational solutions not yet supported`);
 			const [, b, a] = this.coeffs;
 			let root1 = b.negative().minus(radical).divide(a.times(2));
 			let root2 = b.negative().plus(radical).divide(a.times(2));
-			if (root1.valueOf() > root2.valueOf()) {
+			if (root1.valueOf() > root2.valueOf() || root2.is.zero()) {
 				[root1, root2] = [root2, root1];
 			}
 			return [new Expression(root1), new Expression(root2), 'rational'];
@@ -133,13 +135,42 @@ export class Polynomial extends GeneralPolynomial {
 			expression.remainingFactor = remainingFactor;
 			return /** @type {Expression & {commonFactor: Polynomial, remainingFactor: Polynomial}} */ (expression);
 		},
-		///**
-		// * @returns {Expression & {factors: [Polynomial, Polynomial], multiple: Numeral}}
-		// */
-		//quadratic: () => {
-		//	const [root1, root2] = this.solve.quadratic();
-		//},
-		//// TODO: Match leading coefficient and avoid fractions if possible
+		/**
+		 * returns factorized expression of the form k(ax-b)(cx-d) where a,b,c,d \in \mathbb{Z} and gcd(a,b)=gcd(c,d)=1 and d=0 or b/a < d/c. if equal roots, will return k(ax-b)^2
+		 * special exception: expressions like 4-x^2 factorize to (2+x)(2-x) rather than -(x+2)(x-2)
+		 * @returns {Expression & {factors: [Polynomial, Polynomial], multiple: Numeral}}
+		 */
+		quadratic: () => {
+			const [root1, root2] = this.solve.quadratic();
+			const [x1, x2] = [root1.getNumeral(), root2.getNumeral()];
+			const x1Num = x1.number.num;
+			const x1Den = x1.number.den;
+			const x2Num = x2.number.num;
+			const x2Den = x2.number.den;
+			let factor1 = new Polynomial([new Numeral(x1Den), new Numeral(-x1Num)], { variable: this.variable });
+			let factor2 = new Polynomial([new Numeral(x2Den), new Numeral(-x2Num)], { variable: this.variable });
+			const leadingCoefficient = this.coeffs[this.coeffs.length - 1];
+			let multiple = leadingCoefficient.divide(x1Den).divide(x2Den);
+			// special exception for expressions like 4-x^2
+			if (
+				this._ascending &&
+				this.coeffs[1].is.zero() &&
+				leadingCoefficient.is.negative() &&
+				this.coeffs[0].is.positive()
+			) {
+				multiple = multiple.negative();
+				factor2 = factor2.negative();
+				factor1.ascending = true;
+				factor2.ascending = true;
+			}
+			/** @type {Expression & {factors?: [Polynomial, Polynomial], multiple?: Numeral}} */
+			const expression = x1.is.equal(x2)
+				? new Expression(new Product(multiple, new Expression(new Exponent(factor1, new Expression(2)))))
+				: new Expression(new Product(multiple, factor1, factor2));
+			expression.factors = [factor1, factor2];
+			expression.multiple = multiple;
+			return /** @type {Expression & {factors: [Polynomial, Polynomial], multiple: Numeral}} */ (expression);
+		},
 	};
 }
 
