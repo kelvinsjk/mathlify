@@ -49,6 +49,16 @@ export class GeneralPolynomial extends Expression {
 		this._ascending = options?.ascending ?? false;
 	}
 
+	get degree() {
+		return this.coeffs.length - 1;
+	}
+	get options() {
+		return {
+			ascending: this._ascending,
+			variable: this.variable,
+		};
+	}
+
 	/**
 	 * @param {boolean} asc
 	 */
@@ -60,5 +70,12 @@ export class GeneralPolynomial extends Expression {
 			} catch {}
 		}
 		this._ascending = asc;
+	}
+
+	/** @returns {Expression} */
+	quadraticDiscriminant() {
+		if (this.degree !== 2) throw new Error(`Cannot find quadratic discriminant for non-quadratic ${this}`);
+		const [c, b, a] = this.coeffs.map((x) => new Expression(x));
+		return new Expression(new Sum(new Expression(new Product(b, b)), new Expression(new Product(-4, a, c)))).simplify();
 	}
 }
