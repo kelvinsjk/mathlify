@@ -1,4 +1,4 @@
-import { Expression, Sum } from '../../core/index.js';
+import { Expression, Polynomial, Sum } from '../../core/index.js';
 
 /** @typedef {'aligned'|'single'|'multi'} LineBreakMode */
 /** @typedef {import('../../macros/index.js').BracketShorthand} BracketShorthand */
@@ -97,6 +97,24 @@ export class ExpressionWorking {
 	}
 
 	/**
+	 * @param {{hide?: boolean}} [options]
+	 * @returns {ExpressionWorking}
+	 * */
+	factorizeQuadratic(options) {
+		const quadratic = this.expression;
+		if (!(quadratic instanceof Polynomial)) return this;
+		const { multiple } = quadratic.factorize.quadratic();
+		if (!multiple.is.one()) {
+			const preQuadraticFactorization = quadratic.factorize.commonFactor({ forcePositiveLeadingCoefficient: true });
+			preQuadraticFactorization.remainingFactor.ascending = false;
+			this.expression = preQuadraticFactorization;
+			addStep(this, options);
+		}
+		this.expression = quadratic.clone().factorize.quadratic();
+		return addStep(this, options);
+	}
+
+	/**
 	 * toggle Mixed fractions
 	 * @param {{hide?: boolean}} [options] - options to hide this step
 	 * @returns {ExpressionWorking}
@@ -120,12 +138,16 @@ export class ExpressionWorking {
 	}
 
 	/**
-	 * @param {string} exp
-	 * @return {this}
+	 * @param {string|Expression} exp
+	 * @return {ExpressionWorking}
 	 */
 	addCustomStep(exp) {
-		this.expressions.push(exp);
-		return this;
+		if (typeof exp === 'string') {
+			this.expressions.push(exp);
+			return this;
+		}
+		this.expression = exp;
+		return addStep(this);
 	}
 
 	/**

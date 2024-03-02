@@ -72,6 +72,13 @@ export class ExpressionWorking {
         hide?: boolean | undefined;
     } | undefined): ExpressionWorking;
     /**
+     * @param {{hide?: boolean}} [options]
+     * @returns {ExpressionWorking}
+     * */
+    factorizeQuadratic(options?: {
+        hide?: boolean | undefined;
+    } | undefined): ExpressionWorking;
+    /**
      * toggle Mixed fractions
      * @param {{hide?: boolean}} [options] - options to hide this step
      * @returns {ExpressionWorking}
@@ -89,10 +96,10 @@ export class ExpressionWorking {
         hide?: boolean | undefined;
     } | undefined): ExpressionWorking;
     /**
-     * @param {string} exp
-     * @return {this}
+     * @param {string|Expression} exp
+     * @return {ExpressionWorking}
      */
-    addCustomStep(exp: string): this;
+    addCustomStep(exp: string | Expression): ExpressionWorking;
     /**
      * @param {{hide?: boolean, working?: boolean}} [options]
      */

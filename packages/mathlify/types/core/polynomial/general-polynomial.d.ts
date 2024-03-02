@@ -16,10 +16,17 @@ export class GeneralPolynomial extends Expression {
     variable: string;
     /** @type {boolean} */
     _ascending: boolean;
+    get degree(): number;
+    get options(): {
+        ascending: boolean;
+        variable: string;
+    };
     /**
      * @param {boolean} asc
      */
     set ascending(asc: boolean);
+    /** @returns {Expression} */
+    quadraticDiscriminant(): Expression;
 }
 export type ExpressionType = import('../expression/index.js').ExpressionType;
 import { Expression } from '../expression/index.js';
