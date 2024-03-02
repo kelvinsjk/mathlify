@@ -16,6 +16,11 @@ export class Polynomial extends GeneralPolynomial {
 		this.coeffs = coeffs;
 	}
 
+	/** @returns {Numeral} */
+	get leadingCoefficient() {
+		return this.coeffs[this.coeffs.length - 1];
+	}
+
 	/**
 	 * @param {number|Polynomial} p2
 	 * @returns {Polynomial}
@@ -113,9 +118,10 @@ export class Polynomial extends GeneralPolynomial {
 
 	factorize = {
 		/**
+		 * @param {{forcePositiveLeadingCoefficient?: boolean}} [options]
 		 * @returns {Expression & {commonFactor: Polynomial, remainingFactor: Polynomial}}
 		 */
-		commonFactor: () => {
+		commonFactor: (options) => {
 			let power = 0;
 			for (const coeff of this.coeffs) {
 				if (!coeff.is.zero()) break;
@@ -123,7 +129,8 @@ export class Polynomial extends GeneralPolynomial {
 			}
 			const negative = this.coeffs.every((x) => !x.is.positive()) && this.coeffs.some((x) => x.is.negative());
 			let gcd = Numeral.gcd(...this.coeffs);
-			if (negative) gcd = gcd.negative();
+			if (negative || (options?.forcePositiveLeadingCoefficient && this.leadingCoefficient.is.negative()))
+				gcd = gcd.negative();
 			const commonFactorCoeffs = pad_zeros([gcd], power + 1);
 			commonFactorCoeffs.reverse();
 			const commonFactor = new_poly_from_ascending_coeffs(commonFactorCoeffs, this.options);

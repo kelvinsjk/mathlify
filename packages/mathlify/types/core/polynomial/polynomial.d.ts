@@ -10,11 +10,8 @@ export class Polynomial extends GeneralPolynomial {
     } | undefined);
     /** @type {Numeral[]} */
     coeffs: Numeral[];
-    get options(): {
-        ascending: boolean;
-        variable: string;
-    };
-    get degree(): number;
+    /** @returns {Numeral} */
+    get leadingCoefficient(): Numeral;
     /**
      * @param {number|Polynomial} p2
      * @returns {Polynomial}
@@ -35,17 +32,44 @@ export class Polynomial extends GeneralPolynomial {
      * @returns
      */
     minus(p2: number | Polynomial): Polynomial;
+    solve: {
+        /**
+         * @param {number|Polynomial} [rhs=0]
+         * @returns {Expression}
+         */
+        linear: (rhs?: number | Polynomial | undefined) => Expression;
+        /**
+         *
+         * @param {number|Polynomial} [rhs=0]
+         * @param {*} [options]
+         * @returns {[Expression, Expression, 'rational']}
+         * such that either root1 = 0 or root1 \leq root2
+         */
+        quadratic: (rhs?: number | Polynomial | undefined, options?: any) => [Expression, Expression, 'rational'];
+    };
     /**
      * @returns {Polynomial}
      */
     clone(): Polynomial;
     factorize: {
         /**
+         * @param {{forcePositiveLeadingCoefficient?: boolean}} [options]
          * @returns {Expression & {commonFactor: Polynomial, remainingFactor: Polynomial}}
          */
-        commonFactor: () => Expression & {
+        commonFactor: (options?: {
+            forcePositiveLeadingCoefficient?: boolean | undefined;
+        } | undefined) => Expression & {
             commonFactor: Polynomial;
             remainingFactor: Polynomial;
+        };
+        /**
+         * returns factorized expression of the form k(ax-b)(cx-d) where a,b,c,d \in \mathbb{Z} and gcd(a,b)=gcd(c,d)=1 and d=0 or b/a < d/c. if equal roots, will return k(ax-b)^2
+         * special exception: expressions like 4-x^2 factorize to (2+x)(2-x) rather than -(x+2)(x-2)
+         * @returns {Expression & {factors: [Polynomial, Polynomial], multiple: Numeral}}
+         */
+        quadratic: () => Expression & {
+            factors: [Polynomial, Polynomial];
+            multiple: Numeral;
         };
     };
 }

@@ -114,6 +114,10 @@ export class Numeral {
         positive: () => boolean;
         /** @returns {boolean} */
         integer: () => boolean;
+        /**
+         * @param {number|Numeral|Fraction} x
+         * @returns {boolean} */
+        equal: (x: number | Numeral | Fraction) => boolean;
     };
     /** @returns {number} */
     valueOf(): number;

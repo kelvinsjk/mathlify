@@ -202,6 +202,8 @@ function expression_gcd_two(exp1, exp2) {
 					if (factor.base.toLexicalString() === a.base.toLexicalString()) {
 						return exp1._new_exp(new Exponent(a.baseExp.clone(), exp1._new_exp(Numeral.min(a.power, factor.power))));
 					}
+				} else if (factor.toLexicalString() === a.base.toLexicalString()) {
+					return exp1._new_exp(factor.clone());
 				}
 			}
 			return exp1._new_exp(new Numeral(1));
