@@ -53,11 +53,12 @@ export class Polynomial extends GeneralPolynomial {
     clone(): Polynomial;
     factorize: {
         /**
-         * @param {{forcePositiveLeadingCoefficient?: boolean}} [options]
+         * @param {{forcePositiveLeadingCoefficient?: boolean, verbatim?: boolean}} [options]
          * @returns {Expression & {commonFactor: Polynomial, remainingFactor: Polynomial}}
          */
         commonFactor: (options?: {
             forcePositiveLeadingCoefficient?: boolean | undefined;
+            verbatim?: boolean | undefined;
         } | undefined) => Expression & {
             commonFactor: Polynomial;
             remainingFactor: Polynomial;

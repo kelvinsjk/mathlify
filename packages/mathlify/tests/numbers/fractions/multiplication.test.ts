@@ -5,7 +5,7 @@ test('multiply fractions', () => {
 	const a = fraction(6, 5);
 	const b = fraction(35, 12);
 	const aTimesB = productVerbatim(a, b);
-	aTimesB.multiplicationSign = ' \\times ';
+	aTimesB._multiplicationSign = ' \\times ';
 	expect(`${aTimesB}`).toBe('\\frac{6}{5} \\times \\frac{35}{12}');
 	aTimesB.simplify();
 	expect(`${aTimesB}`).toBe('\\frac{7}{2}');

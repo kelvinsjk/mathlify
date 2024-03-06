@@ -38,8 +38,8 @@ export class Product {
 		} else if (first_term instanceof Numeral) {
 			this.coeff = first_term;
 			factors = /** @type {Expression[]}*/ (factors.slice(1));
-		} else if (first_term.expression instanceof Numeral) {
-			this.coeff = first_term.expression;
+		} else if (first_term.node instanceof Numeral) {
+			this.coeff = first_term.node;
 			factors = /** @type {Expression[]}*/ (factors.slice(1));
 		} else {
 			this.coeff = new Numeral(1);
@@ -105,20 +105,20 @@ export class Product {
 		const factors = this._factorsExp.map((factor) => factor.clone());
 		// to prevent usage of expression constructor
 		const dummy = factors[0].clone();
-		dummy.expression = new Product(...factors);
-		dummy.expression.coeff = new Numeral(1);
+		dummy.node = new Product(...factors);
+		dummy.node.coeff = new Numeral(1);
 		return dummy;
 	}
 
-	/**
-	 * @param {Expression} x
-	 * @returns {Product}
-	 */
-	_multiply_into_factors(x) {
-		const result = this.clone();
-		result._factorsExp.push(x.clone());
-		return result;
-	}
+	// /**
+	//  * @param {Expression} x
+	//  * @returns {Product}
+	//  */
+	// _multiply_into_factors(x) {
+	// 	const result = this.clone();
+	// 	result._factorsExp.push(x.clone());
+	// 	return result;
+	// }
 
 	/**
 	 * @returns {Product}
@@ -145,14 +145,9 @@ export class Product {
 		};
 		/** @type {number[]} */
 		const indices = [];
-		for (const [i, factor] of this._factorsExp.entries()) {
+		for (const factor of this._factorsExp) {
 			factor.simplify({ product, numeral, sum, quotient, exponent, brackets });
-			if (factor.expression instanceof Numeral) {
-				this.coeff = this.coeff.times(factor.expression);
-				indices.push(i);
-			}
 		}
-		this._factorsExp = this._factorsExp.filter((_, i) => !indices.includes(i));
 		if (product) {
 			this._combine_factors();
 			this._flatten();
@@ -228,13 +223,13 @@ export class Product {
 		/** @type {Expression[]} */
 		let factors = [];
 		for (const term of this._factorsExp) {
-			if (term.expression.type === 'sum') {
-				term.expression._flatten();
+			if (term.node.type === 'sum') {
+				term.node._flatten();
 				factors.push(term);
-			} else if (term.expression instanceof Product) {
-				term.expression._flatten();
-				coeff = coeff.times(term.expression.coeff);
-				factors = factors.concat(term.expression._factorsExp);
+			} else if (term.node instanceof Product) {
+				term.node._flatten();
+				coeff = coeff.times(term.node.coeff);
+				factors = factors.concat(term.node._factorsExp);
 			} else {
 				factors.push(term);
 			}
@@ -286,6 +281,6 @@ export class Product {
 	 * @returns {ExpressionType[]}
 	 */
 	get factors() {
-		return this._factorsExp.map((factor) => factor.expression);
+		return this._factorsExp.map((factor) => factor.node);
 	}
 }

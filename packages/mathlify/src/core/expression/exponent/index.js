@@ -32,11 +32,11 @@ export class Exponent {
 
 	/** @returns {ExpressionType} */
 	get base() {
-		return this.baseExp.expression;
+		return this.baseExp.node;
 	}
 	/** @returns {ExpressionType} */
 	get power() {
-		return this.powerExp.expression;
+		return this.powerExp.node;
 	}
 
 	/**

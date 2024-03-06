@@ -13,6 +13,10 @@ export class Polynomial extends GeneralPolynomial {
 	constructor(coeffs, options) {
 		super(coeffs, options);
 		if (!options?.ascending) coeffs.reverse();
+		// remove trailing zeros
+		while (coeffs.length > 1 && coeffs[coeffs.length - 1].is.zero()) {
+			coeffs.pop();
+		}
 		this.coeffs = coeffs;
 	}
 
@@ -77,9 +81,9 @@ export class Polynomial extends GeneralPolynomial {
 		 */
 		linear: (rhs = 0) => {
 			const lhs = this.minus(rhs);
-			if (this.degree !== 1) throw new Error(`Nonlinear polynomial ${this}=${rhs} received`);
-			const [b, a] = this.coeffs;
-			return new Expression(b.divide(a));
+			if (lhs.degree !== 1) throw new Error(`Nonlinear polynomial ${this}=${rhs} received`);
+			const [b, a] = lhs.coeffs;
+			return new Expression(b.negative().divide(a));
 		},
 		/**
 		 *
@@ -90,7 +94,7 @@ export class Polynomial extends GeneralPolynomial {
 		 */
 		quadratic: (rhs = 0, options) => {
 			const lhs = this.minus(rhs);
-			const discriminant = lhs.quadraticDiscriminant().getNumeral();
+			const discriminant = lhs.quadraticDiscriminant()._getNumeral();
 			if (discriminant.is.negative()) throw new Error(`Complex solutions not yet supported`);
 			const radical = Math.sqrt(discriminant.valueOf());
 			if (!Number.isInteger(radical)) throw new Error(`Irrational solutions not yet supported`);
@@ -112,13 +116,13 @@ export class Polynomial extends GeneralPolynomial {
 			this.coeffs.map((x) => x.clone()),
 			this.options,
 		);
-		p.expression = this.expression;
+		p.node = this.node.clone();
 		return p;
 	}
 
 	factorize = {
 		/**
-		 * @param {{forcePositiveLeadingCoefficient?: boolean}} [options]
+		 * @param {{forcePositiveLeadingCoefficient?: boolean, verbatim?: boolean}} [options]
 		 * @returns {Expression & {commonFactor: Polynomial, remainingFactor: Polynomial}}
 		 */
 		commonFactor: (options) => {
@@ -149,7 +153,7 @@ export class Polynomial extends GeneralPolynomial {
 		 */
 		quadratic: () => {
 			const [root1, root2] = this.solve.quadratic();
-			const [x1, x2] = [root1.getNumeral(), root2.getNumeral()];
+			const [x1, x2] = [root1._getNumeral(), root2._getNumeral()];
 			const x1Num = x1.number.num;
 			const x1Den = x1.number.den;
 			const x2Num = x2.number.num;
@@ -169,6 +173,11 @@ export class Polynomial extends GeneralPolynomial {
 				factor2 = factor2.negative();
 				factor1.ascending = true;
 				factor2.ascending = true;
+			}
+			// handling ascending expressions
+			if (this._ascending && x1.is.equal(x2)) {
+				factor1.ascending = true;
+				if (factor1.coeffs[0].is.negative()) factor1 = factor1.negative();
 			}
 			/** @type {Expression & {factors?: [Polynomial, Polynomial], multiple?: Numeral}} */
 			const expression = x1.is.equal(x2)

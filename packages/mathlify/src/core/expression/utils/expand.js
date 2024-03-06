@@ -1,31 +1,50 @@
 import { Product } from '../product/index.js';
 import { Sum } from '../sum/index.js';
 import { Quotient } from '../quotient/index.js';
+import { Exponent } from '../exponent/index.js';
+import { Numeral } from '../numeral/index.js';
 /** @typedef {import('../index.js').Expression} Expression */
 /** @typedef {import('../index.js').ExpressionType} ExpressionType */
 
 /**
- * expands either products, or products within a sum
+ * expands either products, products within a sum/quotient, or exponents with positive integral powers
  * @param {Expression} expression
- * @param {{verbatim?: boolean, numeratorOnly?: boolean}} [options] - default to automatic simplification
- * numeratorOnly: only expands numerator and leaves denominator as is
+ * @param {{verbatim?: boolean, numeratorOnly?: boolean}} [options] - default to automatic simplification after expansion, and expands both numerator and denominator
  */
-export function expand_expression(expression, options) {
-	const exp = expression.expression;
-	if (exp instanceof Product) {
-		for (const factor of exp._factorsExp) {
-			factor.expand(options);
+export function expand_expression_(expression, options) {
+	const node = expression.node;
+	if (node instanceof Product) {
+		for (const factor of node._factorsExp) {
+			factor._expand_(options);
 		}
-		expression._expand_product(options);
-	} else if (exp instanceof Sum) {
-		for (const term of exp._termsExp) {
-			term.expand(options);
+		expression._expand_product_(options);
+	} else if (node instanceof Sum) {
+		for (const term of node._termsExp) {
+			term._expand_(options);
 		}
-		exp._flatten();
-	} else if (exp instanceof Quotient) {
-		const { numeratorOnly } = { numeratorOnly: false, ...options };
-		exp.num.expand(options);
-		if (!numeratorOnly) exp.den.expand(options);
+		node._flatten();
+	} else if (node instanceof Quotient) {
+		node.num._expand_(options);
+		if (!options?.numeratorOnly) node.den._expand_(options);
+	} else if (
+		node instanceof Exponent &&
+		node.power instanceof Numeral &&
+		node.power.is.integer() &&
+		node.power.is.positive()
+	) {
+		const sum = expand_product(
+			expression._new_exp(
+				new Product(
+					...Array.from({ length: node.power.valueOf() }, () => node.baseExp.clone()),
+					//	...Array(exp.power.valueOf())
+					//		.fill(exp.baseExp)
+					//		.map((b) => b.clone()),
+				),
+			),
+		);
+		if (sum !== undefined) {
+			expression.node = sum;
+		}
 	}
 }
 
@@ -35,15 +54,15 @@ export function expand_expression(expression, options) {
  * @returns {Sum|undefined}
  */
 export function expand_product(expression) {
-	const exp = expression.expression;
+	const exp = expression.node;
 	if (!(exp instanceof Product)) return undefined;
 	/** @type {Sum[]} */
 	const sums = [];
 	/** @type {Expression[]} */
 	const others = [];
 	for (const term of exp._factorsExp) {
-		if (term.expression instanceof Sum) {
-			sums.push(term.expression);
+		if (term.node instanceof Sum) {
+			sums.push(term.node);
 		} else {
 			others.push(term);
 		}
@@ -59,7 +78,7 @@ export function expand_product(expression) {
 		const new_terms = [];
 		for (const term of terms) {
 			for (const t of sum._termsExp) {
-				new_terms.push(term._multiply_into_factors(t).simplify());
+				new_terms.push(new Product(term.coeff, ...term._factorsExp, t).simplify());
 			}
 		}
 		terms = new_terms;

@@ -7,6 +7,7 @@ export class GeneralPolynomial extends Expression {
 	coeffs;
 	/** @type {string} */
 	variable;
+	// TODO: implement getters/setters for variables (via replaceWith method?)
 	/** @type {boolean} */
 	_ascending;
 
@@ -18,7 +19,7 @@ export class GeneralPolynomial extends Expression {
 	constructor(coeffs, options) {
 		// simplify coeffs
 		coeffs = coeffs.map((coeff) => {
-			return new Expression(coeff).simplify().expression;
+			return new Expression(coeff).simplify().node;
 		});
 		if (!options?.ascending) coeffs.reverse();
 		// remove trailing zeros
@@ -66,7 +67,7 @@ export class GeneralPolynomial extends Expression {
 		if (this._ascending !== asc) {
 			// there might be only 1 term so expression is not a sum
 			try {
-				this.getSumTerms().reverse();
+				this._getSumTerms().reverse();
 			} catch {}
 		}
 		this._ascending = asc;

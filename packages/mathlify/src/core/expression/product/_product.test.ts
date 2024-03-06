@@ -10,7 +10,7 @@ test('product', () => {
 	const negativeX = new Product(-1, new Expression('x'));
 	expect(`${negativeX}`).toBe('- x');
 	const negX = new Expression(negativeX);
-	negX.multiplicationSign = ' \\times ';
+	negX._multiplicationSign = ' \\times ';
 	expect(`${negX}`).toBe('- 1 \\times x');
 	negativeX.simplify();
 	expect(`${negativeX}`).toBe('- x');

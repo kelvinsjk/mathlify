@@ -11,11 +11,11 @@ import {
 	remove_singletons,
 	resolveOptions,
 	simplify_exponent,
-	expand_expression,
+	expand_expression_,
 	expand_product,
-	common_denominator,
+	common_denominator_,
 	combine_fraction,
-	expression_lcm_two,
+	//expression_lcm_two,
 	expression_gcd,
 	divide_by_factor,
 } from './utils/index.js';
@@ -31,11 +31,18 @@ import {
  */
 export class Expression {
 	/** @type {ExpressionType} */
-	expression;
-	/** @type {string} */
-	multiplicationSign = '';
-	/** @type {boolean} */
-	mixedFractions = false;
+	node;
+
+	/**
+	 * Experimental: may be changed in the future
+	 * @type {string}
+	 * */
+	_multiplicationSign = '';
+	/**
+	 * Experimental: may be changed in the future
+	 * @type {boolean}
+	 * */
+	_mixedFractions = false;
 
 	/**
 	 * Creates an Expression.
@@ -50,126 +57,123 @@ export class Expression {
 				: typeof expression === 'string'
 					? new Variable(expression)
 					: expression;
-		this.expression = exp;
+		this.node = exp;
 	}
 
 	/**
-	 * @param {{multiplicationSign?: string, mixedFractions?: boolean}} [options] - default to ''
-	 * @returns {string}
+	 * @param {{multiplicationSign?: string, mixedFractions?: boolean}} [options] - to change the multiplication sign and whether to return mixed fractions
+	 * @returns {string} the LaTeX string representation of the expression
 	 */
 	toString(options) {
-		return this.expression.toString({
-			multiplicationSign: this.multiplicationSign,
-			mixedFractions: this.mixedFractions,
+		return this.node.toString({
+			multiplicationSign: this._multiplicationSign,
+			mixedFractions: this._mixedFractions,
 			...options,
 		});
 	}
 
 	/**
-	 * @returns {Expression}
+	 * @returns {Expression} a clone of the current instance
 	 */
 	clone() {
-		let exp = new Expression(this.expression.clone());
-		exp.mixedFractions = this.mixedFractions;
-		exp.multiplicationSign = this.multiplicationSign;
+		let exp = new Expression(this.node.clone());
+		exp._mixedFractions = this._mixedFractions;
+		exp._multiplicationSign = this._multiplicationSign;
 		return exp;
 	}
 
 	/**
 	 * simplifies the expression
-	 * @param {SimplifyOptions} [options] - options for which types to simplify. if not provided, all will be true. if object provided, all will be false unless indicated.
-	 * @returns {this}
-	 * WARNING: mutates current instance
+	 * @param {SimplifyOptions} [options] - options for which types to simplify
+	 * @returns {this} the current instance after simplification. Note that this method mutates the current instance
 	 */
 	simplify(options) {
 		const { brackets, product, sum, numeral, quotient, exponent } = resolveOptions(options);
-		if (brackets) this._remove_brackets();
-		if (numeral && this.expression instanceof Numeral) this.expression.simplify();
+		if (brackets) this._remove_brackets_();
+		if (numeral && this.node instanceof Numeral) this.node.simplify();
 		if (
-			this.expression instanceof Sum ||
-			this.expression instanceof Product ||
-			this.expression instanceof Quotient ||
-			this.expression instanceof Exponent
+			this.node instanceof Sum ||
+			this.node instanceof Product ||
+			this.node instanceof Quotient ||
+			this.node instanceof Exponent
 		) {
-			this.expression.simplify({ product, sum, numeral, quotient, exponent, brackets });
+			this.node.simplify({ product, sum, numeral, quotient, exponent, brackets });
 		}
-		if (exponent) this._simplify_exponent({ product, sum, numeral, quotient, exponent, brackets });
-		this._remove_singletons({ product, sum, quotient });
+		if (exponent) this._simplify_exponent_({ product, sum, numeral, quotient, exponent, brackets });
+		this._remove_singletons_({ product, sum, quotient });
 		return this;
 	}
 
 	/**
-	 * expands either products, or products within a sum
-	 * @param {{verbatim?: boolean, numeratorOnly?: boolean}} [options] - default to automatic simplification
-	 * numeratorOnly: only expands numerator and leaves denominator as is
-	 * @returns {this}
+	 * expands either products, products within a sum/quotient, or exponents with positive integral powers
+	 * @param {{verbatim?: boolean, numeratorOnly?: boolean}} [options] - default to automatic simplification after expansion, and expands both numerator and denominator
+	 * @returns {Expression}
 	 */
 	expand(options) {
-		expand_expression(this, options);
-		if (!options?.verbatim) this.simplify();
-		return this;
+		return this.clone()._expand_(options);
 	}
 
 	/**
-	 * combines fraction, with full simplification
-	 * @returns {this}
-	 * Warning: mutates current instance
+	 * combines fractions within a Sum, with full simplification
+	 * @returns {Expression}
 	 */
-	combine_fraction() {
-		this._common_denominator();
-		this._combine_fraction();
-		this.expand({ numeratorOnly: true });
-		this._remove_common_factors();
-		return this;
+	combineFraction() {
+		return this.clone()
+			._common_denominator_()
+			._combine_fraction_()
+			._expand_({ numeratorOnly: true })
+			._remove_common_factors_();
 	}
 
 	/**
 	 * rearranges the terms of a sum in place
+	 * TODO: add support for rearranging products
+	 * WARNING: experimental API to be finalized in the future
 	 * @param {number[]} order
 	 * @returns {this}
 	 */
-	rearrange(order) {
-		if (this.expression instanceof Sum) this.expression.rearrange(order);
+	_rearrange_(order) {
+		if (this.node instanceof Sum) this.node.rearrange(order);
 		return this;
 	}
 
-	/**
-	 * factorizes a sum into a product by extracting common factors
-	 * @param {{verbatim?: boolean}} [options] - by default, will expand any inner products and combine like terms. use verbatim to prevent this
-	 * @returns {Expression}
-	 */
-	toFactorized(options) {
-		if (!(this.expression instanceof Sum)) return this;
-		const commonFactor = Expression.gcd(...this.expression._termsExp);
-		if (commonFactor.expression instanceof Numeral && commonFactor.expression.is.one()) return this;
-		const factorizedTerms = this.expression._termsExp
-			.map((term) => divide_by_factor(term, commonFactor.expression))
-			.map((exp) => new Expression(exp));
-		/** @type {Expression|Sum} */
-		let sum = new Sum(...factorizedTerms);
-		if (!options?.verbatim) {
-			sum = new Expression(sum).expand().toFactorized();
-		}
-		const product = new Product(
-			new Expression(commonFactor.expression),
-			sum instanceof Sum ? new Expression(sum) : sum,
-		).simplify();
-		return new Expression(product);
-	}
+	/** factorization methods */
+	factorize = {
+		/**
+		 * factorizes a sum by extracting common factors
+		 * @param {{verbatim?: boolean}} [options] - by default, will expand any inner products and combine like terms. use verbatim to prevent this
+		 * @returns {Expression}
+		 */
+		commonFactor: (options) => {
+			if (!(this.node instanceof Sum)) return this;
+			const commonFactor = Expression.gcd(...this.node._termsExp);
+			if (commonFactor.node instanceof Numeral && commonFactor.node.is.one()) return this;
+			const factorizedTerms = this.node._termsExp
+				.map((term) => divide_by_factor(term, commonFactor.node))
+				.map((exp) => new Expression(exp));
+			/** @type {Expression|Sum} */
+			let sum = new Expression(new Sum(...factorizedTerms));
+			if (!options?.verbatim) {
+				sum = sum.expand();
+			}
+			const product = new Product(new Expression(commonFactor.node), sum).simplify();
+			return new Expression(product);
+		},
+	};
 
-	//! arithmetic methods - unlike the previous methods, these do not mutate the current instance
 	/**
 	 * negative of expression
 	 * @returns {Expression}
 	 */
 	negative() {
-		const exp = this.expression;
+		const exp = this.node;
 		if (exp instanceof Numeral || exp instanceof Product) return new Expression(exp.negative());
-		throw new Error('negative not supported for this type at the moment');
+		return new Expression(new Product(-1, this.clone())).expand();
 	}
 
 	/**
-	 * @param {Object.<string, Expression|string|number|FractionShorthand>} scope - variables to be replaced in the expression
+	 * subs in variables for other expressions
+	 * @param {Record<string, Expression|string|number|FractionShorthand>} scope - variables to be replaced in the expression
 	 * @param {{verbatim?: boolean}} [options] - default to automatic simplification
 	 * @returns {Expression}
 	 */
@@ -179,32 +183,32 @@ export class Expression {
 
 	//! these methods provide quick access to the underlying expression-subtypes
 	/** @returns {[Expression, Expression]} */
-	getQuotientTerms() {
-		const exp = this.expression;
+	_getQuotientTerms() {
+		const exp = this.node;
 		if (exp instanceof Quotient) {
 			return [exp.num, exp.den];
 		}
 		throw new Error('Expression is not a quotient');
 	}
 	/** @returns {Numeral} */
-	getNumeral() {
-		const exp = this.expression;
+	_getNumeral() {
+		const exp = this.node;
 		if (exp instanceof Numeral) {
 			return exp;
 		}
 		throw new Error('Expression is not a numeral');
 	}
 	/** @return {[Numeral, Expression[]]} */
-	getProductTerms() {
-		const exp = this.expression;
+	_getProductTerms() {
+		const exp = this.node;
 		if (exp instanceof Product) {
 			return [exp.coeff, exp._factorsExp];
 		}
 		throw new Error('Expression is not a product');
 	}
 	/** @return {Expression[]} */
-	getSumTerms() {
-		const exp = this.expression;
+	_getSumTerms() {
+		const exp = this.node;
 		if (exp instanceof Sum) {
 			return exp._termsExp;
 		}
@@ -217,16 +221,26 @@ export class Expression {
 	 * @returns {string}
 	 * */
 	_to_lexical_string(options) {
-		return this.expression.toLexicalString(options);
+		return this.node.toLexicalString(options);
+	}
+	/**
+	 * expand the expression, mutating the current instance
+	 * @param {{verbatim?: boolean, numeratorOnly?: boolean}} [options] - default to automatic simplification after expansion, and expands both numerator and denominator
+	 * @returns {this}
+	 */
+	_expand_(options) {
+		expand_expression_(this, options);
+		if (!options?.verbatim) this.simplify();
+		return this;
 	}
 	/**
 	 * expands products
 	 * @param {{verbatim?: boolean}} [options] - default to automatic simplification
 	 * @returns {this}
 	 */
-	_expand_product(options) {
+	_expand_product_(options) {
 		const sum = expand_product(this);
-		if (sum !== undefined) this.expression = sum;
+		if (sum !== undefined) this.node = sum;
 		if (!options?.verbatim) this.simplify();
 		return this;
 	}
@@ -238,9 +252,9 @@ export class Expression {
 	 * @returns {this}
 	 * WARNING: mutates current instance
 	 */
-	_remove_singletons(options) {
+	_remove_singletons_(options) {
 		const exp = remove_singletons(this, { product: true, sum: true, quotient: true, ...options });
-		if (exp !== undefined) this.expression = exp;
+		if (exp !== undefined) this.node = exp;
 		return this;
 	}
 	/**
@@ -248,10 +262,10 @@ export class Expression {
 	 * @returns {this}
 	 * WARNING: mutates current instance
 	 */
-	_remove_brackets() {
+	_remove_brackets_() {
 		remove_nested_brackets(this);
-		if (this.expression instanceof Fn && this.expression.fn instanceof Brackets) {
-			this.expression = this.expression.fn.expression.expression;
+		if (this.node instanceof Fn && this.node.fn instanceof Brackets) {
+			this.node = this.node.fn.expression.node;
 		}
 		return this;
 	}
@@ -264,9 +278,9 @@ export class Expression {
 	 * @returns {this}
 	 * WARNING: mutates current instance
 	 */
-	_simplify_exponent(options) {
+	_simplify_exponent_(options) {
 		const exp = simplify_exponent(this, options);
-		if (exp !== undefined) this.expression = exp;
+		if (exp !== undefined) this.node = exp;
 		return this;
 	}
 
@@ -277,8 +291,8 @@ export class Expression {
 	 * @returns {this} - a sum with quotients with same denominator as its terms
 	 * Warning: mutates current instance
 	 */
-	_common_denominator() {
-		common_denominator(this);
+	_common_denominator_() {
+		common_denominator_(this);
 		return this;
 	}
 	/**
@@ -288,9 +302,9 @@ export class Expression {
 	 * @returns {this}
 	 * Warning: mutate current instance
 	 */
-	_combine_fraction(options) {
+	_combine_fraction_(options) {
 		const quotient = combine_fraction(this);
-		if (quotient !== undefined) this.expression = quotient;
+		if (quotient !== undefined) this.node = quotient;
 		if (!options?.verbatim) this.simplify();
 		return this;
 	}
@@ -299,17 +313,17 @@ export class Expression {
 	 * @returns {this}
 	 * Warning: mutates current instance
 	 */
-	_remove_common_factors() {
+	_remove_common_factors_() {
 		try {
-			const [num, den] = this.getQuotientTerms().map((x) => x.clone().toFactorized());
+			const [num, den] = this._getQuotientTerms().map((x) => x.clone().factorize.commonFactor());
 			const gcd = Expression.gcd(num, den);
-			if (gcd.expression instanceof Numeral && gcd.expression.is.one()) return this;
-			const newNum = new Expression(divide_by_factor(num, gcd.expression)).simplify();
-			const newDen = new Expression(divide_by_factor(den, gcd.expression)).simplify();
-			if (newDen instanceof Numeral && newDen.is.one()) {
-				this.expression = newNum.expression;
+			if (gcd.node instanceof Numeral && gcd.node.is.one()) return this;
+			const newNum = new Expression(divide_by_factor(num, gcd.node)).simplify();
+			const newDen = new Expression(divide_by_factor(den, gcd.node)).simplify();
+			if (newDen.node instanceof Numeral && newDen.node.is.one()) {
+				this.node = newNum.node;
 			} else {
-				this.expression = new Quotient(newNum, newDen);
+				this.node = new Quotient(newNum, newDen);
 			}
 			return this;
 		} catch {
@@ -318,36 +332,52 @@ export class Expression {
 	}
 
 	/**
+	 * workaround for `new Expression(...)` to avoid circular dependency
 	 * @param {ExpressionType} exp
 	 * @returns {Expression}
 	 */
 	_new_exp(exp) {
 		return new Expression(exp);
 	}
+	/**
+	 * workaround for `Expression.gcd(...)` to avoid circular dependency
+	 * @param {Expression} exp2
+	 * @returns {Expression}
+	 */
+	_gcd(exp2) {
+		return Expression.gcd(this, exp2);
+	}
+	/**
+	 * workaround for `Expression.divide_by_factor(...)` to avoid circular dependency
+	 * @param {Expression} factor
+	 * @returns {Expression}
+	 */
+	_divide_by_factor(factor) {
+		return new Expression(divide_by_factor(this, factor.node)).simplify();
+	}
 
 	//! static methods
 	/**
-	 * get gcd of expressions
+	 * get gcd of expressions, returning a negative gcd if all terms are negative
 	 * @param {Expression[]} exps
 	 * @returns {Expression}
-	 * WARNING: returns negative gcd if all terms are negative
 	 */
 	static gcd(...exps) {
 		return expression_gcd(...exps);
 	}
 
-	/**
-	 * get lcm of two expressions
-	 * @param {Expression} exp1
-	 * @param {Expression} exp2
-	 * @returns {Expression}
-	 */
-	static lcm(exp1, exp2) {
-		return expression_lcm_two(exp1, exp2);
-	}
+	///**
+	// * get lcm of two expressions
+	// * @param {Expression} exp1
+	// * @param {Expression} exp2
+	// * @returns {Expression}
+	// */
+	//static lcm(exp1, exp2) {
+	//	return expression_lcm_two(exp1, exp2);
+	//}
 }
 
-// additional functions that rely heavily on calling new Expression class that must be co-located here
+// additional functions that rely heavily on calling new Expression class that must makes it hard to be located in the utils module
 
 /**
  * @param {Object.<string, Expression|string|number|FractionShorthand>} scope - variables to be replaced in the expression
@@ -372,27 +402,26 @@ function sub_in(expression, scope, options) {
 	const scope_exp = resolve_scope(scope);
 	/** @type {Expression} */
 	let exp;
-	if (expression.expression instanceof Variable) {
-		const name = expression.expression.name;
+	if (expression.node instanceof Variable) {
+		const name = expression.node.name;
 		if (name in scope_exp) {
-			exp = new Expression(scope_exp[name].expression.clone());
-			exp.multiplicationSign = expression.multiplicationSign;
-			exp.mixedFractions = expression.mixedFractions;
+			exp = new Expression(scope_exp[name].node.clone());
+			exp._multiplicationSign = expression._multiplicationSign;
+			exp._mixedFractions = expression._mixedFractions;
 		} else {
 			exp = expression.clone();
 		}
 	} else {
-		exp = new Expression(expression.expression.subIn(scope_exp, { verbatim: false, ...options }));
-		exp.multiplicationSign = expression.multiplicationSign;
-		exp.mixedFractions = expression.mixedFractions;
+		exp = new Expression(expression.node.subIn(scope_exp, { verbatim: false, ...options }));
+		exp._multiplicationSign = expression._multiplicationSign;
+		exp._mixedFractions = expression._mixedFractions;
 	}
 	if (!options?.verbatim) exp.simplify();
 	return exp;
 }
-
 /**
  * to Expression
- * @param {ExpressionType|string|number|Fraction|Expression} exp
+ * @param {string|number|Fraction|Expression} exp
  * @return {Expression}
  */
 export function to_Expression(exp) {
@@ -400,14 +429,12 @@ export function to_Expression(exp) {
 		return new Expression(new Variable(exp));
 	} else if (typeof exp === 'number' || exp instanceof Fraction) {
 		return new Expression(new Numeral(exp, { verbatim: true }));
-	} else if (exp instanceof Expression) {
-		return exp;
 	}
-	return new Expression(exp);
+	return exp;
 }
 
 /**
- *
+ * unpacks the fraction shorthand
  * @param {Expression|number|string|FractionShorthand} exp
  * @returns {Expression|number|string}
  */

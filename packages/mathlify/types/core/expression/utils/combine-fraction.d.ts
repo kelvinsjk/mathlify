@@ -1,8 +1,9 @@
 /** @typedef {import('../index.js').Expression} Expression  */
 /**
  * @param {Expression} exp
+ * @returns {void}
  */
-export function common_denominator(exp: Expression): void;
+export function common_denominator_(exp: Expression): void;
 /**
  *
  * @param {Expression} exp

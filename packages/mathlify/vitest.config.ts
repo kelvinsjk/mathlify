@@ -1,10 +1,13 @@
 /// <reference types="vitest" />
 import { defineConfig } from 'vite';
+import { configDefaults } from 'vitest/config';
 // https://vitejs.dev/config/
 export default defineConfig({
-	// test: {
-	// 	coverage: {
-	// 		exclude: ['**/*.test.ts'],
-	// 	},
-	// },
+	test: {
+		exclude: [...configDefaults.exclude, 'tests/**/*', '**/_*.test.ts'],
+		coverage: {
+			...configDefaults.coverage,
+			include: ['src/**'],
+		},
+	},
 });

@@ -10,23 +10,23 @@ test('add/subtract fractions', () => {
 	const aPlusB = sumVerbatim(a, b);
 	const aPlusBV2 = aPlusB.clone();
 	expect(`${aPlusB}`).toBe('\\frac{1}{24} + \\frac{1}{6}');
-	aPlusB._common_denominator();
+	aPlusB._common_denominator_();
 	expect(`${aPlusB}`).toBe('\\frac{1}{24} + \\frac{4}{24}');
-	aPlusB._combine_fraction({ verbatim: true });
+	aPlusB._combine_fraction_({ verbatim: true });
 	expect(`${aPlusB}`).toBe('\\frac{1 + 4}{24}');
 	aPlusB.simplify();
 	expect(`${aPlusB}`).toBe('\\frac{5}{24}');
 	expect(`${aPlusBV2}`).toBe('\\frac{1}{24} + \\frac{1}{6}');
-	aPlusBV2._common_denominator();
-	aPlusBV2._combine_fraction();
+	aPlusBV2._common_denominator_();
+	aPlusBV2._combine_fraction_();
 	expect(`${aPlusBV2}`).toBe('\\frac{5}{24}');
-	expect(aPlusBV2.expression instanceof Numeral).toBe(true);
+	expect(aPlusBV2.node instanceof Numeral).toBe(true);
 	// a - b
 	const aMinusB = sumVerbatim(a, [-1, b]);
 	expect(`${aMinusB}`).toBe('\\frac{1}{24} - \\frac{1}{6}');
-	aMinusB._common_denominator();
+	aMinusB._common_denominator_();
 	expect(`${aMinusB}`).toBe('\\frac{1}{24} - \\frac{4}{24}');
-	aMinusB._combine_fraction({ verbatim: true });
+	aMinusB._combine_fraction_({ verbatim: true });
 	expect(`${aMinusB}`).toBe('\\frac{1 - 4}{24}');
 	aMinusB.simplify({ sum: true, product: true });
 	expect(`${aMinusB}`).toBe('\\frac{- 3}{24}');
@@ -35,9 +35,9 @@ test('add/subtract fractions', () => {
 	// -a + b
 	const negativeAPlusB = sumVerbatim(a.negative(), b);
 	expect(`${negativeAPlusB}`).toBe('- \\frac{1}{24} + \\frac{1}{6}');
-	negativeAPlusB._common_denominator();
+	negativeAPlusB._common_denominator_();
 	expect(`${negativeAPlusB}`).toBe('- \\frac{1}{24} + \\frac{4}{24}');
-	negativeAPlusB._combine_fraction({ verbatim: true });
+	negativeAPlusB._combine_fraction_({ verbatim: true });
 	expect(`${negativeAPlusB}`).toBe('\\frac{- 1 + 4}{24}');
 	negativeAPlusB.simplify({ sum: true, product: true });
 	expect(`${negativeAPlusB}`).toBe('\\frac{3}{24}');
@@ -46,9 +46,9 @@ test('add/subtract fractions', () => {
 	// -a - b
 	const negativeAMinusB = sumVerbatim(a.negative(), b.negative());
 	expect(`${negativeAMinusB}`).toBe('- \\frac{1}{24} - \\frac{1}{6}');
-	negativeAMinusB._common_denominator();
+	negativeAMinusB._common_denominator_();
 	expect(`${negativeAMinusB}`).toBe('- \\frac{1}{24} - \\frac{4}{24}');
-	negativeAMinusB._combine_fraction({ verbatim: true });
+	negativeAMinusB._combine_fraction_({ verbatim: true });
 	expect(`${negativeAMinusB}`).toBe('\\frac{- 1 - 4}{24}');
 	negativeAMinusB.simplify({ sum: true, product: true });
 	expect(`${negativeAMinusB}`).toBe('\\frac{- 5}{24}');
@@ -57,11 +57,11 @@ test('add/subtract fractions', () => {
 	// a + (-b)
 	const aPlusNegativeB = sumVerbatim(a, ['()', b.negative()]);
 	expect(`${aPlusNegativeB}`).toBe('\\frac{1}{24} + \\left( - \\frac{1}{6} \\right)');
-	aPlusNegativeB._remove_brackets();
+	aPlusNegativeB._remove_brackets_();
 	expect(`${aPlusNegativeB}`).toBe('\\frac{1}{24} - \\frac{1}{6}');
-	aPlusNegativeB._common_denominator();
+	aPlusNegativeB._common_denominator_();
 	expect(`${aPlusNegativeB}`).toBe('\\frac{1}{24} - \\frac{4}{24}');
-	aPlusNegativeB._combine_fraction({ verbatim: true });
+	aPlusNegativeB._combine_fraction_({ verbatim: true });
 	expect(`${aPlusNegativeB}`).toBe('\\frac{1 - 4}{24}');
 	aPlusNegativeB.simplify({ sum: true, product: true });
 	expect(`${aPlusNegativeB}`).toBe('\\frac{- 3}{24}');
@@ -72,13 +72,13 @@ test('add/subtract fractions', () => {
 	expect(`${bMinusNegativeC}`).toBe('\\frac{1}{6} - \\left( - \\frac{8}{9} \\right)');
 	bMinusNegativeC.simplify({ brackets: true, product: true });
 	expect(`${bMinusNegativeC}`).toBe('\\frac{1}{6} + \\frac{8}{9}');
-	bMinusNegativeC._common_denominator();
+	bMinusNegativeC._common_denominator_();
 	expect(`${bMinusNegativeC}`).toBe('\\frac{3}{18} + \\frac{16}{18}');
-	bMinusNegativeC._combine_fraction({ verbatim: true });
+	bMinusNegativeC._combine_fraction_({ verbatim: true });
 	expect(`${bMinusNegativeC}`).toBe('\\frac{3 + 16}{18}');
 	bMinusNegativeC.simplify({ sum: true, product: true });
 	expect(`${bMinusNegativeC}`).toBe('\\frac{19}{18}');
 	bMinusNegativeC.simplify();
-	bMinusNegativeC.mixedFractions = true;
+	bMinusNegativeC._mixedFractions = true;
 	expect(`${bMinusNegativeC}`).toBe('1\\frac{1}{18}');
 });

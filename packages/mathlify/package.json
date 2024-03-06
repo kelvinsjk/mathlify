@@ -1,12 +1,28 @@
 {
 	"name": "mathlify",
-	"version": "0.4.0",
-	"description": "bringing mathematics into the digital age",
-	"source": "src/index.js",
 	"type": "module",
-	"types": "types/index.d.ts",
-	"main": "src/index.js",
-	"module": "src/index.js",
+	"version": "0.4.0",
+	"description": "A computer algebra system with a focus on presentation",
+	"author": "Kelvin Soh",
+	"license": "MIT",
+	"source": "./src/index.js",
+	"main": "./src/index.js",
+	"types": "./types/index.d.ts",
+	"module": "./src/index.js",
+	"exports": {
+		".": {
+			"default": "./src/index.js",
+			"types": "./types/index.d.ts"
+		},
+		"./classes": {
+			"default": "./src/submodules/classes/index.js",
+			"types": "./types/submodules/classes/index.d.ts"
+		},
+		"./working": {
+			"default": "./src/submodules/working/index.js",
+			"types": "./types/submodules/working/index.d.ts"
+		}
+	},
 	"scripts": {
 		"prepare": "pnpm run build",
 		"prepublishOnly": "pnpm run test && pnpm run lint",
@@ -20,6 +36,7 @@
 		"build": "vite build",
 		"preview": "vite preview",
 		"test": "vitest --config ./vitest.config.ts --coverage",
+		"testLegacy": "vitest --config ./vitest-legacy.config.ts --coverage",
 		"fractions": "vitest _expression",
 		"types": "tsc",
 		"cleanTypes": "rm -rf ./types && tsc"
@@ -34,8 +51,6 @@
 	"keywords": [
 		"math"
 	],
-	"author": "Kelvin Soh",
-	"license": "MIT",
 	"bugs": {
 		"url": "https://github.com/kelvinsjk/mathlify/issues"
 	},

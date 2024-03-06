@@ -27,28 +27,28 @@ export function gcd(...integers) {
 	return int1 === 0 && int2 === 0 ? gcd(0, ...rest) : gcd(gcdTwo(int1, int2), ...rest);
 }
 
-/**
- * signed gcd: returns a negative gcd if
- * at least one number is negative,
- * and all numbers are non_positive
- * @param  {...number} integers
- * @returns {number}
- */
-export function signed_gcd(...integers) {
-	const abs_gcd = gcd(...integers);
-	let has_negative = false;
-	let non_positive = true;
-	for (let int of integers) {
-		if (!has_negative && int < 0) {
-			has_negative = true;
-		}
-		if (int > 0) {
-			non_positive = false;
-			break;
-		}
-	}
-	return has_negative && non_positive ? -abs_gcd : abs_gcd;
-}
+// /**
+//  * signed gcd: returns a negative gcd if
+//  * at least one number is negative,
+//  * and all numbers are non_positive
+//  * @param  {...number} integers
+//  * @returns {number}
+//  */
+// export function signed_gcd(...integers) {
+// 	const abs_gcd = gcd(...integers);
+// 	let has_negative = false;
+// 	let non_positive = true;
+// 	for (let int of integers) {
+// 		if (!has_negative && int < 0) {
+// 			has_negative = true;
+// 		}
+// 		if (int > 0) {
+// 			non_positive = false;
+// 			break;
+// 		}
+// 	}
+// 	return has_negative && non_positive ? -abs_gcd : abs_gcd;
+// }
 
 /**
  * finds gcd of two numbers

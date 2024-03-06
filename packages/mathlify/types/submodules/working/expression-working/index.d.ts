@@ -1,7 +1,7 @@
 /** @typedef {'aligned'|'single'|'multi'} LineBreakMode */
-/** @typedef {import('../../macros/index.js').BracketShorthand} BracketShorthand */
-/** @typedef {import('../../macros/index.js').QuotientShorthand} FractionShorthand */
-/** @typedef {import('../../core/expression/index.js').SimplifyOptions} SimplifyOptions */
+/** @typedef {import('../../../macros/index.js').BracketShorthand} BracketShorthand */
+/** @typedef {import('../../../macros/index.js').QuotientShorthand} FractionShorthand */
+/** @typedef {import('../../../core/expression/index.js').SimplifyOptions} SimplifyOptions */
 /** @typedef {{hide?: boolean, string?: boolean}} ExpressionWorkingOptions */
 /**
  * ExpressionWorking Class to handle the step-by-step working in manipulating an expression
@@ -10,7 +10,7 @@ export class ExpressionWorking {
     /**
      * Creates an ExpressionWorking
      * @param {Expression} expression - the initial expression
-     * @param {{lineBreakMode?: LineBreakMode, startOnFirstLine?: boolean}} [options] - defaults to `{lineBreakMode: 'aligned', startOnFirstLine: false}`
+     * @param {{lineBreakMode?: LineBreakMode, startOnFirstLine?: boolean}} [options] - lineBreakMode is either 'aligned' (default), 'single' or 'multi'
      */
     constructor(expression: Expression, options?: {
         lineBreakMode?: LineBreakMode | undefined;
@@ -29,9 +29,9 @@ export class ExpressionWorking {
     lineBreakMode: LineBreakMode;
     /**
      * @type {boolean}
-     * Only applicable for aligned and multi lineBreakMode
-     * If true: x = y \\ = z ...
-     * else: x \\ = y \\ = z ...
+     * Only applicable for aligned lineBreakMode
+     * If true: x &= y \\ &= z ...
+     * else: & x \\ &= y \\ &= z ...
      * */
     startOnFirstLine: boolean;
     /**
@@ -40,7 +40,7 @@ export class ExpressionWorking {
      * @returns {ExpressionWorking}
      */
     subIn(scope: {
-        [x: string]: Expression | string | number | import("../../macros/index.js").QuotientShorthand;
+        [x: string]: Expression | string | number | import("../../../macros/index.js").QuotientShorthand;
     }, options?: {
         verbatim?: boolean | undefined;
         hide?: boolean | undefined;
@@ -52,7 +52,7 @@ export class ExpressionWorking {
      * @param {WorkingSimplifyOptions} [options] - {brackets?, product?, sum?, quotient?, numeral?, exponent?, hide?}
      * @returns {ExpressionWorking}
      * */
-    simplify(options?: (import("../../core/expression/index.js").SimplifyOptions & {
+    simplify(options?: (import("../../../core/expression/index.js").SimplifyOptions & {
         hide?: boolean | undefined;
     }) | undefined): ExpressionWorking;
     /**
@@ -64,20 +64,34 @@ export class ExpressionWorking {
         numerator?: boolean | undefined;
         hide?: boolean | undefined;
     } | undefined): ExpressionWorking;
-    /**
-     * @param {{hide?: boolean}} [options]
-     * @returns {ExpressionWorking}
-     * */
-    factorize(options?: {
-        hide?: boolean | undefined;
-    } | undefined): ExpressionWorking;
-    /**
-     * @param {{hide?: boolean}} [options]
-     * @returns {ExpressionWorking}
-     * */
-    factorizeQuadratic(options?: {
-        hide?: boolean | undefined;
-    } | undefined): ExpressionWorking;
+    factorize: {
+        /**
+         * factorizes by taking out common factor
+         * @param {{hide?: boolean}} [options]
+         * @returns {ExpressionWorking}
+         * */
+        commonFactor: (options?: {
+            hide?: boolean | undefined;
+        } | undefined) => ExpressionWorking;
+        /**
+         * @param {{hide?: boolean}} [options]
+         * @returns {ExpressionWorking}
+         * */
+        quadratic: (options?: {
+            hide?: boolean | undefined;
+        } | undefined) => ExpressionWorking;
+        /**
+         * @param {number[][]} groupedIndices - indices of the groups (eg [[0, 1], [2, 3]] means group first two terms and last two terms)
+         * @param {{hide?: boolean, negative?: (number|{group: number, rearrange: number[]})[]}} [options] {negative: [1, {group: 3, rearrange: [1,0]}]} means the 2nd and 4th groups will be factorized with an extra negative. The 4th group will also have a reversed order
+         */
+        byGrouping: (groupedIndices: number[][], options?: {
+            hide?: boolean | undefined;
+            negative?: (number | {
+                group: number;
+                rearrange: number[];
+            })[] | undefined;
+        } | undefined) => ExpressionWorking;
+    };
     /**
      * toggle Mixed fractions
      * @param {{hide?: boolean}} [options] - options to hide this step
@@ -101,11 +115,11 @@ export class ExpressionWorking {
      */
     addCustomStep(exp: string | Expression): ExpressionWorking;
     /**
-     * @param {{hide?: boolean, working?: boolean}} [options]
+     * @param {{hide?: boolean, steps?: boolean}} [options]
      */
     combineFraction(options?: {
         hide?: boolean | undefined;
-        working?: boolean | undefined;
+        steps?: boolean | undefined;
     } | undefined): ExpressionWorking;
     /**
      * @return {string}
@@ -113,12 +127,12 @@ export class ExpressionWorking {
     toString(): string;
 }
 export type LineBreakMode = 'aligned' | 'single' | 'multi';
-export type BracketShorthand = import('../../macros/index.js').BracketShorthand;
-export type FractionShorthand = import('../../macros/index.js').QuotientShorthand;
-export type SimplifyOptions = import('../../core/expression/index.js').SimplifyOptions;
+export type BracketShorthand = import('../../../macros/index.js').BracketShorthand;
+export type FractionShorthand = import('../../../macros/index.js').QuotientShorthand;
+export type SimplifyOptions = import('../../../core/expression/index.js').SimplifyOptions;
 export type ExpressionWorkingOptions = {
     hide?: boolean;
     string?: boolean;
 };
-import { Expression } from '../../core/index.js';
+import { Expression } from '../../../core/index.js';
 //# sourceMappingURL=index.d.ts.map
