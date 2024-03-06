@@ -23,7 +23,7 @@ export class Fraction {
 			throw new RangeError('0 denominator received in fraction constructor');
 		} else if (!Number.isInteger(num) || !Number.isInteger(den)) {
 			console.error(`numerator and denominators should be integers. ${num} and ${den} received.`);
-			throw new RangeError('non-integers received in Fraction constructor');
+			throw new RangeError(`non-integers received in Fraction constructor`);
 		}
 		this.num = num;
 		this.den = den;
@@ -224,29 +224,29 @@ export class Fraction {
 
 	/**
 	 * (absolute) gcd of fractions
-	 * @param {...Fraction} fractions
+	 * @param {...(Fraction|number)} fractions
 	 * @returns {Fraction}
 	 */
 	static gcd(...fractions) {
-		if (fractions.length === 0) {
+		const fs = fractions.map((f) => (f instanceof Fraction ? f : new Fraction(f)));
+		if (fs.length === 0) {
 			throw new RangeError('no fractions received in gcd');
 		}
-		if (fractions.length === 1) {
-			const f = fractions[0];
-			if (f.is.zero()) {
+		if (fs.length === 1) {
+			if (fs[0].is.zero()) {
 				throw new RangeError('gcd(0) is undefined');
 			}
-			return f.abs();
+			return fs[0].abs();
 		}
-		if (fractions.length === 2) {
-			const [a, b] = fractions;
+		if (fs.length === 2) {
+			const [a, b] = fs;
 			return new Fraction(gcd(a.num, b.num), lcm(a.den, b.den)).simplify();
 		}
-		let divisor = fractions[0];
-		fractions.shift();
-		for (const [i, frac] of fractions.entries()) {
+		let divisor = fs[0];
+		fs.shift();
+		for (const [i, frac] of fs.entries()) {
 			if (divisor.is.zero() && frac.is.zero()) {
-				if (i === fractions.length - 1) throw new RangeError('gcd of 0s is undefined');
+				if (i === fs.length - 1) throw new RangeError('gcd of 0s is undefined');
 				continue;
 			}
 			divisor = Fraction.gcd(divisor, frac);
@@ -265,11 +265,10 @@ export class Fraction {
 			throw new RangeError('no fractions received in lcm');
 		}
 		if (fs.length === 1) {
-			const f = fs[0];
-			if (f.is.zero()) {
+			if (fs[0].is.zero()) {
 				throw new RangeError('lcm(0) is undefined');
 			}
-			return f.abs();
+			return fs[0].abs();
 		}
 		if (fs.length === 2) {
 			const [a, b] = fs;
@@ -277,7 +276,7 @@ export class Fraction {
 		}
 		let multiple = fs[0];
 		fs.shift();
-		for (let frac of fs) {
+		for (const [i, frac] of fs.entries()) {
 			multiple = Fraction.lcm(multiple, frac);
 		}
 		return multiple;

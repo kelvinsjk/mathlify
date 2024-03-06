@@ -2,11 +2,11 @@
 /** @typedef {import('../index.js').ExpressionType} ExpressionType */
 /**
  *
- * @param {Expression} quotient
+ * @param {Expression} expression
  * @param {ExpressionType} divisor
  * @returns {Product} - quotient as simplified product
  */
-export function divide_by_factor(quotient: Expression, divisor: ExpressionType): Product;
+export function divide_by_factor(expression: Expression, divisor: ExpressionType): Product;
 export type Expression = import('../index.js').Expression;
 export type ExpressionType = import('../index.js').ExpressionType;
 import { Product } from '../product/index.js';

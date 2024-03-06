@@ -97,7 +97,7 @@ export class Sum {
 	 */
 	_remove_zeroes() {
 		this._termsExp = this._termsExp.filter((term) => {
-			const exp = term.expression;
+			const exp = term.node;
 			if (exp instanceof Numeral) {
 				return exp.number.is.nonzero();
 			} else if (exp instanceof Product) {
@@ -117,11 +117,11 @@ export class Sum {
 		/** @type {Expression[]} */
 		const terms = [];
 		for (const term of this._termsExp) {
-			if (term.expression instanceof Sum) {
-				term.expression._flatten();
-				terms.push(...term.expression._termsExp);
-			} else if (term.expression instanceof Product) {
-				term.expression._flatten();
+			if (term.node instanceof Sum) {
+				term.node._flatten();
+				terms.push(...term.node._termsExp);
+			} else if (term.node instanceof Product) {
+				term.node._flatten();
 				terms.push(term);
 			} else {
 				terms.push(term);
@@ -175,11 +175,11 @@ export class Sum {
 			if (indices.length > 1) {
 				const firstIndex = indices[0];
 				if (key === 'numeral') {
-					this._termsExp[firstIndex].expression = coeff;
+					this._termsExp[firstIndex].node = coeff;
 				} else {
 					const p = new Product(expression);
 					p.coeff = coeff;
-					this._termsExp[firstIndex].expression = p.simplify();
+					this._termsExp[firstIndex].node = p.simplify();
 				}
 				indicesToRemove.push(...indices.slice(1));
 			}
@@ -214,6 +214,6 @@ export class Sum {
 	 * @returns {ExpressionType[]}
 	 */
 	get terms() {
-		return this._termsExp.map((term) => term.expression);
+		return this._termsExp.map((term) => term.node);
 	}
 }

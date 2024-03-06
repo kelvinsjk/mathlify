@@ -40,11 +40,6 @@ export class Product {
      */
     toUnit(): Expression;
     /**
-     * @param {Expression} x
-     * @returns {Product}
-     */
-    _multiply_into_factors(x: Expression): Product;
-    /**
      * @returns {Product}
      */
     clone(): Product;

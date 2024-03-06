@@ -17,12 +17,12 @@ export function denominator_lcm(...expressions) {
 		throw new Error('Cannot find denominator lcm of empty array');
 	}
 	if (expressions.length === 1) {
-		let exp = expressions[0].expression;
+		let exp = expressions[0].node;
 		const dummy = expressions[0];
 		if (exp instanceof Numeral) {
 			return dummy._new_exp(new Numeral(exp.number.den).abs());
 		} else if (exp instanceof Quotient) {
-			return dummy._new_exp(exp.den.expression.clone());
+			return dummy._new_exp(exp.den.node.clone());
 		} else if (exp instanceof Product && exp.coeff.is.negative() && exp.factors.length === 1) {
 			return denominator_lcm(exp._factorsExp[0]);
 		} else {
@@ -53,12 +53,12 @@ export function denominator_lcm(...expressions) {
  * @returns {Expression}
  */
 export function expression_lcm_two(exp1, exp2) {
-	const a = exp1.expression;
-	const b = exp2.expression;
+	const a = exp1.node;
+	const b = exp2.node;
 	if (a instanceof Product) {
 		if (b instanceof Product) {
-			// lexical string: [power, expression]
-			/** @type {Object.<string,[Numeral,Expression]>} */
+			// lexical string: {power, expression}
+			/** @type {Object.<string,{power: Numeral, expression: Expression}>} */
 			const termMap = {};
 			/** @type {string[]} */
 			const orderedKeys = [];
@@ -67,11 +67,11 @@ export function expression_lcm_two(exp1, exp2) {
 				if (factor instanceof Exponent && factor.power instanceof Numeral) {
 					const key = factor.base.toLexicalString();
 					orderedKeys.push(key);
-					termMap[key] = [factor.power, factor.baseExp.clone()];
+					termMap[key] = { power: factor.power, expression: factor.baseExp.clone() };
 				} else {
 					const key = factor.toLexicalString();
 					orderedKeys.push(key);
-					termMap[key] = [new Numeral(1), exp1._new_exp(factor.clone())];
+					termMap[key] = { power: new Numeral(1), expression: exp1._new_exp(factor.clone()) };
 				}
 			}
 			// loop through b
@@ -80,18 +80,18 @@ export function expression_lcm_two(exp1, exp2) {
 					const key = factor.base.toLexicalString();
 					const val = termMap[key];
 					if (val) {
-						val[0] = Numeral.max(factor.power, val[0]);
+						val.power = Numeral.max(factor.power, val.power);
 					} else {
-						termMap[key] = [factor.power, factor.baseExp.clone()];
+						termMap[key] = { power: factor.power, expression: factor.baseExp.clone() };
 						orderedKeys.push(key);
 					}
 				} else {
 					const key = factor.toLexicalString();
 					const val = termMap[key];
 					if (val) {
-						val[0] = Numeral.max(1, val[0]);
+						val.power = Numeral.max(1, val.power);
 					} else {
-						termMap[key] = [new Numeral(1), exp1._new_exp(factor.clone())];
+						termMap[key] = { power: new Numeral(1), expression: exp1._new_exp(factor.clone()) };
 						orderedKeys.push(key);
 					}
 				}
@@ -101,7 +101,7 @@ export function expression_lcm_two(exp1, exp2) {
 			for (const key of orderedKeys) {
 				const val = termMap[key];
 				if (val) {
-					const [power, expression] = val;
+					const { power, expression } = val;
 					if (power.is.one()) {
 						factors.push(expression);
 					} else if (power.is.nonzero()) {
@@ -132,10 +132,9 @@ export function expression_lcm_two(exp1, exp2) {
 					f.power instanceof Numeral &&
 					f.base.toLexicalString() === b.toLexicalString()
 				) {
-					factors.push(new Exponent(exp1._new_exp(f.base), exp1._new_exp(Numeral.max(f.power, new Numeral(1)))));
+					factors.push(new Exponent(exp1._new_exp(f.base), exp1._new_exp(Numeral.max(f.power, 1))));
 					noCommonFactor = false;
 				} else if (f.toLexicalString() === b.toLexicalString()) {
-					factors.push(f.clone());
 					noCommonFactor = false;
 				} else {
 					factors.push(f);
@@ -184,8 +183,8 @@ export function expression_lcm_two(exp1, exp2) {
  * @returns {Expression}
  */
 function expression_gcd_two(exp1, exp2) {
-	const a = exp1.expression;
-	const b = exp2.expression;
+	const a = exp1.node;
+	const b = exp2.node;
 	// exponent with numeral power with exponent
 	// exponent with numeral power with product
 	// product with product
@@ -203,13 +202,13 @@ function expression_gcd_two(exp1, exp2) {
 						return exp1._new_exp(new Exponent(a.baseExp.clone(), exp1._new_exp(Numeral.min(a.power, factor.power))));
 					}
 				} else if (factor.toLexicalString() === a.base.toLexicalString()) {
-					return exp1._new_exp(factor.clone());
+					return exp1._new_exp(new Exponent(a.baseExp.clone(), exp1._new_exp(Numeral.min(a.power, 1)))).simplify();
 				}
 			}
 			return exp1._new_exp(new Numeral(1));
 		} else {
 			if (a.base.toLexicalString() == exp2._to_lexical_string()) {
-				return exp2.clone();
+				return exp1._new_exp(new Exponent(a.baseExp.clone(), exp1._new_exp(Numeral.min(a.power, 1)))).simplify();
 			}
 			return exp1._new_exp(new Numeral(1));
 		}
@@ -280,15 +279,15 @@ function expression_gcd_two(exp1, exp2) {
 			for (const factor of a.factors) {
 				if (factor instanceof Exponent && factor.power instanceof Numeral) {
 					if (factor.base.toLexicalString() === b.toLexicalString()) {
-						return exp2.clone();
+						return exp2._new_exp(factor.base.clone());
 					}
 				} else if (factor.toLexicalString() === b.toLexicalString()) {
-					return exp2.clone();
+					return exp2._new_exp(factor.clone());
 				}
 			}
 			return exp1._new_exp(new Numeral(1));
 		}
-	} else if (a instanceof Numeral && b instanceof Product) {
+	} else if ((b instanceof Exponent && b.power instanceof Numeral) || b instanceof Product) {
 		return expression_gcd_two(exp2, exp1);
 	} else {
 		if (exp1._to_lexical_string() === exp2._to_lexical_string()) {

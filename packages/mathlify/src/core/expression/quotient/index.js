@@ -68,6 +68,13 @@ export class Quotient {
 		};
 		this.num.simplify({ product, numeral, sum, quotient, brackets, exponent });
 		this.den.simplify({ product, numeral, sum, quotient, brackets, exponent });
+		if (quotient) {
+			const factor = this.num._gcd(this.den);
+			const num = this.num._divide_by_factor(factor);
+			const den = this.den._divide_by_factor(factor);
+			this.num = num;
+			this.den = den;
+		}
 		return this;
 	}
 

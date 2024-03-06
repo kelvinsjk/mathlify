@@ -13,10 +13,10 @@ export class Fraction {
     static sign(frac: Fraction): number;
     /**
      * (absolute) gcd of fractions
-     * @param {...Fraction} fractions
+     * @param {...(Fraction|number)} fractions
      * @returns {Fraction}
      */
-    static gcd(...fractions: Fraction[]): Fraction;
+    static gcd(...fractions: (Fraction | number)[]): Fraction;
     /**
      * lcm of fractions
      * @param {...(Fraction|number)} fractions

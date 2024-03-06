@@ -18,30 +18,30 @@ export function remove_singletons(exp, options) {
 		quotient: true,
 		...options,
 	};
-	if (sum && exp.expression instanceof Sum) {
-		if (exp.expression.terms.length === 0) {
+	if (sum && exp.node instanceof Sum) {
+		if (exp.node.terms.length === 0) {
 			return new Numeral(0);
-		} else if (exp.expression.terms.length === 1) {
-			return exp.expression.terms[0];
+		} else if (exp.node.terms.length === 1) {
+			return exp.node.terms[0];
 		}
-	} else if (product && exp.expression instanceof Product) {
-		if (exp.expression._factorsExp.length === 0) {
-			return exp.expression.coeff;
-		} else if (exp.expression.coeff.is.zero()) {
+	} else if (product && exp.node instanceof Product) {
+		if (exp.node._factorsExp.length === 0) {
+			return exp.node.coeff;
+		} else if (exp.node.coeff.is.zero()) {
 			return new Numeral(0);
-		} else if (exp.expression._factorsExp.length === 1 && exp.expression.coeff.is.one()) {
-			return exp.expression.factors[0];
+		} else if (exp.node._factorsExp.length === 1 && exp.node.coeff.is.one()) {
+			return exp.node.factors[0];
 		}
-	} else if (quotient && exp.expression instanceof Quotient) {
-		if (exp.expression.num.expression instanceof Numeral && exp.expression.num.expression.number.is.zero()) {
+	} else if (quotient && exp.node instanceof Quotient) {
+		if (exp.node.num.node instanceof Numeral && exp.node.num.node.number.is.zero()) {
 			// zero numerator
 			return new Numeral(0);
-		} else if (exp.expression.den.expression instanceof Numeral && exp.expression.den.expression.number.is.one()) {
+		} else if (exp.node.den.node instanceof Numeral && exp.node.den.node.number.is.one()) {
 			// one denominator
-			return exp.expression.num.expression;
-		} else if (exp.expression.num.expression instanceof Numeral && exp.expression.den.expression instanceof Numeral) {
+			return exp.node.num.node;
+		} else if (exp.node.num.node instanceof Numeral && exp.node.den.node instanceof Numeral) {
 			// both numerator and denominator are numerals: change to fraction
-			return exp.expression.num.expression.divide(exp.expression.den.expression);
+			return exp.node.num.node.divide(exp.node.den.node);
 		}
 	}
 	return undefined;

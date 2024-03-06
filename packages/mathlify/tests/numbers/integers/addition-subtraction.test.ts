@@ -27,21 +27,21 @@ test('add/subtract negative integers', () => {
 	// a + (-b)
 	const twoPlusNegative5 = sumVerbatim(2, ['()', -5]);
 	expect(`${twoPlusNegative5}`).toBe('2 + \\left( - 5 \\right)');
-	twoPlusNegative5._remove_brackets();
+	twoPlusNegative5._remove_brackets_();
 	expect(`${twoPlusNegative5}`).toBe('2 - 5');
 	twoPlusNegative5.simplify();
 	expect(`${twoPlusNegative5}`).toBe('- 3');
 	// (-a) + (-b)
 	const negativeTwoPlusNegative5 = sumVerbatim(['()', -2], ['()', -5]);
 	expect(`${negativeTwoPlusNegative5}`).toBe('\\left( - 2 \\right) + \\left( - 5 \\right)');
-	negativeTwoPlusNegative5._remove_brackets();
+	negativeTwoPlusNegative5._remove_brackets_();
 	expect(`${negativeTwoPlusNegative5}`).toBe('- 2 - 5');
 	negativeTwoPlusNegative5.simplify();
 	expect(`${negativeTwoPlusNegative5}`).toBe('- 7');
 	// a - (-b)
 	const twoMinusNegative5 = sumVerbatim(2, [-1, ['()', -5]]);
 	expect(`${twoMinusNegative5}`).toBe('2 - \\left( - 5 \\right)');
-	twoMinusNegative5._remove_brackets();
+	twoMinusNegative5._remove_brackets_();
 	twoMinusNegative5.simplify({ product: true });
 	expect(`${twoMinusNegative5}`).toBe('2 + 5');
 	twoMinusNegative5.simplify();
@@ -49,7 +49,7 @@ test('add/subtract negative integers', () => {
 	// (-a) - (-b)
 	const negativeTwoMinusNegative5 = sumVerbatim(['()', -2], [-1, ['()', -5]]);
 	expect(`${negativeTwoMinusNegative5}`).toBe('\\left( - 2 \\right) - \\left( - 5 \\right)');
-	negativeTwoMinusNegative5._remove_brackets();
+	negativeTwoMinusNegative5._remove_brackets_();
 	negativeTwoMinusNegative5.simplify({ product: true });
 	expect(`${negativeTwoMinusNegative5}`).toBe('- 2 + 5');
 	negativeTwoMinusNegative5.simplify();

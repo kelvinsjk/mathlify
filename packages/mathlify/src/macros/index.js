@@ -17,8 +17,9 @@ import {
 /** @typedef {[Expression|string, number]} PowerShorthand */
 
 /**
- * creates a fraction as an expression
- * by default, the fraction is simplified
+ * creates a fraction as an expression.
+ * by default, the fraction is simplified.
+ * Note: to work arithmetically, we recommend using the `Fraction` constructor rather than this function (which produces an Expression)
  * @param {number} num - numerator
  * @param {number} [den=1] - denominator. defaults to 1
  * @param {{verbatim?: boolean}} [options] - options. verbatim: if true, do not simplify the fraction.
@@ -114,9 +115,8 @@ export function productVerbatim(...factors) {
 }
 
 /**
- *
  * @param {Expression|string|number|NegativeShorthand|QuotientShorthand|PowerShorthand} exp
- * @returns {Expression}
+ * @returns {Expression} An un-simplified expression wrapped in parentheses
  */
 export function brackets(exp) {
 	return new Expression(new Fn(new Brackets(to_Expression(unpack_shorthand_single(exp)))));
@@ -178,9 +178,9 @@ export function exponent(base, power, options) {
 function unpack_shorthand(...exp) {
 	let e = exp[0];
 	if (Array.isArray(e)) {
-		if (e.length === 3 && e[1] === '/' && typeof e[0] === 'number' && typeof e[2] === 'number') {
+		if (e.length === 3 && e[1] === '/') {
 			// fraction
-			return fraction(e[0], e[2]);
+			return quotient(e[0], e[2]).simplify();
 		} else if (e.length === 2 && e[0] === '()') {
 			// brackets
 			const term = e[1];

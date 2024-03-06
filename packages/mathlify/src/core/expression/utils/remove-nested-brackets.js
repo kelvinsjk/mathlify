@@ -9,30 +9,30 @@ import { Numeral } from '../numeral/index.js';
  * @param {Expression} exp
  */
 export function remove_nested_brackets(exp) {
-	if (exp.expression instanceof Sum) {
-		for (const term of exp.expression._termsExp) {
-			if (term.expression instanceof Fn && term.expression.fn instanceof Brackets) {
-				term.expression = term.expression.fn.expression.expression;
+	if (exp.node instanceof Sum) {
+		for (const term of exp.node._termsExp) {
+			if (term.node instanceof Fn && term.node.fn instanceof Brackets) {
+				term.node = term.node.fn.expression.node;
 			} else {
-				term._remove_brackets();
+				term._remove_brackets_();
 			}
 		}
-	} else if (exp.expression instanceof Product) {
-		for (const factor of exp.expression._factorsExp) {
-			if (factor.expression instanceof Fn && factor.expression.fn instanceof Brackets) {
-				const innerExp = factor.expression.fn.expression.expression;
+	} else if (exp.node instanceof Product) {
+		for (const factor of exp.node._factorsExp) {
+			if (factor.node instanceof Fn && factor.node.fn instanceof Brackets) {
+				const innerExp = factor.node.fn.expression.node;
 				if (
-					exp.expression.coeff.is.negative() &&
+					exp.node.coeff.is.negative() &&
 					((innerExp instanceof Product && innerExp.coeff.is.negative()) ||
 						(innerExp instanceof Numeral && innerExp.is.negative()))
 				) {
-					exp.expression.coeff = exp.expression.coeff.negative();
-					factor.expression = innerExp.negative();
+					exp.node.coeff = exp.node.coeff.negative();
+					factor.node = innerExp.negative();
 				} else {
-					factor.expression = innerExp;
+					factor.node = innerExp;
 				}
 			} else {
-				factor._remove_brackets();
+				factor._remove_brackets_();
 			}
 		}
 	}

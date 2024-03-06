@@ -1,12 +1,11 @@
 /** @typedef {import('../index.js').Expression} Expression */
 /** @typedef {import('../index.js').ExpressionType} ExpressionType */
 /**
- * expands either products, or products within a sum
+ * expands either products, products within a sum/quotient, or exponents with positive integral powers
  * @param {Expression} expression
- * @param {{verbatim?: boolean, numeratorOnly?: boolean}} [options] - default to automatic simplification
- * numeratorOnly: only expands numerator and leaves denominator as is
+ * @param {{verbatim?: boolean, numeratorOnly?: boolean}} [options] - default to automatic simplification after expansion, and expands both numerator and denominator
  */
-export function expand_expression(expression: Expression, options?: {
+export function expand_expression_(expression: Expression, options?: {
     verbatim?: boolean | undefined;
     numeratorOnly?: boolean | undefined;
 } | undefined): void;

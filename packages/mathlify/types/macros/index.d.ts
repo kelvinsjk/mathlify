@@ -3,8 +3,9 @@
 /** @typedef {['()', Expression|number|string|QuotientShorthand|NegativeShorthand]} BracketShorthand */
 /** @typedef {[Expression|string, number]} PowerShorthand */
 /**
- * creates a fraction as an expression
- * by default, the fraction is simplified
+ * creates a fraction as an expression.
+ * by default, the fraction is simplified.
+ * Note: to work arithmetically, we recommend using the `Fraction` constructor rather than this function (which produces an Expression)
  * @param {number} num - numerator
  * @param {number} [den=1] - denominator. defaults to 1
  * @param {{verbatim?: boolean}} [options] - options. verbatim: if true, do not simplify the fraction.
@@ -58,9 +59,8 @@ export function product(...factors: (Expression | number | string | NegativeShor
  */
 export function productVerbatim(...factors: (Expression | number | string | NegativeShorthand | QuotientShorthand | BracketShorthand | PowerShorthand | (Expression | number | string | NegativeShorthand | QuotientShorthand | BracketShorthand | PowerShorthand)[])[]): Expression;
 /**
- *
  * @param {Expression|string|number|NegativeShorthand|QuotientShorthand|PowerShorthand} exp
- * @returns {Expression}
+ * @returns {Expression} An un-simplified expression wrapped in parentheses
  */
 export function brackets(exp: Expression | string | number | NegativeShorthand | QuotientShorthand | PowerShorthand): Expression;
 /**

@@ -17,7 +17,7 @@ import { Product } from '../product/index.js';
  * WARNING: mutates current instance
  */
 export function simplify_exponent(expression, options) {
-	const exp = expression.expression;
+	const exp = expression.node;
 	if (!(exp instanceof Exponent)) return undefined;
 	exp.simplify(options);
 	const { base, power } = exp;

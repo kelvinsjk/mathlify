@@ -1,4 +1,5 @@
-import { sum, product, sumVerbatim, Expression, productVerbatim } from '../../../src/';
+import { sum, product, sumVerbatim } from '../../../src/';
+import { Expression } from '../../../src/core/expression';
 import { test, expect } from 'vitest';
 
 test('combine like terms', () => {
@@ -14,20 +15,20 @@ test('combine like terms', () => {
 	expect(`${q}`).toBe('5x');
 	q = sumVerbatim('x', ['()', negative3x]);
 	expect(`${q}`).toBe('x + \\left( - 3x \\right)');
-	q._remove_brackets();
+	q._remove_brackets_();
 	expect(`${q}`).toBe('x - 3x');
 	q.simplify();
 	expect(`${q}`).toBe('- 2x');
 	q = sumVerbatim('x', [-1, ['()', negative3x]]);
 	expect(`${q}`).toBe('x - \\left( - 3x \\right)');
-	q._remove_brackets().simplify({ product: true });
+	q._remove_brackets_().simplify({ product: true });
 	expect(`${q}`).toBe('x + 3x');
 	q.simplify();
 	expect(`${q}`).toBe('4x');
 
 	q = sumVerbatim([-2, 'x'], [-2, '/', 3], [-1, ['()', negativeX]], [2, '/', 3]);
 	expect(`${q}`).toBe('- 2x - \\frac{2}{3} - \\left( - x \\right) + \\frac{2}{3}');
-	q._remove_brackets().simplify({ product: true });
+	q._remove_brackets_().simplify({ product: true });
 	expect(`${q}`).toBe('- 2x - \\frac{2}{3} + x + \\frac{2}{3}');
 	q.simplify();
 	expect(`${q}`).toBe('- x');
@@ -44,7 +45,7 @@ test('combine like terms: fractional coefficients', () => {
 
 	q = product([1, '/', 2], sum([3, sum([2, 'x'], 1)], [-4, sum('x', [-1, 'y'])]));
 	expect(`${q}`).toBe('\\frac{1}{2}\\left( 3\\left( 2x + 1 \\right) - 4\\left( x - y \\right) \\right)');
-	q.expand();
+	q._expand_();
 	expect(`${q}`).toBe('x + \\frac{3}{2} + 2y');
 });
 
