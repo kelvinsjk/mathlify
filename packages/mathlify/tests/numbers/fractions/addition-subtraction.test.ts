@@ -1,4 +1,4 @@
-import { sum, sumVerbatim, fraction, brackets, product } from '../../../src/';
+import { sumVerbatim, fraction } from '../../../src/';
 import { test, expect } from 'vitest';
 import { Numeral } from '../../../src/core';
 

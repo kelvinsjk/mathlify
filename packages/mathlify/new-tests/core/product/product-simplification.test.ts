@@ -1,4 +1,4 @@
-import { exponent, product, productVerbatim } from '../../../src/';
+import { product, productVerbatim } from '../../../src/';
 import { test, expect } from 'vitest';
 
 test('product constructor and toString method', () => {

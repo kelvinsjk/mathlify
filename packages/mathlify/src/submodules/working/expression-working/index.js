@@ -1,11 +1,7 @@
 import { Expression, Polynomial, Sum, Product } from '../../../core/index.js';
 
 /** @typedef {'aligned'|'single'|'multi'} LineBreakMode */
-/** @typedef {import('../../../macros/index.js').BracketShorthand} BracketShorthand */
-/** @typedef {import('../../../macros/index.js').QuotientShorthand} FractionShorthand */
-/** @typedef {import('../../../core/expression/index.js').SimplifyOptions} SimplifyOptions */
-
-/** @typedef {{hide?: boolean, string?: boolean}} ExpressionWorkingOptions */
+/** @typedef {{hide?: boolean, string?: boolean}} WorkingOptions */
 
 /**
  * ExpressionWorking Class to handle the step-by-step working in manipulating an expression
@@ -42,9 +38,10 @@ export class ExpressionWorking {
 		this.startOnFirstLine = options?.startOnFirstLine || false;
 	}
 
+	/** @typedef {import('../../../macros/index.js').QuotientShorthand} FractionShorthand */
 	/**
 	 * @param {Object.<string, Expression|string|number|FractionShorthand>} scope - variables to be replaced in the expression
-	 * @param {{verbatim?: boolean, hide?: boolean}} [options] - default to automatic simplification
+	 * @param {WorkingOptions & {verbatim?: boolean}} [options] - default to automatic simplification
 	 * @returns {ExpressionWorking}
 	 */
 	subIn(scope, options) {
@@ -52,12 +49,10 @@ export class ExpressionWorking {
 		return addStep(this, options);
 	}
 
-	/**
-	 * @typedef {SimplifyOptions & {hide?: boolean}} WorkingSimplifyOptions
-	 * */
+	/** @typedef {import('../../../core/expression/index.js').SimplifyOptions} SimplifyOptions */
 
 	/**
-	 * @param {WorkingSimplifyOptions} [options] - {brackets?, product?, sum?, quotient?, numeral?, exponent?, hide?}
+	 * @param {SimplifyOptions & WorkingOptions} [options] - {brackets?, product?, sum?, quotient?, numeral?, exponent?, hide?}
 	 * @returns {ExpressionWorking}
 	 * */
 	simplify(options) {
@@ -65,8 +60,9 @@ export class ExpressionWorking {
 		return addStep(this, options);
 	}
 
+	/** @typedef {import('../../../core/expression/index.js').ExpansionOptions} ExpansionOptions */
 	/**
-	 * @param {{verbatim?: boolean, numerator?: boolean, hide?: boolean}} [options] - default to automatic simplification
+	 * @param {WorkingOptions & ExpansionOptions} [options] - default to automatic simplification
 	 * @returns {ExpressionWorking}
 	 * */
 	expand(options) {
@@ -77,29 +73,32 @@ export class ExpressionWorking {
 	factorize = {
 		/**
 		 * factorizes by taking out common factor
-		 * @param {{hide?: boolean}} [options]
+		 * @param {WorkingOptions} [options]
 		 * @returns {ExpressionWorking}
 		 * */
 		commonFactor: (options) => {
+			// take out common factor without further simplification
 			const start = this.expression;
 			this.expression = start.clone().factorize.commonFactor({ verbatim: true });
 			addStep(this, options);
+			// expand inner sums
 			this.expression = this.expression.clone();
 			if (this.expression.node.type !== 'product') return this;
 			const factors = this.expression._getProductTerms()[1];
-			const innerSum = factors.filter((x) => x.node instanceof Sum)[0];
+			const innerSum = factors.filter((x) => x.node.type === 'sum')[0];
 			if (innerSum) {
-				innerSum.expand({ verbatim: true });
+				innerSum._expand_({ verbatim: true });
 				addStep(this, { string: true, ...options });
-				innerSum.expand();
+				innerSum._expand_();
 				addStep(this, options);
 			}
-			addStep(this, options);
+			// simplify inner sums
+			// note we use a workaround by just calling the factorize function without simplification instead of trying to target said inner sum. this should be tested to prevent regression
 			this.expression = start.clone().factorize.commonFactor();
 			return addStep(this, options);
 		},
 		/**
-		 * @param {{hide?: boolean}} [options]
+		 * @param {WorkingOptions} [options]
 		 * @returns {ExpressionWorking}
 		 * */
 		quadratic: (options) => {
@@ -117,7 +116,7 @@ export class ExpressionWorking {
 		},
 		/**
 		 * @param {number[][]} groupedIndices - indices of the groups (eg [[0, 1], [2, 3]] means group first two terms and last two terms)
-		 * @param {{hide?: boolean, negative?: (number|{group: number, rearrange: number[]})[]}} [options] {negative: [1, {group: 3, rearrange: [1,0]}]} means the 2nd and 4th groups will be factorized with an extra negative. The 4th group will also have a reversed order
+		 * @param {WorkingOptions & {negative?: (number|{group: number, rearrange: number[]})[]}} [options] {negative: [1, {group: 3, rearrange: [1,0]}]} means the 2nd and 4th groups will be factorized with an extra negative. The 4th group will also have a reversed order
 		 */
 		byGrouping: (groupedIndices, options) => {
 			// rearrange expression to match the grouped indices
@@ -175,7 +174,7 @@ export class ExpressionWorking {
 
 	/**
 	 * toggle Mixed fractions
-	 * @param {{hide?: boolean}} [options] - options to hide this step
+	 * @param {WorkingOptions} [options] - options to hide this step
 	 * @returns {ExpressionWorking}
 	 */
 	toggleMixedFractions(options) {
@@ -188,7 +187,7 @@ export class ExpressionWorking {
 	/**
 	 * rearrange
 	 * @param {number[]} order - order of the variables. e.g. [2, 0, 1] for c, a, b
-	 * @param {{hide?: boolean}} [options] - options to hide this step
+	 * @param {WorkingOptions} [options] - options to hide this step
 	 * @returns {ExpressionWorking}
 	 */
 	rearrange(order, options) {
@@ -210,7 +209,7 @@ export class ExpressionWorking {
 	}
 
 	/**
-	 * @param {{hide?: boolean, steps?: boolean}} [options]
+	 * @param {WorkingOptions & {steps?: boolean}} [options]
 	 */
 	combineFraction(options) {
 		if (!options?.steps) {
@@ -253,7 +252,7 @@ export class ExpressionWorking {
 
 /**
  * @param {ExpressionWorking} working
- * @param {ExpressionWorkingOptions} [options]
+ * @param {WorkingOptions} [options]
  * @returns {ExpressionWorking}
  */
 function addStep(working, options) {

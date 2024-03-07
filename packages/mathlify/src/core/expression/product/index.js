@@ -43,6 +43,9 @@ export class Product {
 			factors = /** @type {Expression[]}*/ (factors.slice(1));
 		} else {
 			this.coeff = new Numeral(1);
+			// TODO: consider changing
+			// workaround for typing
+			// eslint-disable-next-line
 			factors = /** @type {Expression[]}*/ (factors);
 		}
 		this._factorsExp = factors;
@@ -144,7 +147,6 @@ export class Product {
 			...options,
 		};
 		/** @type {number[]} */
-		const indices = [];
 		for (const factor of this._factorsExp) {
 			factor.simplify({ product, numeral, sum, quotient, exponent, brackets });
 		}

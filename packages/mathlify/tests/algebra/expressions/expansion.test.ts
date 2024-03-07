@@ -1,4 +1,4 @@
-import { sum, product, Expression, productVerbatim } from '../../../src/';
+import { sum, product, productVerbatim } from '../../../src/';
 import { test, expect } from 'vitest';
 
 test('expansion', () => {

@@ -276,7 +276,7 @@ export class Fraction {
 		}
 		let multiple = fs[0];
 		fs.shift();
-		for (const [i, frac] of fs.entries()) {
+		for (const frac of fs) {
 			multiple = Fraction.lcm(multiple, frac);
 		}
 		return multiple;

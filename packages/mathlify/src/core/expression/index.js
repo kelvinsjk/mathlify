@@ -24,6 +24,7 @@ import {
 /** @typedef {import('../../macros/index.js').QuotientShorthand} FractionShorthand */
 /** @typedef {Sum|Product|Quotient|Exponent|Variable|Numeral|Fn} ExpressionType */
 /** @typedef {{brackets?: boolean, product?: boolean, sum?: boolean, quotient?: boolean, numeral?: boolean, exponent?: boolean}} SimplifyOptions */
+/** @typedef {{verbatim?: boolean, numeratorOnly?: boolean}} ExpansionOptions */
 
 /** Expression Class
  * @property {ExpressionType} expression the tree representation of the expression
@@ -106,7 +107,7 @@ export class Expression {
 
 	/**
 	 * expands either products, products within a sum/quotient, or exponents with positive integral powers
-	 * @param {{verbatim?: boolean, numeratorOnly?: boolean}} [options] - default to automatic simplification after expansion, and expands both numerator and denominator
+	 * @param {ExpansionOptions} [options] - default to automatic simplification after expansion, and expands both numerator and denominator
 	 * @returns {Expression}
 	 */
 	expand(options) {
@@ -162,6 +163,17 @@ export class Expression {
 	};
 
 	/**
+	 * subs in variables for other expressions
+	 * @param {Record<string, Expression|string|number|FractionShorthand>} scope - variables to be replaced in the expression
+	 * @param {{verbatim?: boolean}} [options] - default to automatic simplification
+	 * @returns {Expression}
+	 */
+	subIn(scope, options) {
+		return sub_in(this, scope, options);
+	}
+
+	//! Arithmetic methods
+	/**
 	 * negative of expression
 	 * @returns {Expression}
 	 */
@@ -170,15 +182,52 @@ export class Expression {
 		if (exp instanceof Numeral || exp instanceof Product) return new Expression(exp.negative());
 		return new Expression(new Product(-1, this.clone())).expand();
 	}
-
 	/**
-	 * subs in variables for other expressions
-	 * @param {Record<string, Expression|string|number|FractionShorthand>} scope - variables to be replaced in the expression
+	 * sum of two expressions
+	 * @param {number|string|Expression} exp2
 	 * @param {{verbatim?: boolean}} [options] - default to automatic simplification
 	 * @returns {Expression}
 	 */
-	subIn(scope, options) {
-		return sub_in(this, scope, options);
+	plus(exp2, options) {
+		const sum = new Expression(new Sum(this.clone(), to_Expression(exp2).clone()));
+		if (!options?.verbatim) sum.simplify();
+		return sum;
+	}
+	/**
+	 * difference of two expressions
+	 * @param {number|string|Expression} exp2
+	 * @param {{verbatim?: boolean}} [options] - default to automatic simplification
+	 */
+	minus(exp2, options) {
+		const negativeTerm = new Expression(new Product(-1, to_Expression(exp2).clone()));
+		if (!options?.verbatim) negativeTerm.expand();
+		const diff = new Expression(new Sum(this.clone(), negativeTerm));
+		if (!options?.verbatim) diff.simplify();
+		return diff;
+	}
+	/**
+	 * product of two expressions
+	 * @param {number|string|Expression} exp2
+	 * @param {{preMultiply?: boolean, verbatim?: boolean}} [options] - default to multiplying exp2 behind
+	 * @returns {Expression}
+	 */
+	times(exp2, options) {
+		exp2 = to_Expression(exp2).clone();
+		const product = options?.preMultiply
+			? new Expression(new Product(this.clone(), exp2))
+			: new Expression(new Product(exp2, this.clone()));
+		if (!options?.verbatim) product.simplify();
+		return product;
+	}
+	/**
+	 * quotient of two expressions
+	 * @param {number|string|Expression} exp2
+	 * @param {{verbatim?: boolean}} [options] - default to automatic simplification
+	 */
+	divideBy(exp2, options) {
+		const quotient = new Expression(new Quotient(this.clone(), to_Expression(exp2).clone()));
+		if (!options?.verbatim) quotient.simplify();
+		return quotient;
 	}
 
 	//! these methods provide quick access to the underlying expression-subtypes
