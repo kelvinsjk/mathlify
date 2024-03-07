@@ -6,7 +6,7 @@ import { test, expect } from 'vitest';
 test('expression cloning', () => {
 	const x = new Expression('x');
 	const x2 = x.clone();
-	// @ts-ignore
+	// @ts-expect-error name doesn't exist in expression
 	x2.node.name = 'y';
 	expect(`${x}`).toBe('x');
 	expect(`${x2}`).toBe('y');
@@ -148,7 +148,7 @@ test('expansion', () => {
 });
 
 test('simplify exponent', () => {
-	let q = new Expression(
+	const q = new Expression(
 		new Product(
 			2,
 			new Expression('x'),
@@ -194,9 +194,9 @@ test('expression gcd/lcm', () => {
 	const eX = new Expression(new Exponent(new Expression('e'), new Expression('x')));
 	expect(`${Expression.gcd(eX, sixX2YZ2)}`).toBe('1');
 
-	const x = new Expression('x');
 	const x2 = new Expression(new Exponent(new Expression('x'), new Expression(2)));
-	const xHalf = new Expression(new Exponent(new Expression('x'), new Expression(new Numeral(new Fraction(1, 2)))));
+	//const x = new Expression('x');
+	//const xHalf = new Expression(new Exponent(new Expression('x'), new Expression(new Numeral(new Fraction(1, 2)))));
 	const x3 = new Expression(new Exponent(new Expression('x'), new Expression(3)));
 	const w4 = new Expression(new Exponent(new Expression('w'), new Expression(4)));
 	const y = new Expression('y');
@@ -238,7 +238,7 @@ test('expression gcd/lcm', () => {
 });
 
 test('factorize', () => {
-	let exp = new Expression(
+	const exp = new Expression(
 		new Sum(
 			new Expression(new Product(new Expression(3), new Expression('x')).simplify()),
 			new Expression(6),

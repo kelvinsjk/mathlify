@@ -17,11 +17,11 @@ test('macros', () => {
 	expect(`${q}`).toBe('\\frac{\\frac{1}{2}}{x}');
 	q = quotient(['()', [1, '/', 2]], ['()', 'x']);
 	expect(`${q}`).toBe('\\frac{\\frac{1}{2}}{x}');
-	// @ts-expect-error
+	// @ts-expect-error empty brackets
 	expect(() => quotient(['()', []])).toThrow();
-	// @ts-expect-error
+	// @ts-expect-error empty array
 	expect(() => quotient([])).toThrow();
-	// @ts-expect-error
+	// @ts-expect-error empty nested array
 	expect(() => product([[]])).toThrow();
 	q = product([['()', 'x']]);
 	expect(`${q}`).toBe('x');

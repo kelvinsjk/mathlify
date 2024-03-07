@@ -1,4 +1,4 @@
-import { sum, brackets, sumVerbatim, product, productVerbatim } from '../../../src/';
+import { brackets, sumVerbatim, product, productVerbatim } from '../../../src/';
 import { test, expect } from 'vitest';
 
 test('remove brackets during simplify', () => {

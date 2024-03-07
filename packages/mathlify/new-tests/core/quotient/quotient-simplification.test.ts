@@ -1,5 +1,4 @@
-import { e } from 'vitest/dist/reporters-1evA5lom';
-import { sum, product, productVerbatim, quotient } from '../../../src/';
+import { quotient } from '../../../src/';
 import { test, expect } from 'vitest';
 
 test('quotient simplification', () => {

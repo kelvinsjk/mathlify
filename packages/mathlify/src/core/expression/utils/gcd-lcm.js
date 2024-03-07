@@ -253,6 +253,8 @@ function expression_gcd_two(exp1, exp2) {
 			}
 			for (const [key, val] of Object.entries(termMap)) {
 				if (val[2] === undefined) {
+					// no-dynamic-delete
+					// eslint-disable-next-line
 					delete termMap[key];
 				}
 			}

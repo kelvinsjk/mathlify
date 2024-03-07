@@ -13,25 +13,25 @@ export class Polynomial extends GeneralPolynomial {
     /** @returns {Numeral} */
     get leadingCoefficient(): Numeral;
     /**
-     * @param {number|Polynomial} p2
      * @returns {Polynomial}
      */
-    times(p2: number | Polynomial): Polynomial;
+    negative(): Polynomial;
     /**
      * @param {number|Polynomial} p2
      * @returns {Polynomial}
      */
     plus(p2: number | Polynomial): Polynomial;
     /**
-     * @returns {Polynomial}
-     */
-    negative(): Polynomial;
-    /**
      *
      * @param {number|Polynomial} p2
      * @returns
      */
     minus(p2: number | Polynomial): Polynomial;
+    /**
+     * @param {number|Polynomial} p2
+     * @returns {Polynomial}
+     */
+    times(p2: number | Polynomial): Polynomial;
     solve: {
         /**
          * @param {number|Polynomial} [rhs=0]

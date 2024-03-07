@@ -1,4 +1,4 @@
-import { productVerbatim, sum, sumVerbatim } from '../../../src/';
+import { productVerbatim, sum } from '../../../src/';
 import { test, expect } from 'vitest';
 
 test('multiply negative integers', () => {

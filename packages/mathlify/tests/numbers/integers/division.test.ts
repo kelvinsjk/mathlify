@@ -1,4 +1,3 @@
-import { e } from 'vitest/dist/reporters-1evA5lom';
 import { fraction } from '../../../src/';
 import { test, expect } from 'vitest';
 

@@ -1,0 +1,75 @@
+/**
+ * EqnWorking Class to handle the step-by-step working in manipulating an equation
+ */
+export class Equation {
+    /**
+     * Creates an Equation
+     * @param {Expression|number|string} lhs - the initial expression on the left
+     * @param {Expression|number|string} [rhs=0] - the initial expression on the right
+     * @param {{aligned?: boolean}} [options] - aligned: true adds the & before =. Defaults to false
+     */
+    constructor(lhs: Expression | number | string, rhs?: string | number | Expression | undefined, options?: {
+        aligned?: boolean | undefined;
+    } | undefined);
+    /** @type {Expression} the expression on the left*/
+    lhs: Expression;
+    /** @type {Expression} the expression on the right*/
+    rhs: Expression;
+    aligned: boolean;
+    /** @typedef {import('../macros/index.js').QuotientShorthand} FractionShorthand */
+    /**
+     * @param {Object.<string, Expression|string|number|FractionShorthand>} scope - variables to be replaced in the expression
+     * @returns {Equation}
+     */
+    subIn(scope: {
+        [x: string]: Expression | string | number | import("../macros/index.js").QuotientShorthand;
+    }): Equation;
+    /** @typedef {import('../core/expression/index.js').SimplifyOptions} SimplifyOptions */
+    /**
+     * simplifies the equation: warning: mutates current equation
+     * @param {SimplifyOptions} [options] - {brackets?, product?, sum?, quotient?, numeral?, exponent?, hide?}
+     * @returns {this}
+     * */
+    simplify(options?: import("../core/expression/index.js").SimplifyOptions | undefined): this;
+    /** @typedef {import('../core/expression/index.js').ExpansionOptions} ExpansionOptions */
+    /**
+     * @param {ExpansionOptions} [options] - default to automatic simplification
+     * @returns {Equation}
+     * */
+    expand(options?: import("../core/expression/index.js").ExpansionOptions | undefined): Equation;
+    factorize: {
+        /**
+         * factorizes by taking out common factor
+         * @param {{targetRight?: boolean, verbatim?: boolean}} [options] - targets lhs by default
+         * @returns {Equation}
+         * */
+        commonFactor: (options?: {
+            targetRight?: boolean | undefined;
+            verbatim?: boolean | undefined;
+        } | undefined) => Equation;
+        /**
+         * @param {{targetRight?: boolean}} [options] - targets lhs by default
+         * @returns {Equation}
+         * */
+        quadratic: (options?: {
+            targetRight?: boolean | undefined;
+        } | undefined) => Equation;
+    };
+    /**
+     * rearrange
+     * @param {number[]} order - order of the variables. e.g. [2, 0, 1] for c, a, b
+     * @param {{targetRight?: boolean}} [options] - options to hide this step, or to target rhs (defaults to lhf)
+     * @returns {Equation}
+     */
+    rearrange(order: number[], options?: {
+        targetRight?: boolean | undefined;
+    } | undefined): Equation;
+    /**
+     * @return {string}
+     */
+    toString(): string;
+    /** @return {Equation} */
+    clone(): Equation;
+}
+import { Expression } from '../core/index.js';
+//# sourceMappingURL=index.d.ts.map

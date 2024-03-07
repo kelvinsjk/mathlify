@@ -1,8 +1,5 @@
 /** @typedef {'aligned'|'single'|'multi'} LineBreakMode */
-/** @typedef {import('../../../macros/index.js').BracketShorthand} BracketShorthand */
-/** @typedef {import('../../../macros/index.js').QuotientShorthand} FractionShorthand */
-/** @typedef {import('../../../core/expression/index.js').SimplifyOptions} SimplifyOptions */
-/** @typedef {{hide?: boolean, string?: boolean}} ExpressionWorkingOptions */
+/** @typedef {{hide?: boolean, string?: boolean}} WorkingOptions */
 /**
  * ExpressionWorking Class to handle the step-by-step working in manipulating an expression
  */
@@ -34,103 +31,83 @@ export class ExpressionWorking {
      * else: & x \\ &= y \\ &= z ...
      * */
     startOnFirstLine: boolean;
+    /** @typedef {import('../../../macros/index.js').QuotientShorthand} FractionShorthand */
     /**
      * @param {Object.<string, Expression|string|number|FractionShorthand>} scope - variables to be replaced in the expression
-     * @param {{verbatim?: boolean, hide?: boolean}} [options] - default to automatic simplification
+     * @param {WorkingOptions & {verbatim?: boolean}} [options] - default to automatic simplification
      * @returns {ExpressionWorking}
      */
     subIn(scope: {
         [x: string]: Expression | string | number | import("../../../macros/index.js").QuotientShorthand;
-    }, options?: {
+    }, options?: (WorkingOptions & {
         verbatim?: boolean | undefined;
-        hide?: boolean | undefined;
-    } | undefined): ExpressionWorking;
-    /**
-     * @typedef {SimplifyOptions & {hide?: boolean}} WorkingSimplifyOptions
-     * */
-    /**
-     * @param {WorkingSimplifyOptions} [options] - {brackets?, product?, sum?, quotient?, numeral?, exponent?, hide?}
-     * @returns {ExpressionWorking}
-     * */
-    simplify(options?: (import("../../../core/expression/index.js").SimplifyOptions & {
-        hide?: boolean | undefined;
     }) | undefined): ExpressionWorking;
+    /** @typedef {import('../../../core/expression/index.js').SimplifyOptions} SimplifyOptions */
     /**
-     * @param {{verbatim?: boolean, numerator?: boolean, hide?: boolean}} [options] - default to automatic simplification
+     * @param {SimplifyOptions & WorkingOptions} [options] - {brackets?, product?, sum?, quotient?, numeral?, exponent?, hide?}
      * @returns {ExpressionWorking}
      * */
-    expand(options?: {
-        verbatim?: boolean | undefined;
-        numerator?: boolean | undefined;
-        hide?: boolean | undefined;
-    } | undefined): ExpressionWorking;
+    simplify(options?: (import("../../../core/expression/index.js").SimplifyOptions & WorkingOptions) | undefined): ExpressionWorking;
+    /** @typedef {import('../../../core/expression/index.js').ExpansionOptions} ExpansionOptions */
+    /**
+     * @param {WorkingOptions & ExpansionOptions} [options] - default to automatic simplification
+     * @returns {ExpressionWorking}
+     * */
+    expand(options?: (WorkingOptions & import("../../../core/expression/index.js").ExpansionOptions) | undefined): ExpressionWorking;
     factorize: {
         /**
          * factorizes by taking out common factor
-         * @param {{hide?: boolean}} [options]
+         * @param {WorkingOptions} [options]
          * @returns {ExpressionWorking}
          * */
-        commonFactor: (options?: {
-            hide?: boolean | undefined;
-        } | undefined) => ExpressionWorking;
+        commonFactor: (options?: WorkingOptions | undefined) => ExpressionWorking;
         /**
-         * @param {{hide?: boolean}} [options]
+         * @param {WorkingOptions} [options]
          * @returns {ExpressionWorking}
          * */
-        quadratic: (options?: {
-            hide?: boolean | undefined;
-        } | undefined) => ExpressionWorking;
+        quadratic: (options?: WorkingOptions | undefined) => ExpressionWorking;
         /**
          * @param {number[][]} groupedIndices - indices of the groups (eg [[0, 1], [2, 3]] means group first two terms and last two terms)
-         * @param {{hide?: boolean, negative?: (number|{group: number, rearrange: number[]})[]}} [options] {negative: [1, {group: 3, rearrange: [1,0]}]} means the 2nd and 4th groups will be factorized with an extra negative. The 4th group will also have a reversed order
+         * @param {WorkingOptions & {negative?: (number|{group: number, rearrange: number[]})[]}} [options] {negative: [1, {group: 3, rearrange: [1,0]}]} means the 2nd and 4th groups will be factorized with an extra negative. The 4th group will also have a reversed order
          */
-        byGrouping: (groupedIndices: number[][], options?: {
-            hide?: boolean | undefined;
+        byGrouping: (groupedIndices: number[][], options?: (WorkingOptions & {
             negative?: (number | {
                 group: number;
                 rearrange: number[];
             })[] | undefined;
-        } | undefined) => ExpressionWorking;
+        }) | undefined) => ExpressionWorking;
     };
     /**
      * toggle Mixed fractions
-     * @param {{hide?: boolean}} [options] - options to hide this step
+     * @param {WorkingOptions} [options] - options to hide this step
      * @returns {ExpressionWorking}
      */
-    toggleMixedFractions(options?: {
-        hide?: boolean | undefined;
-    } | undefined): ExpressionWorking;
+    toggleMixedFractions(options?: WorkingOptions | undefined): ExpressionWorking;
     /**
      * rearrange
      * @param {number[]} order - order of the variables. e.g. [2, 0, 1] for c, a, b
-     * @param {{hide?: boolean}} [options] - options to hide this step
+     * @param {WorkingOptions} [options] - options to hide this step
      * @returns {ExpressionWorking}
      */
-    rearrange(order: number[], options?: {
-        hide?: boolean | undefined;
-    } | undefined): ExpressionWorking;
+    rearrange(order: number[], options?: WorkingOptions | undefined): ExpressionWorking;
     /**
      * @param {string|Expression} exp
      * @return {ExpressionWorking}
      */
     addCustomStep(exp: string | Expression): ExpressionWorking;
     /**
-     * @param {{hide?: boolean, steps?: boolean}} [options]
+     * @param {WorkingOptions & {steps?: boolean}} [options]
      */
-    combineFraction(options?: {
-        hide?: boolean | undefined;
+    combineFraction(options?: (WorkingOptions & {
         steps?: boolean | undefined;
-    } | undefined): ExpressionWorking;
+    }) | undefined): ExpressionWorking;
     /**
      * @return {string}
      */
     toString(): string;
 }
 export type LineBreakMode = 'aligned' | 'single' | 'multi';
-export type BracketShorthand = import('../../../macros/index.js').BracketShorthand;
-export type FractionShorthand = import('../../../macros/index.js').QuotientShorthand;
-export type SimplifyOptions = import('../../../core/expression/index.js').SimplifyOptions;
-export type ExpressionWorkingOptions = {
+export type WorkingOptions = {
     hide?: boolean;
     string?: boolean;
 };

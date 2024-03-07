@@ -14,6 +14,7 @@ export function unpack_shorthand_single(exp: Expression | number | string | impo
 /** @typedef {import('../../macros/index.js').QuotientShorthand} FractionShorthand */
 /** @typedef {Sum|Product|Quotient|Exponent|Variable|Numeral|Fn} ExpressionType */
 /** @typedef {{brackets?: boolean, product?: boolean, sum?: boolean, quotient?: boolean, numeral?: boolean, exponent?: boolean}} SimplifyOptions */
+/** @typedef {{verbatim?: boolean, numeratorOnly?: boolean}} ExpansionOptions */
 /** Expression Class
  * @property {ExpressionType} expression the tree representation of the expression
  *
@@ -64,13 +65,10 @@ export class Expression {
     simplify(options?: SimplifyOptions | undefined): this;
     /**
      * expands either products, products within a sum/quotient, or exponents with positive integral powers
-     * @param {{verbatim?: boolean, numeratorOnly?: boolean}} [options] - default to automatic simplification after expansion, and expands both numerator and denominator
+     * @param {ExpansionOptions} [options] - default to automatic simplification after expansion, and expands both numerator and denominator
      * @returns {Expression}
      */
-    expand(options?: {
-        verbatim?: boolean | undefined;
-        numeratorOnly?: boolean | undefined;
-    } | undefined): Expression;
+    expand(options?: ExpansionOptions | undefined): Expression;
     /**
      * combines fractions within a Sum, with full simplification
      * @returns {Expression}
@@ -96,17 +94,52 @@ export class Expression {
         } | undefined) => Expression;
     };
     /**
-     * negative of expression
-     * @returns {Expression}
-     */
-    negative(): Expression;
-    /**
      * subs in variables for other expressions
      * @param {Record<string, Expression|string|number|FractionShorthand>} scope - variables to be replaced in the expression
      * @param {{verbatim?: boolean}} [options] - default to automatic simplification
      * @returns {Expression}
      */
     subIn(scope: Record<string, Expression | string | number | import("../../macros/index.js").QuotientShorthand>, options?: {
+        verbatim?: boolean | undefined;
+    } | undefined): Expression;
+    /**
+     * negative of expression
+     * @returns {Expression}
+     */
+    negative(): Expression;
+    /**
+     * sum of two expressions
+     * @param {number|string|Expression} exp2
+     * @param {{verbatim?: boolean}} [options] - default to automatic simplification
+     * @returns {Expression}
+     */
+    plus(exp2: number | string | Expression, options?: {
+        verbatim?: boolean | undefined;
+    } | undefined): Expression;
+    /**
+     * difference of two expressions
+     * @param {number|string|Expression} exp2
+     * @param {{verbatim?: boolean}} [options] - default to automatic simplification
+     */
+    minus(exp2: number | string | Expression, options?: {
+        verbatim?: boolean | undefined;
+    } | undefined): Expression;
+    /**
+     * product of two expressions
+     * @param {number|string|Expression} exp2
+     * @param {{preMultiply?: boolean, verbatim?: boolean}} [options] - default to multiplying exp2 behind
+     * @returns {Expression}
+     */
+    times(exp2: number | string | Expression, options?: {
+        preMultiply?: boolean | undefined;
+        verbatim?: boolean | undefined;
+    } | undefined): Expression;
+    /**
+     * quotient of two expressions
+     * @param {number|string|Expression} exp2
+     * @param {{verbatim?: boolean}} [options] - default to automatic simplification
+     */
+    divideBy(exp2: number | string | Expression, options?: {
         verbatim?: boolean | undefined;
     } | undefined): Expression;
     /** @returns {[Expression, Expression]} */
@@ -220,6 +253,10 @@ export type SimplifyOptions = {
     quotient?: boolean;
     numeral?: boolean;
     exponent?: boolean;
+};
+export type ExpansionOptions = {
+    verbatim?: boolean;
+    numeratorOnly?: boolean;
 };
 import { Fraction } from './numeral/index.js';
 import { Variable } from './variable/index.js';

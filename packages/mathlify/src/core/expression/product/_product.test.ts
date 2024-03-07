@@ -51,4 +51,5 @@ test('product simplification', () => {
 	expect(`${x}`).toBe('x^2yx^{- 1}y^{- 1}');
 	const y = x.simplify();
 	expect(`${x}`).toBe('x');
+	expect(`${y}`).toBe('x');
 });

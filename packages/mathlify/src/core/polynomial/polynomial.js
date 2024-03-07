@@ -25,6 +25,36 @@ export class Polynomial extends GeneralPolynomial {
 		return this.coeffs[this.coeffs.length - 1];
 	}
 
+	//! Arithmetic methods
+	/**
+	 * @returns {Polynomial}
+	 */
+	negative() {
+		return new_poly_from_ascending_coeffs(
+			this.coeffs.map((x) => x.negative()),
+			this.options,
+		);
+	}
+	/**
+	 * @param {number|Polynomial} p2
+	 * @returns {Polynomial}
+	 */
+	plus(p2) {
+		const poly2 = typeof p2 === 'number' ? new Polynomial([new Numeral(p2)], this.options) : p2;
+		if (this.variable !== poly2.variable) throw new Error('variables do not match');
+		let coeffs = pad_zeros(this.coeffs, poly2.degree + 1);
+		coeffs = coeffs.map((x, i) => x.plus(poly2.coeffs[i] ?? new Numeral(0)));
+		return new_poly_from_ascending_coeffs(coeffs, this.options);
+	}
+	/**
+	 *
+	 * @param {number|Polynomial} p2
+	 * @returns
+	 */
+	minus(p2) {
+		p2 = typeof p2 === 'number' ? new Polynomial([new Numeral(p2)], this.options) : p2;
+		return this.plus(p2.negative());
+	}
 	/**
 	 * @param {number|Polynomial} p2
 	 * @returns {Polynomial}
@@ -42,38 +72,6 @@ export class Polynomial extends GeneralPolynomial {
 		return new_poly_from_ascending_coeffs(coeffs, this.options);
 	}
 
-	/**
-	 * @param {number|Polynomial} p2
-	 * @returns {Polynomial}
-	 */
-	plus(p2) {
-		const poly2 = typeof p2 === 'number' ? new Polynomial([new Numeral(p2)], this.options) : p2;
-		if (this.variable !== poly2.variable) throw new Error('variables do not match');
-		let coeffs = pad_zeros(this.coeffs, poly2.degree + 1);
-		coeffs = coeffs.map((x, i) => x.plus(poly2.coeffs[i] ?? new Numeral(0)));
-		return new_poly_from_ascending_coeffs(coeffs, this.options);
-	}
-
-	/**
-	 * @returns {Polynomial}
-	 */
-	negative() {
-		return new_poly_from_ascending_coeffs(
-			this.coeffs.map((x) => x.negative()),
-			this.options,
-		);
-	}
-
-	/**
-	 *
-	 * @param {number|Polynomial} p2
-	 * @returns
-	 */
-	minus(p2) {
-		p2 = typeof p2 === 'number' ? new Polynomial([new Numeral(p2)], this.options) : p2;
-		return this.plus(p2.negative());
-	}
-
 	solve = {
 		/**
 		 * @param {number|Polynomial} [rhs=0]
@@ -88,11 +86,10 @@ export class Polynomial extends GeneralPolynomial {
 		/**
 		 *
 		 * @param {number|Polynomial} [rhs=0]
-		 * @param {*} [options]
-		 * @returns {[Expression, Expression, 'rational']}
-		 * such that either root1 = 0 or root1 \leq root2
+		 * @returns {[Expression, Expression, 'rational']} such that either root1 = 0 or root1 \leq root2
+		 * TODO: allow options to modify output types
 		 */
-		quadratic: (rhs = 0, options) => {
+		quadratic: (rhs = 0) => {
 			const lhs = this.minus(rhs);
 			const discriminant = lhs.quadraticDiscriminant()._getNumeral();
 			if (discriminant.is.negative()) throw new Error(`Complex solutions not yet supported`);

@@ -68,7 +68,9 @@ export class GeneralPolynomial extends Expression {
 			// there might be only 1 term so expression is not a sum
 			try {
 				this._getSumTerms().reverse();
-			} catch {}
+			} catch {
+				// not a sum: so rearranging terms unnecessary
+			}
 		}
 		this._ascending = asc;
 	}

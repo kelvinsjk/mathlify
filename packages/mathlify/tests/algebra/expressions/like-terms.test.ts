@@ -1,10 +1,10 @@
 import { sum, product, sumVerbatim } from '../../../src/';
-import { Expression } from '../../../src/core/expression';
+//import { Expression } from '../../../src/core/expression';
 import { test, expect } from 'vitest';
 
 test('combine like terms', () => {
 	const negative3x = product(-3, 'x');
-	const x = new Expression('x');
+	//const x = new Expression('x');
 	const negativeX = product(-1, 'x');
 
 	let q = sum([2, 'x'], [3, 'x']);
