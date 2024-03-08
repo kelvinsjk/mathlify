@@ -37,6 +37,12 @@ export class Fn {
     }, options: {
         verbatim: boolean;
     }): Fn;
+    /**
+     *
+     * @param {string} variable
+     * @returns {boolean}
+     */
+    contains(variable: string): boolean;
 }
 export type Expression = import('../index.js').Expression;
 import { Brackets } from './brackets/index.js';

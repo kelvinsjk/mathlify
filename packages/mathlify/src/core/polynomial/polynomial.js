@@ -7,17 +7,20 @@ export class Polynomial extends GeneralPolynomial {
 	coeffs;
 
 	/**
-	 * @param {Numeral[]} coeffs
+	 * @param {(Numeral|Expression|number)[]} coeffs
 	 * @param { {ascending?: boolean, variable?: string} } [options] - defaults to ascending polynomial with variable 'x'
 	 */
 	constructor(coeffs, options) {
-		super(coeffs, options);
-		if (!options?.ascending) coeffs.reverse();
+		const coeffsNumeral = coeffs.map((x) =>
+			x instanceof Expression ? x._getNumeral() : typeof x === 'number' ? new Numeral(x) : x,
+		);
+		super(coeffsNumeral, options);
+		if (!options?.ascending) coeffsNumeral.reverse();
 		// remove trailing zeros
-		while (coeffs.length > 1 && coeffs[coeffs.length - 1].is.zero()) {
-			coeffs.pop();
+		while (coeffsNumeral.length > 1 && coeffsNumeral[coeffsNumeral.length - 1].is.zero()) {
+			coeffsNumeral.pop();
 		}
-		this.coeffs = coeffs;
+		this.coeffs = coeffsNumeral;
 	}
 
 	/** @returns {Numeral} */
@@ -56,11 +59,11 @@ export class Polynomial extends GeneralPolynomial {
 		return this.plus(p2.negative());
 	}
 	/**
-	 * @param {number|Polynomial} p2
+	 * @param {number|Polynomial|Expression} p2 - Expression must be a numeral
 	 * @returns {Polynomial}
 	 */
 	times(p2) {
-		const poly2 = typeof p2 === 'number' ? new Polynomial([new Numeral(p2)], this.options) : p2;
+		const poly2 = p2 instanceof Polynomial ? p2 : new Polynomial([p2], this.options);
 		if (this.variable !== poly2.variable) throw new Error('variables do not match');
 		const degree = this.degree + poly2.degree;
 		const coeffs = create_zero_array(degree + 1);
@@ -74,11 +77,15 @@ export class Polynomial extends GeneralPolynomial {
 
 	solve = {
 		/**
-		 * @param {number|Polynomial} [rhs=0]
+		 * @param {number|Polynomial|Expression} [rhs=0] - if in Expression type, only support Numerals
 		 * @returns {Expression}
 		 */
 		linear: (rhs = 0) => {
-			const lhs = this.minus(rhs);
+			const rhsCoerced =
+				rhs instanceof Expression && !(rhs instanceof Polynomial)
+					? new Polynomial([rhs._getNumeral()], this.options)
+					: rhs;
+			const lhs = this.minus(rhsCoerced);
 			if (lhs.degree !== 1) throw new Error(`Nonlinear polynomial ${this}=${rhs} received`);
 			const [b, a] = lhs.coeffs;
 			return new Expression(b.negative().divide(a));

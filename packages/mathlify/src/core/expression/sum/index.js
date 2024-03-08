@@ -210,6 +210,14 @@ export class Sum {
 	}
 
 	/**
+	 * @param {string} variable
+	 * @returns {boolean}
+	 */
+	contains(variable) {
+		return this._termsExp.some((factor) => factor.contains(variable));
+	}
+
+	/**
 	 * exposes the factors underneath the expression wrapper
 	 * @returns {ExpressionType[]}
 	 */

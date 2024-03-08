@@ -61,6 +61,11 @@ export class Quotient {
     }, options: {
         verbatim: boolean;
     }): Quotient;
+    /**
+     * @param {string} variable
+     * @returns {boolean}
+     */
+    contains(variable: string): boolean;
 }
 export type Expression = import('../index.js').Expression;
 export type Numeral = import('../numeral/index.js').Numeral;

@@ -55,8 +55,8 @@ export function denominator_lcm(...expressions) {
 export function expression_lcm_two(exp1, exp2) {
 	const a = exp1.node;
 	const b = exp2.node;
-	if (a instanceof Product) {
-		if (b instanceof Product) {
+	if (a.type === 'product') {
+		if (b.type === 'product') {
 			// lexical string: {power, expression}
 			/** @type {Object.<string,{power: Numeral, expression: Expression}>} */
 			const termMap = {};
@@ -64,7 +64,7 @@ export function expression_lcm_two(exp1, exp2) {
 			const orderedKeys = [];
 			// loop through a
 			for (const factor of a.factors) {
-				if (factor instanceof Exponent && factor.power instanceof Numeral) {
+				if (factor.type === 'exponent' && factor.power.type === 'numeral') {
 					const key = factor.base.toLexicalString();
 					orderedKeys.push(key);
 					termMap[key] = { power: factor.power, expression: factor.baseExp.clone() };
@@ -135,6 +135,7 @@ export function expression_lcm_two(exp1, exp2) {
 					factors.push(new Exponent(exp1._new_exp(f.base), exp1._new_exp(Numeral.max(f.power, 1))));
 					noCommonFactor = false;
 				} else if (f.toLexicalString() === b.toLexicalString()) {
+					factors.push(f);
 					noCommonFactor = false;
 				} else {
 					factors.push(f);

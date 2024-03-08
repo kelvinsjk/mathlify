@@ -89,4 +89,13 @@ export class Exponent {
 	subIn(scope, options) {
 		return new Exponent(this.baseExp.subIn(scope, options), this.powerExp.subIn(scope, options));
 	}
+
+	/**
+	 *
+	 * @param {string} variable
+	 * @returns {boolean}
+	 */
+	contains(variable) {
+		return this.baseExp.contains(variable) || this.powerExp.contains(variable);
+	}
 }

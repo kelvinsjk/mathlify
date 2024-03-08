@@ -75,6 +75,11 @@ export class Sum {
      */
     rearrange(order: number[]): this;
     /**
+     * @param {string} variable
+     * @returns {boolean}
+     */
+    contains(variable: string): boolean;
+    /**
      * exposes the factors underneath the expression wrapper
      * @returns {ExpressionType[]}
      */

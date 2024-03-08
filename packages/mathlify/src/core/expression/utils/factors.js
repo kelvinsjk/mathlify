@@ -14,9 +14,9 @@ import { Exponent } from '../exponent/index.js';
  * @returns {Product} - quotient as simplified product
  */
 export function divide_by_factor(expression, divisor) {
-	if (expression.node instanceof Numeral) {
-		// assumes that divisor is a numeral
-		return new Product(expression.node.divide(/** @type {Numeral} */ (divisor)));
+	if (expression.node.type === 'numeral') {
+		if (divisor.type !== 'numeral') throw new TypeError('numeral can only be divided by numeral');
+		return new Product(expression.node.divide(divisor));
 	}
 	const expressionProduct = expression.node instanceof Product ? expression.node : new Product(expression);
 	if (divisor instanceof Numeral) {

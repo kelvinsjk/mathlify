@@ -222,7 +222,7 @@ export class ExpressionWorking {
 		addStep(this, options);
 		this.expression = this.expression.clone().expand({ numeratorOnly: true, verbatim: true });
 		addStep(this, options);
-		this.expression = this.expression.clone().simplify({ sum: true });
+		this.expression = this.expression.clone().simplify({ sum: true, product: true });
 		addStep(this, options);
 		this.expression = this.expression.clone()._remove_common_factors_();
 		return addStep(this, options);

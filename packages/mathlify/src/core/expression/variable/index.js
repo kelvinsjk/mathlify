@@ -32,4 +32,12 @@ export class Variable {
 	clone() {
 		return new Variable(this.name);
 	}
+
+	/**
+	 * @param {string} variable
+	 * @returns {boolean}
+	 */
+	contains(variable) {
+		return this.name === variable;
+	}
 }

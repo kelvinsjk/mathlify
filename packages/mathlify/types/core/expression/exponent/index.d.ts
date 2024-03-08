@@ -54,6 +54,12 @@ export class Exponent {
     }, options: {
         verbatim: boolean;
     }): Exponent;
+    /**
+     *
+     * @param {string} variable
+     * @returns {boolean}
+     */
+    contains(variable: string): boolean;
 }
 export type Expression = import('../index.js').Expression;
 export type Fraction = import('../numeral/fraction/index.js').Fraction;

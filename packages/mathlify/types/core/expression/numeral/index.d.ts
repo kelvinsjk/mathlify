@@ -119,6 +119,11 @@ export class Numeral {
          * @returns {boolean} */
         equal: (x: number | Numeral | Fraction) => boolean;
     };
+    /**
+     * numerals do not contain any variables
+     * @returns {false}
+     */
+    contains(): false;
     /** @returns {number} */
     valueOf(): number;
 }

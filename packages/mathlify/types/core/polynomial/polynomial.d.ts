@@ -1,10 +1,10 @@
 /** The Polynomial class represents single-variable polynomials over the rationals (support for floats to be added in the future using the numeral class) */
 export class Polynomial extends GeneralPolynomial {
     /**
-     * @param {Numeral[]} coeffs
+     * @param {(Numeral|Expression|number)[]} coeffs
      * @param { {ascending?: boolean, variable?: string} } [options] - defaults to ascending polynomial with variable 'x'
      */
-    constructor(coeffs: Numeral[], options?: {
+    constructor(coeffs: (Numeral | Expression | number)[], options?: {
         ascending?: boolean | undefined;
         variable?: string | undefined;
     } | undefined);
@@ -28,24 +28,23 @@ export class Polynomial extends GeneralPolynomial {
      */
     minus(p2: number | Polynomial): Polynomial;
     /**
-     * @param {number|Polynomial} p2
+     * @param {number|Polynomial|Expression} p2 - Expression must be a numeral
      * @returns {Polynomial}
      */
-    times(p2: number | Polynomial): Polynomial;
+    times(p2: number | Polynomial | Expression): Polynomial;
     solve: {
         /**
-         * @param {number|Polynomial} [rhs=0]
+         * @param {number|Polynomial|Expression} [rhs=0] - if in Expression type, only support Numerals
          * @returns {Expression}
          */
-        linear: (rhs?: number | Polynomial | undefined) => Expression;
+        linear: (rhs?: number | Expression | Polynomial | undefined) => Expression;
         /**
          *
          * @param {number|Polynomial} [rhs=0]
-         * @param {*} [options]
-         * @returns {[Expression, Expression, 'rational']}
-         * such that either root1 = 0 or root1 \leq root2
+         * @returns {[Expression, Expression, 'rational']} such that either root1 = 0 or root1 \leq root2
+         * TODO: allow options to modify output types
          */
-        quadratic: (rhs?: number | Polynomial | undefined, options?: any) => [Expression, Expression, 'rational'];
+        quadratic: (rhs?: number | Polynomial | undefined) => [Expression, Expression, 'rational'];
     };
     /**
      * @returns {Polynomial}
