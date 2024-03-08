@@ -172,6 +172,14 @@ export class Expression {
 		return sub_in(this, scope, options);
 	}
 
+	/**
+	 * @param {string|Variable} variable
+	 * @returns {boolean} whether the expression contains the variable
+	 */
+	contains(variable) {
+		return this.node.contains(typeof variable === 'string' ? variable : variable.name);
+	}
+
 	//! Arithmetic methods
 	/**
 	 * negative of expression

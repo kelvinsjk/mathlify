@@ -22,5 +22,10 @@ export class Variable {
      * @returns {Variable}
      */
     clone(): Variable;
+    /**
+     * @param {string} variable
+     * @returns {boolean}
+     */
+    contains(variable: string): boolean;
 }
 //# sourceMappingURL=index.d.ts.map

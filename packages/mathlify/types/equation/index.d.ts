@@ -1,3 +1,4 @@
+/** @typedef {import('../core/index.js').Expression} Expression */
 /**
  * EqnWorking Class to handle the step-by-step working in manipulating an equation
  */
@@ -8,7 +9,7 @@ export class Equation {
      * @param {Expression|number|string} [rhs=0] - the initial expression on the right
      * @param {{aligned?: boolean}} [options] - aligned: true adds the & before =. Defaults to false
      */
-    constructor(lhs: Expression | number | string, rhs?: string | number | Expression | undefined, options?: {
+    constructor(lhs: Expression | number | string, rhs?: string | number | import("../core/index.js").Expression | undefined, options?: {
         aligned?: boolean | undefined;
     } | undefined);
     /** @type {Expression} the expression on the left*/
@@ -71,5 +72,5 @@ export class Equation {
     /** @return {Equation} */
     clone(): Equation;
 }
-import { Expression } from '../core/index.js';
+export type Expression = import('../core/index.js').Expression;
 //# sourceMappingURL=index.d.ts.map

@@ -82,6 +82,11 @@ export class Product {
         verbatim: boolean;
     }): Product;
     /**
+     * @param {string} variable
+     * @returns {boolean}
+     */
+    contains(variable: string): boolean;
+    /**
      * exposes the factors underneath the expression wrapper
      * @returns {ExpressionType[]}
      */

@@ -1,7 +1,5 @@
-import { to_Expression } from '../core/expression/index.js';
+import { to_Expression, Expression, Product } from '../core/expression/index.js';
 import { Polynomial } from '../core/index.js';
-
-/** @typedef {import('../core/index.js').Expression} Expression */
 
 // TODO: refactor target left/right
 
@@ -111,26 +109,74 @@ export class Equation {
 		}
 	}
 
-	// TODO: combine Fractions
-	// /**
-	//  * @param {{hide?: boolean, steps?: boolean}} [options]
-	//  */
-	// combineFraction(options) {
-	// 	if (!options?.steps) {
-	// 		this.expression = this.expression.clone().combineFraction();
-	// 		return addStep(this, options);
-	// 	}
-	// 	this.expression = this.expression.clone()._common_denominator_();
-	// 	addStep(this, options);
-	// 	this.expression = this.expression.clone()._combine_fraction_({ verbatim: true });
-	// 	addStep(this, options);
-	// 	this.expression = this.expression.clone().expand({ numeratorOnly: true, verbatim: true });
-	// 	addStep(this, options);
-	// 	this.expression = this.expression.clone().simplify({ sum: true });
-	// 	addStep(this, options);
-	// 	this.expression = this.expression.clone()._remove_common_factors_();
-	// 	return addStep(this, options);
-	// }
+	/**
+	 * @returns {Equation} - the equation after combining fractions on both sides
+	 */
+	combineFraction() {
+		return new Equation(this.lhs.clone().combineFraction(), this.rhs.clone().combineFraction());
+	}
+
+	/**
+	 * @returns {Equation}
+	 */
+	_common_denominator() {
+		return new Equation(this.lhs.clone()._common_denominator_(), this.rhs.clone()._common_denominator_());
+	}
+
+	/**
+	 * @param {{verbatim?: boolean}} [options] - {{verbatim: true}} to not simplify after combination
+	 * @returns {Equation}
+	 */
+	_combine_fraction(options) {
+		return new Equation(this.lhs.clone()._combine_fraction_(options), this.rhs.clone()._combine_fraction_(options));
+	}
+
+	/**
+	 * @returns {Equation}
+	 */
+	_remove_common_factors() {
+		return new Equation(this.lhs.clone()._remove_common_factors_(), this.rhs.clone()._remove_common_factors_());
+	}
+
+	/**
+	 * @param {{verbatim?: boolean}} [options] - {{verbatim: true}} to not simplify after combination
+	 * @returns {Equation}
+	 */
+	crossMultiply(options) {
+		const leftNum =
+			this.lhs.node.type === 'quotient'
+				? this.lhs._getQuotientTerms()[0].clone()
+				: this.lhs.node.type === 'numeral'
+					? new Expression(this.lhs._getNumeral().number.num)
+					: this.lhs.clone();
+		const leftDen =
+			this.lhs.node.type === 'quotient'
+				? this.lhs._getQuotientTerms()[1].clone()
+				: this.lhs.node.type === 'numeral'
+					? this.lhs._getNumeral().number.den
+					: 1;
+		const rightNum =
+			this.rhs.node.type === 'quotient'
+				? this.rhs._getQuotientTerms()[0].clone()
+				: this.rhs.node.type === 'numeral'
+					? new Expression(this.rhs._getNumeral().number.num)
+					: this.rhs.clone();
+		const rightDen =
+			this.rhs.node.type === 'quotient'
+				? this.rhs._getQuotientTerms()[1]
+				: this.rhs.node.type === 'numeral'
+					? this.rhs._getNumeral().number.den
+					: 1;
+		/** @type {[number|Expression, Expression]|Expression[]} */
+		const lhsArgs =
+			typeof rightDen === 'number' || rightDen.node.type === 'numeral' ? [rightDen, leftNum] : [leftNum, rightDen];
+		/** @type {[number|Expression, Expression]|Expression[]} */
+		const rhsArgs =
+			typeof leftDen === 'number' || leftDen.node.type === 'numeral' ? [leftDen, rightNum] : [rightNum, leftDen];
+		const eqn = new Equation(new Expression(new Product(...lhsArgs)), new Expression(new Product(...rhsArgs)));
+		if (!options?.verbatim) eqn.simplify();
+		return eqn;
+	}
 
 	/**
 	 * @return {string}

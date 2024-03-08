@@ -23,7 +23,7 @@ export class Product {
 	_factorsExp;
 	/**
 	 * Creates a Product
-	 * @param {Expression[]|[number|Numeral, ...Expression[]]} factors
+	 * @param {Expression[]|[number|Numeral|Expression, ...Expression[]]} factors
 	 */
 	constructor(...factors) {
 		if (factors.length === 0) {
@@ -275,6 +275,14 @@ export class Product {
 	subIn(scope, options) {
 		const factors = this._factorsExp.map((factor) => factor.subIn(scope, options));
 		return new Product(this.coeff, ...factors);
+	}
+
+	/**
+	 * @param {string} variable
+	 * @returns {boolean}
+	 */
+	contains(variable) {
+		return this._factorsExp.some((factor) => factor.contains(variable));
 	}
 
 	////! getters

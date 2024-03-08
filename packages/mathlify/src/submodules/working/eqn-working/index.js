@@ -1,10 +1,10 @@
-import { to_Expression } from '../../../core/expression/index.js';
-import { Polynomial } from '../../../core/index.js';
+import { Product, Quotient, to_Expression } from '../../../core/expression/index.js';
+import { Polynomial, Expression, Sum } from '../../../core/index.js';
 import { Equation } from '../../../equation/index.js';
 
 // TODO: refactor target left/right
+// TODO: drop repeated lhs
 
-/** @typedef {import('../../../core/index.js').Expression} Expression */
 /** @typedef {{hide?: boolean, string?: boolean}} WorkingOptions */
 
 /**
@@ -142,45 +142,177 @@ export class EquationWorking {
 	}
 
 	/**
+	 * isolate variable
+	 * @param {string} [variable='x'] - defaults to 'x'
+	 * @param {WorkingOptions & { steps?: boolean; targetRight?: boolean}} [options] - options to hide this step, or to target rhs (defaults to lhf)
+	 * @returns {EquationWorking}
+	 */
+	isolate(variable = 'x', options) {
+		// TODO: handle target. For now always move lhs terms to rhs
+		// TODO: move terms from rhs to lhs
+		// TODO handle other types other than sums
+		/** @type {Expression[]} */
+		const lhsTermsToMove = [];
+		/** @type {Expression[]} */
+		const lhsTermsToKeep = [];
+		/** @type {Expression[]} */
+		const rhsTermsToMove = [];
+		/** @type {Expression[]} */
+		const rhsTermsToKeep = [];
+		if (this.eqn.lhs.node.type === 'sum') {
+			for (const term of this.eqn.lhs._getSumTerms()) {
+				if (term.contains(variable)) {
+					lhsTermsToKeep.push(term.clone());
+				} else {
+					lhsTermsToMove.push(term.negative());
+				}
+			}
+		} else {
+			if (this.eqn.lhs.contains(variable)) {
+				lhsTermsToKeep.push(this.eqn.lhs.clone());
+			} else {
+				lhsTermsToMove.push(this.eqn.lhs.negative());
+			}
+		}
+		if (this.eqn.rhs.node.type === 'sum') {
+			for (const term of this.eqn.rhs._getSumTerms()) {
+				if (term.contains(variable)) {
+					rhsTermsToMove.push(term.negative());
+				} else {
+					rhsTermsToKeep.push(term.clone());
+				}
+			}
+		} else {
+			if (this.eqn.rhs.contains(variable)) {
+				rhsTermsToMove.push(this.eqn.rhs.negative());
+			} else {
+				rhsTermsToKeep.push(this.eqn.rhs.clone());
+			}
+		}
+		const lhs = new Expression(new Sum(...lhsTermsToKeep, ...rhsTermsToMove));
+		const rhs = new Expression(new Sum(...rhsTermsToKeep, ...lhsTermsToMove));
+		if (options?.steps) {
+			this.eqn = new Equation(lhs.clone(), rhs.clone());
+			addStep(this, options);
+		}
+		this.eqn = new Equation(lhs.simplify(), rhs.simplify());
+		return addStep(this, options);
+	}
+
+	/**
+	 * make subject from product
+	 * Experimental API
+	 * @param {string} [variable='x'] - defaults to 'x'
+	 * @param {WorkingOptions & { steps?: 'fraction'|'divide'|'postMultiply'|'preMultiply'; targetRight?: boolean}} [options] - options to hide this step, or to target rhs (defaults to lhf)
+	 * @returns {EquationWorking}
+	 */
+	_makeSubjectFromProduct(variable = 'x', options) {
+		// TODO: handle target. For now always move lhs terms to rhs
+		// TODO: move terms from rhs to lhs
+		// TODO handle other types other than products
+		if (this.eqn.lhs.node.type !== 'product') return this;
+		/** @type {Expression[]} */
+		const factorsToMove = [];
+		const [coeff, factors] = this.eqn.lhs._getProductTerms();
+		for (const factor of factors) {
+			if (!factor.contains(variable)) {
+				factorsToMove.push(factor);
+			}
+		}
+		const lhs = new Expression(variable);
+		const den = new Expression(new Product(coeff, ...factorsToMove)).simplify();
+		const rhs = new Expression(new Quotient(this.eqn.rhs, den));
+		if (options?.steps && !(den.node.type === 'numeral' && den._getNumeral().is.one())) {
+			// given kx = a, we can either present
+			// x = a/k as a fraction, or
+			// x = a \div k, or
+			// x = a \times kinv or
+			// x = kinv (a)
+			if (options.steps === 'fraction') {
+				this.eqn = new Equation(lhs, rhs.clone());
+				addStep(this, options);
+			} else if (options.steps === 'divide') {
+				this.addCustomStep(variable, `${this.eqn.rhs} \\div ${den}`);
+			} else if (options.steps === 'postMultiply') {
+				// only works for numeral at this moment
+				const reciprocal = den._getNumeral().reciprocal();
+				this.addCustomStep(variable, `${this.eqn.rhs} \\times ${reciprocal}`);
+			} else {
+				// only works for numeral at this moment
+				const reciprocal = den._getNumeral().reciprocal();
+				const rhs = new Expression(new Product(reciprocal, this.eqn.rhs));
+				this.eqn = new Equation(lhs, rhs);
+				addStep(this, options);
+			}
+		}
+		this.eqn = new Equation(lhs, rhs.simplify());
+		return addStep(this, options);
+	}
+
+	/**
 	 * @param {Equation|Expression|string|number} lhs
 	 * @param {Expression|string|number} [rhs] - defaults to original rhs
 	 * @return {EquationWorking}
 	 */
 	addCustomStep(lhs, rhs) {
+		if (typeof lhs === 'string' || typeof lhs === 'number') {
+			this.eqns.push([lhs.toString(), (rhs ?? this.eqn.rhs).toString()]);
+			return this;
+		}
 		this.eqn =
 			lhs instanceof Equation ? lhs : new Equation(to_Expression(lhs), rhs ? to_Expression(rhs) : this.eqn.rhs);
 		return addStep(this);
 	}
 
-	// TODO: combine Fractions
-	// /**
-	//  * @param {{hide?: boolean, steps?: boolean}} [options]
-	//  */
-	// combineFraction(options) {
-	// 	if (!options?.steps) {
-	// 		this.expression = this.expression.clone().combineFraction();
-	// 		return addStep(this, options);
-	// 	}
-	// 	this.expression = this.expression.clone()._common_denominator_();
-	// 	addStep(this, options);
-	// 	this.expression = this.expression.clone()._combine_fraction_({ verbatim: true });
-	// 	addStep(this, options);
-	// 	this.expression = this.expression.clone().expand({ numeratorOnly: true, verbatim: true });
-	// 	addStep(this, options);
-	// 	this.expression = this.expression.clone().simplify({ sum: true });
-	// 	addStep(this, options);
-	// 	this.expression = this.expression.clone()._remove_common_factors_();
-	// 	return addStep(this, options);
-	// }
+	/**
+	 * @param {WorkingOptions & {steps?: boolean}} [options]
+	 * @returns {EquationWorking}
+	 */
+	combineFraction(options) {
+		if (!options?.steps) {
+			this.eqn = this.eqn.combineFraction();
+			return addStep(this, options);
+		}
+		this.eqn = this.eqn._common_denominator();
+		addStep(this, options);
+		this.eqn = this.eqn._combine_fraction({ verbatim: true });
+		addStep(this, options);
+		this.eqn = this.eqn.expand({ numeratorOnly: true, verbatim: true });
+		addStep(this, options);
+		this.eqn = this.eqn.clone().simplify({ sum: true });
+		addStep(this, options);
+		this.eqn = this.eqn._remove_common_factors();
+		return addStep(this, options);
+	}
+
+	/**
+	 * @param {WorkingOptions & {steps: boolean}} [options] - if {steps: true}, show steps of simplifying and expanding
+	 * @returns {EquationWorking}
+	 */
+	crossMultiply(options) {
+		//TODO: handle expansion afterwards?
+		this.eqn = this.eqn.crossMultiply({ verbatim: options?.steps });
+		addStep(this, options);
+		if (!options?.steps) return this;
+		this.eqn = this.eqn.clone().simplify();
+		addStep(this, options);
+		this.eqn = this.eqn.expand();
+		return addStep(this, options);
+	}
 
 	/**
 	 * @return {string}
 	 */
 	toString() {
 		const eq = this.aligned ? ' &= ' : ' = ';
-		return this.eqns.reduce((acc, curr) => {
-			return acc + `\n\t\\\\ ${curr[0]}${eq}${curr[1]}`;
-		}, '');
+		let str = `${this.eqns[0][0]}${eq}${this.eqns[0][1]}`;
+		let prevLHS = this.eqns[0][0].toString();
+		for (const [lhs, rhs] of this.eqns.slice(1)) {
+			const lhsString = this.aligned && lhs.toString() === prevLHS ? '' : lhs.toString();
+			str += `\n\t\\\\ ${lhsString}${eq}${rhs}`;
+			prevLHS = lhs.toString();
+		}
+		return str;
 	}
 }
 
@@ -193,7 +325,7 @@ function addStep(working, options) {
 	const [prevLeft, prevRight] = working.eqns[working.eqns.length - 1];
 	const lhs = working.eqn.lhs;
 	const rhs = working.eqn.rhs;
-	if (!options?.hide && `${prevLeft}` !== `${lhs}` && `${prevRight}` !== `${rhs}`) {
+	if (!options?.hide && (`${prevLeft}` !== `${lhs}` || `${prevRight}` !== `${rhs}`)) {
 		if (options?.string) {
 			working.eqns.push([lhs.toString(), rhs.toString()]);
 		} else {

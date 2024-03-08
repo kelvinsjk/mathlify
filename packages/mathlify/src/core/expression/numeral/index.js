@@ -144,6 +144,14 @@ export class Numeral {
 		equal: (x) => this.minus(x).is.zero(),
 	};
 
+	/**
+	 * numerals do not contain any variables
+	 * @returns {false}
+	 */
+	contains() {
+		return false;
+	}
+
 	/** @returns {number} */
 	valueOf() {
 		return this.number.valueOf();

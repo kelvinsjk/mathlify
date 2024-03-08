@@ -86,4 +86,12 @@ export class Quotient {
 	subIn(scope, options) {
 		return new Quotient(this.num.subIn(scope, options), this.den.subIn(scope, options));
 	}
+
+	/**
+	 * @param {string} variable
+	 * @returns {boolean}
+	 */
+	contains(variable) {
+		return this.num.contains(variable) || this.den.contains(variable);
+	}
 }

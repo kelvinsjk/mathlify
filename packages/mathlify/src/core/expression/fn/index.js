@@ -50,4 +50,13 @@ export class Fn {
 	subIn(scope, options) {
 		return new Fn(this.fn.subIn(scope, options));
 	}
+
+	/**
+	 *
+	 * @param {string} variable
+	 * @returns {boolean}
+	 */
+	contains(variable) {
+		return this.fn.expression.contains(variable);
+	}
 }

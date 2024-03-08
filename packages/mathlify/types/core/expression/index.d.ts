@@ -103,6 +103,11 @@ export class Expression {
         verbatim?: boolean | undefined;
     } | undefined): Expression;
     /**
+     * @param {string|Variable} variable
+     * @returns {boolean} whether the expression contains the variable
+     */
+    contains(variable: string | Variable): boolean;
+    /**
      * negative of expression
      * @returns {Expression}
      */

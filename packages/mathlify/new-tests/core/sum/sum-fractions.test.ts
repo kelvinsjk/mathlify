@@ -36,4 +36,8 @@ test('combine fractions', () => {
 	const sum7 = sum('x', 1);
 	expect(`${sum7.combineFraction()}`).toBe(`x + 1`);
 	expect(() => product(1, 'x').combineFraction()).toThrow();
+
+	const sum8 = sum([2, '/', 'x'], [1, '/', product(5, 'x')]);
+	expect(`${sum8}`).toBe(`\\frac{2}{x} + \\frac{1}{5x}`);
+	expect(`${sum8.combineFraction()}`).toBe(`\\frac{11}{5x}`);
 });

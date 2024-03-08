@@ -69,6 +69,27 @@ export class EquationWorking {
         targetRight?: boolean | undefined;
     }) | undefined): EquationWorking;
     /**
+     * isolate variable
+     * @param {string} [variable='x'] - defaults to 'x'
+     * @param {WorkingOptions & { steps?: boolean; targetRight?: boolean}} [options] - options to hide this step, or to target rhs (defaults to lhf)
+     * @returns {EquationWorking}
+     */
+    isolate(variable?: string | undefined, options?: (WorkingOptions & {
+        steps?: boolean | undefined;
+        targetRight?: boolean | undefined;
+    }) | undefined): EquationWorking;
+    /**
+     * make subject from product
+     * Experimental API
+     * @param {string} [variable='x'] - defaults to 'x'
+     * @param {WorkingOptions & { steps?: 'fraction'|'divide'|'postMultiply'|'preMultiply'; targetRight?: boolean}} [options] - options to hide this step, or to target rhs (defaults to lhf)
+     * @returns {EquationWorking}
+     */
+    _makeSubjectFromProduct(variable?: string | undefined, options?: (WorkingOptions & {
+        steps?: "preMultiply" | "fraction" | "divide" | "postMultiply" | undefined;
+        targetRight?: boolean | undefined;
+    }) | undefined): EquationWorking;
+    /**
      * @param {Equation|Expression|string|number} lhs
      * @param {Expression|string|number} [rhs] - defaults to original rhs
      * @return {EquationWorking}
