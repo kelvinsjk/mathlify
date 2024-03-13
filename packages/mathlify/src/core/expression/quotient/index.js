@@ -52,11 +52,12 @@ export class Quotient {
 	}
 
 	/**
-	 * @param {{product?: boolean, numeral?: boolean, sum?: boolean, quotient?: boolean, brackets?: boolean, exponent?: boolean}} [options]
+	 * @param {import('../index.js').SimplifyOptions} [options]
 	 * @returns {this}
 	 * WARNING: mutates current instance
 	 */
 	simplify(options) {
+		if (options?.verbatim) return this;
 		const { product, numeral, sum, quotient, brackets, exponent } = {
 			brackets: true,
 			product: true,

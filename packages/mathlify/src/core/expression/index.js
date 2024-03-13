@@ -23,7 +23,7 @@ import {
 /** @typedef {import('../../macros/index.js').BracketShorthand} BracketShorthand */
 /** @typedef {import('../../macros/index.js').QuotientShorthand} FractionShorthand */
 /** @typedef {Sum|Product|Quotient|Exponent|Variable|Numeral|Fn} ExpressionType */
-/** @typedef {{brackets?: boolean, product?: boolean, sum?: boolean, quotient?: boolean, numeral?: boolean, exponent?: boolean}} SimplifyOptions */
+/** @typedef {{verbatim?: boolean, brackets?: boolean, product?: boolean, sum?: boolean, quotient?: boolean, numeral?: boolean, exponent?: boolean}} SimplifyOptions */
 /** @typedef {{verbatim?: boolean, numeratorOnly?: boolean}} ExpansionOptions */
 
 /** Expression Class
@@ -89,7 +89,8 @@ export class Expression {
 	 * @returns {this} the current instance after simplification. Note that this method mutates the current instance
 	 */
 	simplify(options) {
-		const { brackets, product, sum, numeral, quotient, exponent } = resolveOptions(options);
+		const { verbatim, brackets, product, sum, numeral, quotient, exponent } = resolveOptions(options);
+		if (verbatim) return this;
 		if (brackets) this._remove_brackets_();
 		if (numeral && this.node instanceof Numeral) this.node.simplify();
 		if (
@@ -198,8 +199,7 @@ export class Expression {
 	 */
 	plus(exp2, options) {
 		const sum = new Expression(new Sum(this.clone(), to_Expression(exp2).clone()));
-		if (!options?.verbatim) sum.simplify();
-		return sum;
+		return sum.simplify(options);
 	}
 	/**
 	 * difference of two expressions
@@ -210,8 +210,7 @@ export class Expression {
 		const negativeTerm = new Expression(new Product(-1, to_Expression(exp2).clone()));
 		if (!options?.verbatim) negativeTerm.expand();
 		const diff = new Expression(new Sum(this.clone(), negativeTerm));
-		if (!options?.verbatim) diff.simplify();
-		return diff;
+		return diff.simplify(options);
 	}
 	/**
 	 * product of two expressions
@@ -224,8 +223,7 @@ export class Expression {
 		const product = options?.preMultiply
 			? new Expression(new Product(this.clone(), exp2))
 			: new Expression(new Product(exp2, this.clone()));
-		if (!options?.verbatim) product.simplify();
-		return product;
+		return product.simplify(options);
 	}
 	/**
 	 * quotient of two expressions
@@ -234,8 +232,7 @@ export class Expression {
 	 */
 	divideBy(exp2, options) {
 		const quotient = new Expression(new Quotient(this.clone(), to_Expression(exp2).clone()));
-		if (!options?.verbatim) quotient.simplify();
-		return quotient;
+		return quotient.simplify(options);
 	}
 
 	//! these methods provide quick access to the underlying expression-subtypes
@@ -287,8 +284,7 @@ export class Expression {
 	 */
 	_expand_(options) {
 		expand_expression_(this, options);
-		if (!options?.verbatim) this.simplify();
-		return this;
+		return this.simplify(options);
 	}
 	/**
 	 * expands products
@@ -298,8 +294,7 @@ export class Expression {
 	_expand_product_(options) {
 		const sum = expand_product(this);
 		if (sum !== undefined) this.node = sum;
-		if (!options?.verbatim) this.simplify();
-		return this;
+		return this.simplify(options);
 	}
 
 	//! the following 3 methods are used in the simplify method
@@ -362,8 +357,7 @@ export class Expression {
 	_combine_fraction_(options) {
 		const quotient = combine_fraction(this);
 		if (quotient !== undefined) this.node = quotient;
-		if (!options?.verbatim) this.simplify();
-		return this;
+		return this.simplify(options);
 	}
 	/**
 	 * removes common factors
@@ -473,8 +467,7 @@ function sub_in(expression, scope, options) {
 		exp._multiplicationSign = expression._multiplicationSign;
 		exp._mixedFractions = expression._mixedFractions;
 	}
-	if (!options?.verbatim) exp.simplify();
-	return exp;
+	return exp.simplify(options);
 }
 /**
  * to Expression
