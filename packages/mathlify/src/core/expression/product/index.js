@@ -137,6 +137,7 @@ export class Product {
 	 * WARNING: mutates current instance
 	 */
 	simplify(options) {
+		if (options?.verbatim) return this;
 		const { product, numeral, sum, quotient, exponent, brackets } = {
 			product: true,
 			numeral: true,

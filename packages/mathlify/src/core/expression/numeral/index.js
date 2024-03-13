@@ -26,17 +26,17 @@ export class Numeral {
 			number = number.clone();
 		}
 		this.number = number;
-		const { verbatim } = { verbatim: false, ...options };
-		if (!verbatim) this.simplify();
+		this.simplify({ verbatim: options?.verbatim ?? false });
 	}
 
 	/**
 	 * simplifies this fraction
 	 * warning: mutates current instance
+	 * @param {{verbatim?: boolean}} [options]
 	 * @returns {this}
 	 */
-	simplify() {
-		this.number.simplify();
+	simplify(options) {
+		this.number.simplify(options);
 		return this;
 	}
 

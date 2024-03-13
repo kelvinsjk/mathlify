@@ -49,9 +49,11 @@ export class Fraction {
 	 * simplifies fraction such that
 	 * (1) denominators are positive
 	 * (2) gcd(num, den) = 1
+	 * @param {{verbatim?: boolean}} [options]
 	 * @returns {this}
 	 */
-	simplify() {
+	simplify(options) {
+		if (options?.verbatim) return this;
 		this._hoist_negative();
 		// extract gcd
 		const divisor = gcd(this.num, this.den);

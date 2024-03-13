@@ -13,6 +13,7 @@ export function resolveOptions(options) {
 			numeral: true,
 			quotient: true,
 			exponent: true,
+			verbatim: options?.verbatim ?? false,
 		};
 	}
 	return {
@@ -22,6 +23,7 @@ export function resolveOptions(options) {
 		numeral: false,
 		quotient: false,
 		exponent: false,
+		verbatim: false,
 		...options,
 	};
 }
