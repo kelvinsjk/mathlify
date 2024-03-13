@@ -88,6 +88,44 @@ but trying to create more dynamic math-heavy content around it has led me to
 discover edge cases that are difficult to solve.
 
 I have initially settled on a 'markdown-lite' custom syntax, but I discovered
-Djot and realized they solve many of the
+Djot and realized they solve many of the features I will want (in addition to
+the usual paragraphing and style markups, the ability to add custom blocks and
+attributes is very promising).
+
+So, instead of totally reinventing the wheel with custom syntax and parser, we
+can piggyback on top of Djot. Mathematics markup is the main part our framework
+is focused on so we will provide custom functionality but Djot can handle the
+rest (in particular the intermediate AST representation) in between markup and
+final output.
+
+In a sense, it feels like we started out reinventing the wheel (with our custom
+syntax), but then discovered someone else had a better wheel and decided to
+modify theirs.
 
 ## Typst
+
+I recently rediscovered [Typst](https://typst.app/) and am very impressed with
+their project, especially the showcase on the site. The seamless mix of general
+programming control flow along with markup for content is what I have been
+working towards in Mathlified.
+
+### Typst vs Mathlified
+
+The biggest design difference for me is that Typst is markup-first, with escapes
+to general programming when necessary, while Mathlified starts with programming
+(the underlying JavaScript) and adds the components (CAS, markup handling) on
+top of it.
+
+If I had access to Typst a few years ago it may well have developed into my main
+tool in creating mathematical content. And if it performs well there will have
+been less impetus to develop something like Mathlified.
+
+But as it stands, I think there are sufficient differences in the two projects
+for me to continue plugging along on Mathlified.
+
+First, Mathlified can be thought of as web-first, translating more naturally to
+HTML. Out framework then transform our input into $\LaTeX$ before compilation to
+a PDF. Typst's custom rust-based compiler seems really promising and circumvent
+some of my problems with $\LaTeX$ while retaining many of the pros.
+Unfortunately, using Typst will then necessitate a new rethink about how to
+handle web/mobile.
