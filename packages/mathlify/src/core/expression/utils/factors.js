@@ -18,9 +18,10 @@ export function divide_by_factor(expression, divisor) {
 		if (divisor.type !== 'numeral') throw new TypeError('numeral can only be divided by numeral');
 		return new Product(expression.node.divide(divisor));
 	}
-	const expressionProduct = expression.node instanceof Product ? expression.node : new Product(expression);
+	const expressionProduct =
+		expression.node instanceof Product ? expression.node.clone() : new Product(expression.clone());
 	if (divisor instanceof Numeral) {
-		return new Product(expressionProduct.coeff.divide(divisor), ...expressionProduct._factorsExp);
+		return new Product(expressionProduct.coeff.divide(divisor), ...expressionProduct._factorsExp.map((f) => f.clone()));
 	} else if (divisor instanceof Exponent) {
 		/** @type {Expression[]} */
 		const factors = [];

@@ -26,6 +26,8 @@ import {
 /** @typedef {{verbatim?: boolean, brackets?: boolean, product?: boolean, sum?: boolean, quotient?: boolean, numeral?: boolean, exponent?: boolean}} SimplifyOptions */
 /** @typedef {{verbatim?: boolean, numeratorOnly?: boolean}} ExpansionOptions */
 
+let n = 0;
+
 /** Expression Class
  * @property {ExpressionType} expression the tree representation of the expression
  *
@@ -83,6 +85,11 @@ export class Expression {
 		return exp;
 	}
 
+	get n() {
+		n++;
+		return n;
+	}
+
 	/**
 	 * simplifies the expression
 	 * @param {SimplifyOptions} [options] - options for which types to simplify
@@ -92,12 +99,12 @@ export class Expression {
 		const { verbatim, brackets, product, sum, numeral, quotient, exponent } = resolveOptions(options);
 		if (verbatim) return this;
 		if (brackets) this._remove_brackets_();
-		if (numeral && this.node instanceof Numeral) this.node.simplify();
+		if (numeral && this.node.type === 'numeral') this.node.simplify();
 		if (
-			this.node instanceof Sum ||
-			this.node instanceof Product ||
-			this.node instanceof Quotient ||
-			this.node instanceof Exponent
+			this.node.type === 'sum' ||
+			this.node.type === 'product' ||
+			this.node.type === 'quotient' ||
+			this.node.type === 'exponent'
 		) {
 			this.node.simplify({ product, sum, numeral, quotient, exponent, brackets });
 		}
@@ -147,7 +154,13 @@ export class Expression {
 		 * @returns {Expression}
 		 */
 		commonFactor: (options) => {
-			if (!(this.node instanceof Sum)) return this;
+			if (this.node.type === 'product') {
+				const factors = this.node._factorsExp.map((exp) => exp.factorize.commonFactor(options));
+				const exp = new Expression(new Product(this.node.coeff.clone(), ...factors)).simplify();
+				return exp;
+				//return new Expression(new Product(...factors)).simplify();
+			}
+			if (!(this.node.type === 'sum')) return this;
 			const commonFactor = Expression.gcd(...this.node._termsExp);
 			if (commonFactor.node instanceof Numeral && commonFactor.node.is.one()) return this;
 			const factorizedTerms = this.node._termsExp
@@ -368,7 +381,7 @@ export class Expression {
 		try {
 			const [num, den] = this._getQuotientTerms().map((x) => x.clone().factorize.commonFactor());
 			const gcd = Expression.gcd(num, den);
-			if (gcd.node instanceof Numeral && gcd.node.is.one()) return this;
+			if (gcd.node.type === 'numeral' && gcd.node.is.one()) return this;
 			const newNum = new Expression(divide_by_factor(num, gcd.node)).simplify();
 			const newDen = new Expression(divide_by_factor(den, gcd.node)).simplify();
 			if (newDen.node instanceof Numeral && newDen.node.is.one()) {

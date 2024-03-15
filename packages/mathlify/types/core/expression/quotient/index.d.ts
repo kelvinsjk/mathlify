@@ -39,18 +39,11 @@ export class Quotient {
      */
     clone(): Quotient;
     /**
-     * @param {{product?: boolean, numeral?: boolean, sum?: boolean, quotient?: boolean, brackets?: boolean, exponent?: boolean}} [options]
+     * @param {import('../index.js').SimplifyOptions} [options]
      * @returns {this}
      * WARNING: mutates current instance
      */
-    simplify(options?: {
-        product?: boolean | undefined;
-        numeral?: boolean | undefined;
-        sum?: boolean | undefined;
-        quotient?: boolean | undefined;
-        brackets?: boolean | undefined;
-        exponent?: boolean | undefined;
-    } | undefined): this;
+    simplify(options?: import("../index.js").SimplifyOptions | undefined): this;
     /**
      * @param {Object.<string, Expression>} scope - variables to be replaced in the expression
      * @param {{verbatim: boolean}} options

@@ -1,4 +1,3 @@
-/** @typedef {import('../core/index.js').Expression} Expression */
 /**
  * EqnWorking Class to handle the step-by-step working in manipulating an equation
  */
@@ -9,7 +8,7 @@ export class Equation {
      * @param {Expression|number|string} [rhs=0] - the initial expression on the right
      * @param {{aligned?: boolean}} [options] - aligned: true adds the & before =. Defaults to false
      */
-    constructor(lhs: Expression | number | string, rhs?: string | number | import("../core/index.js").Expression | undefined, options?: {
+    constructor(lhs: Expression | number | string, rhs?: string | number | Expression | undefined, options?: {
         aligned?: boolean | undefined;
     } | undefined);
     /** @type {Expression} the expression on the left*/
@@ -20,11 +19,14 @@ export class Equation {
     /** @typedef {import('../macros/index.js').QuotientShorthand} FractionShorthand */
     /**
      * @param {Object.<string, Expression|string|number|FractionShorthand>} scope - variables to be replaced in the expression
+     * @param {{verbatim?: boolean}} [options] - {{verbatim: true}} to not simplify after substitution
      * @returns {Equation}
      */
     subIn(scope: {
         [x: string]: Expression | string | number | import("../macros/index.js").QuotientShorthand;
-    }): Equation;
+    }, options?: {
+        verbatim?: boolean | undefined;
+    } | undefined): Equation;
     /** @typedef {import('../core/expression/index.js').SimplifyOptions} SimplifyOptions */
     /**
      * simplifies the equation: warning: mutates current equation
@@ -66,11 +68,53 @@ export class Equation {
         targetRight?: boolean | undefined;
     } | undefined): Equation;
     /**
+     * @returns {Equation} - the equation after combining fractions on both sides
+     */
+    combineFraction(): Equation;
+    /**
+     * @returns {Equation}
+     */
+    _common_denominator(): Equation;
+    /**
+     * @param {{verbatim?: boolean}} [options] - {{verbatim: true}} to not simplify after combination
+     * @returns {Equation}
+     */
+    _combine_fraction(options?: {
+        verbatim?: boolean | undefined;
+    } | undefined): Equation;
+    /**
+     * @returns {Equation}
+     */
+    _remove_common_factors(): Equation;
+    /**
+     * @param {{verbatim?: boolean}} [options] - {{verbatim: true}} to not simplify after combination
+     * @returns {Equation}
+     */
+    crossMultiply(options?: {
+        verbatim?: boolean | undefined;
+    } | undefined): Equation;
+    /**
+     *
+     * @param {number|string|Expression} exp
+     * @returns {Equation}
+     */
+    plus(exp: number | string | Expression): Equation;
+    /**
+     *
+     * @param {number|string|Expression} exp
+     * @returns {Equation}
+     */
+    times(exp: number | string | Expression): Equation;
+    /**
+     * @returns {Equation}
+     */
+    swapSides(): Equation;
+    /**
      * @return {string}
      */
     toString(): string;
     /** @return {Equation} */
     clone(): Equation;
 }
-export type Expression = import('../core/index.js').Expression;
+import { Expression } from '../core/expression/index.js';
 //# sourceMappingURL=index.d.ts.map

@@ -1,4 +1,4 @@
-import { to_Expression, Expression, Product } from '../core/expression/index.js';
+import { to_Expression, Expression, Product, Quotient } from '../core/expression/index.js';
 import { Polynomial } from '../core/index.js';
 
 // TODO: refactor target left/right
@@ -27,10 +27,11 @@ export class Equation {
 	/** @typedef {import('../macros/index.js').QuotientShorthand} FractionShorthand */
 	/**
 	 * @param {Object.<string, Expression|string|number|FractionShorthand>} scope - variables to be replaced in the expression
+	 * @param {{verbatim?: boolean}} [options] - {{verbatim: true}} to not simplify after substitution
 	 * @returns {Equation}
 	 */
-	subIn(scope) {
-		return new Equation(this.lhs.subIn(scope), this.rhs.subIn(scope));
+	subIn(scope, options) {
+		return new Equation(this.lhs.subIn(scope, options), this.rhs.subIn(scope, options));
 	}
 
 	/** @typedef {import('../core/expression/index.js').SimplifyOptions} SimplifyOptions */
@@ -143,30 +144,54 @@ export class Equation {
 	 * @returns {Equation}
 	 */
 	crossMultiply(options) {
+		let lhs = this.lhs.clone();
+		// negative workaround: hoist to numerator
+		if (lhs.node.type === 'product' && lhs.node.factors.length === 1 && lhs.node.factors[0].type === 'quotient') {
+			lhs = new Expression(
+				new Quotient(
+					new Expression(new Product(lhs.node.coeff, lhs.node.factors[0].num)).expand(),
+					lhs.node.factors[0].den,
+				),
+			);
+		}
+		let rhs = this.rhs.clone();
+		if (rhs.node.type === 'product' && rhs.node.factors.length === 1 && rhs.node.factors[0].type === 'quotient') {
+			rhs = new Expression(
+				new Quotient(
+					new Expression(new Product(rhs.node.coeff, rhs.node.factors[0].num)).expand(),
+					rhs.node.factors[0].den,
+				),
+			);
+		}
 		const leftNum =
-			this.lhs.node.type === 'quotient'
-				? this.lhs._getQuotientTerms()[0].clone()
-				: this.lhs.node.type === 'numeral'
-					? new Expression(this.lhs._getNumeral().number.num)
-					: this.lhs.clone();
+			lhs.node.type === 'quotient'
+				? lhs._getQuotientTerms()[0].clone()
+				: lhs.node.type === 'numeral'
+					? new Expression(lhs._getNumeral().number.num)
+					: lhs;
 		const leftDen =
-			this.lhs.node.type === 'quotient'
-				? this.lhs._getQuotientTerms()[1].clone()
-				: this.lhs.node.type === 'numeral'
-					? this.lhs._getNumeral().number.den
+			lhs.node.type === 'quotient'
+				? lhs._getQuotientTerms()[1].clone()
+				: lhs.node.type === 'numeral'
+					? lhs._getNumeral().number.den
 					: 1;
 		const rightNum =
-			this.rhs.node.type === 'quotient'
-				? this.rhs._getQuotientTerms()[0].clone()
-				: this.rhs.node.type === 'numeral'
-					? new Expression(this.rhs._getNumeral().number.num)
-					: this.rhs.clone();
+			rhs.node.type === 'quotient'
+				? rhs._getQuotientTerms()[0].clone()
+				: rhs.node.type === 'numeral'
+					? new Expression(rhs._getNumeral().number.num)
+					: rhs;
 		const rightDen =
-			this.rhs.node.type === 'quotient'
-				? this.rhs._getQuotientTerms()[1]
-				: this.rhs.node.type === 'numeral'
-					? this.rhs._getNumeral().number.den
+			rhs.node.type === 'quotient'
+				? rhs._getQuotientTerms()[1]
+				: rhs.node.type === 'numeral'
+					? rhs._getNumeral().number.den
 					: 1;
+		if (
+			(leftDen === 1 || (typeof leftDen !== 'number' && leftDen.node.type === 'numeral' && leftDen.node.is.one())) &&
+			(rightDen === 1 || (typeof rightDen !== 'number' && rightDen.node.type === 'numeral' && rightDen.node.is.one()))
+		)
+			return this;
 		/** @type {[number|Expression, Expression]|Expression[]} */
 		const lhsArgs =
 			typeof rightDen === 'number' || rightDen.node.type === 'numeral' ? [rightDen, leftNum] : [leftNum, rightDen];
@@ -176,6 +201,31 @@ export class Equation {
 		const eqn = new Equation(new Expression(new Product(...lhsArgs)), new Expression(new Product(...rhsArgs)));
 		if (!options?.verbatim) eqn.simplify();
 		return eqn;
+	}
+
+	/**
+	 *
+	 * @param {number|string|Expression} exp
+	 * @returns {Equation}
+	 */
+	plus(exp) {
+		return new Equation(this.lhs.plus(exp), this.rhs.plus(exp));
+	}
+
+	/**
+	 *
+	 * @param {number|string|Expression} exp
+	 * @returns {Equation}
+	 */
+	times(exp) {
+		return new Equation(this.lhs.times(exp), this.rhs.times(exp));
+	}
+
+	/**
+	 * @returns {Equation}
+	 */
+	swapSides() {
+		return new Equation(this.rhs.clone(), this.lhs.clone());
 	}
 
 	/**

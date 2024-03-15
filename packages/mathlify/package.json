@@ -37,7 +37,7 @@
 		"preview": "vite preview",
 		"test": "vitest --config ./vitest.config.ts --coverage",
 		"testLegacy": "vitest run --config ./vitest-legacy.config.ts",
-		"testF": "vitest run --config ./vitest-legacy.config.ts common-numeral-denominator",
+		"testF": "vitest run --config ./vitest.config.ts expression-gcd",
 		"types": "tsc",
 		"cleanTypes": "rm -rf ./types && tsc"
 	},

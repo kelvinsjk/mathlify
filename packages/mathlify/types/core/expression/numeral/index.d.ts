@@ -44,9 +44,12 @@ export class Numeral {
     /**
      * simplifies this fraction
      * warning: mutates current instance
+     * @param {{verbatim?: boolean}} [options]
      * @returns {this}
      */
-    simplify(): this;
+    simplify(options?: {
+        verbatim?: boolean | undefined;
+    } | undefined): this;
     /**
      * @param {{mixedFractions?: boolean}} [options] - default: `{mixedFractions: false}`
      * @returns {string}

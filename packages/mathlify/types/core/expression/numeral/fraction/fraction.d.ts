@@ -47,9 +47,12 @@ export class Fraction {
      * simplifies fraction such that
      * (1) denominators are positive
      * (2) gcd(num, den) = 1
+     * @param {{verbatim?: boolean}} [options]
      * @returns {this}
      */
-    simplify(): this;
+    simplify(options?: {
+        verbatim?: boolean | undefined;
+    } | undefined): this;
     /**
      * @returns {Fraction}
      */

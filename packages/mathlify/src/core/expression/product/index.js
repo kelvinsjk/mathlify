@@ -69,12 +69,13 @@ export class Product {
 		for (let factor of this.factors) {
 			const times = str === '' ? '' : multiplicationSign;
 			if (
-				(factor instanceof Numeral && factor.number.is.negative()) ||
-				(factor.type === 'sum' && factor.terms.length > 1) ||
-				(factor instanceof Numeral &&
+				(factor.type === 'numeral' && factor.is.negative()) ||
+				(factor.type === 'sum' && (this.factors.length > 1 || !this.coeff.is.one())) ||
+				(factor.type === 'numeral' &&
 					(!this.coeff.abs().is.one() || this.factors.length > 1) &&
 					(factor.is.negative() || multiplicationSign === '')) ||
-				(factor instanceof Product && factor.coeff.is.negative())
+				(factor.type === 'product' &&
+					(factor.coeff.is.negative() || (!this.coeff.abs().is.one() && !factor.coeff.abs().is.one())))
 			) {
 				// these should have brackets
 				str += `${times}\\left( ${factor.toString({ mixedFractions })} \\right)`;
@@ -152,6 +153,7 @@ export class Product {
 			factor.simplify({ product, numeral, sum, quotient, exponent, brackets });
 		}
 		if (product) {
+			this._flatten();
 			this._combine_factors();
 			this._flatten();
 		}

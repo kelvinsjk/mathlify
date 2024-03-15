@@ -10,11 +10,6 @@ export function to_Expression(exp: string | number | Fraction | Expression): Exp
  * @returns {Expression|number|string}
  */
 export function unpack_shorthand_single(exp: Expression | number | string | import("../../macros/index.js").QuotientShorthand): Expression | number | string;
-/** @typedef {import('../../macros/index.js').BracketShorthand} BracketShorthand */
-/** @typedef {import('../../macros/index.js').QuotientShorthand} FractionShorthand */
-/** @typedef {Sum|Product|Quotient|Exponent|Variable|Numeral|Fn} ExpressionType */
-/** @typedef {{brackets?: boolean, product?: boolean, sum?: boolean, quotient?: boolean, numeral?: boolean, exponent?: boolean}} SimplifyOptions */
-/** @typedef {{verbatim?: boolean, numeratorOnly?: boolean}} ExpansionOptions */
 /** Expression Class
  * @property {ExpressionType} expression the tree representation of the expression
  *
@@ -57,6 +52,7 @@ export class Expression {
      * @returns {Expression} a clone of the current instance
      */
     clone(): Expression;
+    get n(): number;
     /**
      * simplifies the expression
      * @param {SimplifyOptions} [options] - options for which types to simplify
@@ -252,6 +248,7 @@ export type BracketShorthand = import('../../macros/index.js').BracketShorthand;
 export type FractionShorthand = import('../../macros/index.js').QuotientShorthand;
 export type ExpressionType = Sum | Product | Quotient | Exponent | Variable | Numeral | Fn;
 export type SimplifyOptions = {
+    verbatim?: boolean;
     brackets?: boolean;
     product?: boolean;
     sum?: boolean;

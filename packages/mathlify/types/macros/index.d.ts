@@ -8,11 +8,12 @@
  * Note: to work arithmetically, we recommend using the `Fraction` constructor rather than this function (which produces an Expression)
  * @param {number} num - numerator
  * @param {number} [den=1] - denominator. defaults to 1
- * @param {{verbatim?: boolean}} [options] - options. verbatim: if true, do not simplify the fraction.
+ * @param {{verbatim?: boolean, mixedFractions?: boolean}} [options] - options. verbatim: if true, do not simplify the fraction.
  * @returns {Expression}
  */
 export function fraction(num: number, den?: number | undefined, options?: {
     verbatim?: boolean | undefined;
+    mixedFractions?: boolean | undefined;
 } | undefined): Expression;
 /**
  * creates a sum as an expression

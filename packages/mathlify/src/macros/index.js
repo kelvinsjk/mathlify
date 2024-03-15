@@ -22,12 +22,16 @@ import {
  * Note: to work arithmetically, we recommend using the `Fraction` constructor rather than this function (which produces an Expression)
  * @param {number} num - numerator
  * @param {number} [den=1] - denominator. defaults to 1
- * @param {{verbatim?: boolean}} [options] - options. verbatim: if true, do not simplify the fraction.
+ * @param {{verbatim?: boolean, mixedFractions?: boolean}} [options] - options. verbatim: if true, do not simplify the fraction.
  * @returns {Expression}
  */
 export function fraction(num, den = 1, options) {
 	const frac = new Numeral([num, den], options);
-	return new Expression(frac);
+	const exp = new Expression(frac);
+	if (options?.mixedFractions) {
+		exp._mixedFractions = true;
+	}
+	return exp;
 }
 
 /**
