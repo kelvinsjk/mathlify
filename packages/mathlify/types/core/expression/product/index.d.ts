@@ -11,9 +11,9 @@
 export class Product {
     /**
      * Creates a Product
-     * @param {Expression[]|[number|Numeral, ...Expression[]]} factors
+     * @param {Expression[]|[number|Numeral|Expression, ...Expression[]]} factors
      */
-    constructor(...factors: Expression[] | [number | Numeral, ...Expression[]]);
+    constructor(...factors: Expression[] | [number | Numeral | Expression, ...Expression[]]);
     /** @type {'product'} */
     type: 'product';
     /** @type {Numeral} */

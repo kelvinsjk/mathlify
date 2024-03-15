@@ -86,8 +86,8 @@ import { denominator_lcm } from './utils/gcd-lcm';
 test('expression lcm', () => {
 	expect(() => denominator_lcm()).toThrow();
 	const half = new Expression(new Numeral(new Fraction(1, 2)));
-	expect(() => half._common_denominator_()).toThrow();
-	expect(() => half._combine_fraction_()).toThrow();
+	expect(half._common_denominator_().toString()).toBe('\\frac{1}{2}');
+	expect(half._combine_fraction_().toString()).toBe('\\frac{1}{2}');
 	const xOver3 = new Expression(new Numeral(new Fraction(2, 3)));
 	const negative1_10 = new Expression(new Numeral(new Fraction(-1, 10)));
 	expect(denominator_lcm(half, xOver3, negative1_10).toString()).toBe('30');

@@ -1,7 +1,7 @@
 //import { Expression, Numeral, Quotient, Product, Exponent } from '../index.js';
 import { Numeral } from '../numeral/index.js';
 import { Product } from '../product/index.js';
-import { Quotient } from '../quotient/index.js';
+//import { Quotient } from '../quotient/index.js';
 import { Exponent } from '../exponent/index.js';
 
 /** @typedef {import('../index.js').Expression} Expression */
@@ -19,12 +19,12 @@ export function denominator_lcm(...expressions) {
 	if (expressions.length === 1) {
 		let exp = expressions[0].node;
 		const dummy = expressions[0];
-		if (exp instanceof Numeral) {
+		if (exp.type === 'numeral') {
 			return dummy._new_exp(new Numeral(exp.number.den).abs());
-		} else if (exp instanceof Quotient) {
+		} else if (exp.type === 'quotient') {
 			return dummy._new_exp(exp.den.node.clone());
-		} else if (exp instanceof Product && exp.coeff.is.negative() && exp.factors.length === 1) {
-			return denominator_lcm(exp._factorsExp[0]);
+		} else if (exp.type === 'product' && exp.coeff.is.negative() && exp.factors.length === 1) {
+			return denominator_lcm(exp._factorsExp[0].clone());
 		} else {
 			return dummy._new_exp(new Numeral(1));
 		}
@@ -53,8 +53,8 @@ export function denominator_lcm(...expressions) {
  * @returns {Expression}
  */
 export function expression_lcm_two(exp1, exp2) {
-	const a = exp1.node;
-	const b = exp2.node;
+	const a = exp1.clone().node;
+	const b = exp2.clone().node;
 	if (a.type === 'product') {
 		if (b.type === 'product') {
 			// lexical string: {power, expression}
@@ -110,7 +110,7 @@ export function expression_lcm_two(exp1, exp2) {
 				}
 			}
 			return exp1._new_exp(new Product(exp1._new_exp(Numeral.lcm(a.coeff, b.coeff)), ...factors)).simplify();
-		} else if (b instanceof Numeral) {
+		} else if (b.type === 'numeral') {
 			return exp1._new_exp(new Product(exp1._new_exp(Numeral.lcm(a.coeff, b)), ...a._factorsExp)).simplify();
 		} else {
 			/** @type {ExpressionType[]} */
@@ -146,10 +146,10 @@ export function expression_lcm_two(exp1, exp2) {
 			}
 			return exp1._new_exp(new Product(a.coeff, ...factors.map((f) => exp1._new_exp(f)))).simplify();
 		}
-	} else if (b instanceof Product) {
+	} else if (b.type === 'product') {
 		return expression_lcm_two(exp2, exp1);
-	} else if (a instanceof Exponent && a.power instanceof Numeral) {
-		if (b instanceof Exponent && b.power instanceof Numeral) {
+	} else if (a.type === 'exponent' && a.power.type === 'numeral') {
+		if (b.type === 'exponent' && b.power.type === 'numeral') {
 			if (a.base.toLexicalString() === b.base.toLexicalString()) {
 				return exp1._new_exp(new Exponent(a.baseExp.clone(), exp1._new_exp(Numeral.max(a.power, b.power))));
 			}
@@ -160,14 +160,14 @@ export function expression_lcm_two(exp1, exp2) {
 			}
 			return exp1._new_exp(new Product(exp1.clone(), exp2.clone())).simplify();
 		}
-	} else if (b instanceof Exponent && b.power instanceof Numeral) {
+	} else if (b.type === 'exponent' && b.power.type === 'numeral') {
 		return expression_lcm_two(exp2, exp1);
-	} else if (a instanceof Numeral) {
-		if (b instanceof Numeral) {
+	} else if (a.type === 'numeral') {
+		if (b.type === 'numeral') {
 			return exp1._new_exp(Numeral.lcm(a, b));
 		}
 		return exp1._new_exp(new Product(a, exp2.clone())).simplify();
-	} else if (b instanceof Numeral) {
+	} else if (b.type === 'numeral') {
 		return expression_lcm_two(exp2, exp1);
 	} else {
 		if (exp1._to_lexical_string() === exp2._to_lexical_string()) {

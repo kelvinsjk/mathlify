@@ -38,7 +38,9 @@ export class EquationWorking {
 	 */
 	subIn(scope, options) {
 		// TODO: if verbatim, simplify after subbing in?
-		this.eqn = this.eqn.subIn(scope);
+		this.eqn = this.eqn.subIn(scope, options);
+		addStep(this, options);
+		this.eqn = this.eqn.clone().simplify();
 		return addStep(this, options);
 	}
 
@@ -298,6 +300,44 @@ export class EquationWorking {
 		addStep(this, options);
 		this.eqn = this.eqn.expand();
 		return addStep(this, options);
+	}
+
+	/**
+	 *
+	 * @param {number|number[]} indices
+	 * @param {WorkingOptions & {fromRight?: boolean}} [options] - default from lhs
+	 */
+	moveTerms(indices, options) {
+		// TODO: show steps to get final result
+		const exp = options?.fromRight ? this.eqn.rhs : this.eqn.lhs;
+		if (exp.node.type !== 'sum') {
+			throw new Error('Can only move terms in a sum');
+		}
+		const indicesArray = Array.isArray(indices) ? indices : [indices];
+		const terms = exp
+			._getSumTerms()
+			.filter((_, i) => indicesArray.includes(i))
+			.map((x) => x.negative());
+		this.eqn = this.eqn.plus(new Expression(new Sum(...terms)));
+		return addStep(this, options);
+	}
+
+	/**
+	 *
+	 * @returns {EquationWorking}
+	 */
+	swapSides() {
+		this.eqn = this.eqn.swapSides();
+		return addStep(this);
+	}
+
+	/**
+	 * @param {number|string|Expression} exp
+	 * @returns {EquationWorking}
+	 */
+	times(exp) {
+		this.eqn = this.eqn.times(exp);
+		return addStep(this);
 	}
 
 	/**

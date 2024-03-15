@@ -45,5 +45,7 @@ The `Expression` class allow us to modify the underlying type
   underlying numerator type
 - A `Quotient` with `Numerals` on both numerator and denominator will be changed
   to a `Numeral` class
+- A `Quotient` with a negative `Numeral` or a negative `Product` will be changed
+  to a product with a `coeff` of `-1`
 - An `Exponent` with positive integral `Numeral` power and a `Product` base will
   be cased of a `Product` of `Exponents`

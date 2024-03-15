@@ -96,6 +96,38 @@ export class EquationWorking {
      */
     addCustomStep(lhs: Equation | Expression | string | number, rhs?: string | number | Expression | undefined): EquationWorking;
     /**
+     * @param {WorkingOptions & {steps?: boolean}} [options]
+     * @returns {EquationWorking}
+     */
+    combineFraction(options?: (WorkingOptions & {
+        steps?: boolean | undefined;
+    }) | undefined): EquationWorking;
+    /**
+     * @param {WorkingOptions & {steps: boolean}} [options] - if {steps: true}, show steps of simplifying and expanding
+     * @returns {EquationWorking}
+     */
+    crossMultiply(options?: (WorkingOptions & {
+        steps: boolean;
+    }) | undefined): EquationWorking;
+    /**
+     *
+     * @param {number|number[]} indices
+     * @param {WorkingOptions & {fromRight?: boolean}} [options] - default from lhs
+     */
+    moveTerms(indices: number | number[], options?: (WorkingOptions & {
+        fromRight?: boolean | undefined;
+    }) | undefined): EquationWorking;
+    /**
+     *
+     * @returns {EquationWorking}
+     */
+    swapSides(): EquationWorking;
+    /**
+     * @param {number|string|Expression} exp
+     * @returns {EquationWorking}
+     */
+    times(exp: number | string | Expression): EquationWorking;
+    /**
      * @return {string}
      */
     toString(): string;
