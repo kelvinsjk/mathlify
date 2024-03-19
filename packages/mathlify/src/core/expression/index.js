@@ -33,6 +33,8 @@ let n = 0;
  *
  */
 export class Expression {
+	/** @type {'expression'} */
+	type = 'expression';
 	/** @type {ExpressionType} */
 	node;
 
@@ -156,8 +158,7 @@ export class Expression {
 		commonFactor: (options) => {
 			if (this.node.type === 'product') {
 				const factors = this.node._factorsExp.map((exp) => exp.factorize.commonFactor(options));
-				const exp = new Expression(new Product(this.node.coeff.clone(), ...factors)).simplify();
-				return exp;
+				return new Expression(new Product(this.node.coeff.clone(), ...factors)).simplify();
 				//return new Expression(new Product(...factors)).simplify();
 			}
 			if (!(this.node.type === 'sum')) return this;
@@ -172,7 +173,7 @@ export class Expression {
 				sum = sum.expand();
 			}
 			const product = new Product(new Expression(commonFactor.node), sum).simplify();
-			return new Expression(product);
+			return new Expression(product).simplify();
 		},
 	};
 
@@ -234,9 +235,24 @@ export class Expression {
 	times(exp2, options) {
 		exp2 = to_Expression(exp2).clone();
 		const product = options?.preMultiply
-			? new Expression(new Product(this.clone(), exp2))
-			: new Expression(new Product(exp2, this.clone()));
+			? new Expression(new Product(exp2, this.clone()))
+			: new Expression(new Product(this.clone(), exp2));
 		return product.simplify(options);
+	}
+	/**
+	 *
+	 * @param {number} n
+	 * @param {SimplifyOptions} [options]
+	 */
+	pow(n, options) {
+		const exp = new Expression(new Exponent(this.clone(), new Expression(n)));
+		return exp.simplify(options);
+	}
+	/**
+	 * @param {SimplifyOptions} [options]
+	 */
+	square(options) {
+		return this.pow(2, options);
 	}
 	/**
 	 * quotient of two expressions

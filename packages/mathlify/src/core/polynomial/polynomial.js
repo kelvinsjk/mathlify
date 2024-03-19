@@ -145,7 +145,7 @@ export class Polynomial extends GeneralPolynomial {
 			const remainingCoeffs = this.coeffs.slice(power).map((x) => x.divide(gcd));
 			const remainingFactor = new_poly_from_ascending_coeffs(remainingCoeffs, this.options);
 			/** @type {Expression & {commonFactor?: Polynomial, remainingFactor?: Polynomial}} */
-			const expression = new Expression(new Product(commonFactor, remainingFactor));
+			const expression = new Expression(new Product(commonFactor, remainingFactor)).simplify();
 			expression.commonFactor = commonFactor;
 			expression.remainingFactor = remainingFactor;
 			return /** @type {Expression & {commonFactor: Polynomial, remainingFactor: Polynomial}} */ (expression);
