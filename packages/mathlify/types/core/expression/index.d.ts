@@ -28,6 +28,8 @@ export class Expression {
      * @param {ExpressionType|number|string} expression
      */
     constructor(expression: ExpressionType | number | string);
+    /** @type {'expression'} */
+    type: 'expression';
     /** @type {ExpressionType} */
     node: ExpressionType;
     /**
@@ -135,6 +137,16 @@ export class Expression {
         preMultiply?: boolean | undefined;
         verbatim?: boolean | undefined;
     } | undefined): Expression;
+    /**
+     *
+     * @param {number} n
+     * @param {SimplifyOptions} [options]
+     */
+    pow(n: number, options?: SimplifyOptions | undefined): Expression;
+    /**
+     * @param {SimplifyOptions} [options]
+     */
+    square(options?: SimplifyOptions | undefined): Expression;
     /**
      * quotient of two expressions
      * @param {number|string|Expression} exp2

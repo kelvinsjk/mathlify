@@ -144,7 +144,7 @@ export class EquationWorking {
 	}
 
 	/**
-	 * isolate variable
+	 * isolate variable such that only terms with the variable are on the lhs
 	 * @param {string} [variable='x'] - defaults to 'x'
 	 * @param {WorkingOptions & { steps?: boolean; targetRight?: boolean}} [options] - options to hide this step, or to target rhs (defaults to lhf)
 	 * @returns {EquationWorking}
@@ -350,6 +350,21 @@ export class EquationWorking {
 		for (const [lhs, rhs] of this.eqns.slice(1)) {
 			const lhsString = this.aligned && lhs.toString() === prevLHS ? '' : lhs.toString();
 			str += `\n\t\\\\ ${lhsString}${eq}${rhs}`;
+			prevLHS = lhs.toString();
+		}
+		return str;
+	}
+
+	/**
+	 * @returns {string[]}
+	 */
+	_to_string_array() {
+		const eq = this.aligned ? ' &= ' : ' = ';
+		let str = [`${this.eqns[0][0]}${eq}${this.eqns[0][1]}`];
+		let prevLHS = this.eqns[0][0].toString();
+		for (const [lhs, rhs] of this.eqns.slice(1)) {
+			const lhsString = this.aligned && lhs.toString() === prevLHS ? '' : lhs.toString();
+			str.push(`${lhsString}${eq}${rhs}`);
 			prevLHS = lhs.toString();
 		}
 		return str;

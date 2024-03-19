@@ -11,6 +11,8 @@ export class Equation {
 	lhs;
 	/** @type {Expression} the expression on the right*/
 	rhs;
+	/** @type {'equation'} */
+	type = 'equation';
 
 	/**
 	 * Creates an Equation

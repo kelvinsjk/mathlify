@@ -69,7 +69,7 @@ export class EquationWorking {
         targetRight?: boolean | undefined;
     }) | undefined): EquationWorking;
     /**
-     * isolate variable
+     * isolate variable such that only terms with the variable are on the lhs
      * @param {string} [variable='x'] - defaults to 'x'
      * @param {WorkingOptions & { steps?: boolean; targetRight?: boolean}} [options] - options to hide this step, or to target rhs (defaults to lhf)
      * @returns {EquationWorking}
@@ -131,6 +131,10 @@ export class EquationWorking {
      * @return {string}
      */
     toString(): string;
+    /**
+     * @returns {string[]}
+     */
+    _to_string_array(): string[];
 }
 export type WorkingOptions = {
     hide?: boolean;

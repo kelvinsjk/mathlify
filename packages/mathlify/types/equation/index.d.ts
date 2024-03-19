@@ -15,6 +15,8 @@ export class Equation {
     lhs: Expression;
     /** @type {Expression} the expression on the right*/
     rhs: Expression;
+    /** @type {'equation'} */
+    type: 'equation';
     aligned: boolean;
     /** @typedef {import('../macros/index.js').QuotientShorthand} FractionShorthand */
     /**
