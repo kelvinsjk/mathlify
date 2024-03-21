@@ -228,7 +228,7 @@ export class Expression {
 	}
 	/**
 	 * product of two expressions
-	 * @param {number|string|Expression} exp2
+	 * @param {number|Numeral|string|Expression} exp2
 	 * @param {{preMultiply?: boolean, verbatim?: boolean}} [options] - default to multiplying exp2 behind
 	 * @returns {Expression}
 	 */
@@ -500,13 +500,13 @@ function sub_in(expression, scope, options) {
 }
 /**
  * to Expression
- * @param {string|number|Fraction|Expression} exp
+ * @param {string|number|Numeral|Fraction|Expression} exp
  * @return {Expression}
  */
 export function to_Expression(exp) {
-	if (typeof exp === 'string') {
-		return new Expression(new Variable(exp));
-	} else if (typeof exp === 'number' || exp instanceof Fraction) {
+	if (typeof exp === 'string' || typeof exp === 'number' || exp.type === 'numeral') {
+		return new Expression(exp);
+	} else if (exp.type === 'fraction') {
 		return new Expression(new Numeral(exp, { verbatim: true }));
 	}
 	return exp;

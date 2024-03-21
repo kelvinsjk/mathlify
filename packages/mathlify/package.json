@@ -21,6 +21,10 @@
 		"./working": {
 			"default": "./src/submodules/working/index.js",
 			"types": "./types/submodules/working/index.d.ts"
+		},
+		"./casting": {
+			"default": "./src/submodules/casting/index.js",
+			"types": "./types/submodules/casting/index.d.ts"
 		}
 	},
 	"scripts": {

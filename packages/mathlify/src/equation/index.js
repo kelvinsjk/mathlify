@@ -1,5 +1,5 @@
 import { to_Expression, Expression, Product, Quotient } from '../core/expression/index.js';
-import { Polynomial } from '../core/index.js';
+import { expressionToPolynomial } from '../submodules/casting/index.js';
 
 // TODO: refactor target left/right
 
@@ -75,14 +75,12 @@ export class Equation {
 		 * @returns {Equation}
 		 * */
 		quadratic: (options) => {
-			// TODO: handle conversion of Expression to Polynomial. throw if not?
+			// TODO: handle errors
 			const quadratic = options?.targetRight ? this.rhs : this.lhs;
-			if (!(quadratic instanceof Polynomial)) return this;
-			if (options?.targetRight) {
-				return new Equation(this.lhs.clone(), quadratic.factorize.quadratic());
-			} else {
-				return new Equation(quadratic.factorize.quadratic(), this.rhs.clone());
-			}
+			const poly = expressionToPolynomial(quadratic);
+			return options?.targetRight
+				? new Equation(this.lhs.clone(), poly.factorize.quadratic())
+				: new Equation(poly.factorize.quadratic(), this.rhs.clone());
 		},
 	};
 

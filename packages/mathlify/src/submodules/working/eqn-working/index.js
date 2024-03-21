@@ -1,6 +1,7 @@
 import { Product, Quotient, to_Expression } from '../../../core/expression/index.js';
-import { Polynomial, Expression, Sum } from '../../../core/index.js';
+import { Expression, Sum } from '../../../core/index.js';
 import { Equation } from '../../../equation/index.js';
+import { expressionToPolynomial } from '../../casting/index.js';
 
 // TODO: refactor target left/right
 // TODO: drop repeated lhs
@@ -28,6 +29,18 @@ export class EquationWorking {
 		this.eqn = lhs instanceof Equation ? lhs : new Equation(to_Expression(lhs), to_Expression(rhs));
 		this.eqns = [[this.eqn.lhs, this.eqn.rhs]];
 		this.aligned = options?.aligned ?? false;
+	}
+
+	/**
+	 * @returns {EquationWorking}
+	 */
+	clone() {
+		const working = new EquationWorking(this.eqn.clone());
+		working.eqns = this.eqns.map(([lhs, rhs]) => {
+			return [typeof lhs === 'string' ? lhs : lhs.clone(), typeof rhs === 'string' ? rhs : rhs.clone()];
+		});
+		working.aligned = this.aligned;
+		return working;
 	}
 
 	/** @typedef {import('../../../macros/index.js').QuotientShorthand} FractionShorthand */
@@ -97,12 +110,11 @@ export class EquationWorking {
 		 * @returns {EquationWorking}
 		 * */
 		quadratic: (options) => {
-			// TODO: use underlying Equation method
 			const quadratic = options?.targetRight ? this.eqn.rhs : this.eqn.lhs;
-			if (!(quadratic instanceof Polynomial)) return this;
-			const { multiple } = quadratic.factorize.quadratic();
+			const poly = expressionToPolynomial(quadratic);
+			const { multiple } = poly.factorize.quadratic();
 			if (!multiple.is.one()) {
-				const preQuadraticFactorization = quadratic.factorize.commonFactor({ forcePositiveLeadingCoefficient: true });
+				const preQuadraticFactorization = poly.factorize.commonFactor({ forcePositiveLeadingCoefficient: true });
 				preQuadraticFactorization.remainingFactor.ascending = false;
 				if (options?.targetRight) {
 					this.eqn = new Equation(this.eqn.lhs.clone(), preQuadraticFactorization);
@@ -112,9 +124,9 @@ export class EquationWorking {
 				addStep(this, options);
 			}
 			if (options?.targetRight) {
-				this.eqn.rhs = quadratic.clone().factorize.quadratic();
+				this.eqn.rhs = poly.clone().factorize.quadratic();
 			} else {
-				this.eqn.lhs = quadratic.clone().factorize.quadratic();
+				this.eqn.lhs = poly.clone().factorize.quadratic();
 			}
 			return addStep(this, options);
 		},

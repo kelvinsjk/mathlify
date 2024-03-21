@@ -8,6 +8,8 @@ import { lcm } from './lcm.js';
  *
  */
 export class Fraction {
+	/** @type {'fraction'} */
+	type = 'fraction';
 	/** @type {number} */
 	num;
 	/** @type {number} */
