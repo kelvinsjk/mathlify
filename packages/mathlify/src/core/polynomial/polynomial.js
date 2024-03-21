@@ -44,7 +44,8 @@ export class Polynomial extends GeneralPolynomial {
 	 */
 	plus(p2) {
 		const poly2 = typeof p2 === 'number' ? new Polynomial([new Numeral(p2)], this.options) : p2;
-		if (this.variable !== poly2.variable) throw new Error('variables do not match');
+		if (this.variable !== poly2.variable && this.degree !== 0 && poly2.degree !== 0)
+			throw new Error('variables do not match');
 		let coeffs = pad_zeros(this.coeffs, poly2.degree + 1);
 		coeffs = coeffs.map((x, i) => x.plus(poly2.coeffs[i] ?? new Numeral(0)));
 		return new_poly_from_ascending_coeffs(coeffs, this.options);
@@ -59,7 +60,7 @@ export class Polynomial extends GeneralPolynomial {
 		return this.plus(p2.negative());
 	}
 	/**
-	 * @param {number|Polynomial|Expression} p2 - Expression must be a numeral
+	 * @param {number|Numeral|Polynomial|Expression} p2 - Expression must be a numeral
 	 * @returns {Polynomial}
 	 */
 	times(p2) {
@@ -192,6 +193,20 @@ export class Polynomial extends GeneralPolynomial {
 			return /** @type {Expression & {factors: [Polynomial, Polynomial], multiple: Numeral}} */ (expression);
 		},
 	};
+
+	/**
+	 *
+	 * @param {number} n
+	 * @param {{coeff?: number|Numeral|Expression, ascending?: boolean, variable?: string}} [options] coeff defaults to 1
+	 * @returns {Polynomial}
+	 */
+	static ofDegree(n, options) {
+		const coeff = options?.coeff ?? 1;
+		/** @type {(Numeral|number|Expression)[]} */
+		const zeros = n === 0 ? [] : create_zero_array(n);
+		const coeffs = options?.ascending ? [...zeros, coeff] : [coeff, ...zeros];
+		return new Polynomial(coeffs, options);
+	}
 }
 
 /**
