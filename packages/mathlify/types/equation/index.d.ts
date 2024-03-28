@@ -59,6 +59,16 @@ export class Equation {
         quadratic: (options?: {
             targetRight?: boolean | undefined;
         } | undefined) => Equation;
+        /**
+         * @param {'lhs'|'rhs'|{lhs: number[]}|{rhs: number[]}} target - lhs/rhs (quotient) or an array if the target is a sum
+         * @param {'commonFactor'|'quadratic'} [method='quadratic'] - use quadratic factorization by default
+         * @returns {Equation}
+         * */
+        denominator: (target: 'lhs' | 'rhs' | {
+            lhs: number[];
+        } | {
+            rhs: number[];
+        }, method?: "commonFactor" | "quadratic" | undefined) => Equation;
     };
     /**
      * rearrange
@@ -101,6 +111,12 @@ export class Equation {
      * @returns {Equation}
      */
     plus(exp: number | string | Expression): Equation;
+    /**
+     *
+     * @param {number|string|Expression} exp
+     * @returns {Equation}
+     */
+    minus(exp: number | string | Expression): Equation;
     /**
      *
      * @param {number|string|Expression} exp
