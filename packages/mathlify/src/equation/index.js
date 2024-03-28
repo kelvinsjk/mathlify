@@ -1,4 +1,4 @@
-import { to_Expression, Expression, Product, Quotient } from '../core/expression/index.js';
+import { to_Expression, Expression, Product, Quotient, Sum } from '../core/expression/index.js';
 import { expressionToPolynomial } from '../submodules/casting/index.js';
 
 // TODO: refactor target left/right
@@ -81,6 +81,79 @@ export class Equation {
 			return options?.targetRight
 				? new Equation(this.lhs.clone(), poly.factorize.quadratic())
 				: new Equation(poly.factorize.quadratic(), this.rhs.clone());
+		},
+		/**
+		 * @param {'lhs'|'rhs'|{lhs: number[]}|{rhs: number[]}} target - lhs/rhs (quotient) or an array if the target is a sum
+		 * @param {'commonFactor'|'quadratic'} [method='quadratic'] - use quadratic factorization by default
+		 * @returns {Equation}
+		 * */
+		denominator: (target, method = 'quadratic') => {
+			//TODO: refactor
+			if (target === 'lhs') {
+				if (this.lhs.node.type !== 'quotient') {
+					throw new Error('lhs must be a quotient for target lhs');
+				}
+				const den = this.lhs.node.den;
+				const factorizedDen =
+					method === 'quadratic' ? expressionToPolynomial(den).factorize.quadratic() : den.factorize.commonFactor();
+				return new Equation(new Expression(new Quotient(this.lhs.node.num.clone(), factorizedDen)), this.rhs.clone(), {
+					aligned: this.aligned,
+				});
+			} else if (target === 'rhs') {
+				if (this.rhs.node.type !== 'quotient') {
+					throw new Error('rhs must be a quotient for target rhs');
+				}
+				const den = this.rhs.node.den;
+				const factorizedDen =
+					method === 'quadratic' ? expressionToPolynomial(den).factorize.quadratic() : den.factorize.commonFactor();
+				return new Equation(this.lhs.clone(), new Expression(new Quotient(this.rhs.node.num.clone(), factorizedDen)), {
+					aligned: this.aligned,
+				});
+			} else if ('lhs' in target) {
+				if (this.lhs.node.type !== 'sum') {
+					throw new Error('lhs must be a sum for target lhs');
+				}
+				const terms = this.lhs.node._termsExp.map((term, i) => {
+					if (!target.lhs.includes(i)) return term.clone();
+					let quotient = term.node;
+					let negative = false;
+					if (term.node.type === 'product' && term.node.coeff.is.negative_one() && term.node.factors.length === 1) {
+						quotient = term.node.factors[0];
+						negative = true;
+					}
+					if (quotient.type !== 'quotient') {
+						throw new Error('lhs must be a quotient for target lhs');
+					}
+					const den = quotient.den;
+					const factorizedDen =
+						method === 'quadratic' ? expressionToPolynomial(den).factorize.quadratic() : den.factorize.commonFactor();
+					const q = new Expression(new Quotient(quotient.num.clone(), factorizedDen));
+					return negative ? new Expression(new Product(-1, q)) : q;
+				});
+				return new Equation(new Expression(new Sum(...terms)), this.rhs.clone(), { aligned: this.aligned });
+			}
+			// rhs
+			if (this.rhs.node.type !== 'sum') {
+				throw new Error('rhs must be a sum for target lhs');
+			}
+			const terms = this.rhs.node._termsExp.map((term, i) => {
+				if (!target.rhs.includes(i)) return term.clone();
+				let quotient = term.node;
+				let negative = false;
+				if (term.node.type === 'product' && term.node.coeff.is.negative_one() && term.node.factors.length === 1) {
+					quotient = term.node.factors[0];
+					negative = true;
+				}
+				if (quotient.type !== 'quotient') {
+					throw new Error('lhs must be a quotient for target lhs');
+				}
+				const den = quotient.den;
+				const factorizedDen =
+					method === 'quadratic' ? expressionToPolynomial(den).factorize.quadratic() : den.factorize.commonFactor();
+				const q = new Expression(new Quotient(quotient.num.clone(), factorizedDen));
+				return negative ? new Expression(new Product(-1, q)) : q;
+			});
+			return new Equation(this.lhs.clone(), new Expression(new Sum(...terms)), { aligned: this.aligned });
 		},
 	};
 
@@ -210,6 +283,15 @@ export class Equation {
 	 */
 	plus(exp) {
 		return new Equation(this.lhs.plus(exp), this.rhs.plus(exp));
+	}
+
+	/**
+	 *
+	 * @param {number|string|Expression} exp
+	 * @returns {Equation}
+	 */
+	minus(exp) {
+		return new Equation(this.lhs.minus(exp), this.rhs.minus(exp));
 	}
 
 	/**

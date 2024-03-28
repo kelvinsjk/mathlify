@@ -1,5 +1,6 @@
 import { GeneralPolynomial } from './general-polynomial.js';
 import { Numeral, Expression, Product, Exponent } from '../expression/index.js';
+import { expressionToPolynomial } from '../../submodules/casting/index.js';
 
 /** The Polynomial class represents single-variable polynomials over the rationals (support for floats to be added in the future using the numeral class) */
 export class Polynomial extends GeneralPolynomial {
@@ -43,9 +44,21 @@ export class Polynomial extends GeneralPolynomial {
 	 * @returns {Polynomial}
 	 */
 	plus(p2) {
+		if (typeof p2 !== 'number' && !(p2 instanceof Polynomial)) {
+			try {
+				const poly2 = expressionToPolynomial(p2);
+				return this.plus(poly2);
+			} catch {
+				throw new Error(
+					'we do not support adding polynomials with non-polynomial expressions at the moment. consider starting with the expression first.',
+				);
+			}
+		}
 		const poly2 = typeof p2 === 'number' ? new Polynomial([new Numeral(p2)], this.options) : p2;
 		if (this.variable !== poly2.variable && this.degree !== 0 && poly2.degree !== 0)
-			throw new Error('variables do not match');
+			throw new Error(
+				`variables do not match, ${this.variable}, ${poly2.variable}, ${this.degree}, ${poly2.degree} ${this}`,
+			);
 		let coeffs = pad_zeros(this.coeffs, poly2.degree + 1);
 		coeffs = coeffs.map((x, i) => x.plus(poly2.coeffs[i] ?? new Numeral(0)));
 		return new_poly_from_ascending_coeffs(coeffs, this.options);
@@ -53,7 +66,7 @@ export class Polynomial extends GeneralPolynomial {
 	/**
 	 *
 	 * @param {number|Polynomial} p2
-	 * @returns
+	 * @returns {Polynomial}
 	 */
 	minus(p2) {
 		p2 = typeof p2 === 'number' ? new Polynomial([new Numeral(p2)], this.options) : p2;
@@ -96,14 +109,16 @@ export class Polynomial extends GeneralPolynomial {
 		 * @param {number|Polynomial} [rhs=0]
 		 * @returns {[Expression, Expression, 'rational']} such that either root1 = 0 or root1 \leq root2
 		 * TODO: allow options to modify output types
+		 * TODO: ensure integer discriminant
 		 */
 		quadratic: (rhs = 0) => {
 			const lhs = this.minus(rhs);
-			const discriminant = lhs.quadraticDiscriminant()._getNumeral();
+			const integralPoly = lhs.factorize.commonFactor().remainingFactor;
+			const discriminant = integralPoly.quadraticDiscriminant()._getNumeral();
 			if (discriminant.is.negative()) throw new Error(`Complex solutions not yet supported`);
 			const radical = Math.sqrt(discriminant.valueOf());
 			if (!Number.isInteger(radical)) throw new Error(`Irrational solutions not yet supported`);
-			const [, b, a] = this.coeffs;
+			const [, b, a] = integralPoly.coeffs;
 			let root1 = b.negative().minus(radical).divide(a.times(2));
 			let root2 = b.negative().plus(radical).divide(a.times(2));
 			if (root1.valueOf() > root2.valueOf() || root2.is.zero()) {

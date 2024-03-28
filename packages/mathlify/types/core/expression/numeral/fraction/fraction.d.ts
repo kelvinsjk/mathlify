@@ -30,6 +30,8 @@ export class Fraction {
      * @param {number} [den=1] - denominator
      */
     constructor(num: number, den?: number | undefined);
+    /** @type {'fraction'} */
+    type: 'fraction';
     /** @type {number} */
     num: number;
     /** @type {number} */

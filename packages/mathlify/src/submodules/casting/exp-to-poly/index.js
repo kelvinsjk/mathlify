@@ -25,8 +25,10 @@ export function expressionToPolynomial(exp, options) {
 		const factor = exp.node._factorsExp[0];
 		return expressionToPolynomial(factor, options).times(exp.node.coeff);
 	} else if (exp.node.type === 'sum') {
-		// TODO: handle variable for sum;
-		const polys = exp.node._termsExp.map((t) => expressionToPolynomial(t, options));
+		// hack to ensure correct variable when starting with sums;
+		const termsExp = exp.node._termsExp;
+		const terms = termsExp[0].node.type === 'numeral' ? termsExp.toReversed() : termsExp;
+		const polys = terms.map((t) => expressionToPolynomial(t, options));
 		return polys.reduce((prev, p) => prev.plus(p));
 	}
 	throw new Error('expression form does not fit a polynomial');

@@ -1,9 +1,9 @@
 /**
  * to Expression
- * @param {string|number|Fraction|Expression} exp
+ * @param {string|number|Numeral|Fraction|Expression} exp
  * @return {Expression}
  */
-export function to_Expression(exp: string | number | Fraction | Expression): Expression;
+export function to_Expression(exp: string | number | Numeral | Fraction | Expression): Expression;
 /**
  * unpacks the fraction shorthand
  * @param {Expression|number|string|FractionShorthand} exp
@@ -129,11 +129,11 @@ export class Expression {
     } | undefined): Expression;
     /**
      * product of two expressions
-     * @param {number|string|Expression} exp2
+     * @param {number|Numeral|string|Expression} exp2
      * @param {{preMultiply?: boolean, verbatim?: boolean}} [options] - default to multiplying exp2 behind
      * @returns {Expression}
      */
-    times(exp2: number | string | Expression, options?: {
+    times(exp2: number | Numeral | string | Expression, options?: {
         preMultiply?: boolean | undefined;
         verbatim?: boolean | undefined;
     } | undefined): Expression;
@@ -272,9 +272,9 @@ export type ExpansionOptions = {
     verbatim?: boolean;
     numeratorOnly?: boolean;
 };
+import { Numeral } from './numeral/index.js';
 import { Fraction } from './numeral/index.js';
 import { Variable } from './variable/index.js';
-import { Numeral } from './numeral/index.js';
 import { Sum } from './sum/index.js';
 import { Product } from './product/index.js';
 import { Quotient } from './quotient/index.js';

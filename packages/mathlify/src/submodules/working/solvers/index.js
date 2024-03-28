@@ -1,9 +1,11 @@
+import { Equation } from '../../../equation/index';
 import { EquationWorking } from '../eqn-working/index.js';
+import { expressionToPolynomial } from '../../casting';
 
 // TODO: combine isolate and makeSubjectFromProduct into one step and hide intermediate working by default
 
+/** @typedef {import('../../../core').Polynomial} Polynomial */
 /** @typedef {import('../../../core').Expression} Expression */
-/** @typedef {import('../../../equation').Equation} Equation */
 export const solvers = {
 	/**
 	 * @param {Expression|Equation} exp
@@ -51,5 +53,22 @@ export const solvers = {
 		} else {
 			throw new Error('The expression must be a product or an exponent');
 		}
+	},
+	/**
+	 * @param {Expression|Polynomial|Equation} exp
+	 * @param {string} [variable='x'] - we will use variable if exp not of Polynomial class
+	 * @param {{hideFirstLine?: boolean, aligned?: boolean}} [options]
+	 * @returns {{factorizationWorking: EquationWorking, rootsWorking:string, cols: number, roots: Expression[]}}
+	 */
+	quadratic(exp, variable = 'x', options) {
+		// todo: options for alignment mode
+		// TODO: remove variable option
+		const eqn = exp.type === 'equation' ? exp : new Equation(exp);
+		const factorizationWorking = new EquationWorking(eqn, 0, { aligned: true, ...options });
+		factorizationWorking.makeRhsZero();
+		variable = expressionToPolynomial(eqn.lhs).variable;
+		factorizationWorking.factorize.quadratic();
+		const { working: rootsWorking, roots, cols } = solvers.zeroProduct(factorizationWorking.eqn, variable);
+		return { factorizationWorking, rootsWorking, cols, roots };
 	},
 };

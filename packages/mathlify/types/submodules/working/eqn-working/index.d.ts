@@ -7,10 +7,11 @@ export class EquationWorking {
      * Creates an ExpressionWorking
      * @param {Equation|Expression|number|string} lhs - the initial expression on the left
      * @param {Expression|number|string} [rhs=0] - the initial expression on the right. (ignored if Equation supplied for previous argument)
-     * @param {{aligned?: boolean}} [options] - aligned: true adds the & before =. Defaults to false
+     * @param {{aligned?: boolean, hideFirstStep?: boolean}} [options] - aligned: true adds the & before =. Defaults to false
      */
     constructor(lhs: Equation | Expression | number | string, rhs?: string | number | Expression | undefined, options?: {
         aligned?: boolean | undefined;
+        hideFirstStep?: boolean | undefined;
     } | undefined);
     /** @type {Equation} the current equation */
     eqn: Equation;
@@ -18,6 +19,10 @@ export class EquationWorking {
     eqns: [(Expression | string), (Expression | string)][];
     /** @type {boolean}	 */
     aligned: boolean;
+    /**
+     * @returns {EquationWorking}
+     */
+    clone(): EquationWorking;
     /** @typedef {import('../../../macros/index.js').QuotientShorthand} FractionShorthand */
     /**
      * @param {Object.<string, Expression|string|number|FractionShorthand>} scope - variables to be replaced in the expression
@@ -58,6 +63,19 @@ export class EquationWorking {
         quadratic: (options?: (WorkingOptions & {
             targetRight?: boolean | undefined;
         }) | undefined) => EquationWorking;
+        /**
+         * @param {'lhs'|'rhs'|{lhs: number[]}|{rhs: number[]}} target - lhs/rhs (quotient) or an array if the target is a sum
+         * @param {'commonFactor'|'quadratic'} [method='quadratic'] - use quadratic factorization by default
+         * @param {WorkingOptions & {targetRight?: boolean}} [options] - targets lhs by default
+         * @returns {EquationWorking}
+         * */
+        denominator: (target: 'lhs' | 'rhs' | {
+            lhs: number[];
+        } | {
+            rhs: number[];
+        }, method?: "commonFactor" | "quadratic" | undefined, options?: (WorkingOptions & {
+            targetRight?: boolean | undefined;
+        }) | undefined) => EquationWorking;
     };
     /**
      * rearrange
@@ -79,6 +97,12 @@ export class EquationWorking {
         targetRight?: boolean | undefined;
     }) | undefined): EquationWorking;
     /**
+     * make rhs = 0 by subtracting rhs from both sides
+     * @param {WorkingOptions} [options] - options to hide this step, or to target rhs (defaults to lhf)
+     * @returns {EquationWorking}
+     */
+    makeRhsZero(options?: WorkingOptions | undefined): EquationWorking;
+    /**
      * make subject from product
      * Experimental API
      * @param {string} [variable='x'] - defaults to 'x'
@@ -86,7 +110,7 @@ export class EquationWorking {
      * @returns {EquationWorking}
      */
     _makeSubjectFromProduct(variable?: string | undefined, options?: (WorkingOptions & {
-        steps?: "preMultiply" | "fraction" | "divide" | "postMultiply" | undefined;
+        steps?: "fraction" | "preMultiply" | "divide" | "postMultiply" | undefined;
         targetRight?: boolean | undefined;
     }) | undefined): EquationWorking;
     /**

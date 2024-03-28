@@ -23,11 +23,11 @@ export class EquationWorking {
 	 * Creates an ExpressionWorking
 	 * @param {Equation|Expression|number|string} lhs - the initial expression on the left
 	 * @param {Expression|number|string} [rhs=0] - the initial expression on the right. (ignored if Equation supplied for previous argument)
-	 * @param {{aligned?: boolean}} [options] - aligned: true adds the & before =. Defaults to false
+	 * @param {{aligned?: boolean, hideFirstStep?: boolean}} [options] - aligned: true adds the & before =. Defaults to false
 	 */
 	constructor(lhs, rhs = 0, options) {
 		this.eqn = lhs instanceof Equation ? lhs : new Equation(to_Expression(lhs), to_Expression(rhs));
-		this.eqns = [[this.eqn.lhs, this.eqn.rhs]];
+		this.eqns = options?.hideFirstStep ? [] : [[this.eqn.lhs, this.eqn.rhs]];
 		this.aligned = options?.aligned ?? false;
 	}
 
@@ -130,6 +130,16 @@ export class EquationWorking {
 			}
 			return addStep(this, options);
 		},
+		/**
+		 * @param {'lhs'|'rhs'|{lhs: number[]}|{rhs: number[]}} target - lhs/rhs (quotient) or an array if the target is a sum
+		 * @param {'commonFactor'|'quadratic'} [method='quadratic'] - use quadratic factorization by default
+		 * @param {WorkingOptions & {targetRight?: boolean}} [options] - targets lhs by default
+		 * @returns {EquationWorking}
+		 * */
+		denominator: (target, method = 'quadratic', options) => {
+			this.eqn = this.eqn.factorize.denominator(target, method);
+			return addStep(this, options);
+		},
 	};
 
 	// /**
@@ -212,6 +222,17 @@ export class EquationWorking {
 		this.eqn = new Equation(lhs.simplify(), rhs.simplify());
 		return addStep(this, options);
 	}
+	/**
+	 * make rhs = 0 by subtracting rhs from both sides
+	 * @param {WorkingOptions} [options] - options to hide this step, or to target rhs (defaults to lhf)
+	 * @returns {EquationWorking}
+	 */
+	makeRhsZero(options) {
+		const rhsPoly = expressionToPolynomial(this.eqn.rhs);
+		const eqn = new Equation(expressionToPolynomial(this.eqn.lhs), rhsPoly);
+		this.eqn = eqn.minus(rhsPoly);
+		return addStep(this, options);
+	}
 
 	/**
 	 * make subject from product
@@ -240,8 +261,8 @@ export class EquationWorking {
 			// given kx = a, we can either present
 			// x = a/k as a fraction, or
 			// x = a \div k, or
-			// x = a \times kinv or
-			// x = kinv (a)
+			// x = a \times k^inv or
+			// x = k^inv (a)
 			if (options.steps === 'fraction') {
 				this.eqn = new Equation(lhs, rhs.clone());
 				addStep(this, options);
@@ -389,6 +410,7 @@ export class EquationWorking {
  * @returns {EquationWorking}
  */
 function addStep(working, options) {
+	//TODO: hide for empty array (hidden first step)
 	const [prevLeft, prevRight] = working.eqns[working.eqns.length - 1];
 	const lhs = working.eqn.lhs;
 	const rhs = working.eqn.rhs;
