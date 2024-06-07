@@ -86,7 +86,8 @@ export class Polynomial extends GeneralPolynomial {
 				coeffs[i + j] = coeffs[i + j].plus(this.coeffs[i].times(poly2.coeffs[j]));
 			}
 		}
-		return new_poly_from_ascending_coeffs(coeffs, this.options);
+		const x = new_poly_from_ascending_coeffs(coeffs, this.options);
+		return x;
 	}
 
 	solve = {
@@ -113,7 +114,11 @@ export class Polynomial extends GeneralPolynomial {
 		 */
 		quadratic: (rhs = 0) => {
 			const lhs = this.minus(rhs);
-			const integralPoly = lhs.factorize.commonFactor().remainingFactor;
+			const gcd = Numeral.gcd(...lhs.coeffs);
+			const integralPoly = new Polynomial(
+				lhs.coeffs.map((x) => x.divide(gcd)),
+				{ ascending: true },
+			);
 			const discriminant = integralPoly.quadraticDiscriminant()._getNumeral();
 			if (discriminant.is.negative()) throw new Error(`Complex solutions not yet supported`);
 			const radical = Math.sqrt(discriminant.valueOf());
@@ -172,7 +177,9 @@ export class Polynomial extends GeneralPolynomial {
 		 * @returns {Expression & {factors: [Polynomial, Polynomial], multiple: Numeral}}
 		 */
 		quadratic: () => {
+			console.log(`start ${this}`);
 			const [root1, root2] = this.solve.quadratic();
+			console.log(`end ${this}`);
 			const [x1, x2] = [root1._getNumeral(), root2._getNumeral()];
 			const x1Num = x1.number.num;
 			const x1Den = x1.number.den;
