@@ -28,6 +28,8 @@ expressions.
 
 - Combines `Numeral`s to become a `coeff` at the start of the product
 - Nested products are flattened
+- (New feature introduced 24/6/17) Product containing a quotient will be changed
+  into a quotient with the products in the numerator
 
 ## Expression
 
