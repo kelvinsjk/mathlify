@@ -4,4 +4,4 @@ WARNING: in alpha only: everything should be expected to change in the future. F
 
 A rewrite/renaming of [math-edu](https://github.com/kelvinsjk/math-edu).
 
-See the development blog at [math-edu-blog.netlify.app](https://math-edu-blog.netlify.app)
+See the development blog at [kelvin.mathlify.com](https://kelvin.mathlify.com)

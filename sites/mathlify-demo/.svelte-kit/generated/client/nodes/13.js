@@ -1,0 +1,1 @@
+export { default as component } from "../../../../src/routes/0/2/04-fraction-arithmetic/+page.svelte";
