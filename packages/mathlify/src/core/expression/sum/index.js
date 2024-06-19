@@ -219,7 +219,7 @@ export class Sum {
 	}
 
 	/**
-	 * exposes the factors underneath the expression wrapper
+	 * exposes the terms underneath the expression wrapper
 	 * @returns {ExpressionType[]}
 	 */
 	get terms() {

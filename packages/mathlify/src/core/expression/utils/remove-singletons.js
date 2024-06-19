@@ -49,6 +49,12 @@ export function remove_singletons(exp, options) {
 			// hoist negative
 			return new Product(-1, exp._new_exp(new Quotient(exp.node.num.negative(), exp.node.den)));
 		}
+	} else if (exp.node.type === 'exponent') {
+		if (exp.node.power.type === 'numeral' && exp.node.power.number.is.zero()) {
+			return new Numeral(1);
+		} else if (exp.node.power.type === 'numeral' && exp.node.power.is.one()) {
+			return exp.node.base;
+		}
 	}
 	return undefined;
 }

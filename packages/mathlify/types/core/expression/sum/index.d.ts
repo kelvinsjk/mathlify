@@ -80,7 +80,7 @@ export class Sum {
      */
     contains(variable: string): boolean;
     /**
-     * exposes the factors underneath the expression wrapper
+     * exposes the terms underneath the expression wrapper
      * @returns {ExpressionType[]}
      */
     get terms(): import("../index.js").ExpressionType[];

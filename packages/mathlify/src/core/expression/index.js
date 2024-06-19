@@ -26,8 +26,6 @@ import {
 /** @typedef {{verbatim?: boolean, brackets?: boolean, product?: boolean, sum?: boolean, quotient?: boolean, numeral?: boolean, exponent?: boolean}} SimplifyOptions */
 /** @typedef {{verbatim?: boolean, numeratorOnly?: boolean}} ExpansionOptions */
 
-let n = 0;
-
 /** Expression Class
  * @property {ExpressionType} expression the tree representation of the expression
  *
@@ -85,11 +83,6 @@ export class Expression {
 		exp._mixedFractions = this._mixedFractions;
 		exp._multiplicationSign = this._multiplicationSign;
 		return exp;
-	}
-
-	get n() {
-		n++;
-		return n;
 	}
 
 	/**

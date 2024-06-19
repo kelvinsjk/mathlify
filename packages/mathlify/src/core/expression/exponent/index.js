@@ -68,7 +68,7 @@ export class Exponent {
 	 * @returns {Exponent}
 	 */
 	clone() {
-		return new Exponent(this.baseExp, this.powerExp);
+		return new Exponent(this.baseExp.clone(), this.powerExp.clone());
 	}
 
 	/**
