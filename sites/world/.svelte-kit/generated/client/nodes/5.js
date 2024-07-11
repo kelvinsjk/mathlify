@@ -1,0 +1,1 @@
+export { default as component } from "../../../../src/routes/amath/surds/algebra/equations-involving-surds/+page.svelte";

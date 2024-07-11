@@ -1,0 +1,1 @@
+export { default as component } from "../../../../src/routes/tys/emath/chapter1/unit7/+page.svelte";

@@ -1,0 +1,33 @@
+import { sum, product, quotient, sumVerbatim } from '../../../src/';
+import { test, expect } from 'vitest';
+
+test('sub in', () => {
+	let q = sum([2, 'x'], [3, 'y']);
+	expect(`${q}`).toBe('2x + 3y');
+	let q2 = q.clone();
+	q2 = q2.subIn({ x: 1, y: -2 });
+	expect(`${q2}`).toBe('- 4');
+	q = q.subIn({ x: 1, y: -2 }, { verbatim: true });
+	expect(`${q}`).toBe('2\\left( 1 \\right) + 3\\left( - 2 \\right)');
+	q.simplify({ brackets: true, product: true });
+	expect(`${q}`).toBe('2 - 6');
+	q.simplify();
+	expect(`${q}`).toBe('- 4');
+	q = sum([2, 'x'], [-3, 'y']);
+	expect(`${q}`).toBe('2x - 3y');
+	q = q.subIn({ x: 1, y: [2, '/', 3] });
+	expect(`${q}`).toBe('0');
+	q = product(2, 'x', 'y');
+	expect(`${q}`).toBe('2xy');
+	q = q.subIn({ x: 0 });
+	expect(`${q}`).toBe('0');
+	q = quotient(product('x', 'y'), 3);
+	q = q.subIn({ x: 2, y: sum('z', 1) });
+	expect(`${q}`).toBe('\\frac{2\\left( z + 1 \\right)}{3}');
+	q = sumVerbatim([5, 'x'], [-3, sumVerbatim('x', ['()', 'y'])]);
+	expect(`${q}`).toBe('5x - 3\\left( x + \\left( y \\right) \\right)');
+	q = q.subIn({ x: 'z', y: 2 }, { verbatim: true });
+	expect(`${q}`).toBe('5z - 3\\left( z + \\left( 2 \\right) \\right)');
+	q = q.subIn({ z: -1 });
+	expect(`${q}`).toBe('- 8');
+});

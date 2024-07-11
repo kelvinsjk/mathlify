@@ -1,0 +1,1 @@
+export { default as component } from "../../../../src/routes/0/1/04-dividing-fractions/+page.svelte";
