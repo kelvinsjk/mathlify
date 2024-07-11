@@ -1,1 +1,0 @@
-export { default as component } from "../../../../src/routes/og/sec2/chapter2/worksheet2a/+page.svelte";

@@ -1,7 +1,0 @@
-{
-	"pnpm": {
-		"patchedDependencies": {
-			"prettier-plugin-embed@0.4.14": "patches/prettier-plugin-embed@0.4.14.patch"
-		}
-	}
-}
