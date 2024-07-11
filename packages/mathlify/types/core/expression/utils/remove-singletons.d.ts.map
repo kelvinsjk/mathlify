@@ -1,1 +1,0 @@
-{"version":3,"file":"remove-singletons.d.ts","sourceRoot":"","sources":["../../../../src/core/expression/utils/remove-singletons.js"],"names":[],"mappings":"AAKA,oEAAoE;AACpE,4DAA4D;AAE5D;;;;GAIG;AACH,uCAJW,UAAU;;;;gBAER,cAAc,GAAC,SAAS,CAgDpC;6BAtDa,OAAO,aAAa,EAAE,cAAc;yBACpC,OAAO,aAAa,EAAE,UAAU"}

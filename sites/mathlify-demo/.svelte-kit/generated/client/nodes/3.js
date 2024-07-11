@@ -1,1 +1,0 @@
-export { default as component } from "../../../../src/routes/0/1/01-simplifying-fractions/+page.svelte";
