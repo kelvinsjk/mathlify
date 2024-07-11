@@ -33,7 +33,7 @@
           <SquareMenuIcon />
           <h1>{title}</h1>
         </button>
-        <a href={"#" + title.replaceAll(" ","-")} class="toc-heading-large">
+        <a href={"#" + title.replaceAll(" ","-").replaceAll(",","")} class="toc-heading-large">
           {title}
         </a>
       </div>
