@@ -5,7 +5,7 @@
 
 <ul class="toc">
   {#each toc as heading}
-    <li><a href={`#${heading.text.replaceAll(' ','-')}`}>{heading.text}</a></li>
+    <li><a href={`#${heading.text.replaceAll(' ','-').replaceAll(',','')}`}>{heading.text}</a></li>
     {#if heading.children}
       <svelte:self toc={heading.children} />
     {/if}
