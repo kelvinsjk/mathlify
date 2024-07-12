@@ -75,7 +75,7 @@ $$`f^{-1}: x \mapsto -2 - \sqrt{x+4}, \quad x \in \mathbb{R}, x \geq -4. \; \QED
 [^cite]:
     Content in this page is adapted from OpenStax Calculus Volume 1 by Gilbert
     Strang and Edwin "Jed" Herman under the
-    [Creative Commons Attribution License](https://creativecommons.org/licenses/by/4.0/).\
+    [Creative Commons Attribution Noncommercial Sharealike 4.0 License](https://creativecommons.org/licenses/by-nc-sa/4.0).\
     Access
     for free at
     <https://openstax.org/books/calculus-volume-1/pages/1-4-inverse-functions>

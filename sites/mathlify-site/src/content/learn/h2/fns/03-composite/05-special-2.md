@@ -1,4 +1,4 @@
-# Domain restriction
+# Special composite functions II
 
 <!-- prettier-ignore-start -->
 ::: citation
@@ -25,7 +25,7 @@ $$`\begin{align*} &g:x \mapsto x^2, \quad && x\in\mathbb{R},x\geq 0, \\ &h:x \ma
 [^cite]:
     Content in this page is adapted from OpenStax Calculus Volume 1 by Gilbert
     Strang and Edwin "Jed" Herman under the
-    [Creative Commons Attribution Noncommercial Sharealike 4.0 License](https://creativecommons.org/licenses/by-nc-sa/4.0).\
+    [Creative Commons Attribution License](https://creativecommons.org/licenses/by/4.0/).\
     Access
     for free at
     <https://openstax.org/books/calculus-volume-1/pages/1-4-inverse-functions>

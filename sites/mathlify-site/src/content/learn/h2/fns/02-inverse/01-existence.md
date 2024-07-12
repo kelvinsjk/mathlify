@@ -22,7 +22,7 @@ $`x=1.` We can check that the function
 $`f^{-1}(x) = \frac{x-1}{2}` achieves this
 aim (we will learn how to find this in a later section).
 
-## Inverse functions might not exist
+## Inverse functions may not exist
 
 Consider the function $`g(x)=x^2.` Using it regularly (i.e. start with $`x` and
 try to find $`g(x)`) works like we expect it to: every input leads to exactly
@@ -73,7 +73,7 @@ All horizontal lines $`y=k, k\in\mathbb{R}` intersects the graph of $`y=f(x)=x^3
 [^cite]:
     Content in this page is adapted from OpenStax Calculus Volume 1 by Gilbert
     Strang and Edwin "Jed" Herman under the
-    [Creative Commons Attribution License](https://creativecommons.org/licenses/by/4.0/).\
+    [Creative Commons Attribution Noncommercial Sharealike 4.0 License](https://creativecommons.org/licenses/by-nc-sa/4.0).\
     Access
     for free at
     <https://openstax.org/books/calculus-volume-1/pages/1-4-inverse-functions>

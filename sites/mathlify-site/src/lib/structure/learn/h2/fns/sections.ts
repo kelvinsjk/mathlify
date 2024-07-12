@@ -36,39 +36,38 @@ export const sections = [
 			},
 		],
 	},
-	// {
-	// 	title: 'Composite functions',
-	// 	shortTitle: 'Composite',
-	// 	slug: '03-composite-fns',
-	// 	subsections: [
-	// 		{
-	// 			title: 'Existence of composite functions',
-	// 			slug: '01-existence',
-	// 			shortTitle: 'Composite existence',
-	// 		},
-	// 		{ title: 'Domain of composite functions', slug: '02-domain', shortTitle: 'Composite domain' },
-	// 		{ title: 'Range of composite functions', slug: '03-range', shortTitle: 'Composite range' },
-	// 		{
-	// 			title: 'Formula of composite functions',
-	// 			slug: '04-formula',
-	// 			shortTitle: 'Composite formula',
-	// 		},
-	// 		{
-	// 			title: 'Special composite functions I',
-	// 			slug: '05-special-composite-1',
-	// 			shortTitle: 'Special composite 1',
-	// 		},
-	// 		{
-	// 			title: 'Special composite functions II',
-	// 			slug: '06-special-composite-2',
-	// 			shortTitle: 'Special composite 2',
-	// 		},
-	// 	],
-	// },
+	{
+		title: 'Composite functions',
+		shortTitle: 'Composite',
+		slug: '03-composite',
+		subsections: [
+			{
+				title: 'Existence of composite functions',
+				slug: '01-existence',
+				shortTitle: 'Composite existence',
+			},
+			{
+				title: 'Formula and domain of composite functions',
+				slug: '02-formula',
+				shortTitle: 'Formula and domain',
+			},
+			{ title: 'Range of composite functions', slug: '03-range', shortTitle: 'Composite range' },
+			{
+				title: 'Special composite functions I',
+				slug: '04-special-1',
+				shortTitle: 'Special composite 1',
+			},
+			{
+				title: 'Special composite functions II',
+				slug: '05-special-2',
+				shortTitle: 'Special composite 2',
+			},
+		],
+	},
 	// {
 	// 	title: 'More on functions',
 	// 	shortTitle: 'More',
-	// 	slug: '04-more-fns',
+	// 	slug: '04-more',
 	// 	subsections: [
 	// 		{ title: 'Self inverse functions', slug: '01-self-inverse', shortTitle: 'Self inverse' },
 	// 		{ title: 'Piecewise functions', slug: '02-piecewise', shortTitle: 'Piecewise' },

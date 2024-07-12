@@ -29,6 +29,7 @@
 		--max-width: 800px;
 		--primary-light: 47.9 95.8% 90%;
 		--header-height: 3.875rem;
+		--active: blue;
 	}
 	.dark {
 		--background: 20 14.3% 4.1%;
@@ -72,4 +73,8 @@ html,
 body {
 	height: 100dvh;
 	width: 100dvw;
+}
+
+mark {
+	padding: 0.5rem;
 }
