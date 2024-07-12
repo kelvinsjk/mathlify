@@ -2,14 +2,45 @@
   import Content from '$lib/components/Content/Content.svelte';
 	import type { ViteHotContext } from 'vite/types/hot.js';
   import BottomNav from './BottomNav.svelte';
-	import { afterNavigate, goto } from '$app/navigation';
-	//import { invalidateAll } from '$app/navigation';
+	import { afterNavigate, invalidateAll } from '$app/navigation';
+	import { onDestroy, onMount, tick } from 'svelte';
+	import NavAccordion from './NavAccordion.svelte';
+	import type { Action } from '@sveltejs/kit';
 
   export let data;
   let scrollable: HTMLElement;
 
+
+  let observer: IntersectionObserver;
+  let ids: Set<string> = new Set();
+  let sectionNames: string[] = [];
+  let currentSection: string;
+
+  const callback = (entries: IntersectionObserverEntry[]) => {
+    for (const entry of entries) {
+      if (entry.isIntersecting) {
+        ids.add(entry.target.id);
+      } else {
+        ids.delete(entry.target.id);
+      }
+    }
+    ids = ids;
+    currentSection = updateSection(ids);
+  }
   afterNavigate(()=> {
     scrollable?.scrollIntoView();
+    if (observer) observer.disconnect();
+    ids = new Set();
+
+    observer = new IntersectionObserver(callback, {
+      rootMargin: "0px",
+    });
+    const sections = Array.from(document.querySelectorAll('section:has(>h2, >h3'));
+    sectionNames = sections.map(section => section.id);
+    for (const section of sections) { 
+      observer.observe(section);
+    }
+    currentSection = sectionNames[0];
   });
 
   $: [body, endnotes] = updateData(data.content);
@@ -20,10 +51,8 @@
   async function updateMD(x: ViteHotContext|undefined) {
     if (x){
       x.on('md-update', async () => {
-        location.reload();
-        //await invalidateAll();
-        //[body, endnotes] = (data.content as string).split('<section role="doc-endnotes">');
-        //console.log(`updated md: ${body===undefined}`)
+        await tick();
+        await invalidateAll();
       });
     }
   }
@@ -31,12 +60,19 @@
   function updateData(content: string){
     return content.split('<section role="doc-endnotes">');
   }
+
+  
+  function updateSection(ids: Set<string>): string {
+    const indices = Array.from(ids).map(i=>sectionNames.indexOf(i));
+    return sectionNames[Math.max(...indices)];
+  }
+
 </script>
 <svelte:head>
   <title>{data.title}</title>
 </svelte:head>
 
-<Content toc={data.toc} title={data.title}>
+<Content toc={data.toc} title={data.title} {currentSection}>
   <div class="static-content learn" bind:this={scrollable}>
   {@html body}
   <BottomNav prev={data.prev} next={data.next} />
@@ -45,10 +81,26 @@
     {@html `<section role="doc-endnotes">${endnotes}`}
   </div>
   {/if}
-</div>
+  </div>
+
+  <div slot="desktop-extra-nav">
+    <hr />
+    <BottomNav prev={data.prev} next={data.next} />
+    <hr />
+    <div class="chapter-nav">
+      Chapter navigation
+    </div>
+    <NavAccordion sections={data.sections} section={data.section} subsection={data.subsection}>
+    </NavAccordion>
+  </div>
 </Content>
 
 <style>
+  .chapter-nav {
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-block-start: 2rem;
+  }
   :global(
     .learn.static-content .definition,
     .learn.static-content .technique,

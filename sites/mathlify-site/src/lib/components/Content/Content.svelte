@@ -10,14 +10,15 @@
 	import { browser } from "$app/environment";
   export let toc: Heading[];
   export let title: string;
+  export let currentSection: string;
 
 	let width = browser ? window.innerWidth : 1000;
   let mobile = false;
-  let showTOC = !mobile;
-  $: showTOC = responsiveTOC(width);
+  $: mobile = responsiveTOC(width);
   function responsiveTOC(width: number): boolean {
-    return width >= 800;
+    return width < 800;
   };
+  $: showTOC = !mobile;
 
   import {clickOutside} from '$lib/utils/clickOutside';
 
@@ -38,9 +39,12 @@
         </a>
       </div>
       {#if showTOC}
-        <div class="toc-container" transition:slide>
-          <TOC {toc} />
+        <div class="toc-container" transition:slide={{duration: mobile ? 400 : 0}}>
+          <TOC {toc} {currentSection} />
         </div>
+      {/if}
+      {#if !mobile}
+        <slot name="desktop-extra-nav" />
       {/if}
     </nav>
   </div>
@@ -73,6 +77,7 @@
     padding-inline: 1rem;
     padding-block: 0.5rem;
     width: var(--container-width);
+    overflow-y: auto;
   }
   .toc-heading {
     margin-block-end: 0.5rem;
@@ -108,7 +113,7 @@
     .content-container {
       width: 100vw;
     grid-auto-rows: 100%;
-      grid-template-columns: 1fr clamp(200px, calc(200px + 100vw - var(--container-width)), 400px);
+      grid-template-columns: 1fr clamp(250px, calc(250px + (100vw - var(--container-width)) / 2), 400px);
     }
     .content-header-container {
       margin-block-end: 0;

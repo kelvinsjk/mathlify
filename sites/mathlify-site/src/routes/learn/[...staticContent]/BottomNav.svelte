@@ -3,35 +3,44 @@
   export let prev: {shortTitle: string, slug: string, sectionSlug: string} | undefined;
   export let next: {shortTitle: string, slug: string, sectionSlug: string} | undefined;
   import {Button} from '$lib/components/ui/button';
+  import {ChevronLeftIcon, ChevronRightIcon} from 'lucide-svelte'
 </script>
 
 <div class="bottom-nav">
   <div class:half-width={prev&&next}>
-      {#if prev}
-      <Button href={`../${prev.sectionSlug}/${prev.slug}`} variant="outline">← {prev.shortTitle}</Button>
-      {/if}
-    </div>
+    {#if prev}
+    <Button href={`../${prev.sectionSlug}/${prev.slug}`} variant="outline" class="pl-2">
+      <ChevronLeftIcon class="mr-2" />
+      {prev.shortTitle}
+    </Button>
+    {/if}
+  </div>
   {#if next}
-    <div class:half-width={prev&&next}>
-      <Button href={`../${next.sectionSlug}/${next.slug}`} variant="outline" class="ml-auto">{next.shortTitle} →</Button>
+    <div class:half-width={prev&&next} class="ml-auto">
+      <Button href={`../${next.sectionSlug}/${next.slug}`} variant="outline" class="ml-auto pr-2">
+        {next.shortTitle}
+        <ChevronRightIcon class="ml-2" />
+      </Button>
     </div>
   {/if}
 </div>
 
 <style>
   .bottom-nav {
-    display: flex;
-    justify-content: space-between;
+    width: 100%;
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: calc(50% - 0.5rem) calc(50% - 0.5rem);
     align-items: center;
-    margin-top: 1em;
+    margin-block: 1em;
   }
   .half-width {
-    max-width: calc(50% - 0.5rem);
+    width: 100%;
   }
   :global(.half-width > *) {
     white-space: inherit;
-    max-width: 100%;
     height: max-content;
+    width: 100%;
   }
   :global(.bottom-nav > * > *){
     background-color: hsl(var(--primary-light));

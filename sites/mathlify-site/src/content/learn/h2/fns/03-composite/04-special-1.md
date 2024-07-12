@@ -1,4 +1,4 @@
-# Relationship between a function and its inverse
+# Special composite functions I
 
 <!-- prettier-ignore-start -->
 ::: citation
@@ -64,7 +64,7 @@ Since $`{x \leq -2},` we have our answer $`x=-3. \; \QED`
 [^cite]:
     Content in this page is adapted from OpenStax Calculus Volume 1 by Gilbert
     Strang and Edwin "Jed" Herman under the
-    [Creative Commons Attribution Noncommercial Sharealike 4.0 License](https://creativecommons.org/licenses/by-nc-sa/4.0).\
+    [Creative Commons Attribution License](https://creativecommons.org/licenses/by/4.0/).\
     Access
     for free at
     <https://openstax.org/books/calculus-volume-1/pages/1-4-inverse-functions>

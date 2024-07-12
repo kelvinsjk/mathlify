@@ -1,4 +1,4 @@
-# Domain and range of inverse functions
+# Range of composite functions
 
 <!-- prettier-ignore-start -->
 ::: citation
@@ -16,8 +16,8 @@ formulas for its domain and range:
 <!-- prettier-ignore-start -->
 ::: formula
 
-- {=$`D_{f^{-1}} = R_f`=}
-- {=$`R_{f^{-1}} = D_f`=}
+- $`D_{f^{-1}} = R_f`
+- $`R_{f^{-1}} = D_f`
 
 :::
 <!-- prettier-ignore-end -->
@@ -48,7 +48,7 @@ $`R_{f^{-1}} = D_f = [-2, \infty) \; \QED`
 [^cite]:
     Content in this page is adapted from OpenStax Calculus Volume 1 by Gilbert
     Strang and Edwin "Jed" Herman under the
-    [Creative Commons Attribution Noncommercial Sharealike 4.0 License](https://creativecommons.org/licenses/by-nc-sa/4.0).\
+    [Creative Commons Attribution License](https://creativecommons.org/licenses/by/4.0/).\
     Access
     for free at
     <https://openstax.org/books/calculus-volume-1/pages/1-4-inverse-functions>

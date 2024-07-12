@@ -1,18 +1,23 @@
 <script lang="ts">
   import type {Heading} from './Content.svelte';
   export let toc: Heading[];
+  export let currentSection: string;
 </script>
 
 <ul class="toc">
   {#each toc as heading}
-    <li><a href={`#${heading.text.replaceAll(' ','-').replaceAll(',','')}`}>{heading.text}</a></li>
+    {@const id = heading.text.replaceAll(' ','-').replaceAll(',','')}
+    <li class:active={currentSection === id}><a href={`#${id}`}>{heading.text}</a></li>
     {#if heading.children}
-      <svelte:self toc={heading.children} />
+      <svelte:self toc={heading.children} {currentSection} />
     {/if}
   {/each}
 </ul>
 
 <style>
+  .active {
+    color: var(--active);
+  }
   :global(.toc li){
     margin: 0;
     padding: 0;
