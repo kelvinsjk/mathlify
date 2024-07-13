@@ -1,4 +1,6 @@
-export const sections = [
+import type { Section } from '$lib/types/learn';
+
+export const sections: Section[] = [
 	{
 		title: 'Concepts of function, domain and range',
 		shortTitle: 'Concepts',
