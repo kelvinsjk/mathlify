@@ -1,6 +1,9 @@
 /**
  * Generates a random integer between `min` and `max` (inclusive)
  *
+ * will swap min and max around if min > max
+ * will use ceil and floor if min and max are not integers
+ *
  * @param min defaults to -9
  * @param max defaults to 9
  * @param options `{avoid: []}` array of numbers to be avoided
@@ -11,9 +14,8 @@ export function getRandomInt(
 	max: number = 9,
 	options?: { avoid?: number | number[] },
 ): number {
-	min = Math.ceil(min); // in case min is non-integer
-	max = Math.floor(max); // in case max is non-integer
-	[min, max] = [Math.min(min, max), Math.max(min, max)];
+	[min, max] = [min, max].sort((a, b) => a - b);
+	[min, max] = [Math.ceil(min), Math.floor(max)];
 	let randomInt = Math.floor(Math.random() * (max - min + 1)) + min;
 	let { avoid } = {
 		avoid: [],
@@ -39,4 +41,14 @@ export function coinFlip(): boolean {
 	return Math.random() < 0.5;
 }
 
-export const chooseRandom = <T>(array: T[]): T => array.at(getRandomInt(0, array.length - 1))!;
+export function getRandomSign(): number {
+	return coinFlip() ? 1 : -1;
+}
+
+export function getRandomNonZeroInt(min: number = 1, max: number = 9): number {
+	const [a, b] = [Math.abs(min), Math.abs(max)].sort((a, b) => a - b);
+	return getRandomInt(a, b) * getRandomSign();
+}
+
+export const chooseRandom = <T>(array: T[] | readonly T[]): T =>
+	array.at(getRandomInt(0, array.length - 1))!;

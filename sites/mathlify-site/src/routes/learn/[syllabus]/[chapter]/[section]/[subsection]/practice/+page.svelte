@@ -1,44 +1,38 @@
 <script lang="ts">
-  import Content from '$lib/components/Content/Content.svelte';
-  import BottomNav from '$lib/components/Nav/BottomNav.svelte';
-	import NavAccordion from '$lib/components/Nav/NavAccordion.svelte';
-  
+	import Practice from '$lib/components/Content/Practice.svelte';
+  import Button from '$lib/components/ui/button/button.svelte';
+	import { scale } from 'svelte/transition';
+
   const {data} = $props();
 
   import {practices} from '$content/learn/practices';
   
   const practice = $derived(practices[data.syllabus][data.chapter][data.section][data.subsection]);
-  const {qn,answer} = $derived(practice.generateQn(data.state));
+  let qnState = $state(data.state);
+  let {qn,ans} = $derived(practice.generateQn(data.state));
+  let showAnswer = $state(false);
+
 </script>
 <svelte:head>
   <title>{data.title}</title>
 </svelte:head>
 
-<Content title={data.title}>
-  {#snippet content()}
-  <div class="static-content learn">
-  {@html qn}
-  <BottomNav prev={data.prev} next={data.next} />
-  </div>
-  {/snippet}
-  {#snippet desktopExtraNav()}
-  <div>
-    <hr />
-    <BottomNav prev={data.prev} next={data.next} />
-    <hr />
-    <div class="chapter-nav">
-      Chapter navigation
+<Practice title={data.title} next={data.next} sections={data.sections} section={data.section} subsection={data.subsection} bind:showAnswer>
+  {#snippet question()}
+    {#key qnState}
+    <div class="question-container" in:scale>
+      {@html qn}
     </div>
-    <NavAccordion sections={data.sections} section={data.section} subsection={data.subsection}>
-    </NavAccordion>
-  </div>
+    {/key}
   {/snippet}
-</Content>
-
-<style>
-  .chapter-nav {
-    font-weight: bold;
-    font-size: 1.25rem;
-    margin-block-start: 2rem;
-  }
-</style>
+  {#snippet questionButton()}
+    <Button onclick={()=>{
+      showAnswer = false;
+      qnState = practice.generateState();
+    }}
+    >Generate New</Button>
+  {/snippet}
+  {#snippet answer()}
+    {@html ans}
+  {/snippet}
+</Practice>

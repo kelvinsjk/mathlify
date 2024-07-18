@@ -66,6 +66,7 @@
 p:has(math.tml-display) {
 	overflow-x: auto;
 	margin-block: 0;
+	overflow-y: visible;
 }
 
 html,
@@ -79,5 +80,5 @@ mark {
 }
 
 p:last-child:has(> math.tml-display) {
-	margin-bottom: 1.25em;
+	padding-block-end: 1.25em;
 }

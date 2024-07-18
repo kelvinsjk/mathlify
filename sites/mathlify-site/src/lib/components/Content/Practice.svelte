@@ -7,9 +7,8 @@
 	import Switch from '$lib/components/ui/switch/switch.svelte';
 	import { slide } from 'svelte/transition';
   
-  let {title, prev, next, question, sections, section, subsection, showAnswer = $bindable(false), answer, solution, questionButton}: {
+  let {title, next, question, sections, section, subsection, showAnswer = $bindable(false), answer, solution, questionButton}: {
     title: string,
-    prev: {shortTitle: string, slug: string, sectionSlug: string} | undefined,
     next: {shortTitle: string, slug: string, sectionSlug: string} | "practice" | undefined,
     sections: Section[];
     section: string|undefined;
@@ -20,21 +19,24 @@
     solution?: Snippet,
     questionButton?: Snippet,
   } = $props();
+  const prev = "theory";
 </script>
 
 <Content {title}>
   {#snippet content()}
   <div class="static-content learn">
-    <h1 id={title.replaceAll(" ","-").replaceAll(",","")}>Practice: {title.toLocaleLowerCase()}</h1>
-    <section class="question" aria-label="Question">
-      <div class="question-heading-container">
-        <h2>Question</h2>
-        {#if questionButton}
-        {@render questionButton()}
-        {/if}
-      </div>
-      {@render question()}
-    </section>
+    <h1 id={title.replaceAll(" ","-").replaceAll(",","")}>{title}</h1>
+    <div class="question-container">
+      <section class="question" aria-label="Question">
+        <div class="question-heading-container">
+          <h2>Question</h2>
+          {#if questionButton}
+          {@render questionButton()}
+          {/if}
+        </div>
+        {@render question()}
+      </section>
+    </div>
     <section class="answer" aria-label="Answer">
       <div class="answer-heading-container">
         <h2>Answer</h2>
@@ -73,15 +75,49 @@
     font-size: 1.25rem;
     margin-block-start: 2rem;
   }
+  .question-container {
+    background-color: hsl(var(--primary-light));
+    margin-left: 50%;
+    margin-block-start: 1em;
+    transform: translateX(-50%);
+    padding-block-start: 1em;
+    width: 100dvw;
+  }
+  .question{
+    margin-inline: auto;
+    padding-inline: 1rem;
+  }
+
+  /** TODO: sync with app.css var(--max-width) */
+  @media (min-width: 800px){
+    .question-container {
+      --bleed-width: calc(100dvw - clamp(250px, calc(250px + (100vw - var(--container-width)) / 2), 400px));
+      width: var(--bleed-width);
+    }
+    .question{
+      width: min(800px, var(--bleed-width));
+    }
+  }
   .question-heading-container, .answer-heading-container {
     display: flex;
     align-items: center;
-    margin-top: 2em;
-    margin-bottom: 1em;
+    margin-block-end: 1em;
     gap: 1em;
+    flex-wrap: wrap;
+  }
+  @media (max-width:374px){
+    .question-heading-container {
+      gap: 0.25em;
+    }  
+  }
+  .answer-heading-container {
+    margin-block-start: 1em;
   }
   h1, h2 {
     margin-block: 0;
+  }
+  .answer {
+    padding-block-end: 1.25em;
   }
 
 </style>

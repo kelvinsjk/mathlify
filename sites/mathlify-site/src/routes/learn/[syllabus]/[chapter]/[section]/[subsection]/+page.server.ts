@@ -19,7 +19,6 @@ export const load: PageServerLoad = async ({ params, depends }) => {
 		toc: getToc(results.body),
 		content: renderHTML(results.body),
 		prev: subsections[index - 1],
-		next: subsections[index + 1],
 		sections: sections,
 		chapter,
 		section,

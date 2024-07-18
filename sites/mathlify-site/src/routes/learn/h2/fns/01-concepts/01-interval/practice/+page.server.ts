@@ -2,7 +2,7 @@ import type { PageServerLoad } from './$types';
 import { subsections, sections } from '$lib/structure/learn/h2/fns/sections';
 
 export const prerender = true;
-import { generateState } from './generators';
+import { generateState } from '$content/learn/h2/fns/01-concepts/01-interval';
 
 export const load: PageServerLoad = async () => {
 	const syllabus = 'h2';
@@ -13,7 +13,6 @@ export const load: PageServerLoad = async () => {
 	const state = generateState();
 	return {
 		title: subsections[index].title,
-		prev: subsections[index - 1],
 		next: subsections[index + 1],
 		sections: sections,
 		syllabus,

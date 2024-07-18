@@ -1,6 +1,6 @@
 <script lang="ts">
   // heavy inspiration from https://github.com/huntabyte/shadcn-svelte/blob/main/apps/www/src/lib/components/docs/docs-pager.svelte
-  export let prev: {shortTitle: string, slug: string, sectionSlug: string} | undefined;
+  export let prev: {shortTitle: string, slug: string, sectionSlug: string} | "theory" | undefined;
   export let next: {shortTitle: string, slug: string, sectionSlug: string} | "practice" | undefined;
   import {Button} from '$lib/components/ui/button';
   import {ChevronLeftIcon, ChevronRightIcon} from 'lucide-svelte';
@@ -9,9 +9,9 @@
 <div class="bottom-nav">
   <div class:half-width={prev&&next}>
     {#if prev}
-    <Button href={`../../${prev.sectionSlug}/${prev.slug}`} variant="outline" class="pl-2">
+    <Button href={prev === "theory" ? "./" :`../../${prev.sectionSlug}/${prev.slug}`} variant="outline" class="pl-2">
       <ChevronLeftIcon class="mr-2" />
-      {prev.shortTitle}
+      {prev==="theory" ? "Theory" : prev.shortTitle}
     </Button>
     {/if}
   </div>
@@ -32,7 +32,10 @@
     gap: 1rem;
     grid-template-columns: calc(50% - 0.5rem) calc(50% - 0.5rem);
     align-items: center;
-    margin-block: 1em;
+    padding-block: 1em;
+  }
+  :global(.content-body-container .bottom-nav){
+    padding-block-end:0;
   }
   .half-width {
     width: 100%;
