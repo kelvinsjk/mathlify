@@ -1,8 +1,0 @@
-# Dependency directories
-node_modules/
-/lib
-/docs
-/coverage
-/svelte
-src/__tests__/demos
-.parcel-cache/
