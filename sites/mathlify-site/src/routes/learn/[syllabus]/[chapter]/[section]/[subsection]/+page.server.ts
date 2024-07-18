@@ -5,14 +5,13 @@ import { renderHTML, getToc } from 'djot-temml';
 import { subsections, sections } from '$lib/structure/learn/h2/fns/sections';
 
 export const prerender = true;
+export const trailingSlash = 'always';
 
-export const load: PageServerLoad = async ({ params }) => {
-	const results = await getStaticContent('learn/' + params.staticContent);
+export const load: PageServerLoad = async ({ params, depends }) => {
+	depends('md');
+	const { syllabus, chapter, section, subsection } = params;
+	const results = await getStaticContent(`learn/${syllabus}/${chapter}/${section}/${subsection}`);
 	if (results === null) throw error(404, 'Not Found');
-	const parts = params.staticContent.split('/');
-	const chapter = parts.at(-3);
-	const section = parts.at(-2);
-	const subsection = parts.at(-1);
 	const index = subsections.findIndex((s) => s.slug === subsection && s.sectionSlug === section);
 	return {
 		metadata: results.metadata,

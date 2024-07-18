@@ -1,12 +1,10 @@
 export function clickOutside(node: HTMLElement, callback: () => void) {
-	window.addEventListener('click', handleClick);
-
-	function handleClick(e: Event) {
+	const handleClick = async (e: Event) => {
 		if (!node.contains(e.target as Node)) {
-			console.log('here');
 			callback();
 		}
-	}
+	};
+	window.addEventListener('click', handleClick);
 
 	return {
 		destroy() {

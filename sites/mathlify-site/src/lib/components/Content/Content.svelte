@@ -7,50 +7,56 @@
 
 	import TOC from "./TOC.svelte";
   import {SquareMenuIcon} from 'lucide-svelte'
-	import { browser } from "$app/environment";
-  export let toc: Heading[];
-  export let title: string;
-  export let currentSection: string;
 
-	let width = browser ? window.innerWidth : 1000;
-  let mobile = false;
-  $: mobile = responsiveTOC(width);
-  function responsiveTOC(width: number): boolean {
-    return width < 800;
-  };
-  $: showTOC = !mobile;
+  let { toc, title, currentSection="", content ,desktopExtraNav }: {
+    toc?: Heading[],
+    title: string,
+    currentSection?: string,
+    content: Snippet,
+    desktopExtraNav: Snippet,
+  } = $props();
+
+	let width = $state(700);
+  let mobile = $derived(width < 800);
+  let showTOC = $state(false);
+
+  $effect.pre(()=>{
+    if (!mobile) showTOC = true;
+  })
 
   import {clickOutside} from '$lib/utils/clickOutside';
+	import type { Snippet } from "svelte";
 
 </script>
 
 <svelte:window bind:innerWidth={width} />
-
 <div class="content-container">
   <div class="content-header-container">
     <nav class="content-header">
       <div class="toc-heading">
-        <button class="toc-heading-small" on:click={() => showTOC = !showTOC} use:clickOutside={()=> {if (mobile) showTOC = false}}>
+        <button class="toc-heading-small" onclick={() => showTOC = !showTOC } use:clickOutside={()=> {if (mobile) showTOC = false}}>
+          {#if toc}
           <SquareMenuIcon />
+          {/if}
           <h1>{title}</h1>
         </button>
         <a href={"#" + title.replaceAll(" ","-").replaceAll(",","")} class="toc-heading-large">
           {title}
         </a>
       </div>
-      {#if showTOC}
+      {#if toc && showTOC}
         <div class="toc-container" transition:slide={{duration: mobile ? 400 : 0}}>
           <TOC {toc} {currentSection} />
         </div>
       {/if}
       {#if !mobile}
-        <slot name="desktop-extra-nav" />
+        {@render desktopExtraNav()}
       {/if}
     </nav>
   </div>
   <div class="content-body-container">
     <div class="content-body content prose">
-      <slot />
+      {@render content()}
     </div>
   </div>
 </div>
@@ -121,7 +127,7 @@
     }
     .content-header * {
       padding-block: 0;
-      font-size: 1em;
+      font-size: 1rem;
     }
     .toc-container {
     line-height: 1.2;
@@ -132,7 +138,7 @@
     .toc-heading-large {
       display: block;
       margin-block-start: 0.5rem;
-      font-size: 1.2rem;
+      font-size: 1.25rem;
       white-space: nowrap;
     }
     .content-body-container{

@@ -1,15 +1,15 @@
 <script lang="ts">
   // heavy inspiration from https://github.com/huntabyte/shadcn-svelte/blob/main/apps/www/src/lib/components/docs/docs-pager.svelte
   export let prev: {shortTitle: string, slug: string, sectionSlug: string} | undefined;
-  export let next: {shortTitle: string, slug: string, sectionSlug: string} | undefined;
+  export let next: {shortTitle: string, slug: string, sectionSlug: string} | "practice" | undefined;
   import {Button} from '$lib/components/ui/button';
-  import {ChevronLeftIcon, ChevronRightIcon} from 'lucide-svelte'
+  import {ChevronLeftIcon, ChevronRightIcon} from 'lucide-svelte';
 </script>
 
 <div class="bottom-nav">
   <div class:half-width={prev&&next}>
     {#if prev}
-    <Button href={`../${prev.sectionSlug}/${prev.slug}`} variant="outline" class="pl-2">
+    <Button href={`../../${prev.sectionSlug}/${prev.slug}`} variant="outline" class="pl-2">
       <ChevronLeftIcon class="mr-2" />
       {prev.shortTitle}
     </Button>
@@ -17,8 +17,8 @@
   </div>
   {#if next}
     <div class:half-width={prev&&next} class="ml-auto">
-      <Button href={`../${next.sectionSlug}/${next.slug}`} variant="outline" class="ml-auto pr-2">
-        {next.shortTitle}
+      <Button href={next === 'practice' ? 'practice' : `../../${next.sectionSlug}/${next.slug}`} variant="outline" class="ml-auto pr-2">
+        {next==='practice' ? "Practice" : next.shortTitle}
         <ChevronRightIcon class="ml-2" />
       </Button>
     </div>
