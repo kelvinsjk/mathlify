@@ -65,7 +65,6 @@
 
 p:has(math.tml-display) {
 	overflow-x: auto;
-	padding-bottom: 1rem;
 	margin-block: 0;
 }
 
@@ -77,4 +76,8 @@ body {
 
 mark {
 	padding: 0.5rem;
+}
+
+p:last-child:has(> math.tml-display) {
+	margin-bottom: 1.25em;
 }

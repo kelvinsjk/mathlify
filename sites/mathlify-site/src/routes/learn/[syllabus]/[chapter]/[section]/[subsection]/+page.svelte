@@ -1,91 +1,83 @@
 <script lang="ts">
   import Content from '$lib/components/Content/Content.svelte';
-	import type { ViteHotContext } from 'vite/types/hot.js';
-  import BottomNav from './BottomNav.svelte';
-	import { afterNavigate, invalidateAll } from '$app/navigation';
-	import { onDestroy, onMount, tick } from 'svelte';
-	import NavAccordion from './NavAccordion.svelte';
-	import type { Action } from '@sveltejs/kit';
+  import BottomNav from '$lib/components/Nav/BottomNav.svelte';
+	import { afterNavigate, invalidate } from '$app/navigation';
+	import NavAccordion from '$lib/components/Nav/NavAccordion.svelte';
+  
+  const {data} = $props();
 
-  export let data;
   let scrollable: HTMLElement;
-
-
   let observer: IntersectionObserver;
-  let ids: Set<string> = new Set();
-  let sectionNames: string[] = [];
-  let currentSection: string;
+  let observed: {id: string, tagName: string}[] = [];
+  let sectionIds: string[] = [];
+  let currentSection = $state("");
 
   const callback = (entries: IntersectionObserverEntry[]) => {
     for (const entry of entries) {
       if (entry.isIntersecting) {
-        ids.add(entry.target.id);
+        const tagName = entry.target.tagName === "SECTION" ? entry.target.firstElementChild?.tagName ?? "" : entry.target.tagName;
+        observed.push({id: entry.target.id, tagName});
       } else {
-        ids.delete(entry.target.id);
+        observed = observed.filter(e=>e.id !== entry.target.id);
       }
     }
-    ids = ids;
-    currentSection = updateSection(ids);
+    observed = observed;
+    currentSection = updateSection(observed);
   }
   afterNavigate(()=> {
     scrollable?.scrollIntoView();
     if (observer) observer.disconnect();
-    ids = new Set();
+    observed = [];
 
     observer = new IntersectionObserver(callback, {
       rootMargin: "0px",
     });
-    const sections = Array.from(document.querySelectorAll('section:has(>h2, >h3'));
-    sectionNames = sections.map(section => section.id);
+    const sections = Array.from(document.querySelectorAll('section:has(>h2, >h3), h2[id], h3[id]'));
+    sectionIds = sections.map(section => section.id);
     for (const section of sections) { 
       observer.observe(section);
     }
-    currentSection = sectionNames[0];
+    currentSection = sectionIds[0];
   });
 
-  $: [body, endnotes] = updateData(data.content);
-
-  
-  $: updateMD(import.meta.hot);
-
-  async function updateMD(x: ViteHotContext|undefined) {
-    if (x){
-      x.on('md-update', async () => {
-        await tick();
-        await invalidateAll();
-      });
+  let [body, endnotes] = $derived(data.content.split('<section role="doc-endnotes">'));
+  $effect(()=>{
+    if (import.meta.hot){
+      import.meta.hot.on('md-update', async ()=>{
+        invalidate('md');
+      })
     }
-  }
-
-  function updateData(content: string){
-    return content.split('<section role="doc-endnotes">');
-  }
-
+  })
   
-  function updateSection(ids: Set<string>): string {
-    const indices = Array.from(ids).map(i=>sectionNames.indexOf(i));
-    return sectionNames[Math.max(...indices)];
+  function updateSection(ids: {id: string, tagName: string}[]): string {
+    const sortedIDs = ids.toSorted((a,b)=>{
+      return a.tagName > b.tagName ? -1:
+        a.tagName < b.tagName ? 1: 
+        sectionIds.indexOf(a.id) - sectionIds.indexOf(b.id); ;
+    })
+    return sortedIDs[0]?.id ?? "";
   }
-
 </script>
 <svelte:head>
   <title>{data.title}</title>
 </svelte:head>
 
 <Content toc={data.toc} title={data.title} {currentSection}>
+  {#snippet content()}
   <div class="static-content learn" bind:this={scrollable}>
   {@html body}
-  <BottomNav prev={data.prev} next={data.next} />
+  <BottomNav prev={data.prev} next="practice" />
   {#if endnotes}
   <div class="endnotes-container">
     {@html `<section role="doc-endnotes">${endnotes}`}
   </div>
   {/if}
   </div>
-
-  <div slot="desktop-extra-nav">
+  {/snippet}
+  {#snippet desktopExtraNav()}
+  <div>
     <hr />
-    <BottomNav prev={data.prev} next={data.next} />
+    <BottomNav prev={data.prev} next="practice" />
     <hr />
     <div class="chapter-nav">
       Chapter navigation
@@ -93,12 +85,13 @@
     <NavAccordion sections={data.sections} section={data.section} subsection={data.subsection}>
     </NavAccordion>
   </div>
+  {/snippet}
 </Content>
 
 <style>
   .chapter-nav {
     font-weight: bold;
-    font-size: 1.2rem;
+    font-size: 1.25rem;
     margin-block-start: 2rem;
   }
   :global(

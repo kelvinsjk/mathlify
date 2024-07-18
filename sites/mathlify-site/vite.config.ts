@@ -15,7 +15,6 @@ function getStaticContentHMR(): PluginOption {
 		handleHotUpdate(context) {
 			if (context.file.startsWith(`${__dirname}/src/content`) && context.file.endsWith(`.md`)) {
 				context.server.ws.send({ type: 'custom', event: 'md-update' });
-				return [];
 			}
 		},
 	};

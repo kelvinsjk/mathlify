@@ -1,6 +1,6 @@
 <script lang="ts">
   import * as Accordion from "$lib/components/ui/accordion/index";
-  import type {Section} from "$lib/types/sections";
+  import type {Section} from "$lib/types/learn";
 
   export let sections: Section[];
   export let section: string|undefined;

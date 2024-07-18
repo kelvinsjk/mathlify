@@ -1,7 +1,12 @@
 <script lang="ts">
   import type {Heading} from './Content.svelte';
-  export let toc: Heading[];
-  export let currentSection: string;
+  //export let toc: Heading[];
+  //export let currentSection: string;
+
+  let {toc, currentSection}: {
+    toc: Heading[],
+    currentSection: string,
+  } = $props();
 </script>
 
 <ul class="toc">
