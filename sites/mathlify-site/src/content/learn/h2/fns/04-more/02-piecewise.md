@@ -1,4 +1,4 @@
-# Formula and domain of composite functions
+# Piecewise functions
 
 ## Finding a composite function
 

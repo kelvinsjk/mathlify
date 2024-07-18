@@ -1,4 +1,6 @@
-export const sections = [
+import type { Section } from '$lib/types/learn';
+
+export const sections: Section[] = [
 	{
 		title: 'Concepts of function, domain and range',
 		shortTitle: 'Concepts',
@@ -53,33 +55,28 @@ export const sections = [
 			},
 			{ title: 'Range of composite functions', slug: '03-range', shortTitle: 'Composite range' },
 			{
-				title: 'Special composite functions I',
-				slug: '04-special-1',
-				shortTitle: 'Special composite 1',
-			},
-			{
-				title: 'Special composite functions II',
-				slug: '05-special-2',
-				shortTitle: 'Special composite 2',
+				title: 'Special composite functions',
+				slug: '04-special',
+				shortTitle: 'Special composites',
 			},
 		],
 	},
-	// {
-	// 	title: 'More on functions',
-	// 	shortTitle: 'More',
-	// 	slug: '04-more',
-	// 	subsections: [
-	// 		{ title: 'Self inverse functions', slug: '01-self-inverse', shortTitle: 'Self inverse' },
-	// 		{ title: 'Piecewise functions', slug: '02-piecewise', shortTitle: 'Piecewise' },
-	// 		{ title: 'Modulus functions', slug: '03-modulus', shortTitle: 'Modulus' },
-	// 		{ title: 'Repeating functions', slug: '04-repeating', shortTitle: 'Repeating' },
-	// 		{
-	// 			title: 'Using the quadratic discriminant',
-	// 			slug: '05-discriminant',
-	// 			shortTitle: 'Discriminant',
-	// 		},
-	// 	],
-	// },
+	{
+		title: 'More on functions',
+		shortTitle: 'More',
+		slug: '04-more',
+		subsections: [
+			{ title: 'Self inverse functions', slug: '01-self-inverse', shortTitle: 'Self inverse' },
+			{ title: 'Piecewise functions', slug: '02-piecewise', shortTitle: 'Piecewise' },
+			{ title: 'Modulus functions', slug: '03-modulus', shortTitle: 'Modulus' },
+			{ title: 'Repeating functions', slug: '04-repeating', shortTitle: 'Repeating' },
+			{
+				title: 'Using the quadratic discriminant',
+				slug: '05-discriminant',
+				shortTitle: 'Discriminant',
+			},
+		],
+	},
 ];
 
 export const subsections = sections

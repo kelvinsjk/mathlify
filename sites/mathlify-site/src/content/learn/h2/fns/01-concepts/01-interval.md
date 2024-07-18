@@ -8,10 +8,14 @@ real numbers between 0 (exclusive) and 1 (inclusive).
 ## The interval notation
 
 The **interval notation** is often a more convenient way to describe these sets
-of real number. The previous example of $`\{ x \in \mathbb{R}: 0 < x \leq 1 \}`
-can be written in interval notation as $`(0,1].` Round parenthesis, ( or ), are
-used to indicate that the end value is not included while square brackets, [ or
-], are used to indicate that the end value is included.
+of real number.
+
+![interval](/images/h2/fns/interval.svg)
+
+The previous example of $`\{ x \in \mathbb{R}: 0 < x \leq 1 \}` can be written
+in interval notation as $`(0,1].` Round parenthesis, ( or ), are used to
+indicate that the end value is not included while square brackets, [ or ], are
+used to indicate that the end value is included.
 
 ## Examples
 
