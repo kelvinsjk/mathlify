@@ -86,13 +86,23 @@ export function generateState(): State {
 		} else if (fnType === 'quadratic') {
 			x = unknownConstants ? -a : getRandomInt(-a - 2, -a + 2);
 		} else if (fnType === 'log') {
+			unknownConstants = false;
 			x = -a + 1;
+			type = 'right';
 		} else if (fnType === 'sqrt') {
+			unknownConstants = false;
 			x = chooseRandom([-a, -a + 4, -a + 9, -a + 16].filter((x) => x < 9));
+			type = 'right';
+			if (x === -a && inclusive) {
+				const restriction = { x, inclusive: false, type };
+				return { fnType, a, b, c, unknownConstants, restriction };
+			}
 		} else if (fnType === 'frac' || fnType === 'improper' || fnType === 'abs') {
+			unknownConstants = false;
 			x = type === 'left' ? getRandomInt(-a - 4, -a - 1) : getRandomInt(-a + 1, -a + 4);
 			if (fnType === 'improper' || fnType === 'abs') {
 				c = getRandomInt(-5 * (x + a) - b * x, 5 * (x + a) - b * x);
+				if (c / b === a) return generateState();
 			}
 		}
 		restriction = { type, inclusive, x };
