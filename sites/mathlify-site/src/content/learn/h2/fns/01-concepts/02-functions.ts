@@ -111,34 +111,234 @@ export function generateState(): State {
 }
 
 export function generateQn(state: PracticeState): PracticeQuestion {
-	const qn = renderHTML(mathlify`Find the range of the following function
-		
-	$${generateFn(state as State)}
-`);
-	const ans = '';
+	const state1 = state as State;
+	const [fnString, exp] = generateFn(state1);
+	let qn: string;
+	if (state.unknownConstants) {
+		if (state1.fnType === 'frac' || state1.fnType === 'improper') {
+			qn = renderHTML(
+				mathlify`Find the range of the function
+
+$${fnString}
+
+where ${'a'},
+${'b'}
+and ${'c'}
+are positive constants.`,
+			);
+		} else if (state1.fnType === 'abs') {
+			qn = renderHTML(
+				mathlify`Find the range of the function
+
+$${fnString}
+
+where ${'a'},
+${'b'}
+and ${'c'}
+are positive constants and ${'\\frac{c}{b} \\neq a'}.
+
+Remark: what happens to ${'f'}
+if ${'\\frac{c}{b} = a'}?`,
+			);
+		} else {
+			qn = renderHTML(
+				mathlify`Find the range of the function
+
+$${fnString}
+
+where ${'a'}
+and ${'b'}
+are positive constants.`,
+			);
+		}
+	} else {
+		qn = renderHTML(
+			mathlify`Find the range of the function
+
+$${fnString}.`,
+		);
+	}
+	const ans =
+		state1.fnType === 'abs' && state1.unknownConstants
+			? renderHTML(mathlify`$${'R_f'} = ${generateAns(state as State, exp)}.
+
+If ${'\\frac{c}{b} = a'}, 
+then ${'f'}
+will be a constant function
+${'f(x)=|b|'}.`)
+			: renderHTML(mathlify`$${'R_f'} = ${generateAns(state as State, exp)}.`);
 	return { qn, ans };
 }
 
-function generateFn(state: State): string {
+function generateFn(state: State): [string, Expression] {
 	let x = 'f: x \\mapsto ';
-	switch (state.fnType) {
-		case 'linear':
-			x += `ax+b`;
-			break;
-		case 'quadratic':
-			return `(${state.a}x+${state.b})^2`;
-		case 'log':
-			return `ln(${state.a}x+${state.b})`;
-		case 'exp':
-			return `exp(${state.a}x+${state.b})`;
-		case 'sqrt':
-			return `sqrt(${state.a}x+${state.b})`;
+	let exp: Expression;
+	const { a, b, c, fnType, restriction, unknownConstants } = state;
+	if (fnType === 'linear') {
+		exp = new Expression(sum(['a', 'x'], 'b'));
+	} else if (fnType === 'quadratic') {
+		exp = new Expression(sum([sum('x', 'a'), '^', 2], 'b'));
+	} else if (fnType === 'log') {
+		exp = new Expression(sum(logTerm(sum('x', 'a')), 'b'));
+	} else if (fnType === 'exp') {
+		exp = new Expression(sum([e, '^', ['a', 'x']], 'b'));
+	} else if (fnType === 'sqrt') {
+		exp = new Expression(sum(sqrtTerm(sum('x', 'a')), 'b'));
+	} else if (fnType === 'frac') {
+		exp = new Expression(sum('b', ['c', '/', sum('x', 'a')]));
+	} else if (fnType === 'improper') {
+		exp = new Expression([sum(['b', 'x'], 'c'), '/', sum('x', 'a')]);
+	} else if (fnType === 'abs') {
+		exp = absTerm([sum(['b', 'x'], 'c'), '/', sum('x', 'a')]);
+	} else {
+		// special
+		exp =
+			b > 0
+				? new Expression([b * a * a, '/', sum(['x', '^', 2], -a * a)])
+				: new Expression([Math.abs(b) * a * a, '/', sum(a * a, [-1, ['x', '^', 2]])]);
 	}
-	return x;
+	if (!unknownConstants) {
+		exp = exp.subIn({ a, b, c });
+	} else if (fnType === 'linear' && a < 0 && b > 0) {
+		exp = new Expression(sum(b, [a, 'x']));
+	}
+	x += `${exp}, \\quad x \\in \\mathbb{R}`;
+	if (restriction) {
+		x += ', ' + generateInequality(restriction);
+	} else {
+		if (fnType === 'log') {
+			x += unknownConstants ? `, x > -a` : `, x > ${-a}`;
+		} else if (fnType === 'sqrt') {
+			x += unknownConstants ? `, x \\geq -a` : `, x \\geq ${-a}`;
+		} else if (fnType === 'frac' || fnType === 'improper' || fnType === 'abs') {
+			x += unknownConstants ? `, x \\neq -a` : `, x \\neq ${-a}`;
+		} else if (fnType === 'special') {
+			x += `, x \\neq \\pm ${Math.abs(a)}`;
+		}
+	}
+	return [x, exp];
 }
 
-function generateAns(state: State): string {
-	return '';
+function generateInequality(restriction: {
+	type: 'left' | 'right';
+	inclusive: boolean;
+	x: number;
+}): string {
+	const { type, inclusive, x } = restriction;
+	const sign = type === 'left' ? (inclusive ? '\\leq ' : '< ') : inclusive ? '\\geq ' : '> ';
+	return `x ${sign}${x}`;
+}
+
+function generateAns(state: State, exp: Expression): string {
+	const { fnType, restriction, a, b, c, unknownConstants } = state;
+	if (fnType === 'linear') {
+		if (restriction) {
+			const { type, x, inclusive } = restriction;
+			const y = exp.subIn({ x });
+			if ((a > 0 && type === 'left') || (a < 0 && type === 'right')) {
+				return `\\left( -\\infty, ${y} \\right${rightBracket(inclusive)}`;
+			} else {
+				return `\\left${leftBracket(inclusive)} ${y}, \\infty \\right)`;
+			}
+		}
+		return `\\left( -\\infty, \\infty \\right)`;
+	} else if (fnType === 'quadratic') {
+		// (x+a)^2 + b
+		if (restriction) {
+			const { type, x, inclusive } = restriction;
+			const y = exp.subIn({ x });
+			if ((x < -a && type === 'left') || (x > -a && type === 'right')) {
+				return `\\left${leftBracket(inclusive)} ${y}, \\infty \\right)`;
+			}
+		}
+		return unknownConstants ? `\\left[ b, \\infty \\right)` : `\\left[ ${b}, \\infty \\right)`;
+	} else if (fnType === 'log') {
+		if (restriction) {
+			// chosen to be ln 1 and on the right
+			return `\\left${leftBracket(restriction.inclusive)} ${b}, \\infty \\right)`;
+		}
+		return `\\left( -\\infty, \\infty \\right)`;
+	} else if (fnType === 'exp') {
+		if (restriction) {
+			// chosen to be e^0 + b
+			const { inclusive, type } = restriction;
+			if ((type === 'left' && a > 0) || (type === 'right' && a < 0)) {
+				return unknownConstants
+					? `\\left( b, b+1 \\right${rightBracket(inclusive)}`
+					: `\\left( ${b}, ${b + 1} \\right${rightBracket(inclusive)}`;
+			} else {
+				return unknownConstants
+					? `\\left${leftBracket(inclusive)} b+1, \\infty \\right)`
+					: `\\left${leftBracket(inclusive)} ${b + 1}, \\infty \\right)`;
+			}
+		}
+		return unknownConstants ? `\\left( b, \\infty \\right)` : `\\left( ${b}, \\infty \\right)`;
+	} else if (fnType === 'sqrt') {
+		if (restriction) {
+			// chosen to be right
+			const { inclusive, x } = restriction;
+			const y = Math.sqrt(x + a) + b;
+			return `\\left${leftBracket(inclusive)} ${y}, \\infty \\right)`;
+		}
+		return `\\left[ ${b}, \\infty \\right)`;
+	} else if (fnType === 'frac' || fnType == 'improper') {
+		if (restriction) {
+			// chosen to be a single interval
+			const { x, inclusive } = restriction;
+			const y = exp.subIn({ x });
+			if (y.valueOf() < b) {
+				return `\\left${leftBracket(inclusive)} ${y}, ${b} \\right)`;
+			} else {
+				return `\\left( ${b}, ${y} \\right${rightBracket(inclusive)}`;
+			}
+		}
+		return `\\left( -\\infty, ${b} \\right) \\cup \\left( ${b}, \\infty \\right)`;
+	} else if (fnType === 'abs') {
+		if (restriction) {
+			const { x, inclusive, type } = restriction;
+			const y = exp.subIn({ x });
+			// https://www.desmos.com/calculator/yb2bwgxywr
+			if (-c / b < -a) {
+				if (type === 'left') {
+					if (x < -c / b) {
+						return `\\left${leftBracket(inclusive)} ${y}, ${Math.abs(b)} \\right)`;
+					} else {
+						return y.valueOf() < Math.abs(b)
+							? `\\left[0 , ${Math.abs(b)} \\right)`
+							: `\\left[0, ${y}\\right${rightBracket(inclusive)}`;
+					}
+				} else {
+					return `\\left( ${Math.abs(b)}, ${y} \\right${rightBracket(inclusive)}`;
+				}
+			} else {
+				if (type === 'left') {
+					return `\\left( ${Math.abs(b)}, ${y} \\right${rightBracket(inclusive)}`;
+				} else {
+					if (x > -c / b) {
+						return `\\left${leftBracket(inclusive)} ${y}, ${Math.abs(b)} \\right)`;
+					} else {
+						return y.valueOf() < Math.abs(b)
+							? `\\left[0 , ${Math.abs(b)} \\right)`
+							: `\\left[0, ${y}\\right${rightBracket(inclusive)}`;
+					}
+				}
+			}
+		}
+		return `\\left[ 0, \\infty \\right)`;
+	} else {
+		// special
+		const y = exp.subIn({ x: 0 });
+		return b < 0
+			? `\\left( -\\infty, 0 \\right) \\cup \\left[ ${y}, \\infty \\right)`
+			: `\\left( -\\infty, ${y} \\right] \\cup \\left( 0, \\infty \\right)`;
+	}
+}
+
+function leftBracket(inclusive: boolean): string {
+	return inclusive ? '[' : '(';
+}
+function rightBracket(inclusive: boolean): string {
+	return inclusive ? ']' : ')';
 }
 
 export const practice: Practice = {
