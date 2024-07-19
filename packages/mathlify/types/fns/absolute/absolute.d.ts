@@ -23,10 +23,10 @@ export class Abs extends Fn {
         verbatim: boolean;
     }): Abs;
 }
-export type Expression = import("../../index.js").Expression;
 export type ExpressionNode = import("../../core/expression/expression.js").ExpressionNode;
 export type SimplifyOptions = import("../../core/expression/expression.js").SimplifyOptions;
 export type Shorthand = import("../../core/expression/expression.js").Shorthand;
 export type Variable = import("../../core/expression/expression.js").Variable;
+import { Expression } from '../../core/expression/expression.js';
 import { Fn } from '../../core/expression/fn/custom-function.js';
 //# sourceMappingURL=absolute.d.ts.map

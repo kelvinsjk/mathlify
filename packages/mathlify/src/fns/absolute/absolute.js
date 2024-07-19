@@ -58,7 +58,11 @@ export class Abs extends Fn {
 	 */
 	simplify(options) {
 		if (options?.verbatim) return this;
-		return new Abs(this.argument.simplify(options).node);
+		const arg = this.argument.simplify(options).node;
+		if (arg.type === 'numeral') {
+			return arg.abs();
+		}
+		return new Abs(arg);
 	}
 
 	/**

@@ -66,9 +66,9 @@ export class Expression {
 		} else {
 			this.node = node.type === 'expression' ? node.node : node;
 		}
-		if (!options?.verbatim) {
-			this.simplify();
-		}
+		//if (!options?.verbatim) {
+		//	this.simplify();
+		//}
 	}
 
 	/**
