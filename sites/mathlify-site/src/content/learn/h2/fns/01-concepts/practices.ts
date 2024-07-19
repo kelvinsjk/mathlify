@@ -1,6 +1,6 @@
-import { practice as practice1 } from './01-interval';
+import { practice as practice2 } from './02-functions';
 import type { Practice } from '../../../practices';
 
 export const practices: Record<string, Practice> = {
-	'01-interval': practice1,
+	'02-functions': practice2,
 };

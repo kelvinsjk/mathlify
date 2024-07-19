@@ -56,7 +56,7 @@
 </script>
 
 
-<svg xmlns="http://www.w3.org/2000/svg" {viewBox}>
+<svg xmlns="http://www.w3.org/2000/svg" {viewBox} class="number-line">
   <defs>
     <marker id="closed" markerWidth="5" markerHeight="5" refX="1" refY="1">
       <circle cx="1" cy="1" r="1" fill="black" />
@@ -113,15 +113,19 @@
 </svg>
 
 <style>
-    :has(math){
+    :global(svg *:has(math)){
       color: black;
       font-size: 10px;
       overflow: visible;
       display: grid;
-    }
-    :global(svg math) {
       white-space: nowrap;
-      transform: translateX(-50%);
+    }
+    :global(svg.number-line math) {
+      flex-wrap: nowrap;
+      align-items: baseline;
+      white-space: nowrap;
+      transform: translate(-50%, -50%);
+      margin-top: 5px;
     }
     foreignObject .fraction {
       font-size: 7px;

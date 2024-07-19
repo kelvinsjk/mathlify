@@ -31,13 +31,14 @@
 
 <svelte:window bind:innerWidth={width} />
 <div class="content-container">
+  {#if toc || width >= 800}
   <div class="content-header-container">
     <nav class="content-header">
       <div class="toc-heading">
-        <button class="toc-heading-small" onclick={() => showTOC = !showTOC } use:clickOutside={()=> {if (mobile) showTOC = false}}>
-          {#if toc}
+        <button class="toc-heading-small" onclick={() => showTOC = !showTOC } use:clickOutside={()=> {if (mobile) showTOC = false}}
+          disabled={!toc}
+        >
           <SquareMenuIcon />
-          {/if}
           <h1>{title}</h1>
         </button>
         <a href={"#" + title.replaceAll(" ","-").replaceAll(",","")} class="toc-heading-large">
@@ -54,6 +55,7 @@
       {/if}
     </nav>
   </div>
+  {/if}
   <div class="content-body-container">
     <div class="content-body content prose">
       {@render content()}
@@ -103,15 +105,14 @@
     line-height: 2;
   }
   .content-body-container {
-    padding-block-start: 0.5rem;
-    padding-block-end: 1rem;
+    padding-block-start: 0.5em;
+    padding-block-end: 1em;
     overflow-y: auto;
     scroll-behavior: smooth;
   }
   .content-body {
     width: var(--container-width);
     font-size: 1.25rem;
-    margin-bottom: 1rem;
     padding-inline: 1rem;
   } 
   /** TODO: sync with app.css var(--max-width) */

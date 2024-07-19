@@ -2,12 +2,12 @@ import { practices as h2Practices } from './h2/practices';
 
 export interface PracticeQuestion {
 	qn: string;
-	answer: string;
+	ans: string;
 	solution?: string;
 	objectives?: Set<string>;
 }
-
-export type PracticeState = Record<string, string | number | boolean>;
+type SupportedTypes = string | number | boolean | undefined;
+export type PracticeState = Record<string, SupportedTypes | Record<string, SupportedTypes>>;
 export interface Practice {
 	objectives?: Set<string>;
 	generateState: (...args: unknown[]) => PracticeState;

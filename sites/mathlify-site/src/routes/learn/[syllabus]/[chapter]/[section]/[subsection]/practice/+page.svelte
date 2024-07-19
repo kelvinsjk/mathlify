@@ -1,44 +1,88 @@
 <script lang="ts">
-  import Content from '$lib/components/Content/Content.svelte';
-  import BottomNav from '$lib/components/Nav/BottomNav.svelte';
-	import NavAccordion from '$lib/components/Nav/NavAccordion.svelte';
-  
+	import Practice from '$lib/components/Content/Practice.svelte';
+  import Button from '$lib/components/ui/button/button.svelte';
+	import { scale } from 'svelte/transition';
+
   const {data} = $props();
 
   import {practices} from '$content/learn/practices';
+	import { page } from '$app/stores';
   
   const practice = $derived(practices[data.syllabus][data.chapter][data.section][data.subsection]);
-  const {qn,answer} = $derived(practice.generateQn(data.state));
+  let qnState = $state(data.state);
+  let {qn,ans} = $derived(practice.generateQn(qnState));
+  let showAnswer = $state(false);
+  
+  // for validation
+  $inspect(qnState);
+  let pw = $state("");
+  let count = $state(-1);
+  let code = $state(0);
+  let disabled = $state(false);
 </script>
 <svelte:head>
   <title>{data.title}</title>
 </svelte:head>
 
-<Content title={data.title}>
-  {#snippet content()}
-  <div class="static-content learn">
-  {@html qn}
-  <BottomNav prev={data.prev} next={data.next} />
-  </div>
-  {/snippet}
-  {#snippet desktopExtraNav()}
-  <div>
-    <hr />
-    <BottomNav prev={data.prev} next={data.next} />
-    <hr />
-    <div class="chapter-nav">
-      Chapter navigation
+<Practice title={data.title} next={data.next} sections={data.sections} section={data.section} subsection={data.subsection} bind:showAnswer>
+  {#snippet question()}
+    {#key qnState}
+    <div class="question-container" in:scale>
+      {@html qn}
     </div>
-    <NavAccordion sections={data.sections} section={data.section} subsection={data.subsection}>
-    </NavAccordion>
-  </div>
+    {/key}
   {/snippet}
-</Content>
+  {#snippet questionButton()}
+    <Button onclick={()=>{
+      showAnswer = false;
+      qnState = practice.generateState();
+    }}
+    >Generate New</Button>
+  {/snippet}
+  {#snippet answer()}
+    {@html ans}
+    {#if $page.url.searchParams.get('supa')==='base'}
+      <input bind:value={pw} />
+      <div>
+        <Button {disabled} onclick={async ()=>{
+          const res = await fetch('/db', {method: 'POST', body:JSON.stringify({state:qnState,validity:false,practice:$page.url.pathname.slice(7,$page.url.pathname.length-9),pw})});
+          const json = await res.json();
+          count = json.count;
+          code = json.code;
+        }}> 
+          Bad 
+        </Button>
+        <Button {disabled} onclick={async ()=>{
+          const res = await fetch('/db', {method: 'POST', body:JSON.stringify({state:qnState,validity:'investigate',practice:$page.url.pathname.slice(7,$page.url.pathname.length-9),pw})});
+          const json = await res.json();
+          count = json.count;
+          code = json.code;
+        }}> 
+          Investigate 
+        </Button>
+        <Button {disabled} onclick={async ()=>{
+          disabled = true;
+          const res = await fetch('/db', {method: 'POST', body:JSON.stringify({state:qnState,validity:true,practice:$page.url.pathname.slice(7,$page.url.pathname.length-9),pw})});
+          const json = await res.json();
+          count = json.count;
+          code = json.code;
+          disabled = false;
+        }}> 
+          Good
+        </Button>
+      </div>
+      <div>
+        Count: {count}
+      </div>
+      <div>
+        Response: {code}
+      </div>
+    {/if}
+  {/snippet}
+</Practice>
 
 <style>
-  .chapter-nav {
-    font-weight: bold;
-    font-size: 1.25rem;
-    margin-block-start: 2rem;
+  input {
+    border: 1px black solid;
   }
 </style>
