@@ -78,7 +78,7 @@ export function generateState(): State {
 		  }
 		| false = false;
 	if (isRestricted) {
-		const type = coinFlip() ? 'left' : 'right';
+		let type: 'left' | 'right' = coinFlip() ? 'left' : 'right';
 		const inclusive = coinFlip();
 		let x = 0; // for exponential case
 		if (fnType === 'linear') {
