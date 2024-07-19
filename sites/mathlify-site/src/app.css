@@ -82,6 +82,6 @@ mark {
 	padding: 0.5rem;
 }
 
-p:last-child:has(> math.tml-display) {
+/* p:last-child:has(> math.tml-display) {
 	padding-block-end: 1.25em;
-}
+} */

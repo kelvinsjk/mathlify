@@ -57,11 +57,19 @@ export function generateState(): State {
 	let a = getRandomInt(-4, 4);
 	let b = getRandomInt(-4, 4);
 	let c = getRandomInt(-4, 4);
-	const unknownConstants = fnType === 'special' && Math.random() < 0.3;
-	const isRestricted = fnType !== 'special' && Math.random() < 0.3;
-	if (fnType === 'linear') a = getRandomNonZeroInt(1, 4);
+	let unknownConstants = Math.random() < 0.3;
+	let isRestricted = Math.random() < 0.3;
+	if (fnType === 'special') {
+		unknownConstants = false;
+		isRestricted = false;
+	}
+	if (fnType === 'linear' || fnType === 'special') a = getRandomNonZeroInt(1, 4);
 	if (fnType === 'exp') a = getRandomNonZeroInt(1, 2);
-	if (fnType === 'improper') b = getRandomNonZeroInt(1, 4);
+	if (fnType === 'improper' || fnType === 'abs' || fnType === 'special')
+		b = getRandomNonZeroInt(1, 4);
+	if ((fnType === 'improper' || fnType === 'abs') && c / b === a) {
+		return generateState();
+	}
 	let restriction:
 		| {
 				type: 'left' | 'right';

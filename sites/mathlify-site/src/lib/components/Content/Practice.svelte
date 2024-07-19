@@ -117,8 +117,5 @@
   h1, h2 {
     margin-block: 0;
   }
-  .answer {
-    padding-block-end: 1.25em;
-  }
 
 </style>
