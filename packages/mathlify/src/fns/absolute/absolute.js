@@ -81,3 +81,11 @@ export class Abs extends Fn {
 		return Math.abs(this.argument.valueOf());
 	}
 }
+
+/**
+ * @param {Shorthand} exp
+ * @returns {Expression}
+ */
+export function absTerm(exp) {
+	return new Expression(new Abs(exp));
+}
