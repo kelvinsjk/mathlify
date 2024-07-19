@@ -1,9 +1,11 @@
-/** @typedef {import('../../index.js').Expression} Expression */
 /** @typedef {import('../../core/expression/expression.js').ExpressionNode} ExpressionNode */
 /** @typedef {import('../../core/expression/expression.js').SimplifyOptions} SimplifyOptions */
 /** @typedef {import('../../core/expression/expression.js').Shorthand} Shorthand */
 /** @typedef {import('../../core/expression/expression.js').Variable} Variable */
-import { shorthandToExpression } from '../../core/expression/expression.js';
+import {
+	Expression,
+	shorthandToExpression,
+} from '../../core/expression/expression.js';
 import { Fn } from '../../core/expression/fn/custom-function.js';
 
 /**

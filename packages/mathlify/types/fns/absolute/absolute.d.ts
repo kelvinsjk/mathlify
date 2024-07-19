@@ -1,4 +1,9 @@
 /**
+ * @param {Shorthand} exp
+ * @returns {Expression}
+ */
+export function absTerm(exp: Shorthand): Expression;
+/**
  * Absolute function Class
  * @property {Expression} expression - the expression within the parenthesis
  * */

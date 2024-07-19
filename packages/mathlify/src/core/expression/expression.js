@@ -55,9 +55,8 @@ export class Expression {
 	 * By default, we simplify the expression. Use {verbatim: true} to disable simplification
 	 *
 	 * @param {Shorthand} node
-	 * @param {{verbatim?: boolean}} [options]
 	 */
-	constructor(node, options) {
+	constructor(node) {
 		if (typeof node === 'number') {
 			this.node = new Numeral(node);
 		} else if (typeof node === 'string') {
