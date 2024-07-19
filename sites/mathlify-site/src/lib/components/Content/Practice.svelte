@@ -81,6 +81,7 @@
     margin-block-start: 1em;
     transform: translateX(-50%);
     padding-block-start: 1em;
+    padding-block-end: 1px;
     width: 100dvw;
   }
   .question{

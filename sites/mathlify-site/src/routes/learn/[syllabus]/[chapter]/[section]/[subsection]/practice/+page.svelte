@@ -6,12 +6,19 @@
   const {data} = $props();
 
   import {practices} from '$content/learn/practices';
+	import { page } from '$app/stores';
   
   const practice = $derived(practices[data.syllabus][data.chapter][data.section][data.subsection]);
   let qnState = $state(data.state);
-  let {qn,ans} = $derived(practice.generateQn(data.state));
+  let {qn,ans} = $derived(practice.generateQn(qnState));
   let showAnswer = $state(false);
-
+  
+  // for validation
+  $inspect(qnState);
+  let pw = $state("");
+  let count = $state(-1);
+  let code = $state(0);
+  let disabled = $state(false);
 </script>
 <svelte:head>
   <title>{data.title}</title>

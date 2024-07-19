@@ -65,8 +65,11 @@
 
 p:has(math.tml-display) {
 	overflow-x: auto;
-	margin-block: 0;
-	overflow-y: visible;
+	overflow-y: hidden;
+	/* margin-block: 0; */
+}
+math.tml-display {
+	padding-bottom: 0.25rem;
 }
 
 html,

@@ -8,16 +8,18 @@ import { renderHTML } from 'djot-temml';
 
 import type { PracticeState, PracticeQuestion, Practice } from '$content/learn/practices';
 import { mathlify } from '$lib/mathlifier';
+import { logTerm, sqrtTerm, absTerm } from 'mathlify/fns';
+import { Expression, sum, e } from 'mathlify';
 
-// ax+b
-// (x+a)^2 + b
-// ln(x+a) + b
-// exp(ax) + b
-// sqrt(x+a) + b
-// c/(x+a) + b
-// (bx+c) / (x+a)
-// | improper |
-// ba^2 / (x^2 - a^2). No restrictions and unknown constants for this case
+// ax+b (2013)
+// (x+a)^2 + b, (2007,2008)
+// ln(x+a) + b (2011). No unknown constants if restricted
+// exp(ax) + b (2019)
+// sqrt(x+a) + b (2016). No unknown constants if restricted
+// c/(x+a) + b (2007,2009). No unknown constants if restricted
+// (bx+c) / (x+a) (2009). No unknown constants if restricted
+// | improper | (2023). No unknown constants if restricted
+// ba^2 / (x^2 - a^2). (2010,2015) No restrictions and unknown constants.
 
 // special: ba^2 / (x^2 - a^2)
 const types = [
