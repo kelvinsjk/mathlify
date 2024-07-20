@@ -22,7 +22,6 @@
   
   // for validation
   let pw = $state("");
-  let count = $state(-1);
   let code = $state(0);
   let disabled = $state(false);
 </script>
@@ -57,18 +56,20 @@
       <input bind:value={pw} />
       <div>
         <Button {disabled} onclick={async ()=>{
+          disabled = true;
           const res = await fetch('/db', {method: 'POST', body:JSON.stringify({state:qnState,validity:false,practice:'h2/fns/01-concepts/01-interval',pw})});
           const json = await res.json();
-          count = json.count;
           code = json.code;
+          disabled = false;
         }}> 
           Bad 
         </Button>
         <Button {disabled} onclick={async ()=>{
+          disabled = true;
           const res = await fetch('/db', {method: 'POST', body:JSON.stringify({state:qnState,validity:'investigate',practice:'h2/fns/01-concepts/01-interval',pw})});
           const json = await res.json();
-          count = json.count;
           code = json.code;
+          disabled = false;
         }}> 
           Investigate 
         </Button>
@@ -76,15 +77,11 @@
           disabled = true;
           const res = await fetch('/db', {method: 'POST', body:JSON.stringify({state:qnState,validity:true,practice:'h2/fns/01-concepts/01-interval',pw})});
           const json = await res.json();
-          count = json.count;
           code = json.code;
           disabled = false;
         }}> 
           Good
         </Button>
-      </div>
-      <div>
-        Count: {count}
       </div>
       <div>
         Response: {code}

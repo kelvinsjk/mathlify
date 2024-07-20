@@ -16,12 +16,11 @@ import { Expression, sum, e } from 'mathlify';
 // ln(x+a) + b (2011). No unknown constants if restricted
 // exp(ax) + b (2019)
 // sqrt(x+a) + b (2016). No unknown constants if restricted
-// c/(x+a) + b (2007,2009). No unknown constants if restricted
-// (bx+c) / (x+a) (2009). No unknown constants if restricted
-// | improper | (2023). No unknown constants if restricted
-// ba^2 / (x^2 - a^2). (2010,2015) No restrictions and unknown constants.
+// frac: c/(x+a) + b (2007,2009). No unknown constants if restricted
+// improper: (bx+c) / (x+a) (2009). No unknown constants if restricted
+// abs: | improper | (2023). No unknown constants if restricted
+// special: ba^2 / (x^2 - a^2). (2010,2015) No unknown constants.
 
-// special: ba^2 / (x^2 - a^2)
 const types = [
 	'linear',
 	'quadratic',
@@ -36,7 +35,7 @@ const types = [
 type Types = typeof types;
 type Type = Types[number];
 
-interface State extends PracticeState {
+export interface State extends PracticeState {
 	fnType: Type;
 	a: number;
 	b: number;
@@ -51,25 +50,21 @@ interface State extends PracticeState {
 	unknownConstants: boolean;
 }
 
-export function generateState(): State {
+export function generateState(options?: { type?: Type }): State {
 	// we try to get a final range between -5 and 5;
-	const fnType = chooseRandom(types);
+	const fnType = options?.type ?? chooseRandom(types);
 	let a = getRandomInt(-4, 4);
 	let b = getRandomInt(-4, 4);
 	let c = getRandomInt(-4, 4);
 	let unknownConstants = Math.random() < 0.3;
-	let isRestricted = Math.random() < 0.3;
-	if (fnType === 'special') {
-		unknownConstants = false;
-		isRestricted = false;
-	}
+	const isRestricted = Math.random() < 0.3;
+	if (fnType === 'special') unknownConstants = false;
 	if (fnType === 'linear' || fnType === 'special') a = getRandomNonZeroInt(1, 4);
 	if (fnType === 'exp') a = getRandomNonZeroInt(1, 2);
+	if (fnType === 'frac') c = getRandomNonZeroInt(1, 4);
 	if (fnType === 'improper' || fnType === 'abs' || fnType === 'special')
 		b = getRandomNonZeroInt(1, 4);
-	if ((fnType === 'improper' || fnType === 'abs') && c / b === a) {
-		return generateState();
-	}
+	if ((fnType === 'improper' || fnType === 'abs') && c / b === a) return generateState(options);
 	let restriction:
 		| {
 				type: 'left' | 'right';
@@ -79,7 +74,7 @@ export function generateState(): State {
 		| false = false;
 	if (isRestricted) {
 		let type: 'left' | 'right' = coinFlip() ? 'left' : 'right';
-		const inclusive = coinFlip();
+		let inclusive = coinFlip();
 		let x = 0; // for exponential case
 		if (fnType === 'linear') {
 			x = unknownConstants ? 0 : getRandomInt((-4 - b) / a, (4 - b) / a);
@@ -102,8 +97,12 @@ export function generateState(): State {
 			x = type === 'left' ? getRandomInt(-a - 4, -a - 1) : getRandomInt(-a + 1, -a + 4);
 			if (fnType === 'improper' || fnType === 'abs') {
 				c = getRandomInt(-5 * (x + a) - b * x, 5 * (x + a) - b * x);
-				if (c / b === a) return generateState();
+				const intercept = c / b;
+				if (intercept === a || Math.abs(intercept) > 8) return generateState(options);
 			}
+		} else if (fnType === 'special') {
+			x = type === 'left' ? -a : a;
+			inclusive = false;
 		}
 		restriction = { type, inclusive, x };
 	}
@@ -115,7 +114,7 @@ export function generateQn(state: PracticeState): PracticeQuestion {
 	const [fnString, exp] = generateFn(state1);
 	let qn: string;
 	if (state.unknownConstants) {
-		if (state1.fnType === 'frac' || state1.fnType === 'improper') {
+		if (state1.fnType === 'frac') {
 			qn = renderHTML(
 				mathlify`Find the range of the function
 
@@ -126,7 +125,7 @@ ${'b'}
 and ${'c'}
 are positive constants.`,
 			);
-		} else if (state1.fnType === 'abs') {
+		} else if (state1.fnType === 'abs' || state1.fnType === 'improper') {
 			qn = renderHTML(
 				mathlify`Find the range of the function
 
@@ -158,19 +157,20 @@ are positive constants.`,
 $${fnString}.`,
 		);
 	}
+	const modB = state1.fnType === 'abs' ? '|b|' : 'b';
 	const ans =
-		state1.fnType === 'abs' && state1.unknownConstants
-			? renderHTML(mathlify`$${'R_f'} = ${generateAns(state as State, exp)}.
+		(state1.fnType === 'abs' || state1.fnType === 'improper') && state1.unknownConstants
+			? renderHTML(mathlify`$${'R_f'} = ${generateAns(state1, exp)}.
 
 If ${'\\frac{c}{b} = a'}, 
 then ${'f'}
 will be a constant function
-${'f(x)=|b|'}.`)
-			: renderHTML(mathlify`$${'R_f'} = ${generateAns(state as State, exp)}.`);
+${`f(x)=${modB}`}.`)
+			: renderHTML(mathlify`$${'R_f'} = ${generateAns(state1, exp)}.`);
 	return { qn, ans };
 }
 
-function generateFn(state: State): [string, Expression] {
+export function generateFn(state: State): [string, Expression] {
 	let x = 'f: x \\mapsto ';
 	let exp: Expression;
 	const { a, b, c, fnType, restriction, unknownConstants } = state;

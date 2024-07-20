@@ -10,7 +10,8 @@ type SupportedTypes = string | number | boolean | undefined;
 export type PracticeState = Record<string, SupportedTypes | Record<string, SupportedTypes>>;
 export interface Practice {
 	objectives?: Set<string>;
-	generateState: (...args: unknown[]) => PracticeState;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	generateState: (...args: any[]) => PracticeState;
 	generateQn: (state: PracticeState, ...args: unknown[]) => PracticeQuestion;
 }
 
