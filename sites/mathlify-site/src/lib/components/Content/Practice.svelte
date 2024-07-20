@@ -88,6 +88,10 @@
     margin-inline: auto;
     padding-inline: 1rem;
   }
+  .answer-container {
+    /* workaround to prevent margin making transition jerk */
+    padding: 1px;
+  }
 
   /** TODO: sync with app.css var(--max-width) */
   @media (min-width: 800px){
