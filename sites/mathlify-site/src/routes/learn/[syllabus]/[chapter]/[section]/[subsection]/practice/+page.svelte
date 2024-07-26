@@ -7,6 +7,7 @@
 
   import {practices} from '$content/learn/practices';
 	import { page } from '$app/stores';
+	import type { Snapshot } from '../$types.js';
   
   const practice = $derived(practices[data.syllabus][data.chapter][data.section][data.subsection]);
   let qnState = $state(data.state);
@@ -18,6 +19,11 @@
   let pw = $state("");
   let code = $state(0);
   let disabled = $state(false);
+
+  export const snapshot: Snapshot<typeof qnState> = {
+    capture: ()=>qnState,
+    restore: (value)=>qnState = value
+  }
 </script>
 <svelte:head>
   <title>{data.title}</title>
@@ -73,6 +79,9 @@
       </div>
       <div>
         Response: {code}
+      </div>
+      <div>
+        {JSON.stringify(qnState)}
       </div>
     {/if}
   {/snippet}

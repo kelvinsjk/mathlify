@@ -11,10 +11,10 @@ import { mathlify } from '$lib/mathlifier';
 import { logTerm, sqrtTerm, absTerm } from 'mathlify/fns';
 import { Expression, sum, e } from 'mathlify';
 
-// ax+b (2013)
-// (x+a)^2 + b, (2007,2008)
+// ax+b (2013). unknown constants + restriction: x=0
+// (x+a)^2 + b, (2007,2008). unknown constants + restriction: x=-a
 // ln(x+a) + b (2011). No unknown constants if restricted
-// exp(ax) + b (2019)
+// exp(ax) + b (2019). unknown constants + restriction: x=0
 // sqrt(x+a) + b (2016). No unknown constants if restricted
 // frac: c/(x+a) + b (2007,2009). No unknown constants if restricted
 // improper: (bx+c) / (x+a) (2009). No unknown constants if restricted
@@ -111,6 +111,14 @@ export function generateState(options?: { type?: Type }): State {
 
 export function generateQn(state: PracticeState): PracticeQuestion {
 	const state1 = state as State;
+	//const state1: State = {
+	//	a: 1,
+	//	b: 1,
+	//	c: 1,
+	//	fnType: 'quadratic',
+	//	restriction: { type: 'left', inclusive: false, x: -1 },
+	//	unknownConstants: true,
+	//};
 	const [fnString, exp] = generateFn(state1);
 	let qn: string;
 	if (state.unknownConstants) {
@@ -204,7 +212,19 @@ export function generateFn(state: State): [string, Expression] {
 	}
 	x += `${exp}, \\quad x \\in \\mathbb{R}`;
 	if (restriction) {
-		x += ', ' + generateInequality(restriction);
+		if (fnType === 'quadratic' && unknownConstants) {
+			const sign =
+				restriction.type === 'left'
+					? restriction.inclusive
+						? ' \\leq '
+						: ' < '
+					: restriction.inclusive
+						? ' \\geq '
+						: ' > ';
+			x += `, x ${sign} -a`;
+		} else {
+			x += ', ' + generateInequality(restriction);
+		}
 	} else {
 		if (fnType === 'log') {
 			x += unknownConstants ? `, x > -a` : `, x > ${-a}`;
@@ -229,7 +249,7 @@ function generateInequality(restriction: {
 	return `x ${sign}${x}`;
 }
 
-function generateAns(state: State, exp: Expression): string {
+export function generateAns(state: State, exp: Expression): string {
 	const { fnType, restriction, a, b, c, unknownConstants } = state;
 	if (fnType === 'linear') {
 		if (restriction) {
@@ -246,8 +266,11 @@ function generateAns(state: State, exp: Expression): string {
 		// (x+a)^2 + b
 		if (restriction) {
 			const { type, x, inclusive } = restriction;
+			if (unknownConstants) {
+				return `\\left${leftBracket(inclusive)} b, \\infty \\right)`;
+			}
 			const y = exp.subIn({ x });
-			if ((x < -a && type === 'left') || (x > -a && type === 'right')) {
+			if ((x < -a && type === 'left') || (x > -a && type === 'right') || !inclusive) {
 				return `\\left${leftBracket(inclusive)} ${y}, \\infty \\right)`;
 			}
 		}
@@ -292,7 +315,9 @@ function generateAns(state: State, exp: Expression): string {
 				return `\\left( ${b}, ${y} \\right${rightBracket(inclusive)}`;
 			}
 		}
-		return `\\left( -\\infty, ${b} \\right) \\cup \\left( ${b}, \\infty \\right)`;
+		return unknownConstants
+			? `\\left( -\\infty, b \\right) \\cup \\left( b, \\infty \\right)`
+			: `\\left( -\\infty, ${b} \\right) \\cup \\left( ${b}, \\infty \\right)`;
 	} else if (fnType === 'abs') {
 		if (restriction) {
 			const { x, inclusive, type } = restriction;

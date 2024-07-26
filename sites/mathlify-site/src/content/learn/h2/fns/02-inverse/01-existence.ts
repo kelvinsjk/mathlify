@@ -144,7 +144,7 @@ function generateAns(
 		let bPlus1 = b + 1;
 		if (restriction) {
 			const { type, x } = restriction;
-			if ((x < -a && type === 'left') || (x > -a && type === 'right') || x === a) {
+			if ((x < -a && type === 'left') || (x > -a && type === 'right') || x === -a) {
 				return hasInverse;
 			}
 			const y2 = exp.subIn({ x });
