@@ -15,7 +15,7 @@
       <Accordion.Content>
         <ul>
           {#each sectionObj.subsections as subsectionObj}
-          <li class:active={subsectionObj.slug === subsection}><a href={`../${sectionObj.slug}/${subsectionObj.slug}`}>{subsectionObj.title}</a></li>
+          <li class:active={subsectionObj.slug === subsection}><a href={`../../${sectionObj.slug}/${subsectionObj.slug}`}>{subsectionObj.title}</a></li>
           {/each}
         </ul>
       </Accordion.Content>
