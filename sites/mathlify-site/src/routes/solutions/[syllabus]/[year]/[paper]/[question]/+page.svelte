@@ -39,7 +39,6 @@
     currentSection = sectionIds[0];
   });
 
-  let [body, endnotesMarkup] = $derived(data.content.split('<section role="doc-endnotes">'));
   $effect(()=>{
     if (import.meta.hot){
       import.meta.hot.on('md-update', async ()=>{
@@ -61,14 +60,11 @@
   <title>{data.title}</title>
 </svelte:head>
 
-<Content toc={data.toc} title={data.title} {currentSection} prev={data.prev} next="practice">
+<Content title={data.title} {currentSection} prev="theory" next="practice">
   {#snippet content()}
     <div class="static-content learn" bind:this={scrollable}>
-    {@html body}
+    {@html data.content.parts![0].body}
     </div>
-  {/snippet}
-  {#snippet endnotes()}
-    {@html endnotesMarkup}
   {/snippet}
   {#snippet desktopExtraNav()}
     <div>
@@ -76,8 +72,9 @@
       <div class="chapter-nav">
         Chapter navigation
       </div>
-      <NavAccordion sections={data.sections} section={data.section} subsection={data.subsection}>
-      </NavAccordion>
+      <!--
+        <NavAccordion sections={data.sections} section={data.section} subsection={data.subsection} />
+    -->
     </div>
   {/snippet}
 </Content>

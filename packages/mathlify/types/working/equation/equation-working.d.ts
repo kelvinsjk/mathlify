@@ -79,6 +79,14 @@ export class EquationWorking {
         expand?: boolean;
     }) | undefined): EquationWorking;
     /**
+     * @param {Shorthand} exp
+     * @param {WorkingOptions & {verbatim?: boolean}} [options]
+     * @returns {EquationWorking}
+     */
+    minus(exp: Shorthand, options?: (WorkingOptions & {
+        verbatim?: boolean;
+    }) | undefined): EquationWorking;
+    /**
      * @param {WorkingOptions & {verbatim?: boolean, expand?: boolean}} [options]
      * @returns {EquationWorking}
      */

@@ -67,11 +67,8 @@ export class Expression {
      * By default, we simplify the expression. Use {verbatim: true} to disable simplification
      *
      * @param {Shorthand} node
-     * @param {{verbatim?: boolean}} [options]
      */
-    constructor(node: Shorthand, options?: {
-        verbatim?: boolean;
-    } | undefined);
+    constructor(node: Shorthand);
     /** @type {'expression'} */
     type: "expression";
     /** @type {ExpressionNode} */

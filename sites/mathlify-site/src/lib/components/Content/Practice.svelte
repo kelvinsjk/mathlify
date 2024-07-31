@@ -1,71 +1,68 @@
 <script lang="ts">
   import Content from '$lib/components/Content/Content.svelte';
-  import BottomNav from '$lib/components/Nav/BottomNav.svelte';
 	import NavAccordion from '$lib/components/Nav/NavAccordion.svelte';
 	import type { Snippet } from 'svelte';
   import type {Section} from "$lib/types/learn";
 	import Switch from '$lib/components/ui/switch/switch.svelte';
-	import { slide } from 'svelte/transition';
+	import { scale, slide } from 'svelte/transition';
   
-  let {title, next, question, sections, section, subsection, showAnswer = $bindable(false), answer, solution, questionButton}: {
+  let {title, next, question, sections, section, subsection, showAnswer = $bindable(false), q, questionButton}: {
     title: string,
     next: {shortTitle: string, slug: string, sectionSlug: string} | "practice" | undefined,
     sections: Section[];
     section: string|undefined;
     subsection: string|undefined;
     showAnswer: boolean,
+    q: Promise<{soln?:string,ans:string}>,
     question: Snippet,
-    answer: Snippet,
-    solution?: Snippet,
     questionButton?: Snippet,
   } = $props();
   const prev = "theory";
 </script>
 
-<Content {title}>
+<Content {title} {prev} {next} >
   {#snippet content()}
-  <div class="static-content learn">
-    <h1 id={title.replaceAll(" ","-").replaceAll(",","")}>{title}</h1>
-    <div class="question-container">
-      <section class="question" aria-label="Question">
-        <div class="question-heading-container">
-          <h2>Question</h2>
-          {#if questionButton}
-          {@render questionButton()}
-          {/if}
+    <div class="static-content learn">
+      <h1 id={title.replaceAll(" ","-").replaceAll(",","")}>{title}</h1>
+      <div class="question-container">
+        <section class="question" aria-label="Question">
+          <div class="question-heading-container">
+            <h2>Question</h2>
+            {#if questionButton}
+            {@render questionButton()}
+            {/if}
+          </div>
+          {@render question()}
+        </section>
+      </div>
+      <section class="answer" aria-label="Answer">
+        <div class="answer-heading-container">
+          <h2>Answer</h2>
+          <Switch bind:checked={showAnswer} />
         </div>
-        {@render question()}
+        {#if showAnswer}
+          <div class="answer-container" in:scale out:slide>
+            {#await q then {ans, soln}}
+            {@html ans}
+              {#if soln}
+              <h2>Solution</h2>
+              {@html soln}
+              {/if}
+            {/await}
+          </div>
+        {/if}
       </section>
     </div>
-    <section class="answer" aria-label="Answer">
-      <div class="answer-heading-container">
-        <h2>Answer</h2>
-        <Switch bind:checked={showAnswer} />
-      </div>
-      {#if showAnswer}
-        <div class="answer-container" transition:slide >
-          {@render answer()}
-          {#if solution}
-          <h2>Solution</h2>
-          {@render solution()}
-          {/if}
-        </div>
-      {/if}
-    </section>
-  <BottomNav {prev} {next} />
-  </div>
   {/snippet}
   {#snippet desktopExtraNav()}
-  <div>
-    <hr />
-    <BottomNav {prev} {next} />
-    <hr />
-    <div class="chapter-nav">
-      Chapter navigation
+    <div>
+      <hr />
+      <div class="chapter-nav">
+        Chapter navigation
+      </div>
+      <NavAccordion {sections} section={section} subsection={subsection}>
+      </NavAccordion>
     </div>
-    <NavAccordion {sections} section={section} subsection={subsection}>
-    </NavAccordion>
-  </div>
   {/snippet}
 </Content>
 

@@ -1,7 +1,9 @@
 <script lang="ts">
-  // heavy inspiration from https://github.com/huntabyte/shadcn-svelte/blob/main/apps/www/src/lib/components/docs/docs-pager.svelte
-  export let prev: {shortTitle: string, slug: string, sectionSlug: string} | "theory" | undefined;
-  export let next: {shortTitle: string, slug: string, sectionSlug: string} | "practice" | undefined;
+  // inspired by https://github.com/huntabyte/shadcn-svelte/blob/main/apps/www/src/lib/components/docs/docs-pager.svelte
+  let { prev, next }: {
+    prev: {shortTitle: string, slug: string, sectionSlug: string} | "theory" | undefined,
+    next: {shortTitle: string, slug: string, sectionSlug: string} | "practice" | undefined,
+  } = $props();
   import {Button} from '$lib/components/ui/button';
   import {ChevronLeftIcon, ChevronRightIcon} from 'lucide-svelte';
 </script>

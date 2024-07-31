@@ -5,13 +5,31 @@
 
   const {data} = $props();
 
-  import {practices} from '$content/learn/practices';
+  //import {practices} from '$content/learn/practices';
 	import { page } from '$app/stores';
 	import type { Snapshot } from '../$types.js';
   
-  const practice = $derived(practices[data.syllabus][data.chapter][data.section][data.subsection]);
+  //const practice = $derived(practices[data.syllabus][data.chapter][data.section][data.subsection]);
+
+  const modules = import.meta.glob(['/src/content/learn/**/*.ts', '!**/*.state.ts']);
+
+  const practice = $derived(modules[`/src/content/learn/${data.syllabus}/${data.chapter}/${data.section}/${data.subsection}.ts`]());
+  type Practice = {
+    generateQn: (state: unknown) => {qn: string, ans: string, soln?: string},
+    generateState: () => unknown;
+  }
+  async function getQn(qState: unknown) {
+    const p = await practice as Practice;
+    return p.generateQn(qState);
+  }
+  async function getNewState() {
+    const p = await practice as Practice;
+    const state = p.generateState();
+    return state;
+  }
+
   let qnState = $state(data.state);
-  let {qn,ans} = $derived(practice.generateQn(qnState));
+  let q = $derived(getQn(qnState));
   let showAnswer = $state(false);
   
   // for validation
@@ -29,61 +47,26 @@
   <title>{data.title}</title>
 </svelte:head>
 
-<Practice title={data.title} next={data.next} sections={data.sections} section={data.section} subsection={data.subsection} bind:showAnswer>
+<Practice title={data.title} next={data.next} sections={data.sections} section={data.section} subsection={data.subsection} 
+  {q}
+bind:showAnswer>
   {#snippet question()}
-    {#key qnState}
-    <div class="question-container" in:scale>
-      {@html qn}
-    </div>
-    {/key}
+  {#key qnState}
+  <div class="question-container" in:scale>
+    {#await q}
+    Loading...
+    {:then {qn}}
+        {@html qn}
+    {/await}
+  </div>
+  {/key}
   {/snippet}
   {#snippet questionButton()}
-    <Button onclick={()=>{
+    <Button onclick={async()=>{
       showAnswer = false;
-      qnState = practice.generateState();
+      qnState = await getNewState();
     }}
     >Generate New</Button>
-  {/snippet}
-  {#snippet answer()}
-    {@html ans}
-    {#if $page.url.searchParams.get('supa')==='base'}
-      <input bind:value={pw} />
-      <div>
-        <Button {disabled} onclick={async ()=>{
-          disabled = true;
-          const res = await fetch('/db', {method: 'POST', body:JSON.stringify({state:qnState,validity:false,practice:$page.url.pathname.slice(7,$page.url.pathname.length-9),pw})});
-          const json = await res.json();
-          code = json.code;
-          disabled = false;
-        }}> 
-          Bad 
-        </Button>
-        <Button {disabled} onclick={async ()=>{
-          disabled = true;
-          const res = await fetch('/db', {method: 'POST', body:JSON.stringify({state:qnState,validity:'investigate',practice:$page.url.pathname.slice(7,$page.url.pathname.length-9),pw})});
-          const json = await res.json();
-          code = json.code;
-          disabled = false;
-        }}> 
-          Investigate 
-        </Button>
-        <Button {disabled} onclick={async ()=>{
-          disabled = true;
-          const res = await fetch('/db', {method: 'POST', body:JSON.stringify({state:qnState,validity:true,practice:$page.url.pathname.slice(7,$page.url.pathname.length-9),pw})});
-          const json = await res.json();
-          code = json.code;
-          disabled = false;
-        }}> 
-          Good
-        </Button>
-      </div>
-      <div>
-        Response: {code}
-      </div>
-      <div>
-        {JSON.stringify(qnState)}
-      </div>
-    {/if}
   {/snippet}
 </Practice>
 

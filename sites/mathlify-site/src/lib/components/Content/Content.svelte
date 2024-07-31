@@ -6,12 +6,16 @@
 	import { slide } from "svelte/transition";
 
 	import TOC from "./TOC.svelte";
-  import {SquareMenuIcon} from 'lucide-svelte'
+  import {SquareMenuIcon} from 'lucide-svelte';
+  import BottomNav from "../Nav/BottomNav.svelte";
 
-  let { toc, title, currentSection="", content ,desktopExtraNav }: {
+  let { toc, title, currentSection="", prev, next, content, endnotes, desktopExtraNav }: {
     toc?: Heading[],
     title: string,
     currentSection?: string,
+    prev: {shortTitle: string, slug: string, sectionSlug: string} | "theory" | undefined,
+    next: {shortTitle: string, slug: string, sectionSlug: string} | "practice" | undefined,
+    endnotes?: Snippet,
     content: Snippet,
     desktopExtraNav: Snippet,
   } = $props();
@@ -31,12 +35,10 @@
 
 <svelte:window bind:innerWidth={width} />
 <div class="content-container">
-  {#if toc || width >= 800}
   <div class="content-header-container">
     <nav class="content-header">
       <div class="toc-heading">
         <button class="toc-heading-small" onclick={() => showTOC = !showTOC } use:clickOutside={()=> {if (mobile) showTOC = false}}
-          disabled={!toc}
         >
           <SquareMenuIcon />
           <h1>{title}</h1>
@@ -45,9 +47,13 @@
           {title}
         </a>
       </div>
-      {#if toc && showTOC}
+      {#if showTOC}
         <div class="toc-container" transition:slide={{duration: mobile ? 400 : 0}}>
+          {#if toc}
           <TOC {toc} {currentSection} />
+          <hr class="toc-divider"/>
+          {/if}
+          <BottomNav {prev} {next} />
         </div>
       {/if}
       {#if !mobile}
@@ -55,10 +61,15 @@
       {/if}
     </nav>
   </div>
-  {/if}
   <div class="content-body-container">
     <div class="content-body content prose">
       {@render content()}
+      <BottomNav {prev} {next} />
+      {#if endnotes}
+        <div class="endnotes-container">
+          {@render endnotes()}
+        </div>
+      {/if}
     </div>
   </div>
 </div>
@@ -85,7 +96,9 @@
     padding-inline: 1rem;
     padding-block: 0.5rem;
     width: var(--container-width);
-    overflow-y: auto;
+  }
+  .toc-divider {
+    display: none;
   }
   .toc-heading {
     margin-block-end: 0.5rem;
@@ -115,6 +128,9 @@
     font-size: 1.25rem;
     padding-inline: 1rem;
   } 
+  .endnotes-container {
+    font-size: 0.6em;
+  }
   /** TODO: sync with app.css var(--max-width) */
   @media (min-width: 800px){
     .content-container {
@@ -125,7 +141,11 @@
     .content-header-container {
       margin-block-end: 0;
       width: 100%;
+      overflow-y: auto;
     }
+    .toc-divider {
+    display: block;
+  }
     .content-header * {
       padding-block: 0;
       font-size: 1rem;

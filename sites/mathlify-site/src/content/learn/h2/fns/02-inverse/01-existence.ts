@@ -1,5 +1,4 @@
 import { chooseRandom, coinFlip, getRandomInt } from '$lib/utils/random';
-import { renderHTML } from 'djot-temml';
 
 // objectives
 // A: fnType
@@ -34,8 +33,7 @@ export function generateQn(state: PracticeState): PracticeQuestion {
 	let qn: string;
 	if (state.unknownConstants) {
 		if (state1.fnType === 'frac') {
-			qn = renderHTML(
-				mathlify`The function ${'f'}
+			qn = mathlify`The function ${'f'}
 is defined by 
 
 $${fnString}
@@ -46,11 +44,9 @@ and ${'c'}
 are positive constants.
 
 Determine, with reason, if ${'f'}
-has an inverse.`,
-			);
+has an inverse.`;
 		} else if (state1.fnType === 'abs' || state1.fnType === 'improper') {
-			qn = renderHTML(
-				mathlify`The function ${'f'}
+			qn = mathlify`The function ${'f'}
 is defined by
 
 $${fnString}
@@ -64,11 +60,9 @@ Determine, with reason, if ${'f'}
 has an inverse.
 
 Remark: what happens to ${'f'}
-if ${'\\frac{c}{b} = a'}?`,
-			);
+if ${'\\frac{c}{b} = a'}?`;
 		} else {
-			qn = renderHTML(
-				mathlify`The function ${'f'}
+			qn = mathlify`The function ${'f'}
 is defined by
 
 $${fnString}
@@ -78,25 +72,22 @@ and ${'b'}
 are positive constants.
 
 Determine, with reason, if ${'f'}
-has an inverse.`,
-			);
+has an inverse.`;
 		}
 	} else {
-		qn = renderHTML(
-			mathlify`The function ${'f'}
+		qn = mathlify`The function ${'f'}
 is defined by
 
 $${fnString}.
 
 Determine, with reason, if ${'f'}
-has an inverse.`,
-		);
+has an inverse.`;
 	}
 	const modB = state1.fnType === 'abs' ? '|b|' : 'b';
 	const { allHorizontalLines, line, atMostOnce, not, has } = generateAns(state1, exp);
 	const ans =
 		(state1.fnType === 'abs' || state1.fnType === 'improper') && state1.unknownConstants
-			? renderHTML(mathlify`@${allHorizontalLines} ${line}
+			? mathlify`@${allHorizontalLines} ${line}
 cuts the graph of ${'y=f(x)'}
 @${atMostOnce}. Hence ${'f'}
 is @${not} one-to-one and 
@@ -106,12 +97,12 @@ If ${'\\frac{c}{b} = a'},
 then ${'f'}
 will be a constant function
 ${`f(x)=${modB}`},
-which does not have an inverse as it is not one-to-one.`)
-			: renderHTML(mathlify`@${allHorizontalLines} ${line}
+which does not have an inverse as it is not one-to-one.`
+			: mathlify`@${allHorizontalLines} ${line}
 cuts the graph of ${'y=f(x)'}
 @${atMostOnce}. Hence ${'f'}
 is @${not} one-to-one and 
-@${has} an inverse.`);
+@${has} an inverse.`;
 	return { qn, ans };
 }
 
