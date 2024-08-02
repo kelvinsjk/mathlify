@@ -37,8 +37,8 @@ export function getRandomInt(
 	return randomInt;
 }
 
-export function coinFlip(): boolean {
-	return Math.random() < 0.5;
+export function coinFlip(p: number = 0.5): boolean {
+	return Math.random() < p;
 }
 
 export function getRandomSign(): number {

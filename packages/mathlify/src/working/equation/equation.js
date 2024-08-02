@@ -82,10 +82,16 @@ export class Equation {
 	/**
 	 *
 	 * @param {Shorthand} exp
+	 * @param {{verbatim?: boolean}} [options]
 	 * @returns {Equation}
 	 */
-	minus(exp) {
-		return new Equation(this.lhs.minus(exp), this.rhs.minus(exp), this.options);
+	minus(exp, options) {
+		const eqn = new Equation(
+			this.lhs.minus(exp),
+			this.rhs.minus(exp),
+			this.options,
+		);
+		return options?.verbatim ? eqn : eqn.simplify();
 	}
 	/**
 	 *

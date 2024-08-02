@@ -1,0 +1,132 @@
+<svg
+	xmlns="http://www.w3.org/2000/svg"
+	class="graph svelte-1vox4to"
+	viewBox="-55 -48 110.00000000000001 88"
+>
+	<style>
+		foreignObject {
+			color: black;
+			font-size: 7px;
+			overflow: visible;
+			white-space: nowrap;
+			display: grid;
+		}
+		foreignObject math {
+			flex-wrap: nowrap;
+			transform: translate(-50%, -50%);
+		}
+	</style>
+	<defs>
+		<marker id="closed" markerWidth="5" markerHeight="5" refX="1" refY="1">
+			<circle cx="1" cy="1" r="1" fill="black"></circle>
+		</marker>
+		<marker id="open" markerWidth="5" markerHeight="5" refX="1" refY="1">
+			<circle
+				cx="1"
+				cy="1"
+				r="0.75"
+				fill="white"
+				markerUnits="strokeWidth"
+				style="stroke: black; stroke-width: 0.5"
+			></circle>
+		</marker>
+		<marker id="arrow" markerWidth="5" markerHeight="5" refX="0" refY="1" orient="auto">
+			<path d="M 0 0 L 2 1 L 0 2 z" fill="black"></path>
+		</marker>
+	</defs>
+	<line
+		marker-end="url(#arrow)"
+		x1="-50"
+		x2="50"
+		y1="30"
+		y2="30"
+		style="stroke: black; stroke-width: 2"
+	></line>
+	<line
+		marker-end="url(#arrow)"
+		x1="0"
+		x2="0"
+		y1="40"
+		y2="-40"
+		style="stroke: black; stroke-width: 2"
+	></line>
+	<foreignObject width="1" height="1" class="svelte-1vox4to" x="50" y="35"
+		><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>x</mi></math
+		><!----></foreignObject
+	><foreignObject width="1" height="1" class="svelte-1vox4to" x="-5" y="-42"
+		><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>y</mi></math
+		><!----></foreignObject
+	><!----><!---->
+	<line stroke-dasharray="4" x1="15" x2="15" y1="40" y2="-40" style="stroke: green"></line>
+	<foreignObject class="graph-label svelte-1vox4to" width="1" height="1" x="15" y="-40"
+		><div style="display: grid" xmlns="http://www.w3.org/1999/xhtml" class="svelte-1vox4to">
+			<math xmlns="http://www.w3.org/1998/Math/MathML"
+				><mrow><mi>x</mi><mo>=</mo></mrow
+				><mrow><mn>3</mn></mrow></math
+			><!---->
+		</div></foreignObject
+	><!----><!---->
+	<line stroke-dasharray="4" x1="-50" x2="50" y1="20" y2="20" style="stroke: green"></line>
+	<foreignObject class="graph-label svelte-1vox4to" width="1" height="1" x="-50" y="15"
+		><math xmlns="http://www.w3.org/1998/Math/MathML"
+			><mrow><mi>y</mi><mo>=</mo></mrow
+			><mrow><mn>2</mn></mrow></math
+		><!----></foreignObject
+	><!----><!---->
+	<path
+		d="M-50.000,23.846 -48.955,23.909 -47.910,23.974 -46.864,24.041 -45.819,24.111 -44.774,24.182 -43.729,24.257 -42.684,24.334 -41.639,24.414 -40.593,24.497 -39.548,24.583 -38.503,24.673 -37.458,24.766 -36.413,24.863 -35.368,24.964 -34.322,25.069 -33.277,25.178 -32.232,25.293 -31.187,25.413 -30.142,25.538 -29.097,25.669 -28.051,25.807 -27.006,25.951 -25.961,26.103 -24.916,26.263 -23.871,26.432 -22.826,26.609 -21.780,26.797 -20.735,26.996 -19.690,27.207 -18.645,27.431 -17.600,27.669 -16.555,27.923 -15.509,28.194 -14.464,28.485 -13.419,28.797 -12.374,29.133 -11.329,29.495 -10.284,29.888 -9.2384,29.686 -8.1932,29.221 -7.1481,28.712 -6.1029,28.153 -5.0577,27.536 -4.0125,26.851 -2.9674,26.086 -1.9222,25.227 -0.87703,24.254 0.16814,23.144 1.2133,21.867 2.2585,20.379 3.3036,18.626 4.3488,16.528 5.3940,13.975 6.4392,10.797 7.4843,6.7362 8.5295,1.3632 9.5747,-6.0801 10.620,-17.075 11.665,-34.963 "
+		style="stroke: blue; fill: none"
+	></path>
+	<!---->
+	<path
+		d="M19.545,-35.006 20.595,-24.681 21.645,-17.620 22.696,-12.486 23.746,-8.5855 24.796,-5.5210 25.846,-3.0499 26.896,-1.0151 27.946,0.68958 28.997,2.1385 30.047,3.3851 31.097,4.4691 32.147,5.4202 33.197,6.2617 34.247,7.0112 35.298,7.6833 36.348,8.2892 37.398,8.8383 38.448,9.3382 39.498,9.7952 40.548,10.215 41.599,10.601 42.649,10.958 43.699,11.289 44.749,11.596 45.799,11.883 46.849,12.151 47.900,12.401 48.950,12.636 50.000,12.857 "
+		style="stroke: blue; fill: none"
+	></path>
+	<foreignObject
+		class="graph-label svelte-1vox4to"
+		width="1"
+		height="1"
+		x="19.544999999999987"
+		y="-35.00550055005502"
+		><math xmlns="http://www.w3.org/1998/Math/MathML"
+			><mrow><mi>y</mi><mo>=</mo></mrow
+			><mrow
+				><mrow
+					><mo fence="true" form="prefix">|</mo
+					><mfrac
+						><mrow><mn>2</mn><mi>x</mi><mo>+</mo><mn>4</mn></mrow
+						><mrow><mn>3</mn><mo>−</mo><mi>x</mi></mrow></mfrac
+					><mo fence="true" form="postfix">|</mo></mrow
+				></mrow
+			></math
+		><!----></foreignObject
+	><!----><!---->
+	<line style="stroke: black" y1="27" y2="33" x1="-10" x2="-10"></line>
+	<foreignObject width="1" height="1" class="svelte-1vox4to" y="36" x="-10"
+		><div style="display: grid" xmlns="http://www.w3.org/1999/xhtml" class="svelte-1vox4to">
+			<math xmlns="http://www.w3.org/1998/Math/MathML"
+				><mrow
+					><mo form="prefix" stretchy="false">(</mo><mo form="prefix" stretchy="false">−</mo
+					><mn>2</mn><mo separator="true">,</mo><mn>0</mn
+					><mo form="postfix" stretchy="false">)</mo></mrow
+				></math
+			><!---->
+		</div></foreignObject
+	><!---->
+	<line style="stroke: black" x1="-3" x2="3" y1="23.333333333333336" y2="23.333333333333336"></line>
+	<foreignObject width="1" height="1" class="svelte-1vox4to" x="-10" y="23.333333333333336"
+		><div
+			class="label-left svelte-1vox4to"
+			style="display: grid"
+			xmlns="http://www.w3.org/1999/xhtml"
+		>
+			<math xmlns="http://www.w3.org/1998/Math/MathML"
+				><mrow
+					><mo fence="true" form="prefix">(</mo><mn>0</mn><mo separator="true">,</mo
+					><mfrac><mn>4</mn><mn>3</mn></mfrac
+					><mo fence="true" form="postfix">)</mo></mrow
+				></math
+			><!---->
+		</div></foreignObject
+	><!---->
+</svg>

@@ -59,9 +59,12 @@ export class Equation {
     /**
      *
      * @param {Shorthand} exp
+     * @param {{verbatim?: boolean}} [options]
      * @returns {Equation}
      */
-    minus(exp: Shorthand): Equation;
+    minus(exp: Shorthand, options?: {
+        verbatim?: boolean;
+    } | undefined): Equation;
     /**
      *
      * @param {Shorthand} exp

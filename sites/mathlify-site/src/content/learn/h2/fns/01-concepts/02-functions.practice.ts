@@ -1,12 +1,11 @@
 import { chooseRandom, getRandomInt, coinFlip, getRandomNonZeroInt } from '$lib/utils/random';
-import { renderHTML } from 'djot-temml';
 
 // objectives
 // A: fnType
 // B: restricted domain
 // C: unknown constants
 
-import type { PracticeState, PracticeQuestion, Practice } from '$content/learn/practices';
+import type { PracticeState, PracticeQuestion, Practice } from '$lib/types/learn';
 import { mathlify } from '$lib/mathlifier';
 import { logTerm, sqrtTerm, absTerm } from 'mathlify/fns';
 import { Expression, sum, e } from 'mathlify';
@@ -33,7 +32,7 @@ const types = [
 	'special',
 ] as const;
 type Types = typeof types;
-type Type = Types[number];
+export type Type = Types[number];
 
 export interface State extends PracticeState {
 	fnType: Type;
@@ -58,8 +57,12 @@ export function generateState(options?: { type?: Type }): State {
 	let c = getRandomInt(-4, 4);
 	let unknownConstants = Math.random() < 0.3;
 	const isRestricted = Math.random() < 0.3;
-	if (fnType === 'special') unknownConstants = false;
 	if (fnType === 'linear' || fnType === 'special') a = getRandomNonZeroInt(1, 4);
+	if (fnType === 'special') {
+		unknownConstants = false;
+		a = Math.abs(a);
+	}
+	if (fnType === 'linear' && unknownConstants) a = 1;
 	if (fnType === 'exp') a = getRandomNonZeroInt(1, 2);
 	if (fnType === 'frac') c = getRandomNonZeroInt(1, 4);
 	if (fnType === 'improper' || fnType === 'abs' || fnType === 'special')
@@ -111,31 +114,20 @@ export function generateState(options?: { type?: Type }): State {
 
 export function generateQn(state: PracticeState): PracticeQuestion {
 	const state1 = state as State;
-	//const state1: State = {
-	//	a: 1,
-	//	b: 1,
-	//	c: 1,
-	//	fnType: 'quadratic',
-	//	restriction: { type: 'left', inclusive: false, x: -1 },
-	//	unknownConstants: true,
-	//};
 	const [fnString, exp] = generateFn(state1);
 	let qn: string;
 	if (state.unknownConstants) {
 		if (state1.fnType === 'frac') {
-			qn = renderHTML(
-				mathlify`Find the range of the function
+			qn = mathlify`Find the range of the function
 
 $${fnString}
 
 where ${'a'},
 ${'b'}
 and ${'c'}
-are positive constants.`,
-			);
+are positive constants.`;
 		} else if (state1.fnType === 'abs' || state1.fnType === 'improper') {
-			qn = renderHTML(
-				mathlify`Find the range of the function
+			qn = mathlify`Find the range of the function
 
 $${fnString}
 
@@ -145,36 +137,31 @@ and ${'c'}
 are positive constants and ${'\\frac{c}{b} \\neq a'}.
 
 Remark: what happens to ${'f'}
-if ${'\\frac{c}{b} = a'}?`,
-			);
+if ${'\\frac{c}{b} = a'}?`;
 		} else {
-			qn = renderHTML(
-				mathlify`Find the range of the function
+			qn = mathlify`Find the range of the function
 
 $${fnString}
 
 where ${'a'}
 and ${'b'}
-are positive constants.`,
-			);
+are positive constants.`;
 		}
 	} else {
-		qn = renderHTML(
-			mathlify`Find the range of the function
+		qn = mathlify`Find the range of the function
 
-$${fnString}.`,
-		);
+$${fnString}.`;
 	}
 	const modB = state1.fnType === 'abs' ? '|b|' : 'b';
 	const ans =
 		(state1.fnType === 'abs' || state1.fnType === 'improper') && state1.unknownConstants
-			? renderHTML(mathlify`$${'R_f'} = ${generateAns(state1, exp)}.
+			? mathlify`$${'R_f'} = ${generateAns(state1, exp)}.
 
 If ${'\\frac{c}{b} = a'}, 
 then ${'f'}
 will be a constant function
-${`f(x)=${modB}`}.`)
-			: renderHTML(mathlify`$${'R_f'} = ${generateAns(state1, exp)}.`);
+${`f(x)=${modB}`}.`
+			: mathlify`$${'R_f'} = ${generateAns(state1, exp)}.`;
 	return { qn, ans };
 }
 
@@ -239,7 +226,7 @@ export function generateFn(state: State): [string, Expression] {
 	return [x, exp];
 }
 
-function generateInequality(restriction: {
+export function generateInequality(restriction: {
 	type: 'left' | 'right';
 	inclusive: boolean;
 	x: number;
@@ -303,7 +290,7 @@ export function generateAns(state: State, exp: Expression): string {
 			const y = Math.sqrt(x + a) + b;
 			return `\\left${leftBracket(inclusive)} ${y}, \\infty \\right)`;
 		}
-		return `\\left[ ${b}, \\infty \\right)`;
+		return unknownConstants ? `\\left[ b, \\infty \\right)` : `\\left[ ${b}, \\infty \\right)`;
 	} else if (fnType === 'frac' || fnType == 'improper') {
 		if (restriction) {
 			// chosen to be a single interval
@@ -353,11 +340,16 @@ export function generateAns(state: State, exp: Expression): string {
 	} else {
 		// special
 		const y = exp.subIn({ x: 0 });
+		if (restriction) {
+			return y.valueOf() < 0 ? `\\left( 0, \\infty \\right)` : `\\left(-\\infty, 0 \\right)`;
+		}
 		return b < 0
 			? `\\left( -\\infty, 0 \\right) \\cup \\left[ ${y}, \\infty \\right)`
 			: `\\left( -\\infty, ${y} \\right] \\cup \\left( 0, \\infty \\right)`;
 	}
 }
+
+export const functionRange = generateAns;
 
 function leftBracket(inclusive: boolean): string {
 	return inclusive ? '[' : '(';

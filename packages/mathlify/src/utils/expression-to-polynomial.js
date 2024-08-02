@@ -1,4 +1,5 @@
-import { Expression, Polynomial } from '../index.js';
+import { Expression } from '../core/expression/expression.js';
+import { Polynomial } from '../core/polynomial/polynomial.js';
 import { arrayHasLengthEqualTo } from './typescript/array-length.js';
 /** @typedef {import('../core/expression/expression.js').Variable} Variable*/
 

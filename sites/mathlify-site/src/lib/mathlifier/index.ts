@@ -1,3 +1,5 @@
+import { renderHTML } from 'djot-temml';
+
 /**
  * generates djot string,
  * using JavaScript's template literal syntax to handle mathematical expressions (both static and dynamic)
@@ -7,8 +9,21 @@
  * display env: starts with $${'align'}, etc.
  * text: starts with @${}, terminates immediately
  */
-export function mathlify(strings: TemplateStringsArray, ...values: unknown[]): string {
+export function mathlifyDj(strings: TemplateStringsArray, ...values: unknown[]): string {
 	return mathlifyGen(modules)(strings, ...values);
+}
+
+export function mathlify(strings: TemplateStringsArray, ...values: unknown[]): string {
+	return renderHTML(mathlifyDj(strings, ...values));
+}
+
+export function mathlifyQED(strings: TemplateStringsArray, ...values: unknown[]): string {
+	return renderHTML(
+		mathlifyGen(modules, { postContent: { mode: 'auto-math', content: '\\; \\blacksquare' } })(
+			strings,
+			...values,
+		),
+	);
 }
 
 const modules: Modules = {
@@ -81,6 +96,8 @@ enum MathEnvs {
 	alignatStar,
 }
 
+type postContentModes = 'text' | 'math' | 'display' | 'auto-math';
+
 const mathEnvsKeys = [
 	'equation',
 	'equation*',
@@ -115,25 +132,30 @@ interface MathEnvOptions {
 
 export function mathlifyGen(
 	modules: Modules,
+	options?: {
+		postContent?: { mode?: postContentModes; content: string };
+	},
 ): (strings: TemplateStringsArray, ...values: unknown[]) => string {
 	return (strings: TemplateStringsArray, ...values: unknown[]) => {
-		let currentModeString = '';
-		let output = '';
-		let mode = Modes.text;
+		let finalOutput = '';
+		let accumulatedEnvOutput = '';
+		let mode: Modes = Modes.text;
 		let mathEnvOptions: MathEnvOptions = { mathEnv: MathEnvs.equation };
 		strings.forEach((str, i) => {
-			const nextVal = values[i] ?? '';
+			let nextVal = values[i];
+			if (nextVal === undefined || nextVal === null || Object.keys(nextVal).length === 0)
+				nextVal = '';
 			if (mode === Modes.text) {
 				if (str.endsWith('@')) {
 					// continues text mode
-					currentModeString += `${str.slice(0, str.length - 1)}${nextVal}`;
+					finalOutput += `${str.slice(0, str.length - 1)}${nextVal}`;
 				} else {
 					// starts new text environment
-					[mode, output, currentModeString, mathEnvOptions] = startNewEnv(
+					[mode, accumulatedEnvOutput, finalOutput, mathEnvOptions] = startNewEnv(
 						str,
 						'',
 						nextVal,
-						currentModeString,
+						finalOutput,
 					);
 				}
 			} else if (mode === Modes.math) {
@@ -143,28 +165,28 @@ export function mathlifyGen(
 				if (match) {
 					// end math mode
 					const [, before, newline, after] = match;
-					output += `${before}`;
-					if (output) {
-						currentModeString += modules.math(output);
+					accumulatedEnvOutput += `${before}`;
+					if (accumulatedEnvOutput) {
+						finalOutput += modules.math(accumulatedEnvOutput);
 					}
-					[mode, output, currentModeString, mathEnvOptions] = startNewEnv(
+					[mode, accumulatedEnvOutput, finalOutput, mathEnvOptions] = startNewEnv(
 						after,
 						newline,
 						nextVal,
-						currentModeString,
+						finalOutput,
 					);
 				} else {
 					// continue math mode
 					if (str.endsWith(`@`)) {
 						// TODO: check this
-						output += `${str.slice(0, str.length - 1)}`;
+						accumulatedEnvOutput += `${str.slice(0, str.length - 1)}`;
 					} else {
-						output += `${str}${nextVal}`;
+						accumulatedEnvOutput += `${str}${nextVal}`;
 					}
-					if (i === strings.length - 1) {
-						// final string
-						currentModeString += modules.math(output);
-					}
+					// if (i === strings.length - 1) {
+					// 	// final string
+					// 	finalOutput += modules.math(accumulatedEnvOutput);
+					// }
 				}
 			} else if (mode === Modes.display) {
 				// checks for \n\n or \r\n\r\n within str. group into (#1)(#2) where #2 = \n or \r\n and it is done non-greedily
@@ -173,28 +195,28 @@ export function mathlifyGen(
 				if (match) {
 					// end display mode
 					const [, before, newline, after] = match;
-					output += before;
-					if (output) {
-						currentModeString += modules.display(output);
+					accumulatedEnvOutput += before;
+					if (accumulatedEnvOutput) {
+						finalOutput += modules.display(accumulatedEnvOutput);
 					}
-					[mode, output, currentModeString, mathEnvOptions] = startNewEnv(
+					[mode, accumulatedEnvOutput, finalOutput, mathEnvOptions] = startNewEnv(
 						after,
 						newline,
 						nextVal,
-						currentModeString,
+						finalOutput,
 					);
 				} else {
 					// continue display mode
 					if (str.endsWith(`@`)) {
 						// TODO: check this
-						output += `${str.slice(0, str.length - 1)}`;
+						accumulatedEnvOutput += `${str.slice(0, str.length - 1)}`;
 					} else {
-						output += `${str}${nextVal}`;
+						accumulatedEnvOutput += `${str}${nextVal}`;
 					}
-					if (i === strings.length - 1) {
-						// final string
-						currentModeString += modules.display(output);
-					}
+					// if (i === strings.length - 1) {
+					// 	// final string
+					// 	finalOutput += modules.display(accumulatedEnvOutput);
+					// }
 				}
 			} else if (mode === Modes.mathEnv) {
 				// checks for \n\n or \r\n\r\n within str. group into (#1)(#2) where #2 = \n or \r\n and it is done non-greedily
@@ -203,32 +225,91 @@ export function mathlifyGen(
 				if (match) {
 					// end mathEnv mode
 					const [, before, newline, after] = match;
-					output += before;
-					if (output) {
-						currentModeString += insertMathEnv(mathEnvOptions, output, modules);
+					accumulatedEnvOutput += before;
+					if (accumulatedEnvOutput) {
+						finalOutput += insertMathEnv(mathEnvOptions, accumulatedEnvOutput, modules);
 					}
-					[mode, output, currentModeString, mathEnvOptions] = startNewEnv(
+					[mode, accumulatedEnvOutput, finalOutput, mathEnvOptions] = startNewEnv(
 						after,
 						newline,
 						nextVal,
-						currentModeString,
+						finalOutput,
 					);
 				} else {
 					// continue mathEnv mode
 					if (str.endsWith(`@`)) {
 						// TODO: check this.
-						output += `${str.slice(0, str.length - 1)}`;
+						accumulatedEnvOutput += `${str.slice(0, str.length - 1)}`;
 					} else {
-						output += `${str}${nextVal}`;
+						accumulatedEnvOutput += `${str}${nextVal}`;
 					}
-					if (i === strings.length - 1) {
-						// final string
-						currentModeString += insertMathEnv(mathEnvOptions, output, modules);
-					}
+					// if (i === strings.length - 1) {
+					// 	// final string
+					// 	finalOutput += insertMathEnv(mathEnvOptions, accumulatedEnvOutput, modules);
+					// }
 				}
 			}
 		});
-		return currentModeString;
+		// handle accumulated value and post content
+		if (accumulatedEnvOutput) {
+			const currentMode = mode as Modes;
+			if (options?.postContent) {
+				const finalMode = options.postContent.mode ?? 'auto-math';
+				const content = options.postContent.content;
+				if (currentMode === Modes.text && finalMode === 'text') {
+					finalOutput += accumulatedEnvOutput + content;
+				} else if (
+					currentMode === Modes.math &&
+					(finalMode === 'math' || finalMode === 'auto-math')
+				) {
+					finalOutput += modules.math(accumulatedEnvOutput + content);
+				} else if (
+					currentMode === Modes.display &&
+					(finalMode === 'display' || finalMode === 'auto-math')
+				) {
+					finalOutput += modules.display(accumulatedEnvOutput + content);
+				} else if (currentMode === Modes.mathEnv && finalMode === 'auto-math') {
+					finalOutput += insertMathEnv(mathEnvOptions, accumulatedEnvOutput + content, modules);
+				} else {
+					// new env. append final value first
+					if (currentMode === Modes.text) {
+						finalOutput += accumulatedEnvOutput;
+					} else if (currentMode === Modes.math) {
+						finalOutput += modules.math(accumulatedEnvOutput);
+					} else if (currentMode === Modes.display) {
+						finalOutput += modules.display(accumulatedEnvOutput);
+					} else {
+						finalOutput += insertMathEnv(mathEnvOptions, accumulatedEnvOutput, modules);
+					}
+					// handle post content
+					if (finalMode === 'text') {
+						finalOutput += content;
+					} else if (finalMode === 'math' || finalMode === 'auto-math') {
+						finalOutput += modules.math(content);
+					} else if (finalMode === 'display') {
+						finalOutput += modules.display(content);
+					}
+				}
+			} else {
+				if (currentMode === Modes.math) {
+					finalOutput += modules.math(accumulatedEnvOutput);
+				} else if (currentMode === Modes.display) {
+					finalOutput += modules.display(accumulatedEnvOutput);
+				} else {
+					finalOutput += insertMathEnv(mathEnvOptions, accumulatedEnvOutput, modules);
+				}
+			}
+		} else if (options?.postContent) {
+			const { mode, content } = options.postContent;
+			if (mode === 'text') {
+				finalOutput += content;
+			} else if (mode === 'math' || mode === 'auto-math') {
+				finalOutput += modules.math(content);
+			} else if (mode === 'display') {
+				finalOutput += modules.display(content);
+			}
+		}
+		return finalOutput;
 	};
 }
 

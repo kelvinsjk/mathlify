@@ -11,7 +11,6 @@ import { Expression, Polynomial } from '../../index.js';
 import { expressionToPolynomial } from '../../utils/expression-to-polynomial.js';
 import { combineFraction } from '../../algebra/combine-fraction.js';
 import { Brackets } from '../../fns/index.js';
-import { arrayHasLengthEqualTo } from '../../utils/typescript/array-length.js';
 
 /** @typedef {import('../../core/expression/expression.js').Shorthand} Shorthand */
 /** @typedef {import('../../core/expression/expression.js').Variable} Variable */
@@ -159,6 +158,15 @@ export class EquationWorking {
 	 */
 	times(exp, options) {
 		this.eqn = this.eqn.times(exp, options);
+		return addStep(this, options);
+	}
+	/**
+	 * @param {Shorthand} exp
+	 * @param {WorkingOptions & {verbatim?: boolean}} [options]
+	 * @returns {EquationWorking}
+	 */
+	minus(exp, options) {
+		this.eqn = this.eqn.minus(exp, options);
 		return addStep(this, options);
 	}
 	/**
@@ -427,12 +435,14 @@ export class EquationWorking {
 		/** @type {Expression[]} */
 		const factorsToMove = [];
 		const [coeff, factors] = this.eqn.lhs._getProductTerms();
+		let lhs = new Expression(1);
 		for (const factor of factors) {
 			if (!factor.contains(variable)) {
 				factorsToMove.push(factor);
+			} else {
+				lhs = lhs.times(factor);
 			}
 		}
-		const lhs = new Expression(variable);
 		const den = new Expression(new Product(coeff, ...factorsToMove)).simplify();
 		const rhs = new Expression(new Quotient(this.eqn.rhs, den));
 		const sign = coeff.is.negative()

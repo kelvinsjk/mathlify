@@ -1,12 +1,11 @@
 import { chooseRandom, getRandomInt, coinFlip, getRandomNonZeroInt } from '$lib/utils/random';
-import { renderHTML } from 'djot-temml';
 
 // objectives
 // A: fnType
 // B: restricted domain
 // C: unknown constants
 
-import type { PracticeState, PracticeQuestion, Practice } from '$content/learn/practices';
+import type { PracticeState, PracticeQuestion, Practice } from '$lib/types/learn';
 import { mathlify } from '$lib/mathlifier';
 
 // ax+b (2013)
@@ -22,7 +21,7 @@ import { mathlify } from '$lib/mathlifier';
 import {
 	generateFn,
 	generateAns as generateRange,
-} from '$content/learn/h2/fns/01-concepts/02-functions';
+} from '$content/learn/h2/fns/01-concepts/02-functions.practice';
 
 const types = [
 	'linear',
@@ -61,8 +60,12 @@ export function generateState(options?: { type?: Type }): State {
 	let c = getRandomInt(-4, 4);
 	let unknownConstants = Math.random() < 0.3;
 	let isRestricted = Math.random() < 0.3;
-	if (fnType === 'special') unknownConstants = false;
 	if (fnType === 'linear' || fnType === 'special') a = getRandomNonZeroInt(1, 4);
+	if (fnType === 'special') {
+		unknownConstants = false;
+		a = Math.abs(a);
+	}
+	if (fnType === 'linear' && unknownConstants) a = 1;
 	if (fnType === 'exp') a = getRandomNonZeroInt(1, 2);
 	if (fnType === 'frac') c = getRandomNonZeroInt(1, 4);
 	if (fnType === 'improper' || fnType === 'abs' || fnType === 'special')
@@ -132,8 +135,7 @@ export function generateQn(state: PracticeState): PracticeQuestion {
 	let qn: string;
 	if (state.unknownConstants) {
 		if (state1.fnType === 'frac') {
-			qn = renderHTML(
-				mathlify`The function ${'f'}
+			qn = mathlify`The function ${'f'}
 is defined by
 
 $${fnString}
@@ -143,11 +145,9 @@ ${'b'}
 and ${'c'}
 are positive constants.
 
-Find the range and domain of the inverse function ${'f^{-1}.'}`,
-			);
+Find the range and domain of the inverse function ${'f^{-1}.'}`;
 		} else if (state1.fnType === 'abs' || state1.fnType === 'improper') {
-			qn = renderHTML(
-				mathlify`The function ${'f'}
+			qn = mathlify`The function ${'f'}
 is defined by
 
 $${fnString}
@@ -157,11 +157,9 @@ ${'b'}
 and ${'c'}
 are positive constants and ${'\\frac{c}{b} \\neq a'}.
 
-Find the range and domain of the inverse function ${'f^{-1}.'}`,
-			);
+Find the range and domain of the inverse function ${'f^{-1}.'}`;
 		} else {
-			qn = renderHTML(
-				mathlify`The function ${'f'}
+			qn = mathlify`The function ${'f'}
 is defined by
 
 $${fnString}
@@ -170,36 +168,39 @@ where ${'a'}
 and ${'b'}
 are positive constants.
 
-Find the range and domain of the inverse function ${'f^{-1}.'}`,
-			);
+Find the range and domain of the inverse function ${'f^{-1}.'}`;
 		}
 	} else {
-		qn = renderHTML(
-			mathlify`The function ${'f'}
+		qn = mathlify`The function ${'f'}
 is defined by
 
 $${fnString}.
 
-Find the range and domain of the inverse function ${'f^{-1}.'}`,
-		);
+Find the range and domain of the inverse function ${'f^{-1}.'}`;
 	}
-	const ans = renderHTML(mathlify`
+	const ans = mathlify`
 ${'D_{f^{-1}}'} = R_f = ${generateRange(state1, exp)}.
 \\
-${'R_{f^{-1}}'} = D_f = ${generateDomain(state1)}.
-`);
+${'R_{f^{-1}}'} = D_f = ${generateDomain(state1)}.`;
 	return { qn, ans };
 }
 
 function generateDomain(state: State): string {
 	const { fnType, restriction, a, unknownConstants } = state;
-	if (fnType === 'quadratic' && unknownConstants && restriction) {
-		return restriction.type === 'left'
-			? `\\left( -\\infty, -a \\right${rightBracket(restriction.inclusive)}`
-			: `\\left${leftBracket(restriction.inclusive)} -a, \\infty \\right)`;
+	if (unknownConstants) {
+		if (fnType === 'quadratic' && restriction) {
+			return restriction.type === 'left'
+				? `\\left( -\\infty, -a \\right${rightBracket(restriction.inclusive)}`
+				: `\\left${leftBracket(restriction.inclusive)} -a, \\infty \\right)`;
+		} else if ((fnType === 'improper' || fnType === 'abs') && !restriction) {
+			return `\\left( -\\infty, -a \\right) \\cup \\left( -a, \\infty \\right)`;
+		} else if (fnType === 'log' && !restriction) {
+			return `\\left( -a, \\infty \\right)`;
+		} else if (fnType === 'sqrt' && !restriction) {
+			return `\\left[ -a, \\infty \\right)`;
+		}
 	}
 	if (restriction) return generateSet(restriction);
-
 	if (fnType === 'log') {
 		return `\\left( ${-a}, \\infty \\right)`;
 	} else if (fnType === 'sqrt') {
