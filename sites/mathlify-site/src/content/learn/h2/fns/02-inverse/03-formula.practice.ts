@@ -6,7 +6,7 @@ import { coinFlip } from '$lib/utils/random';
 // C: unknown constants
 // D: definition vs f^{-1}(x)
 
-import type { PracticeState, PracticeQuestion, Practice } from '$content/learn/practices';
+import type { PracticeState, PracticeQuestion, Practice } from '$lib/types/learn';
 import { mathlify } from '$lib/mathlifier';
 import { Expression, sum, e, Polynomial } from 'mathlify';
 import { EquationWorking } from 'mathlify/working';
@@ -27,8 +27,10 @@ import {
 	generateAns as generateRange,
 	generateInequality as generateDomain,
 	type Type,
-} from '$content/learn/h2/fns/01-concepts/02-functions';
-import { generateState as generateState1 } from './02-domain';
+} from '$content/learn/h2/fns/01-concepts/02-functions.practice';
+import { generateState as generateState1 } from './02-domain.practice';
+
+const QED = '\\; \\blacksquare ';
 
 export interface State extends PracticeState {
 	fnType: Type;
@@ -46,8 +48,7 @@ export interface State extends PracticeState {
 	definition: boolean;
 }
 
-function generateState(options?: { type?: Type }): State {
-	options = { type: 'improper' };
+export function generateState(options?: { type?: Type }): State {
 	return { ...generateState1(options), definition: coinFlip() };
 }
 
@@ -287,21 +288,7 @@ ${{}} D_{f^{-1}} = R_{f} = ${generateRange(state, rhs)}.`;
 	} else if (fnType === 'abs') {
 		// TODO: no unknown constants case here?
 		const bxPlusC = unknownConstants ? new Polynomial(['b', 'c']) : new Polynomial([b, c]);
-		const inner = new Expression([bxPlusC, '/', xPlusA]);
-		if (restriction === false) throw new Error('Expected restriction for abs case');
-		const { type, x } = restriction;
-		const testPoint = type === 'left' ? x - 1 : x + 1;
-		const negative = inner.subIn({ x: testPoint }).is.negative();
-		const sign = negative ? '<' : '>';
-		const newRHS = negative ? inner.negative() : inner;
-		const working1 = mathlify`$${{}} \\text{Let } y = ${rhs}
-
-Since ${inner} ${sign} 0
-for
-${generateDomain(restriction)},
-`;
-		const { ans, soln } = generateImproperAns(state, { abs: true, definition, rhs: newRHS, QED });
-		return { ans, soln: working1 + soln };
+		return absoluteRationalInverse(state, [bxPlusC, xPlusA]);
 	} else {
 		// special case
 		const working = new EquationWorking('y', rhs);
@@ -338,13 +325,14 @@ ${{}} D_{f^{-1}} = R_{f} = ${generateRange(state, rhs)}.`;
 
 function generateImproperAns(
 	state: State,
-	options: { abs?: true; definition: boolean; rhs: Expression; QED: string },
+	options: { abs?: true; definition: boolean; rhs: Expression; QED: string; swap?: boolean },
 ): { ans: string; soln: string } {
-	const { definition, rhs, QED } = options;
+	const { definition, rhs, QED, swap } = options;
 	const letText = options?.abs ? '' : '\\text{Let } ';
 	const working = new EquationWorking('y', rhs);
 	working.crossMultiply();
 	working.expand();
+	if (swap) working.swapSides({ hide: true });
 	working.isolate('x');
 	working.factorize.commonFactor();
 	working._makeSubjectFromProduct('x');
@@ -363,10 +351,10 @@ ${{}} D_{f^{-1}} = R_{f} = ${generateRange(state, rhs)}.`;
 	return { ans, soln: soln1 + soln2 };
 }
 
-function lessThan(inclusive: boolean): string {
+export function lessThan(inclusive: boolean): string {
 	return inclusive ? `\\leq ` : '<';
 }
-function greaterThan(inclusive: boolean): string {
+export function greaterThan(inclusive: boolean): string {
 	return inclusive ? `\\geq ` : '>';
 }
 
@@ -481,6 +469,91 @@ function generateInequality(state: State, exp: Expression): string {
 			? ans + `, x \\leq 0 \\text{ or } x \\geq ${y}.`
 			: ans + `, x \\leq ${y} \\text{ or } x \\geq 0.`;
 	}
+}
+
+/**
+ * Finds inverse of y = | num / den |
+ * @param fraction [num, den] as Expressions
+ * @param restriction {type: 'left'|'right', x: number, inclusive: boolean}
+ * @param options {swap: boolean}
+ * @returns `{ans: string, soln: string}`
+ */
+export function absoluteRationalInverse(
+	state: State,
+	fraction: [Expression, Expression],
+	options?: { swap?: boolean },
+): { ans: string; soln: string } {
+	const { restriction, definition } = state;
+	const swap = options?.swap ?? false;
+	if (restriction === false)
+		throw new Error('expected restriction when finding inverse of an absolute rational function');
+	const [num, den] = fraction;
+	const inner = new Expression([num, '/', den]);
+	const { type, x } = restriction;
+	const testPoint = type === 'left' ? x - 1 : x + 1;
+	const negative = inner.subIn({ x: testPoint }).is.negative();
+	const sign = negative ? '<' : '>';
+	const newRHS = negative ? inner.negative() : inner;
+	const working1 = mathlify`$${{}} \\text{Let } y = \\left| ${inner} \\right|
+
+Since ${inner} ${sign} 0
+for
+${generateDomain(restriction)},
+`;
+	const { ans, soln } = generateImproperAns(state, {
+		abs: true,
+		definition,
+		rhs: newRHS,
+		QED,
+		swap,
+	});
+	return { ans, soln: working1 + soln };
+}
+
+/**
+ * Finds inverse of y = ba^2 / (x^2 - a^2) or y = |b|a^2 / (a^2 - x^2)
+ * @param fraction [num, den] as Expressions
+ * @param restriction {type: 'left'|'right', x: number, inclusive: boolean}
+ * @param options {swap: boolean}
+ * @returns `{ans: string, soln: string}`
+ */
+export function specialInverse(
+	state: State,
+	exp: Expression,
+	//options?: { swap?: boolean },
+): { ans: string; soln: string } {
+	const { restriction, definition, b } = state;
+	//const swap = options?.swap ?? false;
+	if (restriction === false)
+		throw new Error('expected restriction when finding inverse of an absolute rational function');
+	const working = new EquationWorking('y', exp);
+	working.crossMultiply();
+	working.expand();
+	if (b < 0) working.swapSides({ hide: true });
+	working.isolate('x');
+	working.factorize.commonFactor();
+	working._makeSubjectFromProduct('x');
+	const { type, x } = restriction;
+	const testPoint = type === 'left' ? x - 1 : x + 1;
+	const negative = testPoint < 0;
+	const surdTerm = sqrtTerm(working.eqn.rhs);
+	const newRHS = negative ? surdTerm.negative() : surdTerm;
+	const fInv = newRHS.subIn({ y: 'x' });
+	const soln1 = mathlify`$${'gather*'} \\text{Let } ${working}
+			
+Since ${generateDomain(restriction)},
+$${'x'} = ${newRHS}`;
+	const soln2 = definition
+		? mathlify`$${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, exp)} ${QED}`
+		: mathlify`$${{}} f^{-1}(x) = ${fInv} ${QED}
+
+$${'align*'} D_{f^{-1}} &= R_{f} \\\\ &= ${generateRange(state, exp)} ${QED}`;
+	const ans = definition
+		? mathlify`${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, exp)}`
+		: mathlify`${{}} f^{-1}(x) = ${fInv}.
+\\
+${{}} D_{f^{-1}} = R_{f} = ${generateRange(state, exp)}.`;
+	return { ans, soln: soln1 + soln2 };
 }
 
 export const practice: Practice = {

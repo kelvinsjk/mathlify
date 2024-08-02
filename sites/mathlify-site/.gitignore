@@ -21,6 +21,4 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
 # Qn state testing
-*.state.ts
-*.state.json
-*.state.html
+*.state.*

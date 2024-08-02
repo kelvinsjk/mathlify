@@ -15,6 +15,7 @@ const config = {
 		alias: {
 			$lib: './src/lib',
 			$content: './src/content',
+			$static: './static',
 		},
 		prerender: {
 			handleHttpError: 'warn',

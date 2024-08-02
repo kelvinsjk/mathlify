@@ -6,7 +6,7 @@
 	import Switch from '$lib/components/ui/switch/switch.svelte';
 	import { scale, slide } from 'svelte/transition';
   
-  let {title, next, question, sections, section, subsection, showAnswer = $bindable(false), q, questionButton}: {
+  let {title, next, question, sections, section, subsection, showAnswer = $bindable(false), q, questionButton, stateAnalysis}: {
     title: string,
     next: {shortTitle: string, slug: string, sectionSlug: string} | "practice" | undefined,
     sections: Section[];
@@ -16,6 +16,7 @@
     q: Promise<{soln?:string,ans:string}>,
     question: Snippet,
     questionButton?: Snippet,
+    stateAnalysis?: Snippet
   } = $props();
   const prev = "theory";
 </script>
@@ -50,6 +51,9 @@
               {/if}
             {/await}
           </div>
+          {#if stateAnalysis}
+          {@render stateAnalysis()}
+          {/if}
         {/if}
       </section>
     </div>

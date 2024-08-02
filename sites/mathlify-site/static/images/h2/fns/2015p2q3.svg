@@ -1,0 +1,145 @@
+<svg
+	xmlns="http://www.w3.org/2000/svg"
+	class="graph svelte-1vox4to"
+	viewBox="-55 -60 110.00000000000001 110.00000000000001"
+>
+	<style>
+		foreignObject {
+			color: black;
+			font-size: 7px;
+			overflow: visible;
+			white-space: nowrap;
+			display: grid;
+		}
+		foreignObject math {
+			flex-wrap: nowrap;
+			transform: translate(-50%, -50%);
+		}
+	</style>
+	<defs>
+		<marker id="closed" markerWidth="5" markerHeight="5" refX="1" refY="1">
+			<circle cx="1" cy="1" r="1" fill="black"></circle>
+		</marker>
+		<marker id="open" markerWidth="5" markerHeight="5" refX="1" refY="1">
+			<circle
+				cx="1"
+				cy="1"
+				r="0.75"
+				fill="white"
+				markerUnits="strokeWidth"
+				style="stroke: black; stroke-width: 0.5"
+			></circle>
+		</marker>
+		<marker id="arrow" markerWidth="5" markerHeight="5" refX="0" refY="1" orient="auto">
+			<path d="M 0 0 L 2 1 L 0 2 z" fill="black"></path>
+		</marker>
+	</defs>
+	<line
+		marker-end="url(#arrow)"
+		x1="-50"
+		x2="50"
+		y1="-34.61538461538461"
+		y2="-34.61538461538461"
+		style="stroke: black; stroke-width: 2"
+	></line>
+	<line
+		marker-end="url(#arrow)"
+		x1="-26.923076923076923"
+		x2="-26.923076923076923"
+		y1="50"
+		y2="-50"
+		style="stroke: black; stroke-width: 2"
+	></line>
+	<foreignObject width="1" height="1" class="svelte-1vox4to" x="50" y="-29.615384615384613"
+		><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>x</mi></math
+		><!----></foreignObject
+	><foreignObject width="1" height="1" class="svelte-1vox4to" x="-31.923076923076923" y="-52"
+		><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>y</mi></math
+		><!----></foreignObject
+	><!----><!---->
+	<line
+		stroke-dasharray="4"
+		x1="-11.538461538461533"
+		x2="-11.538461538461533"
+		y1="50"
+		y2="-50"
+		style="stroke: green"
+	></line>
+	<foreignObject
+		class="graph-label svelte-1vox4to"
+		width="1"
+		height="1"
+		x="-11.538461538461533"
+		y="-50"
+		><div style="display: grid" xmlns="http://www.w3.org/1999/xhtml" class="svelte-1vox4to">
+			<math xmlns="http://www.w3.org/1998/Math/MathML"
+				><mrow><mi>x</mi><mo>=</mo></mrow
+				><mrow><mn>1</mn></mrow></math
+			><!---->
+		</div></foreignObject
+	><!----><!---->
+	<line
+		stroke-dasharray="4"
+		x1="-50"
+		x2="50"
+		y1="-34.61538461538461"
+		y2="-34.61538461538461"
+		style="stroke: green"
+	></line>
+	<foreignObject
+		class="graph-label svelte-1vox4to"
+		width="1"
+		height="1"
+		x="-50"
+		y="-39.61538461538461"
+		><math xmlns="http://www.w3.org/1998/Math/MathML"
+			><mrow><mi>y</mi><mo>=</mo></mrow
+			><mrow><mn>0</mn></mrow></math
+		><!----></foreignObject
+	><!----><!----><!---->
+	<line
+		x1="-50"
+		x2="50"
+		y1="3.8461538461538467"
+		y2="3.8461538461538467"
+		style="stroke: black"
+	></line>
+	<foreignObject
+		class="graph-label svelte-1vox4to"
+		width="1"
+		height="1"
+		x="-50"
+		y="-1.1538461538461533"
+		><math
+			><mrow><mi>y</mi><mo>=</mo></mrow
+			><mrow><mi>k</mi></mrow></math
+		><!----></foreignObject
+	><!---->
+	<path
+		d="M-10.077,42.685 -9.5968,22.717 -9.1167,10.686 -8.6366,2.6518 -8.1565,-3.0882 -7.6764,-7.3902 -7.1963,-10.732 -6.7162,-13.400 -6.2361,-15.577 -5.7560,-17.387 -5.2759,-18.914 -4.7958,-20.219 -4.3156,-21.346 -3.8355,-22.328 -3.3554,-23.192 -2.8753,-23.956 -2.3952,-24.637 -1.9151,-25.248 -1.4350,-25.798 -0.95491,-26.295 -0.47480,-26.748 0.0053050,-27.161 0.48541,-27.539 0.96552,-27.886 1.4456,-28.206 1.9257,-28.501 2.4058,-28.775 2.8859,-29.030 3.3660,-29.266 3.8462,-29.487 "
+		style="stroke: blue; fill: none"
+	></path>
+	<foreignObject
+		class="graph-label svelte-1vox4to"
+		width="1"
+		height="1"
+		x="-3.1153846153846203"
+		y="-23.58505914839681"
+		><math xmlns="http://www.w3.org/1998/Math/MathML"
+			><mrow><mi>y</mi><mo>=</mo></mrow
+			><mrow
+				><mfrac
+					><mn>1</mn
+					><mrow
+						><mn>1</mn><mo>−</mo><msup><mi>x</mi><mn>2</mn></msup></mrow
+					></mfrac
+				></mrow
+			></math
+		><!----></foreignObject
+	><!---->
+	<path
+		d="M3.8462,-29.487 5.4377,-30.123 7.0292,-30.640 8.6207,-31.069 10.212,-31.428 11.804,-31.732 13.395,-31.994 14.987,-32.219 16.578,-32.416 18.170,-32.589 19.761,-32.741 21.353,-32.876 22.944,-32.997 24.536,-33.105 26.127,-33.203 27.719,-33.291 29.310,-33.371 30.902,-33.443 32.493,-33.510 34.085,-33.571 35.676,-33.626 37.268,-33.678 38.859,-33.725 40.451,-33.769 42.042,-33.810 43.634,-33.847 45.225,-33.883 46.817,-33.915 48.408,-33.946 50.000,-33.974 "
+		style="stroke: blue; fill: none"
+	></path>
+	<!----><!----><!----><!---->
+</svg>

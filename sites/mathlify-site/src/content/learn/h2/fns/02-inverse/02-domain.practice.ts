@@ -5,7 +5,7 @@ import { chooseRandom, getRandomInt, coinFlip, getRandomNonZeroInt } from '$lib/
 // B: restricted domain
 // C: unknown constants
 
-import type { PracticeState, PracticeQuestion, Practice } from '$content/learn/practices';
+import type { PracticeState, PracticeQuestion, Practice } from '$lib/types/learn';
 import { mathlify } from '$lib/mathlifier';
 
 // ax+b (2013)
@@ -21,7 +21,7 @@ import { mathlify } from '$lib/mathlifier';
 import {
 	generateFn,
 	generateAns as generateRange,
-} from '$content/learn/h2/fns/01-concepts/02-functions';
+} from '$content/learn/h2/fns/01-concepts/02-functions.practice';
 
 const types = [
 	'linear',

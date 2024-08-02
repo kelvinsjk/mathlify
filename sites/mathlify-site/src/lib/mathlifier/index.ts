@@ -303,7 +303,7 @@ export function mathlifyGen(
 			const { mode, content } = options.postContent;
 			if (mode === 'text') {
 				finalOutput += content;
-			} else if (mode === 'math') {
+			} else if (mode === 'math' || mode === 'auto-math') {
 				finalOutput += modules.math(content);
 			} else if (mode === 'display') {
 				finalOutput += modules.display(content);

@@ -5,7 +5,7 @@ import { chooseRandom, getRandomInt, coinFlip, getRandomNonZeroInt } from '$lib/
 // B: restricted domain
 // C: unknown constants
 
-import type { PracticeState, PracticeQuestion, Practice } from '$content/learn/practices';
+import type { PracticeState, PracticeQuestion, Practice } from '$lib/types/learn';
 import { mathlify } from '$lib/mathlifier';
 import { logTerm, sqrtTerm, absTerm } from 'mathlify/fns';
 import { Expression, sum, e } from 'mathlify';
@@ -348,6 +348,8 @@ export function generateAns(state: State, exp: Expression): string {
 			: `\\left( -\\infty, ${y} \\right] \\cup \\left( 0, \\infty \\right)`;
 	}
 }
+
+export const functionRange = generateAns;
 
 function leftBracket(inclusive: boolean): string {
 	return inclusive ? '[' : '(';

@@ -1,36 +1,92 @@
 <svg xmlns="http://www.w3.org/2000/svg" class="svelte-e7wdo7" viewBox="-55 -15 120 36">
-  <style>
-    .svelte-e7wdo7 foreignObject {
-      color: black;
-      font-size: 10px;
-      overflow: visible;
-    }
-    .svelte-e7wdo7 foreignObject .fraction {
-      font-size: 7px;
-    }
-  </style>
-  <defs class="svelte-e7wdo7">
-    <marker id="closed" markerWidth="5" markerHeight="5" refX="1" refY="1" class="svelte-e7wdo7">
-      <circle cx="1" cy="1" r="1" fill="black" class="svelte-e7wdo7"></circle>
-    </marker>
-    <marker id="open" markerWidth="5" markerHeight="5" refX="1" refY="1" class="svelte-e7wdo7">
-      <circle cx="1" cy="1" r="0.75" fill="white" markerUnits="strokeWidth" class="svelte-e7wdo7" style="stroke:black; stroke-width:0.5"></circle>
-    </marker>
-    <marker id="arrow" markerWidth="5" markerHeight="5" refX="0" refY="1" orient="auto" class="svelte-e7wdo7">
-      <path d="M 0 0 L 2 1 L 0 2 z" fill="black" class="svelte-e7wdo7"></path>
-    </marker>
-  </defs>
-  <line marker-end="url(#arrow)" class="svelte-e7wdo7" x1="-50" x2="55" y1="0" y2="0" style="stroke:black;stroke-width:2"></line>
-  <foreignObject y="0" width="1" height="1" class="svelte-e7wdo7" x="57">
-    <math xmlns="http://www.w3.org/1998/Math/MathML"><mi>x</mi></math>
-  </foreignObject>
-  <line class="svelte-e7wdo7" x1="-10" x2="-10" y1="-4" y2="4" style="stroke:black;stroke-width:1"></line>
-  <line class="svelte-e7wdo7" y1="-4" y2="4" style="stroke:black;stroke-width:1" x1="30" x2="30"></line>
-  <foreignObject width="1" height="1" class="svelte-e7wdo7" x="-10" y="6">
-    <div class="svelte-e7wdo7" style="display:grid;" xmlns="http://www.w3.org/1999/xhtml"><math style="transform:translateX(-50%);" xmlns="http://www.w3.org/1998/Math/MathML"><mn>0</mn></math></div>
-  </foreignObject>
-  <foreignObject width="1" height="1" class="svelte-e7wdo7" x="30" y="6">
-    <div class="svelte-e7wdo7" style="display:grid;" xmlns="http://www.w3.org/1999/xhtml"><math style="transform:translateX(-50%);" xmlns="http://www.w3.org/1998/Math/MathML"><mn>1</mn></math></div>
-  </foreignObject>
-  <line class="svelte-e7wdo7" x1="-10" x2="30" y1="-10" y2="-10" style="stroke:black;stroke-width:2" marker-start="url(#open)" marker-end="url(#closed)"></line>
+	<style>
+		.svelte-e7wdo7 foreignObject {
+			color: black;
+			font-size: 10px;
+			overflow: visible;
+			white-space: nowrap;
+		}
+		.svelte-e7wdo7 foreignObject .fraction {
+			font-size: 7px;
+		}
+	</style>
+	<defs class="svelte-e7wdo7">
+		<marker id="closed" markerWidth="5" markerHeight="5" refX="1" refY="1" class="svelte-e7wdo7">
+			<circle cx="1" cy="1" r="1" fill="black" class="svelte-e7wdo7"></circle>
+		</marker>
+		<marker id="open" markerWidth="5" markerHeight="5" refX="1" refY="1" class="svelte-e7wdo7">
+			<circle
+				cx="1"
+				cy="1"
+				r="0.75"
+				fill="white"
+				markerUnits="strokeWidth"
+				class="svelte-e7wdo7"
+				style="stroke: black; stroke-width: 0.5"
+			></circle>
+		</marker>
+		<marker
+			id="arrow"
+			markerWidth="5"
+			markerHeight="5"
+			refX="0"
+			refY="1"
+			orient="auto"
+			class="svelte-e7wdo7"
+		>
+			<path d="M 0 0 L 2 1 L 0 2 z" fill="black" class="svelte-e7wdo7"></path>
+		</marker>
+	</defs>
+	<line
+		marker-end="url(#arrow)"
+		class="svelte-e7wdo7"
+		x1="-50"
+		x2="55"
+		y1="0"
+		y2="0"
+		style="stroke: black; stroke-width: 2"
+	></line>
+	<foreignObject y="0" width="1" height="1" class="svelte-e7wdo7" x="57">
+		<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>x</mi></math>
+	</foreignObject>
+	<line
+		class="svelte-e7wdo7"
+		x1="-10"
+		x2="-10"
+		y1="-4"
+		y2="4"
+		style="stroke: black; stroke-width: 1"
+	></line>
+	<line
+		class="svelte-e7wdo7"
+		y1="-4"
+		y2="4"
+		style="stroke: black; stroke-width: 1"
+		x1="30"
+		x2="30"
+	></line>
+	<foreignObject width="1" height="1" class="svelte-e7wdo7" x="-10" y="6">
+		<div class="svelte-e7wdo7" style="display: grid" xmlns="http://www.w3.org/1999/xhtml">
+			<math style="transform: translateX(-50%)" xmlns="http://www.w3.org/1998/Math/MathML"
+				><mn>0</mn></math
+			>
+		</div>
+	</foreignObject>
+	<foreignObject width="1" height="1" class="svelte-e7wdo7" x="30" y="6">
+		<div class="svelte-e7wdo7" style="display: grid" xmlns="http://www.w3.org/1999/xhtml">
+			<math style="transform: translateX(-50%)" xmlns="http://www.w3.org/1998/Math/MathML"
+				><mn>1</mn></math
+			>
+		</div>
+	</foreignObject>
+	<line
+		class="svelte-e7wdo7"
+		x1="-10"
+		x2="30"
+		y1="-10"
+		y2="-10"
+		style="stroke: black; stroke-width: 2"
+		marker-start="url(#open)"
+		marker-end="url(#closed)"
+	></line>
 </svg>

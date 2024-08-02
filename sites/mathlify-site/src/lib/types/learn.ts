@@ -17,3 +17,18 @@ export interface ChapterOnly {
 export interface Chapter extends ChapterOnly {
 	sections?: Section[];
 }
+
+export interface PracticeQuestion {
+	qn: string;
+	ans: string;
+	solution?: string;
+	objectives?: Set<string>;
+}
+type SupportedTypes = string | number | boolean | undefined;
+export type PracticeState = Record<string, SupportedTypes | Record<string, SupportedTypes>>;
+export interface Practice {
+	objectives?: Set<string>;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	generateState: (...args: any[]) => PracticeState;
+	generateQn: (state: PracticeState, ...args: unknown[]) => PracticeQuestion;
+}

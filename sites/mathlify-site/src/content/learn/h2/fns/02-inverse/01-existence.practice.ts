@@ -5,8 +5,8 @@ import { chooseRandom, coinFlip, getRandomInt } from '$lib/utils/random';
 // B: restricted domain
 // C: unknown constants
 
-import type { PracticeState, PracticeQuestion, Practice } from '$content/learn/practices';
-import { mathlify } from '$lib/mathlifier';
+import type { PracticeState, PracticeQuestion, Practice } from '$lib/types/learn';
+import { mathlify, mathlifyQED } from '$lib/mathlifier';
 import type { Expression } from 'mathlify';
 
 // similar to 01/02, but without linear case
@@ -15,7 +15,7 @@ import {
 	generateState as generateState1,
 	generateFn,
 	type State,
-} from '../01-concepts/02-functions';
+} from '../01-concepts/02-functions.practice';
 
 export function generateState(): State {
 	// more chance to get non-inverses
@@ -106,6 +106,20 @@ is @${not} one-to-one and
 	return { qn, ans };
 }
 
+const hasInverse = {
+	allHorizontalLines: 'All horizontal lines',
+	line: 'y=k, k \\in \\mathbb{R},',
+	atMostOnce: 'at most once',
+	not: '',
+	has: 'has',
+};
+const noInverse = {
+	allHorizontalLines: 'The horizontal line',
+	atMostOnce: 'more than once',
+	not: 'not',
+	has: 'does not have',
+};
+
 function generateAns(
 	state: State,
 	exp: Expression,
@@ -117,19 +131,6 @@ function generateAns(
 	has: string;
 } {
 	const { fnType, restriction, a, b, c, unknownConstants } = state;
-	const hasInverse = {
-		allHorizontalLines: 'All horizontal lines',
-		line: 'y=k, k \\in \\mathbb{R},',
-		atMostOnce: 'at most once',
-		not: '',
-		has: 'has',
-	};
-	const noInverse = {
-		allHorizontalLines: 'The horizontal line',
-		atMostOnce: 'more than once',
-		not: 'not',
-		has: 'does not have',
-	};
 	if (fnType === 'quadratic') {
 		// (x+a)^2 + b
 		let bPlus1 = b + 1;
@@ -190,15 +191,35 @@ function generateAns(
 		}
 		return unknownConstants ? { line: `y=b+1`, ...noInverse } : noInverse1;
 	} else if (fnType === 'special') {
-		if (state.restriction) return hasInverse;
-		const y = b > 0 ? 1 : -1;
-		return {
-			line: `y=${y}`,
-			...noInverse,
-		};
+		return state.restriction
+			? hasInverse
+			: {
+					line: `y=${state.b > 0 ? 1 : -1}`,
+					...noInverse,
+				};
 	} else {
 		throw new Error(`Did not expect ${fnType} fnType.`);
 	}
+}
+
+export function specialExistence(state: State): { ans: string; soln: string } {
+	const { allHorizontalLines, line, atMostOnce, not, has } = state.restriction
+		? hasInverse
+		: {
+				line: `y=${state.b > 0 ? 1 : -1}`,
+				...noInverse,
+			};
+	const ans = mathlify`@${allHorizontalLines} ${line}
+cuts the graph of ${'y=f(x)'}
+@${atMostOnce}. Hence ${'f'}
+is @${not} one-to-one and 
+@${has} an inverse.`;
+	const soln = mathlifyQED`@${allHorizontalLines} ${line}
+cuts the graph of ${'y=f(x)'}
+@${atMostOnce}. Hence ${'f'}
+is @${not} one-to-one and 
+@${has} an inverse`;
+	return { ans, soln };
 }
 
 export const practice: Practice = {
