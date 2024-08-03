@@ -1,16 +1,15 @@
 import { Answer } from '$content/solutions/answerObject';
 import { mathlify, mathlifyQED } from '$lib/mathlifier';
 import { Polynomial } from 'mathlify';
+import { absTerm } from 'mathlify/fns';
 import { functionRange } from '$content/learn/h2/fns/01-concepts/02-functions.practice';
 import { absoluteRationalInverse } from '$content/learn/h2/fns/02-inverse/03-formula.practice';
-import { absTerm } from 'mathlify/fns';
+import { domainRestriction } from '$content/learn/h2/fns/02-inverse/04-restriction.practice';
 import svg from '$static/images/h2/fns/2023p1q7.svg?raw';
 
 export const answer = new Answer();
 
-// TODO: (a) graphs
 // TODO: (c) use existence of composite from learn/practice
-// TODO: (d) use restriction from learn/practice
 
 // | (2x+4) / (3-x) |
 // equivalent to | (bx+c) / (x+a) |
@@ -20,12 +19,17 @@ const [a, b, c] = [-3, 2, 4];
 const num = new Polynomial([b, c]);
 const den = new Polynomial([3, -1], { ascending: true });
 const exp = absTerm([num, '/', den]);
-const state: Parameters<typeof absoluteRationalInverse>[0] = {
+const state: Parameters<typeof absoluteRationalInverse>[0] &
+	Parameters<typeof domainRestriction>[0] = {
 	fnType: 'abs',
 	a,
 	b,
 	c,
 	restriction: { type: 'left', x: -2, inclusive: true },
+	type: 'left',
+	inclusive: true,
+	zeroAns: true,
+	zeroLeft: true,
 	unknownConstants: false,
 	definition: false,
 };
@@ -58,12 +62,10 @@ does not exist`;
 }
 // d
 {
-	const soln = mathlifyQED`Greatest value of ${{}} a = -2`;
-	const ans = mathlify`Greatest value of ${{}} a = -2.`;
+	const { ans, soln } = domainRestriction(state, 'greatest');
 	answer.addPart(ans, soln);
 }
 // e
-
 {
 	const { ans, soln } = absoluteRationalInverse(state, [num, den], { swap: true });
 	answer.addPart(ans, soln);
