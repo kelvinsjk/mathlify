@@ -10,7 +10,7 @@ import {
 import { Expression, Polynomial } from '../../index.js';
 import { expressionToPolynomial } from '../../utils/expression-to-polynomial.js';
 import { combineFraction } from '../../algebra/combine-fraction.js';
-import { Brackets } from '../../fns/index.js';
+import { Brackets, sqrtTerm, simplifySurd } from '../../fns/index.js';
 
 /** @typedef {import('../../core/expression/expression.js').Shorthand} Shorthand */
 /** @typedef {import('../../core/expression/expression.js').Variable} Variable */
@@ -582,23 +582,70 @@ export class EquationWorking {
 		/**
 		 * @param {string} [variable] - we will use variable if exp not of Polynomial class
 		 * @param {{hideFirstStep?: boolean, aligned?: boolean, qed?: true|string}} [options]
-		 * @returns {EquationWorking & {rootsWorking:string, cols: number, roots: Expression[]}}
+		 * @returns {EquationWorking & {rootsWorking:string, roots: Expression[]}}
 		 */
 		quadratic: (variable, options) => {
-			const { factorizationWorking, rootsWorking, cols, roots } =
-				solve.quadratic(this.eqn, variable, {
-					...options,
-				});
-			this.eqns = this.eqns.concat(factorizationWorking.eqns.slice(1));
-			this.eqn = factorizationWorking.eqn;
-			/** @type {EquationWorking & {rootsWorking?:string, cols?: number, roots?: Expression[]}} */
-			const eqnWorking = this.clone();
-			eqnWorking.rootsWorking = rootsWorking;
-			eqnWorking.cols = cols;
-			eqnWorking.roots = roots;
-			return /** @type {EquationWorking & {rootsWorking:string, cols: number, roots: Expression[]}} */ (
-				eqnWorking
-			);
+			this.makeRhsZero();
+			const polynomial =
+				this.eqn.lhs instanceof Polynomial
+					? this.eqn.lhs
+					: expressionToPolynomial(this.eqn.lhs, variable);
+			const discriminant = polynomial.quadraticDiscriminant();
+			Expression.RegisterCustomSimplifier(simplifySurd);
+			const sqrtDiscriminant = sqrtTerm(discriminant).simplify();
+			if (sqrtDiscriminant.is.negative()) {
+				throw new Error('we do not support complex roots at this moment');
+			} else if (sqrtDiscriminant.is.numeral()) {
+				Expression.DeregisterCustomSimplifier();
+				const { factorizationWorking, rootsWorking, roots } = solve.quadratic(
+					this.eqn,
+					variable,
+					{
+						...options,
+					},
+				);
+				this.eqns = this.eqns.concat(factorizationWorking.eqns.slice(1));
+				this.eqn = factorizationWorking.eqn;
+				/** @type {EquationWorking & {rootsWorking?:string, roots?: Expression[]}} */
+				const eqnWorking = this.clone();
+				eqnWorking.rootsWorking = rootsWorking;
+				eqnWorking.roots = roots;
+				return /** @type {EquationWorking & {rootsWorking:string, roots: Expression[]}} */ (
+					eqnWorking
+				);
+			} else {
+				const [c, b, a] = polynomial.coeffs;
+				if (c === undefined || b === undefined || a === undefined)
+					throw new Error(
+						`Unexpected coefficients: expected quadratic equation.`,
+					);
+				const twoA = new Expression([2, a]);
+				const negativeB = new Expression([-1, b]);
+				const sqrtWorking = sqrtTerm(['+', [b, '^', 2], [-4, a, c]]);
+				const rootsWorking =
+					`x &= \\frac{${negativeB} \\pm ${sqrtWorking}}{${twoA}}` +
+					`\n\t\\\\ &= \\frac{${negativeB.simplify()} \\pm ${sqrtWorking.simplify()}}{${twoA.simplify()}}`;
+				// TODO: simplification using gcd
+				// TODO: sort roots
+				const root1 = new Expression([
+					['+', negativeB, [-1, sqrtWorking]],
+					'/',
+					twoA,
+				]).simplify();
+				const root2 = new Expression([
+					['+', negativeB, sqrtWorking],
+					'/',
+					twoA,
+				]).simplify();
+				/** @type {EquationWorking & {rootsWorking?:string, roots?: Expression[]}} */
+				const eqnWorking = this.clone();
+				eqnWorking.rootsWorking = rootsWorking;
+				eqnWorking.roots = [root1, root2];
+				Expression.DeregisterCustomSimplifier();
+				return /** @type {EquationWorking & {rootsWorking:string, roots: Expression[]}} */ (
+					eqnWorking
+				);
+			}
 		},
 		/**
 		 * @param {string} [variable] - we will use variable if exp not of Polynomial class

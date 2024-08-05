@@ -1,4 +1,4 @@
-import { chooseRandom, getRandomInt, coinFlip, getRandomNonZeroInt } from '$lib/utils/random';
+import { chooseRandom, getRandomInt, getRandomNonZeroInt } from '$lib/utils/random';
 
 // objectives
 // A: fnType
@@ -7,16 +7,16 @@ import { chooseRandom, getRandomInt, coinFlip, getRandomNonZeroInt } from '$lib/
 // D (only for special): left2 vs right2 (0 vs \pm a)
 
 import type { PracticeState, PracticeQuestion, Practice } from '$lib/types/learn';
-import { mathlify, mathlifyQED } from '$lib/mathlifier';
-import { Expression, type Numeral, Polynomial, e, sum } from 'mathlify';
-import { bisection } from 'mathlify/numerical';
+import { mathlify } from '$lib/mathlifier';
+import { Expression, Polynomial, e, sum } from 'mathlify';
+import { bisection, cubicRoot } from 'mathlify/numerical';
 import { generateFn } from '$content/learn/h2/fns/01-concepts/02-functions.practice';
-import { lessThan, greaterThan } from './03-formula.practice';
-import { QED, capitalizeFirstLetter } from '$lib/utils/typesetting';
+import { QED } from '$lib/utils/typesetting';
 import { logTerm } from 'mathlify/fns';
 import { EquationWorking } from 'mathlify/working';
+import { logCoeffs } from './05-log-coeffs.data';
 
-// quadratic: (x-a)^2 + b, (2008)
+// quadratic: (x+a)^2 + b, (2008)
 // cubic: x^3 + ax^2 + bx + c
 // log: ln (cx + a) + b (2011)
 // exp: e^(x-b) - a (equivalent to log with c=1)
@@ -35,14 +35,29 @@ interface State extends PracticeState {
 export function generateState(options?: { type?: Type }): State {
 	const fnType = options?.type ?? chooseRandom(types);
 	let a = getRandomInt(-4, 4);
-	let b = getRandomInt(-4, 4);
+	let b = getRandomInt(-4, -a + 1 / 4); // to guarantee root exists for quadratic
 	let c = 1;
+	if (fnType === 'cubic') {
+		// a^2 < 3b for curve to be strictly increasing (hence it intersects with y=x, and exactly once)
+		const bToAs: Record<number, number[]> = {
+			1: [1],
+			2: [1, 2],
+			3: [1, 2],
+			4: [1, 2, 3],
+		};
+		b = getRandomInt(1, 4);
+		// note to self: ensure b is a key of bToAs
+		a = chooseRandom(bToAs[b]);
+		c = getRandomNonZeroInt(1, 4);
+	} else if (fnType === 'log' || fnType === 'exp') {
+		({ a, b, c } = chooseRandom(logCoeffs.filter(({ c }) => c === 1)));
+	}
 	return { fnType, a, b, c };
 }
 
 export function generateQn(state: PracticeState): PracticeQuestion {
 	const state1 = state as State;
-	const { fnType, a, b, c } = state1;
+	const { fnType, a } = state1;
 	const [fnString, exp] =
 		fnType === 'quadratic'
 			? generateFn({
@@ -55,14 +70,14 @@ export function generateQn(state: PracticeState): PracticeQuestion {
 	const qn = mathlify`The function ${'f'}
 is defined by
 
-$${fnString}.
+$${fnString}
 
 Using the symmetrical property of inverses, solve, without finding the formula for
 ${'f^{-1}(x),'}
 the equation ${'f(x)=f^{-1}(x).'} 
 `;
 
-	const { ans, soln } = inverseRelationshipSolver(state1, exp);
+	const { soln } = inverseRelationshipSolver(state1, exp);
 	return { qn, ans: soln };
 }
 
@@ -73,11 +88,11 @@ function generateFn2(state: State): [string, Expression] {
 	if (fnType === 'cubic') {
 		exp = new Polynomial([1, a, b, c]);
 	} else if (fnType === 'log') {
-		exp = sum(logTerm(new Polynomial([c, a])), b);
+		exp = sum(logTerm(new Polynomial([c, a])), b).simplify();
 		const negativeAOverC = new Expression([-a, '/', c]).simplify();
 		domain = `x \\in \\mathbb{R}, x > ${negativeAOverC}.`;
 	} else if (fnType === 'exp') {
-		exp = sum([e, '^', new Polynomial([1, -b])], -a);
+		exp = sum([e, '^', new Polynomial([1, -b])], -a).simplify();
 	} else throw new Error(`expected other types to have been handled`);
 	const fnString = `f: x \\mapsto ${exp}, \\quad ${domain}`;
 	return [fnString, exp];
@@ -86,12 +101,12 @@ function generateFn2(state: State): [string, Expression] {
 export function inverseRelationshipSolver(
 	state: State,
 	exp: Expression,
-): { ans: string; soln: string; roots: (number | Numeral | Expression)[] } {
+): { ans: string; soln: string; roots: (number | Expression)[] } {
 	const { fnType, a, c } = state;
-	const roots: (number | Numeral | Expression)[] = [];
+	const roots: (number | Expression)[] = [];
 	const intersections = fnType === 'log' || fnType === 'exp' ? 'intersections' : 'intersection';
 	const are = fnType === 'log' || fnType === 'exp' ? 'are' : 'is';
-	let soln = mathlify`The graphs of ${'y = f^{-1}(x)'}
+	let soln = mathlify`The graph of ${'y = f^{-1}(x)'}
 is a reflection of the graph of ${`y=f(x)`}
 about the line ${'y=x'}.
 
@@ -99,31 +114,42 @@ We observe that the @${intersections}
 between the two graphs @${are}
 also the @${intersections} between the graph of
 ${'y=f(x)'}
-and the line ${'y=x'}.`;
+and the line ${'y=x'}.
+
+Hence the solution to ${'f(x)=f^{-1}(x)'}
+can be found by solving`;
 	const working = new EquationWorking(exp, 'x');
 	working.expand();
-	working.makeRhsZero();
 	if (fnType === 'quadratic') {
 		const { roots: quadraticRoots, rootsWorking } = working.solve.quadratic();
 		const root = quadraticRoots[1];
 		roots.push(root);
-		soln += mathlify`$${'gather*'}${working}
+		soln += mathlify`$${'gather*'}f(x) = x \\\\ ${working}
 		
 $${'align*'}${rootsWorking}
 
 Since ${`x > ${-a},`}
 $${{}} x = ${root} ${QED}`;
 	} else if (fnType === 'cubic') {
-		roots.push();
+		const root = cubicRoot(exp as Polynomial, -5, 5);
+		roots.push(root);
+		const rootString = root instanceof Expression ? root.toString() : root.toFixed(3);
+		soln += mathlify`$${'gather*'}f(x) = x \\\\ ${working}
+		
+Using a GC, the ${'x'}\\text{-coordinates}
+of the point of intersection is
+
+$${{}} x = ${rootString} ${QED}
+`;
 	} else {
-		// both log and exp case done via logs
-		const xStationary = 1;
+		// both log and exp cases have same answers
+		const xStationary = (c - a) / c;
 		const g = (x: number) => exp.fn(x) - x;
 		const lower = Math.max(-a / c + 0.1, -5);
 		const x1 = bisection(g, lower, xStationary);
 		const x2 = bisection(g, xStationary, 5);
 		roots.push(x1, x2);
-		soln += mathlify`$${'gather*'}${working}
+		soln += mathlify`$${'gather*'}f(x) = x \\\\ ${working}
 		
 Using a GC, the ${'x'}\\text{-coordinates}
 of the points of intersection are
