@@ -88,7 +88,7 @@ export class Sqrt extends Fn {
 			const [coeffNum, radicandNum] = makeSquareFree(num);
 			const [coeffDen, radicandDen] = makeSquareFree(den);
 			const radicand = new Numeral([radicandNum, radicandDen]);
-			if (n.is.equalTo(radicand)) return this;
+			if (n.is.equalTo(radicand)) return new Sqrt(arg);
 			const coeff = new Numeral([coeffNum, coeffDen]);
 			return radicand.is.one()
 				? coeff

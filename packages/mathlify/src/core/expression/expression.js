@@ -308,6 +308,8 @@ export class Expression {
 			if (this.node.type === 'numeral') return false;
 			return this.node.is.variable();
 		},
+		/** @returns {boolean} */
+		numeral: () => this.node.type === 'numeral',
 	};
 
 	/** @returns {string} */
@@ -943,8 +945,8 @@ function combine_like_terms(sum) {
 	return finalTerms.length === 0
 		? new Numeral(0)
 		: finalTerms.length === 1
-		? /** @type {Expression} */ (finalTerms[0]).simplify().node
-		: new Sum(...finalTerms).simplify();
+			? /** @type {Expression} */ (finalTerms[0]).simplify().node
+			: new Sum(...finalTerms).simplify();
 }
 
 /**
@@ -1018,10 +1020,10 @@ function combine_factors(product) {
 	return finalFactors.length === 0
 		? coeff
 		: coeff.is.zero()
-		? new Numeral(0)
-		: finalFactors.length === 1 && coeff.is.one()
-		? /** @type {Expression} */ (finalFactors[0]).node
-		: new Product(coeff, ...finalFactors);
+			? new Numeral(0)
+			: finalFactors.length === 1 && coeff.is.one()
+				? /** @type {Expression} */ (finalFactors[0]).node
+				: new Product(coeff, ...finalFactors);
 }
 
 /**

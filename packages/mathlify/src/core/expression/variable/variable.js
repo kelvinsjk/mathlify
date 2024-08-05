@@ -76,8 +76,7 @@ export class Variable {
 		const variableName =
 			variable instanceof Variable ? variable.name : variable;
 		if (this.name === variableName) return x;
-		// TODO: allow a valueOf method for constants like pi, etc
-		throw new Error(`Variable ${this.name} does not match ${variable}`);
+		return this.valueOf();
 	};
 
 	/**
