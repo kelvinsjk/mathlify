@@ -2,7 +2,7 @@ import { Answer } from '$content/solutions/answerObject';
 import { mathlify, mathlifyQED } from '$lib/mathlifier';
 import { Polynomial } from 'mathlify';
 import { absTerm } from 'mathlify/fns';
-import { functionRange } from '$content/learn/h2/fns/01-concepts/02-functions.practice';
+import { generateRange } from '$content/learn/h2/fns/01-concepts/02-functions.practice';
 import { absoluteRationalInverse } from '$content/learn/h2/fns/02-inverse/03-formula.practice';
 import { domainRestriction } from '$content/learn/h2/fns/02-inverse/04-restriction.practice';
 import svg from '$static/images/h2/fns/2023p1q7.svg?raw';
@@ -42,7 +42,7 @@ and ${`y=2`}.`;
 	answer.addPart(ans, soln);
 }
 // b
-const R_f = functionRange({ ...state, restriction: false }, exp);
+const R_f = generateRange({ ...state, restriction: false }, exp).join(' \\cup ');
 {
 	const soln = mathlifyQED`${{}} R_f = ${R_f}`;
 	const ans = mathlify`${{}}R_f = ${R_f}.`;

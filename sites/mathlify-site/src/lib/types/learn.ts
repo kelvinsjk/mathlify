@@ -24,7 +24,14 @@ export interface PracticeQuestion {
 	solution?: string;
 	objectives?: Set<string>;
 }
-type SupportedTypes = string | number | boolean | undefined;
+export type SupportedTypes =
+	| string
+	| number
+	| boolean
+	| undefined
+	| Array<number>
+	| Array<boolean>
+	| Array<string>;
 export type PracticeState = Record<string, SupportedTypes | Record<string, SupportedTypes>>;
 export interface Practice {
 	objectives?: Set<string>;

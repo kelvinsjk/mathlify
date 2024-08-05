@@ -5,10 +5,11 @@ import { chooseRandom, getRandomInt, coinFlip, getRandomNonZeroInt } from '$lib/
 // B: restricted domain
 // C: unknown constants
 
-import type { PracticeState, PracticeQuestion, Practice } from '$lib/types/learn';
+import type { PracticeState, PracticeQuestion, Practice, SupportedTypes } from '$lib/types/learn';
 import { mathlify } from '$lib/mathlifier';
 import { logTerm, sqrtTerm, absTerm } from 'mathlify/fns';
 import { Expression, sum, e } from 'mathlify';
+import { Interval, intervalBuilder } from '$content/learn/h2/fns/intervals';
 
 // ax+b (2013). unknown constants + restriction: x=0
 // (x+a)^2 + b, (2007,2008). unknown constants + restriction: x=-a
@@ -34,18 +35,18 @@ const types = [
 type Types = typeof types;
 export type Type = Types[number];
 
+interface IntervalOneSided extends Record<string, SupportedTypes> {
+	type: 'left' | 'right';
+	inclusive: boolean;
+	x: number;
+}
+
 export interface State extends PracticeState {
 	fnType: Type;
 	a: number;
 	b: number;
 	c: number;
-	restriction:
-		| {
-				type: 'left' | 'right';
-				inclusive: boolean;
-				x: number;
-		  }
-		| false;
+	restriction: IntervalOneSided | false;
 	unknownConstants: boolean;
 }
 
@@ -155,13 +156,13 @@ $${fnString}.`;
 	const modB = state1.fnType === 'abs' ? '|b|' : 'b';
 	const ans =
 		(state1.fnType === 'abs' || state1.fnType === 'improper') && state1.unknownConstants
-			? mathlify`$${'R_f'} = ${generateAns(state1, exp)}.
+			? mathlify`$${'R_f'} = ${generateRange(state1, exp).join(' \\cup ')}.
 
 If ${'\\frac{c}{b} = a'}, 
 then ${'f'}
 will be a constant function
 ${`f(x)=${modB}`}.`
-			: mathlify`$${'R_f'} = ${generateAns(state1, exp)}.`;
+			: mathlify`$${'R_f'} = ${generateRange(state1, exp).join(' \\cup ')}.`;
 	return { qn, ans };
 }
 
@@ -236,126 +237,92 @@ export function generateInequality(restriction: {
 	return `x ${sign}${x}`;
 }
 
-export function generateAns(state: State, exp: Expression): string {
+export function generateRange(state: State, exp: Expression): Interval[] {
 	const { fnType, restriction, a, b, c, unknownConstants } = state;
+	const allReal: Interval[] = [Interval.ALL_REAL];
+	const bExp = new Expression(unknownConstants ? 'b' : b);
 	if (fnType === 'linear') {
-		if (restriction) {
-			const { type, x, inclusive } = restriction;
-			const y = exp.subIn({ x });
-			if ((a > 0 && type === 'left') || (a < 0 && type === 'right')) {
-				return `\\left( -\\infty, ${y} \\right${rightBracket(inclusive)}`;
-			} else {
-				return `\\left${leftBracket(inclusive)} ${y}, \\infty \\right)`;
-			}
-		}
-		return `\\left( -\\infty, \\infty \\right)`;
+		if (!restriction) return allReal;
+		const { type, x, inclusive } = restriction;
+		const y = exp.subIn({ x });
+		const rangeType = (a > 0 && type === 'left') || (a < 0 && type === 'right') ? 'left' : 'right';
+		return [intervalBuilder(rangeType, y, inclusive)];
 	} else if (fnType === 'quadratic') {
 		// (x+a)^2 + b
-		if (restriction) {
-			const { type, x, inclusive } = restriction;
-			if (unknownConstants) {
-				return `\\left${leftBracket(inclusive)} b, \\infty \\right)`;
-			}
-			const y = exp.subIn({ x });
-			if ((x < -a && type === 'left') || (x > -a && type === 'right') || !inclusive) {
-				return `\\left${leftBracket(inclusive)} ${y}, \\infty \\right)`;
-			}
-		}
-		return unknownConstants ? `\\left[ b, \\infty \\right)` : `\\left[ ${b}, \\infty \\right)`;
+		const defaultRange = [intervalBuilder('right', bExp, true)];
+		if (!restriction) return defaultRange;
+		const { type, x, inclusive } = restriction;
+		if (unknownConstants) return [intervalBuilder('right', bExp, inclusive)];
+		const y = exp.subIn({ x });
+		return (x < -a && type === 'left') || (x > -a && type === 'right') || x === a
+			? [intervalBuilder('right', y, inclusive)]
+			: defaultRange;
 	} else if (fnType === 'log') {
-		if (restriction) {
-			// chosen to be ln 1 and on the right
-			return `\\left${leftBracket(restriction.inclusive)} ${b}, \\infty \\right)`;
-		}
-		return `\\left( -\\infty, \\infty \\right)`;
+		return restriction ? [intervalBuilder('right', bExp, restriction.inclusive)] : allReal;
 	} else if (fnType === 'exp') {
-		if (restriction) {
-			// chosen to be e^0 + b
-			const { inclusive, type } = restriction;
-			if ((type === 'left' && a > 0) || (type === 'right' && a < 0)) {
-				return unknownConstants
-					? `\\left( b, b+1 \\right${rightBracket(inclusive)}`
-					: `\\left( ${b}, ${b + 1} \\right${rightBracket(inclusive)}`;
-			} else {
-				return unknownConstants
-					? `\\left${leftBracket(inclusive)} b+1, \\infty \\right)`
-					: `\\left${leftBracket(inclusive)} ${b + 1}, \\infty \\right)`;
-			}
-		}
-		return unknownConstants ? `\\left( b, \\infty \\right)` : `\\left( ${b}, \\infty \\right)`;
+		if (!restriction) return [intervalBuilder('right', bExp, false)];
+		// restriction chosen to be e^0 + b
+		const { inclusive, type } = restriction;
+		const bPlus1 = bExp.plus(1);
+		return (type === 'left' && a > 0) || (type === 'right' && a < 0)
+			? [new Interval({ left: bExp, right: bPlus1, rightInclusive: inclusive })]
+			: [intervalBuilder('right', bPlus1, inclusive)];
 	} else if (fnType === 'sqrt') {
-		if (restriction) {
-			// chosen to be right
-			const { inclusive, x } = restriction;
-			const y = Math.sqrt(x + a) + b;
-			return `\\left${leftBracket(inclusive)} ${y}, \\infty \\right)`;
-		}
-		return unknownConstants ? `\\left[ b, \\infty \\right)` : `\\left[ ${b}, \\infty \\right)`;
+		if (!restriction) return [intervalBuilder('right', bExp, true)];
+		// restriction chosen to be right
+		const { inclusive, x } = restriction;
+		const y = Math.sqrt(x + a) + b;
+		return [intervalBuilder('right', y, inclusive)];
 	} else if (fnType === 'frac' || fnType == 'improper') {
-		if (restriction) {
-			// chosen to be a single interval
-			const { x, inclusive } = restriction;
-			const y = exp.subIn({ x });
-			if (y.valueOf() < b) {
-				return `\\left${leftBracket(inclusive)} ${y}, ${b} \\right)`;
-			} else {
-				return `\\left( ${b}, ${y} \\right${rightBracket(inclusive)}`;
-			}
-		}
-		return unknownConstants
-			? `\\left( -\\infty, b \\right) \\cup \\left( b, \\infty \\right)`
-			: `\\left( -\\infty, ${b} \\right) \\cup \\left( ${b}, \\infty \\right)`;
+		if (!restriction)
+			return [intervalBuilder('left', bExp, false), intervalBuilder('right', bExp, false)];
+		// restriction chosen to be a single interval
+		const { x, inclusive } = restriction;
+		const y = exp.subIn({ x });
+		return y.valueOf() < b
+			? [new Interval({ left: y, leftInclusive: inclusive, right: bExp })]
+			: [new Interval({ left: bExp, right: y, rightInclusive: inclusive })];
 	} else if (fnType === 'abs') {
-		if (restriction) {
-			const { x, inclusive, type } = restriction;
-			const y = exp.subIn({ x });
-			// https://www.desmos.com/calculator/yb2bwgxywr
-			if (-c / b < -a) {
-				if (type === 'left') {
-					if (x < -c / b) {
-						return `\\left${leftBracket(inclusive)} ${y}, ${Math.abs(b)} \\right)`;
-					} else {
-						return y.valueOf() < Math.abs(b)
-							? `\\left[0 , ${Math.abs(b)} \\right)`
-							: `\\left[0, ${y}\\right${rightBracket(inclusive)}`;
-					}
+		if (!restriction) return [intervalBuilder('right', 0, true)];
+		const { x, inclusive, type } = restriction;
+		const y = exp.subIn({ x });
+		// https://www.desmos.com/calculator/yb2bwgxywr
+		if (-c / b < -a) {
+			if (type === 'left') {
+				if (x < -c / b) {
+					return [new Interval({ left: y, leftInclusive: inclusive, right: Math.abs(b) })];
 				} else {
-					return `\\left( ${Math.abs(b)}, ${y} \\right${rightBracket(inclusive)}`;
+					return y.valueOf() < Math.abs(b)
+						? [new Interval({ left: 0, leftInclusive: true, right: Math.abs(b) })]
+						: [new Interval({ left: 0, leftInclusive: true, right: y, rightInclusive: inclusive })];
 				}
 			} else {
-				if (type === 'left') {
-					return `\\left( ${Math.abs(b)}, ${y} \\right${rightBracket(inclusive)}`;
+				return [new Interval({ left: Math.abs(b), right: y, rightInclusive: inclusive })];
+			}
+		} else {
+			if (type === 'left') {
+				return [new Interval({ left: Math.abs(b), right: y, rightInclusive: inclusive })];
+			} else {
+				if (x > -c / b) {
+					return [new Interval({ left: y, leftInclusive: inclusive, right: Math.abs(b) })];
 				} else {
-					if (x > -c / b) {
-						return `\\left${leftBracket(inclusive)} ${y}, ${Math.abs(b)} \\right)`;
-					} else {
-						return y.valueOf() < Math.abs(b)
-							? `\\left[0 , ${Math.abs(b)} \\right)`
-							: `\\left[0, ${y}\\right${rightBracket(inclusive)}`;
-					}
+					return y.valueOf() < Math.abs(b)
+						? [new Interval({ left: 0, leftInclusive: true, right: Math.abs(b) })]
+						: [new Interval({ left: 0, leftInclusive: true, right: y, rightInclusive: inclusive })];
 				}
 			}
 		}
-		return `\\left[ 0, \\infty \\right)`;
 	} else {
 		// special
 		const y = exp.subIn({ x: 0 });
 		if (restriction) {
-			return y.valueOf() < 0 ? `\\left( 0, \\infty \\right)` : `\\left(-\\infty, 0 \\right)`;
+			const intervalType = y.valueOf() < 0 ? 'right' : 'left';
+			return [intervalBuilder(intervalType, 0, false)];
 		}
 		return b < 0
-			? `\\left( -\\infty, 0 \\right) \\cup \\left[ ${y}, \\infty \\right)`
-			: `\\left( -\\infty, ${y} \\right] \\cup \\left( 0, \\infty \\right)`;
+			? [new Interval({ right: 0 }), new Interval({ left: y, leftInclusive: true })]
+			: [new Interval({ right: y, rightInclusive: true }), new Interval({ left: 0 })];
 	}
-}
-
-export const functionRange = generateAns;
-
-function leftBracket(inclusive: boolean): string {
-	return inclusive ? '[' : '(';
-}
-function rightBracket(inclusive: boolean): string {
-	return inclusive ? ']' : ')';
 }
 
 export const practice: Practice = {

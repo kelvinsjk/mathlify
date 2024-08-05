@@ -18,10 +18,9 @@ import { mathlify } from '$lib/mathlifier';
 // abs: | improper | (2023). No unknown constants if restricted
 // special: ba^2 / (x^2 - a^2). (2010,2015) No unknown constants.
 
-import {
-	generateFn,
-	generateAns as generateRange,
-} from '$content/learn/h2/fns/01-concepts/02-functions.practice';
+import { generateFn, generateRange } from '$content/learn/h2/fns/01-concepts/02-functions.practice';
+import { Interval, intervalBuilder } from '$content/learn/h2/fns/intervals';
+import { Expression } from 'mathlify';
 
 const types = [
 	'linear',
@@ -179,57 +178,30 @@ $${fnString}.
 Find the range and domain of the inverse function ${'f^{-1}.'}`;
 	}
 	const ans = mathlify`
-${'D_{f^{-1}}'} = R_f = ${generateRange(state1, exp)}.
+${'D_{f^{-1}}'} = R_f = ${generateRange(state1, exp).join(' \\cup ')}.
 \\
-${'R_{f^{-1}}'} = D_f = ${generateDomain(state1)}.`;
+${'R_{f^{-1}}'} = D_f = ${generateDomain(state1).join(' \\cup ')}.`;
 	return { qn, ans };
 }
 
-function generateDomain(state: State): string {
+export function generateDomain(state: State): Interval[] {
 	const { fnType, restriction, a, unknownConstants } = state;
-	if (unknownConstants) {
-		if (fnType === 'quadratic' && restriction) {
-			return restriction.type === 'left'
-				? `\\left( -\\infty, -a \\right${rightBracket(restriction.inclusive)}`
-				: `\\left${leftBracket(restriction.inclusive)} -a, \\infty \\right)`;
-		} else if ((fnType === 'improper' || fnType === 'abs') && !restriction) {
-			return `\\left( -\\infty, -a \\right) \\cup \\left( -a, \\infty \\right)`;
-		} else if (fnType === 'log' && !restriction) {
-			return `\\left( -a, \\infty \\right)`;
-		} else if (fnType === 'sqrt' && !restriction) {
-			return `\\left[ -a, \\infty \\right)`;
-		}
+	const negativeA = new Expression(unknownConstants ? [-1, 'a'] : a);
+	if (fnType === 'quadratic' && restriction) {
+		return [intervalBuilder(restriction.type, negativeA, restriction.inclusive)];
 	}
-	if (restriction) return generateSet(restriction);
+	if (restriction) return [intervalBuilder(restriction.type, restriction.x, restriction.inclusive)];
 	if (fnType === 'log') {
-		return `\\left( ${-a}, \\infty \\right)`;
+		return [intervalBuilder('right', negativeA, false)];
 	} else if (fnType === 'sqrt') {
-		return `\\left[ ${-a}, \\infty \\right)`;
-	} else if (fnType === 'frac' || fnType == 'improper') {
-		return `\\left( -\\infty, ${-a} \\right) \\cup \\left( ${-a}, \\infty \\right)`;
+		return [intervalBuilder('right', negativeA, true)];
+	} else if (fnType === 'improper' || fnType === 'abs' || fnType === 'frac') {
+		return [intervalBuilder('left', negativeA, false), intervalBuilder('right', negativeA, false)];
 	}
-	return `\\left( -\\infty, \\infty \\right)`;
-}
-
-function leftBracket(inclusive: boolean): string {
-	return inclusive ? '[' : '(';
-}
-function rightBracket(inclusive: boolean): string {
-	return inclusive ? ']' : ')';
+	return [Interval.ALL_REAL];
 }
 
 export const practice: Practice = {
 	generateState,
 	generateQn,
 };
-
-function generateSet(restriction: {
-	type: 'left' | 'right';
-	inclusive: boolean;
-	x: number;
-}): string {
-	const { type, inclusive, x } = restriction;
-	return type === 'left'
-		? `\\left( -\\infty, ${x} \\right${rightBracket(inclusive)}`
-		: `\\left${leftBracket(inclusive)} ${x}, \\infty \\right)`;
-}

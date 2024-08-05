@@ -24,7 +24,7 @@ import { logTerm, sqrtTerm } from 'mathlify/fns';
 
 import {
 	generateFn,
-	generateAns as generateRange,
+	generateRange,
 	generateInequality as generateDomain,
 	type Type,
 } from '$content/learn/h2/fns/01-concepts/02-functions.practice';
@@ -170,12 +170,12 @@ function generateAns(state: State, rhs: Expression): { ans: string; soln: string
 			? mathlify`$${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, rhs)} ${QED}`
 			: mathlify`$${{}} f^{-1}(x) = ${fInv} ${QED}
 
-$${'align*'} D_{f^{-1}} &= R_{f} \\\\ &= ${generateRange(state, rhs)} ${QED}`;
+$${'align*'} D_{f^{-1}} &= R_{f} \\\\ &= ${generateRange(state, rhs).join(' \\cup ')} ${QED}`;
 		const ans = definition
 			? mathlify`${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, rhs)}`
 			: mathlify`${{}} f^{-1}(x) = ${fInv}.
 \\
-${{}} D_{f^{-1}} = R_{f} = ${generateRange(state, rhs)}.`;
+${{}} D_{f^{-1}} = R_{f} = ${generateRange(state, rhs).join(' \\cup ')}.`;
 		return { ans, soln: soln1 + soln2 };
 	} else if (fnType === 'quadratic') {
 		const line1 = new EquationWorking([xPlusA, '^', 2], yMinusB);
@@ -197,12 +197,12 @@ ${{}} D_{f^{-1}} = R_{f} = ${generateRange(state, rhs)}.`;
 			? mathlify`$${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, rhs)} ${QED}`
 			: mathlify`$${{}} f^{-1}(x) = ${fInv} ${QED}
 
-$${'align*'} D_{f^{-1}} &= R_{f} \\\\ &= ${generateRange(state, rhs)} ${QED}`;
+$${'align*'} D_{f^{-1}} &= R_{f} \\\\ &= ${generateRange(state, rhs).join(' \\cup ')} ${QED}`;
 		const ans = definition
 			? mathlify`${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, rhs)}`
 			: mathlify`${{}} f^{-1}(x) = ${fInv}.
 \\
-${{}} D_{f^{-1}} = R_{f} = ${generateRange(state, rhs)}.`;
+${{}} D_{f^{-1}} = R_{f} = ${generateRange(state, rhs).join(' \\cup ')}.`;
 		return { ans, soln: soln1 + soln2 };
 	} else if (fnType === 'log') {
 		const working1 = new EquationWorking('y', rhs);
@@ -215,12 +215,12 @@ ${{}} D_{f^{-1}} = R_{f} = ${generateRange(state, rhs)}.`;
 			? mathlify`$${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, rhs)} ${QED}`
 			: mathlify`$${{}} f^{-1}(x) = ${fInv} ${QED}
 
-$${'align*'} D_{f^{-1}} &= R_{f} \\\\ &= ${generateRange(state, rhs)} ${QED}`;
+$${'align*'} D_{f^{-1}} &= R_{f} \\\\ &= ${generateRange(state, rhs).join(' \\cup ')} ${QED}`;
 		const ans = definition
 			? mathlify`${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, rhs)}`
 			: mathlify`${{}} f^{-1}(x) = ${fInv}.
 \\
-${{}} D_{f^{-1}} = R_{f} = ${generateRange(state, rhs)}.`;
+${{}} D_{f^{-1}} = R_{f} = ${generateRange(state, rhs).join(' \\cup ')}.`;
 		return { ans, soln: soln1 + soln2 };
 	} else if (fnType === 'exp') {
 		const working1 = new EquationWorking('y', rhs);
@@ -236,12 +236,12 @@ ${{}} D_{f^{-1}} = R_{f} = ${generateRange(state, rhs)}.`;
 			? mathlify`$${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, rhs)} ${QED}`
 			: mathlify`$${{}} f^{-1}(x) = ${fInv} ${QED}
 
-$${'align*'} D_{f^{-1}} &= R_{f} \\\\ &= ${generateRange(state, rhs)} ${QED}`;
+$${'align*'} D_{f^{-1}} &= R_{f} \\\\ &= ${generateRange(state, rhs).join(' \\cup ')} ${QED}`;
 		const ans = definition
 			? mathlify`${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, rhs)}`
 			: mathlify`${{}} f^{-1}(x) = ${fInv}.
 \\
-${{}} D_{f^{-1}} = R_{f} = ${generateRange(state, rhs)}.`;
+${{}} D_{f^{-1}} = R_{f} = ${generateRange(state, rhs).join(' \\cup ')}.`;
 		return { ans, soln: soln1 + soln2 };
 	} else if (fnType === 'sqrt') {
 		const working1 = new EquationWorking('y', rhs);
@@ -254,12 +254,12 @@ ${{}} D_{f^{-1}} = R_{f} = ${generateRange(state, rhs)}.`;
 			? mathlify`$${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, rhs)} ${QED}`
 			: mathlify`$${{}} f^{-1}(x) = ${fInv} ${QED}
 
-$${'align*'} D_{f^{-1}} &= R_{f} \\\\ &= ${generateRange(state, rhs)} ${QED}`;
+$${'align*'} D_{f^{-1}} &= R_{f} \\\\ &= ${generateRange(state, rhs).join(' \\cup ')} ${QED}`;
 		const ans = definition
 			? mathlify`${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, rhs)}`
 			: mathlify`${{}} f^{-1}(x) = ${fInv}.
 \\
-${{}} D_{f^{-1}} = R_{f} = ${generateRange(state, rhs)}.`;
+${{}} D_{f^{-1}} = R_{f} = ${generateRange(state, rhs).join(' \\cup ')}.`;
 		return { ans, soln: soln1 + soln2 };
 	} else if (fnType === 'frac') {
 		const working = new EquationWorking('y', rhs);
@@ -276,12 +276,12 @@ ${{}} D_{f^{-1}} = R_{f} = ${generateRange(state, rhs)}.`;
 			? mathlify`$${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, rhs)} ${QED}`
 			: mathlify`$${{}} f^{-1}(x) = ${fInv} ${QED}
 
-$${'align*'} D_{f^{-1}} &= R_{f} \\\\ &= ${generateRange(state, rhs)} ${QED}`;
+$${'align*'} D_{f^{-1}} &= R_{f} \\\\ &= ${generateRange(state, rhs).join(' \\cup ')} ${QED}`;
 		const ans = definition
 			? mathlify`${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, rhs)}`
 			: mathlify`${{}} f^{-1}(x) = ${fInv}.
 \\
-${{}} D_{f^{-1}} = R_{f} = ${generateRange(state, rhs)}.`;
+${{}} D_{f^{-1}} = R_{f} = ${generateRange(state, rhs).join(' \\cup ')}.`;
 		return { ans, soln: soln1 + soln2 };
 	} else if (fnType === 'improper') {
 		return generateImproperAns(state, { definition, rhs, QED });
@@ -313,12 +313,12 @@ $${'x'} = ${newRHS}`;
 			? mathlify`$${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, rhs)} ${QED}`
 			: mathlify`$${{}} f^{-1}(x) = ${fInv} ${QED}
 
-$${'align*'} D_{f^{-1}} &= R_{f} \\\\ &= ${generateRange(state, rhs)} ${QED}`;
+$${'align*'} D_{f^{-1}} &= R_{f} \\\\ &= ${generateRange(state, rhs).join(' \\cup ')} ${QED}`;
 		const ans = definition
 			? mathlify`${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, rhs)}`
 			: mathlify`${{}} f^{-1}(x) = ${fInv}.
 \\
-${{}} D_{f^{-1}} = R_{f} = ${generateRange(state, rhs)}.`;
+${{}} D_{f^{-1}} = R_{f} = ${generateRange(state, rhs).join(' \\cup ')}.`;
 		return { ans, soln: soln1 + soln2 };
 	}
 }
@@ -342,12 +342,12 @@ function generateImproperAns(
 		? mathlify`$${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, rhs)} ${QED}`
 		: mathlify`$${{}} f^{-1}(x) = ${fInv} ${QED}
 
-$${'align*'} D_{f^{-1}} &= R_{f} \\\\ &= ${generateRange(state, rhs)} ${QED}`;
+$${'align*'} D_{f^{-1}} &= R_{f} \\\\ &= ${generateRange(state, rhs).join(' \\cup ')} ${QED}`;
 	const ans = definition
 		? mathlify`${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, rhs)}`
 		: mathlify`${{}} f^{-1}(x) = ${fInv}.
 \\
-${{}} D_{f^{-1}} = R_{f} = ${generateRange(state, rhs)}.`;
+${{}} D_{f^{-1}} = R_{f} = ${generateRange(state, rhs).join(' \\cup ')}.`;
 	return { ans, soln: soln1 + soln2 };
 }
 
@@ -547,12 +547,12 @@ $${'x'} = ${newRHS}`;
 		? mathlify`$${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, exp)} ${QED}`
 		: mathlify`$${{}} f^{-1}(x) = ${fInv} ${QED}
 
-$${'align*'} D_{f^{-1}} &= R_{f} \\\\ &= ${generateRange(state, exp)} ${QED}`;
+$${'align*'} D_{f^{-1}} &= R_{f} \\\\ &= ${generateRange(state, exp).join(' \\cup ')} ${QED}`;
 	const ans = definition
 		? mathlify`${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, exp)}`
 		: mathlify`${{}} f^{-1}(x) = ${fInv}.
 \\
-${{}} D_{f^{-1}} = R_{f} = ${generateRange(state, exp)}.`;
+${{}} D_{f^{-1}} = R_{f} = ${generateRange(state, exp).join(' \\cup ')}.`;
 	return { ans, soln: soln1 + soln2 };
 }
 
