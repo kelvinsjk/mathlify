@@ -21,6 +21,16 @@ export class Interval {
 		const right = this.right === Number.POSITIVE_INFINITY ? '\\infty' : this.right.toString();
 		return `\\left${leftBracket(this.leftInclusive)} ${left}, ${right} \\right${rightBracket(this.rightInclusive)}`;
 	}
+	isSubsetOf(other: Interval): boolean {
+		// (a, b) against (A, B)
+		const a = this.left.valueOf();
+		const b = this.right.valueOf();
+		const A = other.left.valueOf();
+		const B = other.right.valueOf();
+		const leftFits = a > A || (a === A && !(this.leftInclusive && !other.leftInclusive));
+		const rightFits = b < B || (b === B && !(this.rightInclusive && !other.rightInclusive));
+		return leftFits && rightFits;
+	}
 
 	static ALL_REAL = new Interval({});
 }

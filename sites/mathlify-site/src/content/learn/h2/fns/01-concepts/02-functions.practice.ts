@@ -21,7 +21,7 @@ import { Interval, intervalBuilder } from '$content/learn/h2/fns/intervals';
 // abs: | improper | (2023). No unknown constants if restricted
 // special: ba^2 / (x^2 - a^2). (2010,2015) No unknown constants.
 
-const types = [
+export const types = [
 	'linear',
 	'quadratic',
 	'log',
@@ -35,7 +35,7 @@ const types = [
 type Types = typeof types;
 export type Type = Types[number];
 
-interface IntervalOneSided extends Record<string, SupportedTypes> {
+export interface IntervalOneSided extends Record<string, SupportedTypes> {
 	type: 'left' | 'right';
 	inclusive: boolean;
 	x: number;
@@ -50,14 +50,14 @@ export interface State extends PracticeState {
 	unknownConstants: boolean;
 }
 
-export function generateState(options?: { type?: Type }): State {
+export function generateState(options?: { type?: Type; unknownConstants?: boolean }): State {
 	// we try to get a final range between -5 and 5;
 	const fnType = options?.type ?? chooseRandom(types);
 	let a = getRandomInt(-4, 4);
 	let b = getRandomInt(-4, 4);
 	let c = getRandomInt(-4, 4);
-	let unknownConstants = Math.random() < 0.3;
-	const isRestricted = Math.random() < 0.3;
+	let unknownConstants = options?.unknownConstants ?? coinFlip(0.3);
+	const isRestricted = coinFlip(0.3);
 	if (fnType === 'linear' || fnType === 'special') a = getRandomNonZeroInt(1, 4);
 	if (fnType === 'special') {
 		unknownConstants = false;
@@ -166,8 +166,13 @@ ${`f(x)=${modB}`}.`
 	return { qn, ans };
 }
 
-export function generateFn(state: State): [string, Expression] {
-	let x = 'f: x \\mapsto ';
+export function generateFn(
+	state: State,
+	options?: { fnName?: string; align?: boolean },
+): [string, Expression] {
+	const alignChar = options?.align ? '&&' : '';
+	const f = options?.fnName ?? 'f';
+	let output = `${f}: x \\mapsto `;
 	let exp: Expression;
 	const { a, b, c, fnType, restriction, unknownConstants } = state;
 	if (fnType === 'linear') {
@@ -198,7 +203,7 @@ export function generateFn(state: State): [string, Expression] {
 	} else if (fnType === 'linear' && a < 0 && b > 0) {
 		exp = new Expression(sum(b, [a, 'x']));
 	}
-	x += `${exp}, \\quad x \\in \\mathbb{R}`;
+	output += `${exp}, \\quad ${alignChar}x \\in \\mathbb{R}`;
 	if (restriction) {
 		if (fnType === 'quadratic' && unknownConstants) {
 			const sign =
@@ -209,22 +214,22 @@ export function generateFn(state: State): [string, Expression] {
 					: restriction.inclusive
 						? ' \\geq '
 						: ' > ';
-			x += `, x ${sign} -a`;
+			output += `, x ${sign} -a`;
 		} else {
-			x += ', ' + generateInequality(restriction);
+			output += ', ' + generateInequality(restriction);
 		}
 	} else {
 		if (fnType === 'log') {
-			x += unknownConstants ? `, x > -a` : `, x > ${-a}`;
+			output += unknownConstants ? `, x > -a` : `, x > ${-a}`;
 		} else if (fnType === 'sqrt') {
-			x += unknownConstants ? `, x \\geq -a` : `, x \\geq ${-a}`;
+			output += unknownConstants ? `, x \\geq -a` : `, x \\geq ${-a}`;
 		} else if (fnType === 'frac' || fnType === 'improper' || fnType === 'abs') {
-			x += unknownConstants ? `, x \\neq -a` : `, x \\neq ${-a}`;
+			output += unknownConstants ? `, x \\neq -a` : `, x \\neq ${-a}`;
 		} else if (fnType === 'special') {
-			x += `, x \\neq \\pm ${Math.abs(a)}`;
+			output += `, x \\neq \\pm ${Math.abs(a)}`;
 		}
 	}
-	return [x, exp];
+	return [output, exp];
 }
 
 export function generateInequality(restriction: {
