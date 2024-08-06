@@ -239,7 +239,7 @@ export class EquationWorking {
         /**
          * @param {string} [variable] - we will use variable if exp not of Polynomial class
          * @param {{hideFirstStep?: boolean, aligned?: boolean, qed?: true|string}} [options]
-         * @returns {EquationWorking & {rootsWorking:string, cols: number, roots: Expression[]}}
+         * @returns {EquationWorking & {rootsWorking:string, roots: Expression[]}}
          */
         quadratic: (variable?: string | undefined, options?: {
             hideFirstStep?: boolean;
@@ -247,7 +247,6 @@ export class EquationWorking {
             qed?: true | string;
         } | undefined) => EquationWorking & {
             rootsWorking: string;
-            cols: number;
             roots: Expression[];
         };
         /**

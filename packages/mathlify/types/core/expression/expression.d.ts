@@ -166,6 +166,10 @@ export class Expression {
         negative: () => boolean;
         /** @returns {boolean} */
         variable: () => boolean;
+        /** @returns {boolean} */
+        numeral: () => boolean;
+        /** @returns {boolean} */
+        negativeUnit: () => boolean;
     };
     /** @returns {string} */
     _to_lexical_string(): string;
@@ -224,6 +228,8 @@ export class Expression {
     _getNumeral(): Numeral;
     /** @return {[Numeral, Expression[]]} */
     _getProductTerms(): [Numeral, Expression[]];
+    /** @return {Expression} */
+    _getProductTerm(): Expression;
     /** @return {Expression[]} */
     _getSumTerms(): Expression[];
     /**
@@ -241,11 +247,12 @@ export type QuotientShorthand = [Shorthand, "/", Shorthand];
 export type ExponentShorthand = [Shorthand, "^", Shorthand];
 export type Shorthand = number | string | ExpressionNode | Expression | ProductShorthand | SumShorthand | QuotientShorthand | ExponentShorthand;
 export type SimplifyOptions = {
-    verbatim?: boolean;
+    verbatim?: boolean | "quotient";
 };
 export type ExpansionOptions = {
-    verbatim?: boolean;
+    verbatim?: boolean | "quotient";
     numeratorOnly?: boolean;
+    onlyLinear?: boolean;
 };
 import { Numeral } from './numeral/numeral.js';
 import { Variable } from './variable/variable.js';

@@ -21,6 +21,15 @@ export class Sum {
 	}
 
 	/**
+	 * @param {import('../expression.js').SimplifyOptions} [options]
+	 * @returns {Sum} */
+	negative(options) {
+		return new Sum(...this.terms.map((term) => term.negative())).simplify(
+			options,
+		);
+	}
+
+	/**
 	 * @returns {string}
 	 */
 	toString() {
@@ -48,14 +57,14 @@ export class Sum {
 	 * @returns {Sum}
 	 */
 	simplify(options) {
-		if (options?.verbatim) return this;
+		if (options?.verbatim === true) return this;
 		const terms = this.terms.map((term) => term.simplify(options));
 		return new Sum(...terms)._flatten().#remove_zeroes();
 	}
 
 	/**
 	 * @param {Object.<string, Expression>} scope - variables to be replaced in the expression
-	 * @param {{verbatim: boolean}} options
+	 * @param {{verbatim: boolean|'quotient'}} options
 	 * @returns {Sum}
 	 */
 	subIn(scope, options) {

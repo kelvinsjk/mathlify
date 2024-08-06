@@ -84,12 +84,12 @@ export class Polynomial extends Expression {
     divide(num: number | Numeral): Polynomial;
     factorize: {
         /**
-         * @param {{forcePositiveLeadingCoefficient?: boolean, verbatim?: boolean}} [options]
+         * @param {{forcePositiveLeadingCoefficient?: boolean, verbatim?: boolean|'quotient'}} [options]
          * @returns {Expression & {commonFactor: Polynomial, remainingFactor: Polynomial}}
          */
         commonFactor: (options?: {
             forcePositiveLeadingCoefficient?: boolean;
-            verbatim?: boolean;
+            verbatim?: boolean | "quotient";
         } | undefined) => Expression & {
             commonFactor: Polynomial;
             remainingFactor: Polynomial;
