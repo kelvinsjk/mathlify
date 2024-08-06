@@ -59,18 +59,17 @@ export class Product {
     /**
      * @param {SimplifyOptions} [options]
      * @returns {Product}
-     * WARNING: mutates current instance
      */
     simplify(options?: import("../expression.js").SimplifyOptions | undefined): Product;
     /**
      * @param {Object.<string, Expression>} scope - variables to be replaced in the expression
-     * @param {{verbatim: boolean}} options
+     * @param {{verbatim: boolean|'quotient'}} options
      * @returns {Product}
      */
     subIn(scope: {
         [x: string]: Expression;
     }, options: {
-        verbatim: boolean;
+        verbatim: boolean | "quotient";
     }): Product;
     /**
      * @param {number} x

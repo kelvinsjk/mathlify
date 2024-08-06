@@ -60,13 +60,13 @@ export class Fn {
     clone(): Fn;
     /**
      * @param {Object.<string, Expression>} scope - variables to be replaced in the expression
-     * @param {{verbatim: boolean}} options - default to automatic simplification
+     * @param {{verbatim: boolean|'quotient'}} options - default to automatic simplification
      * @returns {ExpressionNode}
      */
     subIn(scope: {
         [x: string]: Expression;
     }, options: {
-        verbatim: boolean;
+        verbatim: boolean | "quotient";
     }): ExpressionNode;
     /**
      * @param {number} x

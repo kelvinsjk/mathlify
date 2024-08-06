@@ -41,13 +41,13 @@ export class Exponent {
     simplify(options?: import("../expression.js").SimplifyOptions | undefined): Exponent;
     /**
      * @param {Object.<string, Expression>} scope - variables to be replaced in the expression
-     * @param {{verbatim: boolean}} options
+     * @param {{verbatim: boolean|'quotient'}} options
      * @returns {Exponent}
      */
     subIn(scope: {
         [x: string]: Expression;
     }, options: {
-        verbatim: boolean;
+        verbatim: boolean | "quotient";
     }): Exponent;
     /**
      * @param {number} x
