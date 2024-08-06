@@ -89,7 +89,7 @@ export class Logarithm extends Fn {
 			//TODO: special e class to typeset as roman
 			return new Numeral(1);
 		}
-		return this;
+		return new Logarithm(this.argument.simplify(options));
 	}
 }
 

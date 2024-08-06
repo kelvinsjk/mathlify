@@ -17,8 +17,8 @@ export { Numeral, Variable, Fn, Exponent, Product, Quotient, Sum };
 /** @typedef {[Shorthand, '^', Shorthand]} ExponentShorthand */
 /** @typedef {number|string|ExpressionNode|Expression|ProductShorthand|SumShorthand|QuotientShorthand|ExponentShorthand} Shorthand */
 
-/** @typedef {{verbatim?: boolean}} SimplifyOptions */
-/** @typedef {{verbatim?: boolean, numeratorOnly?: boolean}} ExpansionOptions */
+/** @typedef {{verbatim?: boolean|'quotient'}} SimplifyOptions */
+/** @typedef {{verbatim?: boolean|'quotient', numeratorOnly?: boolean, onlyLinear?: boolean}} ExpansionOptions */
 
 ///** @type {((exp: Expression)=>Expression)[]} */
 //const pre_simplifiers = [];
@@ -131,9 +131,7 @@ export class Expression {
 	 * @return {Expression}
 	 */
 	negative(options) {
-		return new Expression(
-			new Product(new Expression(-1), this.clone()),
-		).simplify(options);
+		return new Expression(new Product(-1, this.clone())).simplify(options);
 	}
 	/**
 	 * @returns {Expression}
@@ -240,20 +238,15 @@ export class Expression {
 	 * @returns {Expression} the current instance after simplification. Note that this method mutates the current instance
 	 */
 	simplify(options) {
-		if (options?.verbatim) return this.clone();
-		//let exp = this.clone();
-		//for (const simplifier of pre_simplifiers) {
-		//	exp = simplifier(this);
-		//	// TODO: option to return from here
-		//}
+		if (options?.verbatim === true) return this.clone();
 		let node = this.node.simplify(options);
-		node = simplify_to_different_node(node);
-		if (node.type === 'quotient') {
+		node = simplify_to_different_node(node, options);
+		if (node.type === 'quotient' && !(options?.verbatim === 'quotient')) {
 			const gcd = Expression.gcd(node.num, node.den);
 			node = new Quotient(
 				new Expression(divide_by_factor(node.num, gcd.node)),
 				new Expression(divide_by_factor(node.den, gcd.node)),
-			).simplify();
+			).simplify(options);
 			// try factorizing the numerator if it is a sum
 			if (node.num.node.type === 'sum') {
 				const num = node.num.factorize.commonFactor();
@@ -263,18 +256,18 @@ export class Expression {
 						node = new Quotient(
 							new Expression(divide_by_factor(num, gcd.node)).expand(),
 							new Expression(divide_by_factor(node.den, gcd.node)),
-						).simplify();
+						).simplify(options);
 					}
 				}
 			}
-			node = simplify_to_different_node(node);
+			node = simplify_to_different_node(node, options);
 		} else if (node.type === 'exponent') {
 			if (node.base.node.type === 'exponent') {
 				node = new Exponent(
 					node.base.node.base,
-					new Expression([node.base.node.power, node.power]).simplify(),
+					new Expression([node.base.node.power, node.power]).simplify(options),
 				);
-				node = simplify_to_different_node(node);
+				node = simplify_to_different_node(node, options);
 			}
 		}
 		for (const simplifier of post_simplifiers) {
@@ -301,6 +294,9 @@ export class Expression {
 		negative: () => {
 			if (this.node.type === 'numeral' || this.node.type === 'product')
 				return this.node.is.negative();
+			if (this.node.type === 'sum') {
+				return this.node.terms.every((term) => term.is.negative());
+			}
 			return false;
 		},
 		/** @returns {boolean} */
@@ -310,6 +306,14 @@ export class Expression {
 		},
 		/** @returns {boolean} */
 		numeral: () => this.node.type === 'numeral',
+		/** @returns {boolean} */
+		negativeUnit: () => {
+			return (
+				this.node.type === 'product' &&
+				this.node.coeff.is.negative_one() &&
+				this.node.factors.length === 1
+			);
+		},
 	};
 
 	/** @returns {string} */
@@ -463,6 +467,16 @@ export class Expression {
 			return [this.node.coeff, this.node.factors];
 		throw new Error('Expression is not a product');
 	}
+	/** @return {Expression} */
+	_getProductTerm() {
+		if (
+			this.node.type === 'product' &&
+			this.node.factors.length === 1 &&
+			this.node.factors[0]
+		)
+			return this.node.factors[0];
+		throw new Error('Expression is not a product with only one term');
+	}
 	/** @return {Expression[]} */
 	_getSumTerms() {
 		if (this.node.type === 'sum') return this.node.terms;
@@ -571,16 +585,17 @@ export function shorthandToExpression(shorthand) {
 
 /**
  * @param {ExpressionNode} exp
+ * @param {SimplifyOptions} [options]
  * @returns {ExpressionNode}
  */
-function simplify_to_different_node(exp) {
+function simplify_to_different_node(exp, options) {
 	if (exp.type === 'sum') {
 		if (exp.terms.length === 0) {
 			return new Numeral(0);
 		} else if (exp.terms.length === 1) {
 			return /** @type {Expression} */ (exp.terms[0]).node;
 		} else {
-			return combine_like_terms(exp);
+			return combine_like_terms(exp, options);
 		}
 	} else if (exp.type === 'product') {
 		if (exp.factors.length === 0) {
@@ -589,6 +604,13 @@ function simplify_to_different_node(exp) {
 			return new Numeral(0);
 		} else if (arrayHasLengthEqualTo(exp.factors, 1) && exp.coeff.is.one()) {
 			return exp.factors[0].node;
+		} else if (
+			exp.coeff.is.negative() &&
+			exp.factors.length === 1 &&
+			exp.factors[0]?.is.negative() &&
+			exp.factors[0]?.node.type === 'sum'
+		) {
+			return exp.factors[0].node.negative(options);
 		} else {
 			// special case for negative coefficients with quotients: hoist any negative signs
 			if (
@@ -607,10 +629,8 @@ function simplify_to_different_node(exp) {
 						);
 					}
 					return new Quotient(num.negative(), den);
-				} else {
-					if (den.is.negative()) {
-						return new Quotient(num, den.negative());
-					}
+				} else if (den.is.negative()) {
+					return new Quotient(num, den.negative());
 				}
 			}
 			const node = combine_factors(exp);
@@ -634,11 +654,15 @@ function simplify_to_different_node(exp) {
 				}
 				const coeffNum = node.coeff.number.num;
 				const coeffDen = node.coeff.number.den;
-				return new Expression([
-					new Expression([coeffNum, ...nums]),
-					'/',
-					new Expression([coeffDen, ...dens]),
-				]).simplify().node;
+				return new Quotient(
+					new Expression(new Product(coeffNum, ...nums)),
+					new Expression(new Product(coeffDen, ...dens)),
+				).simplify(options);
+				//new Expression([
+				//	new Expression([coeffNum, ...nums]),
+				//	'/',
+				//	new Expression([coeffDen, ...dens]),
+				//]).simplify(options).node;
 			}
 			return node;
 		}
@@ -672,7 +696,7 @@ function simplify_to_different_node(exp) {
 			return new Product(
 				-1,
 				new Expression(new Quotient(exp.num.negative(), exp.den.clone())),
-			).simplify();
+			).simplify(options);
 		} else if (
 			(exp.den.node.type === 'numeral' || exp.den.node.type === 'product') &&
 			exp.den.node.is.negative()
@@ -681,7 +705,7 @@ function simplify_to_different_node(exp) {
 			return new Product(
 				new Expression(-1),
 				new Expression(new Quotient(exp.num.clone(), exp.den.negative())),
-			).simplify();
+			).simplify(options);
 		}
 	} else if (exp.type === 'exponent') {
 		if (
@@ -711,7 +735,7 @@ function simplify_to_different_node(exp) {
 				factors.push(
 					new Expression(
 						new Exponent(factor, new Expression(exp.power.clone())),
-					).simplify(),
+					).simplify(options),
 				);
 			}
 			return new Product(
@@ -728,13 +752,13 @@ function simplify_to_different_node(exp) {
 				exp.base.node.num,
 				'^',
 				exp.power.node,
-			]).simplify();
+			]).simplify(options);
 			const den = new Expression([
 				exp.base.node.den,
 				'^',
 				exp.power.node,
-			]).simplify();
-			return new Quotient(num, den).simplify();
+			]).simplify(options);
+			return new Quotient(num, den).simplify(options);
 		}
 	}
 	return exp;
@@ -743,7 +767,7 @@ function simplify_to_different_node(exp) {
 /**
  * @param {Expression} expression
  * @param {Object.<string, Shorthand>} scope - variables to be replaced in the expression
- * @param {{verbatim?: boolean}} [options] - default to automatic simplification
+ * @param {{verbatim?: boolean|'quotient'}} [options] - default to automatic simplification
  * @returns {Expression}
  */
 function sub_in(expression, scope, options) {
@@ -813,6 +837,10 @@ function expand_expression(expression, options) {
 		node.power.node.is.positive() &&
 		node.base.node.type === 'sum'
 	) {
+		if (options?.onlyLinear) {
+			const base = expand_expression(node.base, options);
+			return new Expression([base, '^', node.power]).simplify(options);
+		}
 		return expand_product(
 			new Expression(
 				new Product(
@@ -823,6 +851,10 @@ function expand_expression(expression, options) {
 			),
 			options,
 		);
+	} else if (node.type === 'exponent') {
+		const base = expand_expression(node.base, options);
+		const power = expand_expression(node.power, options);
+		return new Expression([base, '^', power]).simplify(options);
 	} else {
 		return expression.clone();
 	}
@@ -864,12 +896,14 @@ function expand_product(expression, options) {
 		const new_terms = [];
 		for (const term of terms) {
 			for (const t of sum.terms) {
-				new_terms.push(new Product(term.coeff, ...term.factors, t).simplify());
+				new_terms.push(
+					new Product(term.coeff, ...term.factors, t).simplify(options),
+				);
 			}
 		}
 		terms = new_terms;
 	}
-	const termsExp = terms.map((term) => new Expression(term).simplify());
+	const termsExp = terms.map((term) => new Expression(term).simplify(options));
 	const sum = new Sum(...termsExp).simplify(options);
 	sum._flatten();
 	return new Expression(sum).simplify(options);
@@ -878,9 +912,10 @@ function expand_product(expression, options) {
 /**
  * combine like terms
  * @param {Sum} sum
+ * @param {SimplifyOptions} [options]
  * @returns {ExpressionNode}
  */
-function combine_like_terms(sum) {
+function combine_like_terms(sum, options) {
 	// lexical string: [indices, coeff, expression]
 	/** @type {Object.<string,[number[],Numeral,Expression]>} */
 	const termMap = {};
@@ -934,7 +969,7 @@ function combine_like_terms(sum) {
 				/** @type {Expression} */ (terms[firstIndex]).node = new Product(
 					coeff,
 					expression,
-				).simplify();
+				).simplify(options);
 				if (coeff.is.zero()) indicesToRemove.push(firstIndex);
 			}
 			indicesToRemove.push(...indices.slice(1));
@@ -945,8 +980,8 @@ function combine_like_terms(sum) {
 	return finalTerms.length === 0
 		? new Numeral(0)
 		: finalTerms.length === 1
-			? /** @type {Expression} */ (finalTerms[0]).simplify().node
-			: new Sum(...finalTerms).simplify();
+			? /** @type {Expression} */ (finalTerms[0]).simplify(options).node
+			: new Sum(...finalTerms).simplify(options);
 }
 
 /**

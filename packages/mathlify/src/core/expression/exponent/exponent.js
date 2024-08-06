@@ -67,7 +67,7 @@ export class Exponent {
 
 	/**
 	 * @param {Object.<string, Expression>} scope - variables to be replaced in the expression
-	 * @param {{verbatim: boolean}} options
+	 * @param {{verbatim: boolean|'quotient'}} options
 	 * @returns {Exponent}
 	 */
 	subIn(scope, options) {

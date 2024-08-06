@@ -96,7 +96,7 @@ export class Fn {
 
 	/**
 	 * @param {Object.<string, Expression>} scope - variables to be replaced in the expression
-	 * @param {{verbatim: boolean}} options - default to automatic simplification
+	 * @param {{verbatim: boolean|'quotient'}} options - default to automatic simplification
 	 * @returns {ExpressionNode}
 	 */
 	subIn(scope, options) {

@@ -59,22 +59,43 @@ export class Quotient {
 	/**
 	 * @param {import('../expression.js').SimplifyOptions} [options]
 	 * @returns {Quotient}
-	 * WARNING: mutates current instance
 	 */
 	simplify(options) {
-		if (options?.verbatim) return this.clone();
+		if (options?.verbatim === true) return this.clone();
 		if (this.den.node.type === 'numeral' && !this.den.node.is.integer()) {
 			const multiple = this.den.node.number.den;
 			return new Quotient(
 				this.num.times(multiple, { expand: true }).simplify(),
 				this.den.times(multiple).simplify(),
 			);
-		} else if (this.num.node.type === 'quotient') {
-			// (a/b)/c = a/(b*c)
-			const num = this.num.node;
+		} else if (
+			this.num.node.type === 'quotient' &&
+			!(options?.verbatim === 'quotient')
+		) {
+			if (this.den.node.type === 'quotient') {
+				// (a/b)/(c/d) = (a*d)/(b*c)
+				return new Quotient(
+					this.num.node.num.times(this.den.node.den).simplify(options),
+					this.num.node.den.times(this.den.node.num).simplify(options),
+				);
+			}
+			if (this.den.node.type !== 'sum') {
+				// (a/b)/c = a/(b*c)
+				const num = this.num.node;
+				return new Quotient(
+					num.num.clone(),
+					this.den.times(num.den).simplify(options),
+				);
+			}
+		} else if (
+			this.den.node.type === 'quotient' &&
+			!(options?.verbatim === 'quotient') &&
+			this.num.node.type !== 'sum'
+		) {
+			// a/(b/c) = (a*c)/b
 			return new Quotient(
-				num.num.clone(),
-				this.den.times(num.den).simplify(options),
+				this.num.times(this.den.node.den).simplify(options),
+				this.den.node.num.clone(),
 			);
 		}
 		return new Quotient(this.num.simplify(options), this.den.simplify(options));
@@ -82,7 +103,7 @@ export class Quotient {
 
 	/**
 	 * @param {Object.<string, Expression>} scope - variables to be replaced in the expression
-	 * @param {{verbatim: boolean}} options
+	 * @param {{verbatim: boolean|'quotient'}} options
 	 * @returns {Quotient}
 	 */
 	subIn(scope, options) {

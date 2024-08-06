@@ -53,7 +53,7 @@ export class Product {
 			? ''
 			: this.coeff.is.negative_one()
 				? '- '
-				: `${this.coeff}`;
+				: `${this.coeff.toString()}`;
 		if (multiplicationSign && this.coeff.is.negative_one()) {
 			str = '- 1';
 		}
@@ -161,7 +161,6 @@ export class Product {
 	/**
 	 * @param {SimplifyOptions} [options]
 	 * @returns {Product}
-	 * WARNING: mutates current instance
 	 */
 	simplify(options) {
 		return new Product(
@@ -172,7 +171,7 @@ export class Product {
 
 	/**
 	 * @param {Object.<string, Expression>} scope - variables to be replaced in the expression
-	 * @param {{verbatim: boolean}} options
+	 * @param {{verbatim: boolean|'quotient'}} options
 	 * @returns {Product}
 	 */
 	subIn(scope, options) {

@@ -39,18 +39,17 @@ export class Quotient {
     /**
      * @param {import('../expression.js').SimplifyOptions} [options]
      * @returns {Quotient}
-     * WARNING: mutates current instance
      */
     simplify(options?: import("../expression.js").SimplifyOptions | undefined): Quotient;
     /**
      * @param {Object.<string, Expression>} scope - variables to be replaced in the expression
-     * @param {{verbatim: boolean}} options
+     * @param {{verbatim: boolean|'quotient'}} options
      * @returns {Quotient}
      */
     subIn(scope: {
         [x: string]: Expression;
     }, options: {
-        verbatim: boolean;
+        verbatim: boolean | "quotient";
     }): Quotient;
     /**
      * @param {number} x

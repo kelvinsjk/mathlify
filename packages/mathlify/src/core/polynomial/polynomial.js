@@ -202,7 +202,7 @@ export class Polynomial extends Expression {
 
 	factorize = {
 		/**
-		 * @param {{forcePositiveLeadingCoefficient?: boolean, verbatim?: boolean}} [options]
+		 * @param {{forcePositiveLeadingCoefficient?: boolean, verbatim?: boolean|'quotient'}} [options]
 		 * @returns {Expression & {commonFactor: Polynomial, remainingFactor: Polynomial}}
 		 */
 		commonFactor: (options) => {
