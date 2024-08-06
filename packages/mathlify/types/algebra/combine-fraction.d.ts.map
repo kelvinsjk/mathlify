@@ -1,1 +1,1 @@
-{"version":3,"file":"combine-fraction.d.ts","sourceRoot":"","sources":["../../src/algebra/combine-fraction.js"],"names":[],"mappings":"AAGA;;;;;GAKG;AACH,qCAJW,UAAU;aACA,MAAM,EAAE;cAAW,MAAM,EAAE,EAAE;gBACrC,UAAU,CAoCtB;2BA3CmC,kCAAkC"}
+{"version":3,"file":"combine-fraction.d.ts","sourceRoot":"","sources":["../../src/algebra/combine-fraction.js"],"names":[],"mappings":"AAGA;;;;;GAKG;AACH,qCAJW,UAAU;aACA,MAAM,EAAE;cAAW,MAAM,EAAE,EAAE;gBACrC,UAAU,CA2CtB;2BAlDmC,kCAAkC"}

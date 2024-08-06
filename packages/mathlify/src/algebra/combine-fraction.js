@@ -10,6 +10,25 @@ import { arrayHasLengthEqualTo } from '../utils/typescript/array-length.js';
 export function combineFraction(exp, options) {
 	// TODO: return working for steps
 	if (options?.target === undefined && options?.targets === undefined) {
+		if (exp.node.type === 'quotient') {
+			return new Expression([
+				combineFraction(exp.node.num.clone(), options),
+				'/',
+				combineFraction(exp.node.den.clone(), options),
+			]);
+		} else if (exp.is.negativeUnit()) {
+			const q = exp._getProductTerm().node;
+			if (q.type === 'quotient') {
+				return new Expression([
+					-1,
+					[
+						combineFraction(q.num.clone(), options),
+						'/',
+						combineFraction(q.den.clone(), options),
+					],
+				]);
+			}
+		}
 		const commonDenominator = common_denominator(exp);
 		if (!commonDenominator) return exp.clone();
 		const combinedFraction = combine_fraction(commonDenominator);
