@@ -21,7 +21,7 @@ export interface Chapter extends ChapterOnly {
 export interface PracticeQuestion {
 	qn: string;
 	ans: string;
-	solution?: string;
+	soln?: string;
 	objectives?: Set<string>;
 }
 export type SupportedTypes =
@@ -32,7 +32,10 @@ export type SupportedTypes =
 	| Array<number>
 	| Array<boolean>
 	| Array<string>;
-export type PracticeState = Record<string, SupportedTypes | Record<string, SupportedTypes>>;
+interface SupportedTypesObject {
+	[key: string]: SupportedTypes | SupportedTypesObject;
+}
+export type PracticeState = Record<string, SupportedTypes | SupportedTypesObject>;
 export interface Practice {
 	objectives?: Set<string>;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any

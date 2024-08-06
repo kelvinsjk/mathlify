@@ -5,11 +5,12 @@ import { absTerm } from 'mathlify/fns';
 import { generateRange } from '$content/learn/h2/fns/01-concepts/02-functions.practice';
 import { absoluteRationalInverse } from '$content/learn/h2/fns/02-inverse/03-formula.practice';
 import { domainRestriction } from '$content/learn/h2/fns/02-inverse/04-restriction.practice';
+import { compositeExists } from '$content/learn/h2/fns/03-composite/01-existence.practice';
 import svg from '$static/images/h2/fns/2023p1q7.svg?raw';
 
 export const answer = new Answer();
 
-// TODO: (c) use existence of composite from learn/practice
+// ! Complete
 
 // | (2x+4) / (3-x) |
 // equivalent to | (bx+c) / (x+a) |
@@ -25,7 +26,7 @@ const state: Parameters<typeof absoluteRationalInverse>[0] &
 	a,
 	b,
 	c,
-	restriction: { type: 'left', x: -2, inclusive: true },
+	restriction: false,
 	type: 'left',
 	inclusive: true,
 	zeroAns: true,
@@ -33,6 +34,8 @@ const state: Parameters<typeof absoluteRationalInverse>[0] &
 	unknownConstants: false,
 	definition: false,
 };
+// from part (d) onwards
+const restriction = { type: 'left', x: -2, inclusive: true } as const;
 
 // a
 {
@@ -50,14 +53,17 @@ const R_f = generateRange({ ...state, restriction: false }, exp).join(' \\cup ')
 }
 // c
 {
-	const ans = mathlify`${{}}R_f \\not \\subseteq D_f.`;
-	const soln = mathlifyQED`Since ${{}} R_f = ${R_f}
-and ${{}} D_f = \\left( -\\infty, 3 \\right) \\cup \\left( 3, \\infty \\right),
-
-$${{}} R_f \\not \\subseteq D_f
-
-Hence the composite function ${'f^2'}
-does not exist`;
+	const { ans, soln } = compositeExists({ f: state, g: state, fg: true }, [exp, exp], {
+		gName: 'f',
+	});
+	//	const ans = mathlify`${{}}R_f \\not \\subseteq D_f.`;
+	//	const soln = mathlifyQED`Since ${{}} R_f = ${R_f}
+	//and ${{}} D_f = \\left( -\\infty, 3 \\right) \\cup \\left( 3, \\infty \\right),
+	//
+	//$${{}} R_f \\not \\subseteq D_f
+	//
+	//Hence the composite function ${'f^2'}
+	//does not exist`;
 	answer.addPart(ans, soln);
 }
 // d
@@ -65,6 +71,7 @@ does not exist`;
 	const { ans, soln } = domainRestriction(state, 'greatest');
 	answer.addPart(ans, soln);
 }
+state.restriction = restriction;
 // e
 {
 	const { ans, soln } = absoluteRationalInverse(state, [num, den], { swap: true });

@@ -1,3 +1,5 @@
+import { shuffle } from './shuffle';
+
 /**
  * Generates a random integer between `min` and `max` (inclusive)
  *
@@ -52,3 +54,6 @@ export function getRandomNonZeroInt(min: number = 1, max: number = 9): number {
 
 export const chooseRandom = <T>(array: T[] | readonly T[]): T =>
 	array.at(getRandomInt(0, array.length - 1))!;
+
+export const chooseRandomSubset = <T>(array: T[] | readonly T[], size: number): T[] =>
+	shuffle(array).slice(0, size);

@@ -77,8 +77,8 @@ ${'f^{-1}(x),'}
 the equation ${'f(x)=f^{-1}(x).'} 
 `;
 
-	const { soln } = inverseRelationshipSolver(state1, exp);
-	return { qn, ans: soln };
+	const { soln, ans } = inverseRelationshipSolver(state1, exp);
+	return { qn, ans, soln };
 }
 
 function generateFn2(state: State): [string, Expression] {

@@ -186,9 +186,9 @@ ${'R_{f^{-1}}'} = D_f = ${generateDomain(state1).join(' \\cup ')}.`;
 
 export function generateDomain(state: State): Interval[] {
 	const { fnType, restriction, a, unknownConstants } = state;
-	const negativeA = new Expression(unknownConstants ? [-1, 'a'] : a);
+	const negativeA = new Expression(unknownConstants ? [-1, 'a'] : -a);
 	if (fnType === 'quadratic' && restriction) {
-		return [intervalBuilder(restriction.type, negativeA, restriction.inclusive)];
+		return [intervalBuilder(restriction.type, restriction.x, restriction.inclusive)];
 	}
 	if (restriction) return [intervalBuilder(restriction.type, restriction.x, restriction.inclusive)];
 	if (fnType === 'log') {
