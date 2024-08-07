@@ -111,7 +111,11 @@ function handlePowerString(powerStr) {
  */
 function handleBaseString(base, baseString) {
 	let baseStr = baseString || base.toString();
-	if (base.node.type === 'sum' || base.is.negative()) {
+	if (
+		base.node.type === 'sum' ||
+		base.is.negative() ||
+		base.node.type === 'quotient'
+	) {
 		baseStr = `\\left( ${baseStr} \\right)`;
 	}
 	return baseStr;

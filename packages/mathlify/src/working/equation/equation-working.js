@@ -543,11 +543,11 @@ export class EquationWorking {
 
 	/**
 	 *
-	 * @param {WorkingOptions} [options]
+	 * @param {WorkingOptions & {target?: 'l'|'r'|'b'}} [options]
 	 * @returns {EquationWorking}
 	 */
 	toPolynomial(options) {
-		this.eqn = this.eqn.toPolynomial();
+		this.eqn = this.eqn.toPolynomial(options);
 		return addStep(this, options);
 	}
 

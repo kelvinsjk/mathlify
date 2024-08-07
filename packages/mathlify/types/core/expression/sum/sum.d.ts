@@ -17,6 +17,10 @@ export class Sum {
     /**@type {Expression[]} */
     terms: Expression[];
     /**
+     * @param {import('../expression.js').SimplifyOptions} [options]
+     * @returns {Sum} */
+    negative(options?: import("../expression.js").SimplifyOptions | undefined): Sum;
+    /**
      * @returns {string}
      */
     toString(): string;

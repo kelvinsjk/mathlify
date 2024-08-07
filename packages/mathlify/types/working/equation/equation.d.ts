@@ -116,10 +116,12 @@ export class Equation {
      */
     differentiate(variable?: string | undefined): Equation;
     /**
-     *
+     * @param {{target?: 'l'|'r'|'b'}} [options] default to the left
      * @returns {Equation}
      */
-    toPolynomial(): Equation;
+    toPolynomial(options?: {
+        target?: "l" | "r" | "b";
+    } | undefined): Equation;
     /**
      * @param {string} [variable='x']
      * @returns {Equation}

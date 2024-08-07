@@ -213,10 +213,12 @@ export class EquationWorking {
     } & WorkingOptions) | undefined): EquationWorking;
     /**
      *
-     * @param {WorkingOptions} [options]
+     * @param {WorkingOptions & {target?: 'l'|'r'|'b'}} [options]
      * @returns {EquationWorking}
      */
-    toPolynomial(options?: WorkingOptions | undefined): EquationWorking;
+    toPolynomial(options?: (WorkingOptions & {
+        target?: "l" | "r" | "b";
+    }) | undefined): EquationWorking;
     /**
      * @param {string} [variable='x']
      * @param {WorkingOptions} [options]

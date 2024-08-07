@@ -306,7 +306,9 @@ export class Expression {
 		},
 		/** @returns {boolean} */
 		numeral: () => this.node.type === 'numeral',
-		/** @returns {boolean} */
+		/**
+		 * whether this expression is a product with coefficient negative one and only one factor
+		 * @returns {boolean} */
 		negativeUnit: () => {
 			return (
 				this.node.type === 'product' &&
@@ -610,7 +612,10 @@ function simplify_to_different_node(exp, options) {
 			exp.factors[0]?.is.negative() &&
 			exp.factors[0]?.node.type === 'sum'
 		) {
-			return exp.factors[0].node.negative(options);
+			return new Product(
+				exp.coeff.abs(),
+				new Expression(exp.factors[0].node.negative(options)),
+			).simplify(options);
 		} else {
 			// special case for negative coefficients with quotients: hoist any negative signs
 			if (
@@ -624,13 +629,19 @@ function simplify_to_different_node(exp, options) {
 				if (num.is.negative()) {
 					if (den.is.negative()) {
 						return new Product(
-							-1,
+							exp.coeff,
 							new Expression([num.negative(), '/', den.negative()]),
 						);
 					}
-					return new Quotient(num.negative(), den);
+					return new Product(
+						exp.coeff.abs(),
+						new Expression(new Quotient(num.negative(), den.clone())),
+					).simplify(options);
 				} else if (den.is.negative()) {
-					return new Quotient(num, den.negative());
+					return new Product(
+						exp.coeff.abs(),
+						new Expression(new Quotient(num.clone(), den.negative())),
+					).simplify(options);
 				}
 			}
 			const node = combine_factors(exp);
@@ -1408,6 +1419,7 @@ function divide_by_factor(expression, divisor) {
 	} else {
 		/** @type {Expression[]} */
 		const factors = [];
+		let haveDivided = false;
 		for (const factor of expressionProduct.factors) {
 			if (
 				factor.node.type === 'exponent' &&
@@ -1415,6 +1427,7 @@ function divide_by_factor(expression, divisor) {
 					divisor._to_lexical_string() &&
 				factor.node.power.node.type === 'numeral'
 			) {
+				haveDivided = true;
 				factors.push(
 					new Expression(
 						new Exponent(
@@ -1425,9 +1438,12 @@ function divide_by_factor(expression, divisor) {
 				);
 			} else if (factor._to_lexical_string() !== divisor._to_lexical_string()) {
 				factors.push(new Expression(factor));
+			} else {
 				// remaining case: if factor = divisor, will be divided out, so no need to include in factors
+				haveDivided = true;
 			}
 		}
+		if (!haveDivided) throw new Error('did not find factor to divide out');
 		return new Product(new Expression(expressionProduct.coeff), ...factors);
 	}
 }
@@ -1438,7 +1454,27 @@ function divide_by_factor(expression, divisor) {
  * @returns {Expression}
  */
 export function sum(...terms) {
-	return new Expression(['+', ...terms]);
+	return new Expression(['+', ...terms]).simplify();
+}
+
+/**
+ * Creates an Expression instance representing a quotient
+ * @param {Shorthand} numerator
+ * @param {Shorthand} denominator
+ * @param {SimplifyOptions} [options]
+ * @returns {Expression}
+ */
+export function quotient(numerator, denominator, options) {
+	return new Expression([numerator, '/', denominator]).simplify(options);
+}
+
+/**
+ * Creates an Expression instance representing a quotient
+ * @param {Shorthand} power
+ * @returns {Expression}
+ */
+export function expTerm(power) {
+	return new Expression([e, '^', power]).simplify();
 }
 
 export const e = new Variable('e', {

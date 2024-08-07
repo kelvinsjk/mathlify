@@ -17,6 +17,20 @@ export function expression_gcd(...exps: Expression[]): Expression;
  */
 export function sum(...terms: Shorthand[]): Expression;
 /**
+ * Creates an Expression instance representing a quotient
+ * @param {Shorthand} numerator
+ * @param {Shorthand} denominator
+ * @param {SimplifyOptions} [options]
+ * @returns {Expression}
+ */
+export function quotient(numerator: Shorthand, denominator: Shorthand, options?: SimplifyOptions | undefined): Expression;
+/**
+ * Creates an Expression instance representing a quotient
+ * @param {Shorthand} power
+ * @returns {Expression}
+ */
+export function expTerm(power: Shorthand): Expression;
+/**
  * The `Expression` class contains the tree representation of
  * a mathematical expression built from the following nodes:
  * - `Numeral` for numbers (only "Fraction"s supported at the moment, support for floats in the future)
@@ -168,7 +182,9 @@ export class Expression {
         variable: () => boolean;
         /** @returns {boolean} */
         numeral: () => boolean;
-        /** @returns {boolean} */
+        /**
+         * whether this expression is a product with coefficient negative one and only one factor
+         * @returns {boolean} */
         negativeUnit: () => boolean;
     };
     /** @returns {string} */
