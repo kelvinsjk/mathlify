@@ -2,8 +2,6 @@ import { coinFlip, chooseRandomSubset } from '$lib/utils/random';
 
 // objectives
 // A: fnType
-// B: restricted domain
-// C: unknown constants
 
 import type { PracticeState, PracticeQuestion, Practice } from '$lib/types/learn';
 import { mathlify } from '$lib/mathlifier';
@@ -105,7 +103,7 @@ the composite function ${fg}
 @${doesNotExist} ${QED}
 `;
 	const ans = mathlify`${fg}
-@${doesNotExist} as ${{}} R_{${g}} ${not} \\subseteq D_{${f}}.`;
+@${doesNotExist} as ${{}} {R_{${g}} ${not} \\subseteq D_{${f}}}.`;
 	return { ans, soln };
 }
 

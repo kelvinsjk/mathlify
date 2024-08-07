@@ -207,13 +207,15 @@ export class Equation {
 	}
 
 	/**
-	 *
+	 * @param {{target?: 'l'|'r'|'b'}} [options] default to the left
 	 * @returns {Equation}
 	 */
-	toPolynomial() {
+	toPolynomial(options) {
+		const left = !(options?.target === 'r');
+		const right = options?.target === 'r' || options?.target === 'b';
 		return new Equation(
-			expressionToPolynomial(this.lhs),
-			this.rhs,
+			left ? expressionToPolynomial(this.lhs) : this.lhs,
+			right ? expressionToPolynomial(this.rhs) : this.rhs,
 			this.options,
 		);
 	}
@@ -579,7 +581,7 @@ export class Equation {
 	 */
 	toString() {
 		const align = this.aligned ? `&` : ``;
-		return `${this.lhs} ${align}${signToLaTeX(this.sign)}${this.rhs}`;
+		return `${this.lhs.toString()} ${align}${signToLaTeX(this.sign)}${this.rhs.toString()}`;
 	}
 	/** @return {Equation} */
 	clone() {

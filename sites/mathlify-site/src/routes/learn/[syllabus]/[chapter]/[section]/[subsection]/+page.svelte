@@ -80,16 +80,17 @@
 		<div>
 			<hr />
 			<div class="chapter-nav">Chapter navigation</div>
-			<NavAccordion
-				sections={data.sections}
-				section={data.section}
-				subsection={data.subsection}
+			<NavAccordion sections={data.sections} section={data.section} subsection={data.subsection}
 			></NavAccordion>
 		</div>
 	{/snippet}
 </Content>
 
 <style>
+	:global(.learn img) {
+		max-width: min(100%, 100vw);
+		max-height: 50vh;
+	}
 	.chapter-nav {
 		font-weight: bold;
 		font-size: 1.25rem;

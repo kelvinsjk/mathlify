@@ -3,6 +3,8 @@ export {
 	Variable,
 	Numeral,
 	sum,
+	quotient,
+	expTerm,
 	e,
 	pi,
 } from './core/expression/expression.js';

@@ -143,7 +143,11 @@ export function mathlifyGen(
 		let mathEnvOptions: MathEnvOptions = { mathEnv: MathEnvs.equation };
 		strings.forEach((str, i) => {
 			let nextVal = values[i];
-			if (nextVal === undefined || nextVal === null || Object.keys(nextVal).length === 0)
+			if (
+				nextVal === undefined ||
+				nextVal === null ||
+				(typeof nextVal === 'object' && Object.keys(nextVal).length === 0)
+			)
 				nextVal = '';
 			if (mode === Modes.text) {
 				if (str.endsWith('@')) {

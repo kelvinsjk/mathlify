@@ -96,13 +96,13 @@ export class Logarithm extends Fn {
 /**
  * Creates a expression of the form a*sqrt{b}
  * @param {Shorthand} arg
- * @param {{coeff?: number|Numeral}} [options]
+ * @param {{coeff?: number|Numeral} & SimplifyOptions} [options]
  * @returns
  */
 export function logTerm(arg, options) {
 	return options?.coeff
-		? new Expression([options.coeff, new Logarithm(arg)])
-		: new Expression(new Logarithm(arg));
+		? new Expression([options.coeff, new Logarithm(arg)]).simplify(options)
+		: new Expression(new Logarithm(arg)).simplify(options);
 }
 
 // TODO: simplify logs custom simplifier

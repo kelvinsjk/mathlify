@@ -1,12 +1,12 @@
 /**
  * Creates a expression of the form a*sqrt{b}
  * @param {Shorthand} arg
- * @param {{coeff?: number|Numeral}} [options]
+ * @param {{coeff?: number|Numeral} & SimplifyOptions} [options]
  * @returns
  */
-export function logTerm(arg: Shorthand, options?: {
+export function logTerm(arg: Shorthand, options?: ({
     coeff?: number | Numeral;
-} | undefined): Expression;
+} & import("../../core/expression/expression.js").SimplifyOptions) | undefined): Expression;
 /**
  * Logarithm Class
  * @property {Expression} expression - the expression within the parenthesis

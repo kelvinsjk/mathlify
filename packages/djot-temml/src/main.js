@@ -8,7 +8,7 @@ import temml from "temml";
 export const djotTemml = (options) => {
   return {
     inline_math: (node) => {
-      return temml.renderToString(node.text, { wrap: "=", ...options });
+      return temml.renderToString(node.text, { wrap: "tex", ...options });
     },
     display_math: (node) => {
       return temml.renderToString(node.text, { displayMode: true, ...options });

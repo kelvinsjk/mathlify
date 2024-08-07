@@ -1,0 +1,108 @@
+<svg
+	xmlns="http://www.w3.org/2000/svg"
+	viewBox="-55 -60 110.00000000000001 110.00000000000001"
+	class="graph svelte-1vox4to"
+>
+	<style>
+		foreignObject {
+			color: black;
+			font-size: 7px;
+			overflow: visible;
+			white-space: nowrap;
+			display: grid;
+		}
+		foreignObject math {
+			flex-wrap: nowrap;
+			transform: translate(-50%, -50%);
+		}
+	</style>
+	<defs>
+		<marker id="closed" markerWidth="5" markerHeight="5" refX="1" refY="1">
+			<circle cx="1" cy="1" r="1" fill="black"></circle>
+		</marker>
+		<marker id="open" markerWidth="5" markerHeight="5" refX="1" refY="1">
+			<circle
+				cx="1"
+				cy="1"
+				r="0.75"
+				fill="white"
+				markerUnits="strokeWidth"
+				style="stroke: black; stroke-width: 0.5"
+			></circle>
+		</marker>
+		<marker id="arrow" markerWidth="5" markerHeight="5" refX="0" refY="1" orient="auto">
+			<path d="M 0 0 L 2 1 L 0 2 z" fill="black"></path>
+		</marker>
+	</defs>
+	<line
+		x1="-50"
+		x2="50"
+		y1="37.654320987654316"
+		y2="37.654320987654316"
+		style="stroke: black; stroke-width: 2"
+		marker-end="url(#arrow)"
+	></line>
+	<line
+		x1="-37.654320987654316"
+		x2="-37.654320987654316"
+		y1="50"
+		y2="-50"
+		style="stroke: black; stroke-width: 2"
+		marker-end="url(#arrow)"
+	></line>
+	<foreignObject x="50" y="42.654320987654316" width="1" height="1" class="svelte-1vox4to"
+		><!--r4lfzw--><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>x</mi></math
+		><!----></foreignObject
+	><foreignObject x="-42.654320987654316" y="-52" width="1" height="1" class="svelte-1vox4to"
+		><!--1ywmx8b--><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>y</mi></math
+		><!----></foreignObject
+	><!--[--><foreignObject
+		x="-42.654320987654316"
+		y="42.654320987654316"
+		width="1"
+		height="1"
+		class="svelte-1vox4to"
+		><div style="display: grid" xmlns="http://www.w3.org/1999/xhtml" class="svelte-1vox4to">
+			<!--a38gg0--><math xmlns="http://www.w3.org/1998/Math/MathML"><mn>0</mn></math
+			><!---->
+		</div></foreignObject
+	><!--]--><!--[--><!--]--><!--[--><!--]--><!--[-->
+	<path
+		d="M11.728,25.309 12.771,25.221 13.814,24.956 14.856,24.516 15.899,23.900 16.941,23.108 17.984,22.139 19.026,20.995 20.069,19.674 21.112,18.177 22.154,16.504 23.197,14.655 24.239,12.630 25.282,10.429 26.324,8.0521 27.367,5.4989 28.410,2.7695 29.452,-0.13589 30.495,-3.2174 31.537,-6.4750 32.580,-9.9087 33.622,-13.518 34.665,-17.304 35.708,-21.266 36.750,-25.404 37.793,-29.718 38.835,-34.209 39.878,-38.875 40.920,-43.717 41.963,-48.736 "
+		style="stroke: blue; fill: none"
+	></path>
+	<!--[--><foreignObject
+		class="graph-label svelte-1vox4to"
+		x="27.845679012345684"
+		y="6.7975277777777805"
+		width="1"
+		height="1"
+		><!--zcn86r--><math xmlns="http://www.w3.org/1998/Math/MathML"
+			><mrow><mi>y</mi><mo>=</mo></mrow
+			><mrow
+				><mi>f</mi><mo form="prefix" stretchy="false">(</mo><mi>x</mi
+				><mo form="postfix" stretchy="false">)</mo></mrow
+			></math
+		><!----></foreignObject
+	><!--]--><!--]--><!--[--><!--]--><!--[--><!--]--><!--[-->
+	<path
+		d="M11.728395061728406,25.30864197530864"
+		marker-start="url(#open)"
+		style="stroke: black"
+	></path>
+	<foreignObject
+		x="11.728395061728406"
+		y="30.30864197530864"
+		width="1"
+		height="1"
+		class="svelte-1vox4to"
+		><div style="display: grid" xmlns="http://www.w3.org/1999/xhtml" class="svelte-1vox4to">
+			<!--123sqnl--><math
+				><mrow
+					><mo fence="true" form="prefix">(</mo><mn>4</mn><mo separator="true">,</mo><mn>1</mn
+					><mo fence="true" form="postfix">)</mo></mrow
+				></math
+			><!---->
+		</div></foreignObject
+	><!--]-->
+</svg>

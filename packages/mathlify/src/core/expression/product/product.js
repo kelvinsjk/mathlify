@@ -68,7 +68,11 @@ export class Product {
 					(factor.node.is.negative() || multiplicationSign === '')) ||
 				(factor.node.type === 'product' &&
 					(factor.node.coeff.is.negative() ||
-						(!this.coeff.abs().is.one() && !factor.node.coeff.abs().is.one())))
+						(!this.coeff.abs().is.one() &&
+							!factor.node.coeff.abs().is.one()))) ||
+				(factor.node.type === 'exponent' &&
+					factor.node.base.node.type === 'numeral' &&
+					(!this.coeff.is.one() || this.factors.length > 1))
 			) {
 				// these should have brackets
 				str += `${times}\\left( ${factor.toString()} \\right)`;
