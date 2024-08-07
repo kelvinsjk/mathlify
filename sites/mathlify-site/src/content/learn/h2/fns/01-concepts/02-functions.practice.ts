@@ -283,7 +283,7 @@ export function generateRange(state: State, exp: Expression): Interval[] {
 		const { type, x, inclusive } = restriction;
 		if (unknownConstants) return [intervalBuilder('right', bExp, inclusive)];
 		const y = exp.subIn({ x });
-		return (x < -a && type === 'left') || (x > -a && type === 'right') || x === a
+		return (x < -a && type === 'left') || (x > -a && type === 'right') || x === -a
 			? [intervalBuilder('right', y, inclusive)]
 			: defaultRange;
 	} else if (fnType === 'log') {

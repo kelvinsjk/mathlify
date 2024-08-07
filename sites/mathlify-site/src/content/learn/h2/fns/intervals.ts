@@ -23,14 +23,10 @@ export class Interval {
 		return `\\left${leftBracket(this.leftInclusive)} ${left}, ${right} \\right${rightBracket(this.rightInclusive)}`;
 	}
 	toInequality(x = 'x') {
-		if (this.left === Number.NEGATIVE_INFINITY) {
-			return this.right === Number.POSITIVE_INFINITY
-				? `${x} \\in \\mathbb{R}`
-				: `${x} ${lessThan(this.rightInclusive)} ${this.right}`;
-		}
-		if (this.right === Number.POSITIVE_INFINITY) {
-			return `${x} ${greaterThan(this.leftInclusive)} ${this.left}`;
-		}
+		const type = this.type;
+		if (type === 'all') return `${x} \\in \\mathbb{R}`;
+		if (type === 'left') return `${x} ${lessThan(this.rightInclusive)} ${this.right}`;
+		if (type === 'right') return `${x} ${greaterThan(this.leftInclusive)} ${this.left}`;
 		return `${this.left} ${lessThan(this.leftInclusive)} ${x} ${lessThan(this.rightInclusive)} ${this.right}`;
 	}
 	isSubsetOf(other: Interval): boolean {
@@ -44,21 +40,22 @@ export class Interval {
 		return leftFits && rightFits;
 	}
 	isOneSided(): boolean {
-		return (
-			(this.left.valueOf() === Number.NEGATIVE_INFINITY &&
-				this.right.valueOf() !== Number.POSITIVE_INFINITY) ||
-			(this.left.valueOf() !== Number.NEGATIVE_INFINITY && this.right === Number.POSITIVE_INFINITY)
-		);
+		return this.type === 'left' || this.type === 'right';
 	}
 	toOneSidedInterval(): IntervalOneSided {
-		if (this.left === Number.NEGATIVE_INFINITY) {
-			if (this.right === Number.POSITIVE_INFINITY)
-				throw new Error('Real line cannot be converted to one-sided interval');
-			return { type: 'left', inclusive: this.rightInclusive, x: this.right.valueOf() };
-		}
-		if (this.right === Number.POSITIVE_INFINITY)
-			return { type: 'right', inclusive: this.leftInclusive, x: this.left.valueOf() };
-		throw new Error('Two sided-interval cannot be converted to one-sided interval');
+		const type = this.type;
+		if (type === 'all') throw new Error('Cannot convert real line to one-sided interval');
+		if (type === 'two') throw new Error('Cannot convert two-sided interval to one-sided interval');
+		const x = type === 'left' ? this.right : this.left;
+		const inclusive = type === 'left' ? this.rightInclusive : this.leftInclusive;
+		return { type, inclusive, x: x.valueOf() };
+	}
+	get type(): 'all' | 'right' | 'left' | 'two' {
+		if (this.left === Number.NEGATIVE_INFINITY && this.right === Number.POSITIVE_INFINITY)
+			return 'all';
+		if (this.left === Number.NEGATIVE_INFINITY) return 'left';
+		if (this.right === Number.POSITIVE_INFINITY) return 'right';
+		return 'two';
 	}
 
 	static ALL_REAL = new Interval({});

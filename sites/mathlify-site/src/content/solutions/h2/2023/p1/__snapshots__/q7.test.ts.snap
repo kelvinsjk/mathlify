@@ -5,17 +5,16 @@ Answer {
   "answer": {
     "parts": [
       {
-        "body": "<p>Asymptotes: <math><mrow><mi>x</mi><mo>=</mo><mn>3</mn></mrow></math>
-and <math><mrow><mi>y</mi><mo>=</mo><mn>2</mn><mi>.</mi></mrow></math></p>
+        "body": "<p><a href="#soln-1">Sketch</a>.</p>
 ",
       },
       {
-        "body": "<p><math><mrow><msub><mi>R</mi><mi>f</mi></msub><mo>=</mo><mrow><mo fence="true" form="prefix">[</mo><mn>0</mn><mo separator="true">,</mo><mi>∞</mi><mo fence="true" form="postfix">)</mo></mrow><mi>.</mi></mrow></math></p>
+        "body": "<p><math><mrow><msub><mi>R</mi><mi>f</mi></msub><mo>=</mo></mrow><mrow><mrow><mo fence="true" form="prefix">[</mo><mn>0</mn><mo separator="true">,</mo><mi>∞</mi><mo fence="true" form="postfix">)</mo></mrow><mi>.</mi></mrow></math></p>
 ",
       },
       {
         "body": "<p><math><msup><mi>f</mi><mn>2</mn></msup></math>
-does not exist as <math><mrow><msub><mi>R</mi><mi>f</mi></msub><mo>⊈</mo><msub><mi>D</mi><mi>f</mi></msub><mi>.</mi></mrow></math></p>
+does not exist as <math><mrow><mrow><msub><mi>R</mi><mi>f</mi></msub><mo>⊈</mo><msub><mi>D</mi><mi>f</mi></msub></mrow><mi>.</mi></mrow></math></p>
 ",
       },
       {
@@ -23,9 +22,9 @@ does not exist as <math><mrow><msub><mi>R</mi><mi>f</mi></msub><mo>⊈</mo><ms
 ",
       },
       {
-        "body": "<p><math><mrow><msup><mi>f</mi><mrow><mo lspace="0em" rspace="0em">−</mo><mn>1</mn></mrow></msup><mo form="prefix" stretchy="false">(</mo><mi>x</mi><mo form="postfix" stretchy="false">)</mo><mo>=</mo><mfrac><mrow><mn>3</mn><mi>x</mi><mo>+</mo><mn>4</mn></mrow><mrow><mi>x</mi><mo>−</mo><mn>2</mn></mrow></mfrac><mi>.</mi></mrow></math>
+        "body": "<p><math><mrow><msup><mi>f</mi><mrow><mo lspace="0em" rspace="0em">−</mo><mn>1</mn></mrow></msup><mo form="prefix" stretchy="false">(</mo><mi>x</mi><mo form="postfix" stretchy="false">)</mo><mo>=</mo></mrow><mrow><mfrac><mrow><mn>3</mn><mi>x</mi><mo>+</mo><mn>4</mn></mrow><mrow><mi>x</mi><mo>−</mo><mn>2</mn></mrow></mfrac><mi>.</mi></mrow></math>
 <br>
-<math><mrow><msub><mi>D</mi><msup><mi>f</mi><mrow><mo lspace="0em" rspace="0em">−</mo><mn>1</mn></mrow></msup></msub><mo>=</mo><msub><mi>R</mi><mi>f</mi></msub></mrow><mrow><mo>=</mo><mrow><mo fence="true" form="prefix">[</mo><mn>0</mn><mo separator="true">,</mo><mn>2</mn><mo fence="true" form="postfix">)</mo></mrow><mi>.</mi></mrow></math></p>
+<math><mrow><msub><mi>D</mi><msup><mi>f</mi><mrow><mo lspace="0em" rspace="0em">−</mo><mn>1</mn></mrow></msup></msub><mo>=</mo></mrow><mrow><msub><mi>R</mi><mi>f</mi></msub><mo>=</mo></mrow><mrow><mrow><mo fence="true" form="prefix">[</mo><mn>0</mn><mo separator="true">,</mo><mn>2</mn><mo fence="true" form="postfix">)</mo></mrow><mi>.</mi></mrow></math></p>
 ",
       },
     ],
@@ -168,25 +167,25 @@ does not exist as <math><mrow><msub><mi>R</mi><mi>f</mi></msub><mo>⊈</mo><ms
 ",
       },
       {
-        "body": "<p><math><mrow><msub><mi>R</mi><mi>f</mi></msub><mo>=</mo><mrow><mo fence="true" form="prefix">[</mo><mn>0</mn><mo separator="true">,</mo><mi>∞</mi><mo fence="true" form="postfix">)</mo></mrow><mspace width="0.2778em"></mspace><mi>■</mi></mrow></math></p>
+        "body": "<p><math><mrow><msub><mi>R</mi><mi>f</mi></msub><mo>=</mo></mrow><mrow><mrow><mo fence="true" form="prefix">[</mo><mn>0</mn><mo separator="true">,</mo><mi>∞</mi><mo fence="true" form="postfix">)</mo></mrow><mspace width="0.2778em"></mspace><mi>■</mi></mrow></math></p>
 ",
       },
       {
         "body": "<p><math display="block" class="tml-display" style="display:block math;"><mtable displaystyle="true" columnalign="right left"><mtr><mtd class="tml-right" style="padding:0.7ex 0em 0.7ex 0em;"><msub><mi>R</mi><mi>f</mi></msub></mtd><mtd class="tml-left" style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mo>=</mo><mrow><mo fence="true" form="prefix">[</mo><mn>0</mn><mo separator="true">,</mo><mi>∞</mi><mo fence="true" form="postfix">)</mo></mrow></mrow></mtd></mtr><mtr><mtd class="tml-right" style="padding:0.7ex 0em 0.7ex 0em;"><msub><mi>D</mi><mi>f</mi></msub></mtd><mtd class="tml-left" style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mo>=</mo><mrow><mo fence="true" form="prefix">(</mo><mo form="prefix" stretchy="false">−</mo><mi>∞</mi><mo separator="true">,</mo><mn>3</mn><mo fence="true" form="postfix">)</mo></mrow><mo>∪</mo><mrow><mo fence="true" form="prefix">(</mo><mn>3</mn><mo separator="true">,</mo><mi>∞</mi><mo fence="true" form="postfix">)</mo></mrow></mrow></mtd></mtr></mtable></math></p>
-<p>Since <math><mrow><msub><mi>R</mi><mi>f</mi></msub><mo>⊈</mo><msub><mi>D</mi><mi>f</mi></msub><mo separator="true">,</mo></mrow></math>
+<p>Since <math><mrow><msub><mi>R</mi><mi>f</mi></msub><mo>⊈</mo></mrow><mrow><msub><mi>D</mi><mi>f</mi></msub><mo separator="true">,</mo></mrow></math>
 the composite function <math><msup><mi>f</mi><mn>2</mn></msup></math>
 does not exist <math><mrow><mspace width="0.2778em"></mspace><mi>∎</mi></mrow></math></p>
 ",
       },
       {
-        "body": "<p>Greatest value of <math><mrow><mi>a</mi><mo>=</mo><mo form="prefix" stretchy="false">−</mo><mn>2</mn><mspace width="0.2778em"></mspace><mi>■</mi></mrow></math></p>
+        "body": "<p>Greatest value of <math><mrow><mrow><mi>a</mi><mo>=</mo><mo form="prefix" stretchy="false">−</mo><mn>2</mn></mrow><mspace width="0.2778em"></mspace><mi>■</mi></mrow></math></p>
 ",
       },
       {
         "body": "<p><math display="block" class="tml-display" style="display:block math;"><mrow><mtext>Let </mtext><mi>y</mi><mo>=</mo><mrow><mo fence="true" form="prefix">|</mo><mfrac><mrow><mn>2</mn><mi>x</mi><mo>+</mo><mn>4</mn></mrow><mrow><mn>3</mn><mo>−</mo><mi>x</mi></mrow></mfrac><mo fence="true" form="postfix">|</mo></mrow></mrow></math></p>
 <p>Since <math><mrow><mfrac><mrow><mn>2</mn><mi>x</mi><mo>+</mo><mn>4</mn></mrow><mrow><mn>3</mn><mo>−</mo><mi>x</mi></mrow></mfrac><mo>&lt;</mo><mn>0</mn></mrow></math>
 for
-<math><mrow><mi>x</mi><mo>≤</mo><mo form="prefix" stretchy="false">−</mo><mn>2</mn><mo separator="true">,</mo></mrow></math></p>
+<math><mrow><mi>x</mi><mo>≤</mo><mo form="prefix" stretchy="false">−</mo><mn>2</mn><mo separator="true" lspace="0em" rspace="0em">,</mo></mrow></math></p>
 <p><math display="block" class="tml-display" style="display:block math;"><mtable displaystyle="true"><mtr><mtd style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mi>y</mi><mo>=</mo><mo form="prefix" stretchy="false">−</mo><mfrac><mrow><mn>2</mn><mi>x</mi><mo>+</mo><mn>4</mn></mrow><mrow><mn>3</mn><mo>−</mo><mi>x</mi></mrow></mfrac></mrow></mtd></mtr><mtr><mtd style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mi>y</mi><mrow><mo fence="true" form="prefix">(</mo><mn>3</mn><mo>−</mo><mi>x</mi><mo fence="true" form="postfix">)</mo></mrow><mo>=</mo><mo form="prefix" stretchy="false">−</mo><mn>2</mn><mi>x</mi><mo>−</mo><mn>4</mn></mrow></mtd></mtr><mtr><mtd style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mn>3</mn><mi>y</mi><mo>−</mo><mi>y</mi><mi>x</mi><mo>=</mo><mo form="prefix" stretchy="false">−</mo><mn>2</mn><mi>x</mi><mo>−</mo><mn>4</mn></mrow></mtd></mtr><mtr><mtd style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mi>y</mi><mi>x</mi><mo>−</mo><mn>2</mn><mi>x</mi><mo>=</mo><mn>3</mn><mi>y</mi><mo>+</mo><mn>4</mn></mrow></mtd></mtr><mtr><mtd style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mi>x</mi><mrow><mo fence="true" form="prefix">(</mo><mi>y</mi><mo>−</mo><mn>2</mn><mo fence="true" form="postfix">)</mo></mrow><mo>=</mo><mn>3</mn><mi>y</mi><mo>+</mo><mn>4</mn></mrow></mtd></mtr><mtr><mtd style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mi>x</mi><mo>=</mo><mfrac><mrow><mn>3</mn><mi>y</mi><mo>+</mo><mn>4</mn></mrow><mrow><mi>y</mi><mo>−</mo><mn>2</mn></mrow></mfrac></mrow></mtd></mtr></mtable></math></p>
 <p><math display="block" class="tml-display" style="display:block math;"><mrow><msup><mi>f</mi><mrow><mo lspace="0em" rspace="0em">−</mo><mn>1</mn></mrow></msup><mo form="prefix" stretchy="false">(</mo><mi>x</mi><mo form="postfix" stretchy="false">)</mo><mo>=</mo><mfrac><mrow><mn>3</mn><mi>x</mi><mo>+</mo><mn>4</mn></mrow><mrow><mi>x</mi><mo>−</mo><mn>2</mn></mrow></mfrac><mspace width="0.2778em"></mspace><mi>■</mi></mrow></math></p>
 <p><math display="block" class="tml-display" style="display:block math;"><mtable displaystyle="true" columnalign="right left"><mtr><mtd class="tml-right" style="padding:0.7ex 0em 0.7ex 0em;"><msub><mi>D</mi><msup><mi>f</mi><mrow><mo lspace="0em" rspace="0em">−</mo><mn>1</mn></mrow></msup></msub></mtd><mtd class="tml-left" style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mo>=</mo><msub><mi>R</mi><mi>f</mi></msub></mrow></mtd></mtr><mtr><mtd class="tml-right" style="padding:0.7ex 0em 0.7ex 0em;"><mrow></mrow></mtd><mtd class="tml-left" style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mo>=</mo><mrow><mo fence="true" form="prefix">[</mo><mn>0</mn><mo separator="true">,</mo><mn>2</mn><mo fence="true" form="postfix">)</mo></mrow><mspace width="0.2778em"></mspace><mi>■</mi></mrow></mtd></mtr></mtable></math></p>

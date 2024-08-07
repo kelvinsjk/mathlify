@@ -88,18 +88,18 @@ has an inverse.`;
 	const ans =
 		(state1.fnType === 'abs' || state1.fnType === 'improper') && state1.unknownConstants
 			? mathlify`@${allHorizontalLines} ${line}
-cuts the graph of ${'y=f(x)'}
+cuts the graph of ${'{y=f(x)}'}
 @${atMostOnce}. Hence ${'f'}
 is @${not} one-to-one and 
 @${has} an inverse.
 
-If ${'\\frac{c}{b} = a'}, 
+If ${'{\\frac{c}{b} = a}'}, 
 then ${'f'}
 will be a constant function
 ${`f(x)=${modB}`},
 which does not have an inverse as it is not one-to-one.`
 			: mathlify`@${allHorizontalLines} ${line}
-cuts the graph of ${'y=f(x)'}
+cuts the graph of ${'{y=f(x)}'}
 @${atMostOnce}. Hence ${'f'}
 is @${not} one-to-one and 
 @${has} an inverse.`;
@@ -108,7 +108,7 @@ is @${not} one-to-one and
 
 const hasInverse = {
 	allHorizontalLines: 'All horizontal lines',
-	line: 'y=k, k \\in \\mathbb{R},',
+	line: '{y=k, k \\in \\mathbb{R},}',
 	atMostOnce: 'at most once',
 	not: '',
 	has: 'has',
@@ -142,7 +142,7 @@ function generateAns(
 			const y2 = exp.subIn({ x });
 			bPlus1 = getRandomInt(bPlus1, y2.valueOf() - 0.01);
 		}
-		const line = unknownConstants ? `y=b+1` : `y=${bPlus1}`;
+		const line = unknownConstants ? `{y=b+1}` : `{y=${bPlus1}}`;
 		return {
 			line,
 			...noInverse,
@@ -157,7 +157,7 @@ function generateAns(
 		return hasInverse;
 	} else if (fnType === 'abs') {
 		const y = Math.abs(b) === 1 ? '0.5' : '1';
-		const noInverse1 = { line: `y=${y}`, ...noInverse };
+		const noInverse1 = { line: `{y=${y}}`, ...noInverse };
 		if (restriction) {
 			const { x, type } = restriction;
 			// https://www.desmos.com/calculator/yb2bwgxywr
@@ -169,7 +169,7 @@ function generateAns(
 						const y2 = exp.subIn({ x });
 						const half = y2.divide(2);
 						const y3 = half.valueOf() < 1 ? half : 1;
-						return y2.valueOf() >= Math.abs(b) ? noInverse1 : { line: `y=${y3}`, ...noInverse };
+						return y2.valueOf() >= Math.abs(b) ? noInverse1 : { line: `{y=${y3}}`, ...noInverse };
 					}
 				} else {
 					return hasInverse;
@@ -184,12 +184,12 @@ function generateAns(
 						const y2 = exp.subIn({ x });
 						const half = y2.divide(2);
 						const y3 = half.valueOf() < 1 ? half : 1;
-						return y2.valueOf() >= Math.abs(b) ? noInverse1 : { line: `y=${y3}`, ...noInverse };
+						return y2.valueOf() >= Math.abs(b) ? noInverse1 : { line: `{y=${y3}}`, ...noInverse };
 					}
 				}
 			}
 		}
-		return unknownConstants ? { line: `y=b+1`, ...noInverse } : noInverse1;
+		return unknownConstants ? { line: `{y=b+1}`, ...noInverse } : noInverse1;
 	} else if (fnType === 'special') {
 		return state.restriction
 			? hasInverse

@@ -2,9 +2,7 @@ import { chooseRandom, coinFlip, getRandomInt } from '$lib/utils/random';
 
 // objectives
 // A: fnType
-// B: restricted domain
-// C: unknown constants
-// D: definition vs f^{-1}(x)
+// B: existence vs non-existence
 
 import type { PracticeState, PracticeQuestion, Practice } from '$lib/types/learn';
 import { mathlify } from '$lib/mathlifier';
@@ -37,7 +35,7 @@ interface FnState extends PracticeState {
 }
 
 export interface State extends PracticeState {
-	inner: FnState; // TODO: remove unknownConstants from this
+	inner: FnState;
 	outer: FnState;
 	definition: boolean;
 	fg: boolean;
@@ -163,26 +161,32 @@ $${'align*'} &${fString} \\text{ and} \\\\ &${gString}.
 ` + qn2;
 	return {
 		qn,
-		...compositeFormula([fState, fExp, fDomain, gState, gExp, gDomain], isFg, definition),
+		...compositeFormula([fExp, fDomain, gExp, gDomain], isFg, definition),
 	}; // { ans: compositeFormula([fState, fExp, gState, gExp], definition) }
 }
 
+/**
+ *
+ * @param states [fExp, fDomain, gExp, gDomain]
+ * @param isFg
+ * @param definition
+ * @param options optional, {fName, gName, noDomain, ansInline}
+ * @returns {ans: string, soln: string, exp: Expression}
+ */
 export function compositeFormula(
-	states: [FnState, Expression, Interval[], FnState, Expression, Interval[]], // fState, fExp, gState, gExp
+	states: [Expression, Interval[], Expression, Interval[]], // fExp, fDomain, gExp, gDomain
 	isFg: boolean,
 	definition: boolean,
-	options?: { fName?: string; gName?: string },
+	options?: { fName?: string; gName?: string; noDomain?: boolean; ansInline?: boolean },
 ): { ans: string; soln: string; exp: Expression } {
 	let f = options?.fName ?? 'f';
 	let g = options?.gName ?? 'g';
-	let [fState, fExp, fDomain, gState, gExp, gDomain] = states;
+	let [fExp, fDomain, gExp, gDomain] = states;
 	if (!isFg) {
 		[f, g] = [g, f];
 		[fExp, gExp] = [gExp, fExp];
-		[fState, gState] = [gState, fState];
 		[fDomain, gDomain] = [gDomain, fDomain];
 	}
-	console.log(`${fExp}, ${fDomain}, ${gExp}, ${gDomain}`);
 	let fg = `${f}${g}`;
 	if (f === g) fg = `${f}^2`;
 	const working = new ExpressionWorking(fExp.subIn({ x: gExp }, { verbatim: true }), {
@@ -199,25 +203,36 @@ export function compositeFormula(
 	working.simplify();
 	working.expand({ onlyLinear: true });
 	const fgExp = working.expression;
-	const QEDSymbol = definition ? '' : QED;
-	const domainInequality = generateInequality(gDomain);
-	const soln2 = definition
-		? mathlify`
+	const QEDSymbol = options?.noDomain ? '' : definition ? '' : QED;
+	const domainInequality = options?.noDomain ? '' : generateInequality(gDomain);
+	const soln2 = options?.noDomain
+		? ''
+		: definition
+			? mathlify`
 $${{}} ${fg}: x \\mapsto ${fgExp}, \\quad ${domainInequality} ${QED}`
-		: mathlify`
+			: mathlify`
 $${'align*'} D_{${fg}} &= D_${g} \\\\ &= ${gDomain.join(` \\cup `)} ${QED}`;
 	const soln =
 		mathlify`$${'align*'}
 ${fg}(x) &= ${f} \\left( ${gExp} \\right)
 \\\\ ${working} ${QEDSymbol}
 ` + soln2;
-	console.log(`D_{${fg}} = ${gDomain.join(` \\cup `)}`);
-	const ans = definition
-		? mathlify`
-$${fg}:x\\mapsto ${fgExp}, \\quad ${domainInequality}.`
-		: mathlify`${fg}(x) = ${fgExp}
+	let ans: string;
+	if (options?.ansInline) {
+		ans = definition
+			? mathlify`
+${fg}:x\\mapsto ${fgExp}, \\quad \\allowbreak  {${domainInequality}}.`
+			: mathlify`${fg}(x) = ${fgExp}
 \\
 ${{}}D_{${fg}} = ${gDomain.join(` \\cup `)}.`;
+	} else {
+		ans = definition
+			? mathlify`
+	$${fg}:x\\mapsto ${fgExp}, \\quad ${domainInequality}.`
+			: mathlify`${fg}(x) = ${fgExp}
+	\\
+	${{}}D_{${fg}} = ${gDomain.join(` \\cup `)}.`;
+	}
 	return { ans, soln, exp: fgExp };
 }
 

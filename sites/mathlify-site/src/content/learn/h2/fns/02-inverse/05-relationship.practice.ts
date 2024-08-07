@@ -101,22 +101,29 @@ function generateFn2(state: State): [string, Expression] {
 export function inverseRelationshipSolver(
 	state: State,
 	exp: Expression,
+	options?: {
+		lineQED?: boolean;
+		precision?: number;
+		tys2011ExtraStep?: true;
+	},
 ): { ans: string; soln: string; roots: (number | Expression)[] } {
 	const { fnType, a, c } = state;
 	const roots: (number | Expression)[] = [];
 	const intersections = fnType === 'log' || fnType === 'exp' ? 'intersections' : 'intersection';
+	const solutions = fnType === 'log' || fnType === 'exp' ? 'solutions' : 'solution';
 	const are = fnType === 'log' || fnType === 'exp' ? 'are' : 'is';
-	let soln = mathlify`The graph of ${'y = f^{-1}(x)'}
-is a reflection of the graph of ${`y=f(x)`}
-about the line ${'y=x'}.
+	const extraQED = options?.lineQED ? QED : '.';
+	let soln = mathlify`The graph of ${'{y = f^{-1}(x)}'}
+is a reflection of the graph of ${`{y=f(x)}`}
+about the line ${'{y=x}'}${extraQED}
 
 We observe that the @${intersections}
-between the two graphs @${are}
+between the two curves @${are}
 also the @${intersections} between the graph of
-${'y=f(x)'}
-and the line ${'y=x'}.
+${'{y=f(x)}'}
+and the line ${'{y=x}'}.
 
-Hence the solution to ${'f(x)=f^{-1}(x)'}
+Hence the @${solutions} to ${'{f(x)=f^{-1}(x)}'}
 can be found by solving`;
 	const working = new EquationWorking(exp, 'x');
 	working.expand();
@@ -133,7 +140,12 @@ $${{}} x = ${root} ${QED}`;
 	} else if (fnType === 'cubic') {
 		const root = cubicRoot(exp as Polynomial, -5, 5);
 		roots.push(root);
-		const rootString = root instanceof Expression ? root.toString() : root.toFixed(3);
+		const rootString =
+			root instanceof Expression
+				? root.toString()
+				: options?.precision
+					? root.toPrecision(options.precision)
+					: root.toFixed(3);
 		soln += mathlify`$${'gather*'}f(x) = x \\\\ ${working}
 		
 Using a GC, the ${'x'}\\text{-coordinates}
@@ -145,20 +157,33 @@ $${{}} x = ${rootString} ${QED}
 		// both log and exp cases have same answers
 		const xStationary = (c - a) / c;
 		const g = (x: number) => exp.fn(x) - x;
-		const lower = Math.max(-a / c + 0.1, -5);
+		const lower = Math.max(-a / c + 0.01, -5);
 		const x1 = bisection(g, lower, xStationary);
-		const x2 = bisection(g, xStationary, 5);
+		const x2 = bisection(g, xStationary, 6);
+		const x1String = options?.precision ? x1.toPrecision(options.precision) : x1.toFixed(3);
+		const x2String = options?.precision ? x2.toPrecision(options.precision) : x2.toFixed(3);
 		roots.push(x1, x2);
-		soln += mathlify`$${'gather*'}f(x) = x \\\\ ${working}
+		let extraQED = '';
+		if (options?.tys2011ExtraStep) {
+			working.moveTerms(1);
+			extraQED = QED;
+		}
+		soln += mathlify`$${'gather*'}f(x) = x \\\\ ${working} ${extraQED}
 		
 Using a GC, the ${'x'}\\text{-coordinates}
 of the points of intersection are
 
-$${{}} x = ${x1.toFixed(3)} ${QED}, \\quad x = ${x2.toFixed(3)} ${QED}
+$${{}} x = ${x1String} ${QED}, \\quad x = ${x2String} ${QED}
 `;
 	}
-	const answers = roots.map((x) => (typeof x === 'number' ? x.toFixed(3) : x.toString()));
-	const ans = mathlify`${'x='}${answers.join(',')}.`;
+	const answers = roots.map((x) =>
+		typeof x === 'number'
+			? options?.precision
+				? x.toPrecision(options.precision)
+				: x.toFixed(3)
+			: x.toString(),
+	);
+	const ans = mathlify`${'x='}${answers.join(', ')}.`;
 	return { ans, soln, roots };
 }
 

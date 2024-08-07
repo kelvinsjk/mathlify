@@ -101,8 +101,8 @@ export function domainRestriction(
 ): { ans: string; soln: string } {
 	const a = generateAns(state);
 	const greatestCap = capitalizeFirstLetter(greatest);
-	const ans = mathlify`@${greatestCap} value of ${'a'} = ${a}.`;
-	const soln = mathlifyQED`@${greatestCap} value of ${'a'} = ${a}`;
+	const ans = mathlify`@${greatestCap} value of ${{}} {a = ${a}.}`;
+	const soln = mathlifyQED`@${greatestCap} value of ${{}} {a = ${a}}`;
 	return { ans, soln };
 }
 

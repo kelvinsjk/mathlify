@@ -197,6 +197,12 @@ export function generateDomain(state: State): Interval[] {
 		return [intervalBuilder('right', negativeA, true)];
 	} else if (fnType === 'improper' || fnType === 'abs' || fnType === 'frac') {
 		return [intervalBuilder('left', negativeA, false), intervalBuilder('right', negativeA, false)];
+	} else if (fnType === 'special') {
+		return [
+			intervalBuilder('left', -Math.abs(a), false),
+			new Interval({ left: -Math.abs(a), right: Math.abs(a) }),
+			intervalBuilder('right', Math.abs(a), false),
+		];
 	}
 	return [Interval.ALL_REAL];
 }

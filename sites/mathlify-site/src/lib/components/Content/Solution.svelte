@@ -140,9 +140,10 @@
 	.answer-grid {
 		display: grid;
 		gap: 0.5rem;
+		overflow: hidden;
 	}
 	.answer-with-parts {
-		grid-template-columns: auto 1fr;
+		grid-template-columns: auto minmax(0, 1fr);
 	}
 	:global(.answer-content > p:first-child) {
 		margin-block-start: 0;
@@ -150,7 +151,7 @@
 	:global(.answer-content > p:last-child) {
 		margin-block-end: 0;
 	}
-	:global(.solutions img) {
+	:global(.solutions svg) {
 		max-width: min(100%, 100vw);
 		max-height: 60vh;
 	}

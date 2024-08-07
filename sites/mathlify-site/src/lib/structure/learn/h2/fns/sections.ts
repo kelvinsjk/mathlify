@@ -55,9 +55,14 @@ export const sections: Section[] = [
 			},
 			{ title: 'Range of composite functions', slug: '03-range', shortTitle: 'Composite range' },
 			{
-				title: 'Special composite functions',
-				slug: '04-special',
-				shortTitle: 'Special composites',
+				title: 'Self composition',
+				slug: '04-self-compose',
+				shortTitle: 'Self composition',
+			},
+			{
+				title: 'Composing with inverses',
+				slug: '05-compose-inverse',
+				shortTitle: 'Composing with inverses',
 			},
 		],
 	},

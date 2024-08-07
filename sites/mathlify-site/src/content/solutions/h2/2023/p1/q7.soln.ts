@@ -40,8 +40,7 @@ const restriction = { type: 'left', x: -2, inclusive: true } as const;
 // a
 {
 	const soln = svg;
-	const ans = mathlify`Asymptotes: ${`x=3`}
-and ${`y=2`}.`;
+	const ans = mathlify`[Sketch](#soln-1).`;
 	answer.addPart(ans, soln);
 }
 // b

@@ -6,6 +6,8 @@ import { coinFlip } from '$lib/utils/random';
 // C: unknown constants
 // D: definition vs f^{-1}(x)
 
+// we will omit the 'abs' case here, and apply it under 04/03
+
 import type { PracticeState, PracticeQuestion, Practice } from '$lib/types/learn';
 import { mathlify } from '$lib/mathlifier';
 import { Expression, sum, e, Polynomial } from 'mathlify';
@@ -49,6 +51,11 @@ export interface State extends PracticeState {
 }
 
 export function generateState(options?: { type?: Type }): State {
+	// we will omit the 'abs' case here, and apply it under 04/03
+	let state: ReturnType<typeof generateState1>;
+	do {
+		state = generateState1(options);
+	} while (state.fnType === 'abs');
 	return { ...generateState1(options), definition: coinFlip() };
 }
 
@@ -178,71 +185,12 @@ $${'align*'} D_{f^{-1}} &= R_{f} \\\\ &= ${generateRange(state, rhs).join(' \\cu
 ${{}} D_{f^{-1}} = R_{f} = ${generateRange(state, rhs).join(' \\cup ')}.`;
 		return { ans, soln: soln1 + soln2 };
 	} else if (fnType === 'quadratic') {
-		const line1 = new EquationWorking([xPlusA, '^', 2], yMinusB);
-		if (restriction === false)
-			throw new Error('restriction should not be false for quadratic case.');
-		const positive = restriction.type === 'right' ? 1 : -1;
-		const working = new EquationWorking(xPlusA, [positive, sqrtTerm(yMinusB)]);
-		working.isolate('x');
-		const fInv = working.eqn.rhs.subIn({ y: 'x' });
-		const domain = unknownConstants
-			? restriction.type === 'left'
-				? 'x \\leq -a'
-				: 'x \\geq -a'
-			: generateDomain(restriction);
-		const soln1 = mathlify`$${'gather*'} \\text{Let } y = ${rhs} \\\\ ${line1}
-\\\\ \\text{Since } ${domain},
-\\\\ ${working}`;
-		const soln2 = definition
-			? mathlify`$${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, rhs)} ${QED}`
-			: mathlify`$${{}} f^{-1}(x) = ${fInv} ${QED}
-
-$${'align*'} D_{f^{-1}} &= R_{f} \\\\ &= ${generateRange(state, rhs).join(' \\cup ')} ${QED}`;
-		const ans = definition
-			? mathlify`${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, rhs)}`
-			: mathlify`${{}} f^{-1}(x) = ${fInv}.
-\\
-${{}} D_{f^{-1}} = R_{f} = ${generateRange(state, rhs).join(' \\cup ')}.`;
-		return { ans, soln: soln1 + soln2 };
+		return quadraticInverse(state, rhs);
 	} else if (fnType === 'log') {
-		const working1 = new EquationWorking('y', rhs);
-		const working2 = new EquationWorking(logTerm(xPlusA), yMinusB);
-		const working3 = new EquationWorking(xPlusA, [e, '^', yMinusB]);
-		working3.isolate('x');
-		const fInv = working3.eqn.rhs.subIn({ y: 'x' });
-		const soln1 = mathlify`$${'gather*'} \\text{Let } ${working1} \\\\ ${working2} \\\\ ${working3}`;
-		const soln2 = definition
-			? mathlify`$${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, rhs)} ${QED}`
-			: mathlify`$${{}} f^{-1}(x) = ${fInv} ${QED}
-
-$${'align*'} D_{f^{-1}} &= R_{f} \\\\ &= ${generateRange(state, rhs).join(' \\cup ')} ${QED}`;
-		const ans = definition
-			? mathlify`${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, rhs)}`
-			: mathlify`${{}} f^{-1}(x) = ${fInv}.
-\\
-${{}} D_{f^{-1}} = R_{f} = ${generateRange(state, rhs).join(' \\cup ')}.`;
-		return { ans, soln: soln1 + soln2 };
+		return logInverse(rhs, xPlusA, yMinusB, { definition, state });
 	} else if (fnType === 'exp') {
-		const working1 = new EquationWorking('y', rhs);
-		const ax = (
-			unknownConstants ? new Expression(['a', 'x']) : new Expression([a, 'x'])
-		).simplify();
-		const working2 = new EquationWorking([e, '^', ax], yMinusB);
-		const working3 = new EquationWorking(ax, logTerm(yMinusB));
-		working3._makeSubjectFromProduct('x');
-		const fInv = working3.eqn.rhs.subIn({ y: 'x' });
-		const soln1 = mathlify`$${'gather*'} \\text{Let } ${working1} \\\\ ${working2} \\\\ ${working3}`;
-		const soln2 = definition
-			? mathlify`$${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, rhs)} ${QED}`
-			: mathlify`$${{}} f^{-1}(x) = ${fInv} ${QED}
-
-$${'align*'} D_{f^{-1}} &= R_{f} \\\\ &= ${generateRange(state, rhs).join(' \\cup ')} ${QED}`;
-		const ans = definition
-			? mathlify`${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, rhs)}`
-			: mathlify`${{}} f^{-1}(x) = ${fInv}.
-\\
-${{}} D_{f^{-1}} = R_{f} = ${generateRange(state, rhs).join(' \\cup ')}.`;
-		return { ans, soln: soln1 + soln2 };
+		const ax = new Expression([unknownConstants ? 'a' : a, 'x']).simplify();
+		return expInverse(rhs, ax, yMinusB, { definition, state });
 	} else if (fnType === 'sqrt') {
 		const working1 = new EquationWorking('y', rhs);
 		const working2 = new EquationWorking(sqrtTerm(xPlusA), yMinusB);
@@ -284,7 +232,7 @@ $${'align*'} D_{f^{-1}} &= R_{f} \\\\ &= ${generateRange(state, rhs).join(' \\cu
 ${{}} D_{f^{-1}} = R_{f} = ${generateRange(state, rhs).join(' \\cup ')}.`;
 		return { ans, soln: soln1 + soln2 };
 	} else if (fnType === 'improper') {
-		return generateImproperAns(state, { definition, rhs, QED });
+		return improperInverse(state, { definition, rhs, QED });
 	} else if (fnType === 'abs') {
 		// TODO: no unknown constants case here?
 		const bxPlusC = unknownConstants ? new Polynomial(['b', 'c']) : new Polynomial([b, c]);
@@ -307,7 +255,7 @@ ${{}} D_{f^{-1}} = R_{f} = ${generateRange(state, rhs).join(' \\cup ')}.`;
 		const fInv = newRHS.subIn({ y: 'x' });
 		const soln1 = mathlify`$${'gather*'} \\text{Let } ${working}
 			
-Since ${generateDomain(restriction)},
+Since ${{}} {${generateDomain(restriction)},}
 $${'x'} = ${newRHS}`;
 		const soln2 = definition
 			? mathlify`$${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, rhs)} ${QED}`
@@ -323,11 +271,42 @@ ${{}} D_{f^{-1}} = R_{f} = ${generateRange(state, rhs).join(' \\cup ')}.`;
 	}
 }
 
-function generateImproperAns(
+export function improperInverse(
 	state: State,
-	options: { abs?: true; definition: boolean; rhs: Expression; QED: string; swap?: boolean },
-): { ans: string; soln: string } {
-	const { definition, rhs, QED, swap } = options;
+	options: {
+		abs?: true;
+		definition: boolean;
+		rhs: Expression;
+		QED: string;
+		swap?: boolean;
+		noDomain?: true;
+		omitReasoningInAns?: true;
+	},
+): { ans: string; soln: string; exp: Expression } {
+	const { definition, rhs, QED, swap, noDomain } = options;
+	const { working, exp: fInv } = fractionalInverseWorking(rhs, swap, options);
+	const domain = noDomain
+		? ''
+		: definition
+			? generateInequality(state, rhs)
+			: mathlify`$${'align*'} D_{f^{-1}} &= R_{f} \\\\ &= ${generateRange(state, rhs).join(' \\cup ')} ${QED}`;
+	const Rf = options?.omitReasoningInAns ? '' : '= R_f';
+	const soln2 = definition
+		? mathlify`$${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${domain} ${QED}`
+		: mathlify`$${{}} f^{-1}(x) = ${fInv} ${QED}` + domain;
+	const ans = definition
+		? mathlify`${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, rhs)}`
+		: mathlify`${{}} f^{-1}(x) = ${fInv}.
+\\
+${{}} D_{f^{-1}} ${Rf} = ${generateRange(state, rhs).join(' \\cup ')}.`;
+	return { ans, soln: working + soln2, exp: fInv };
+}
+
+export function fractionalInverseWorking(
+	rhs: Expression,
+	swap?: boolean,
+	options?: { abs?: boolean; reportInverse?: boolean },
+): { working: string; exp: Expression } {
 	const letText = options?.abs ? '' : '\\text{Let } ';
 	const working = new EquationWorking('y', rhs);
 	working.crossMultiply();
@@ -337,7 +316,30 @@ function generateImproperAns(
 	working.factorize.commonFactor();
 	working._makeSubjectFromProduct('x');
 	const fInv = working.eqn.rhs.subIn({ y: 'x' });
-	const soln1 = mathlify`$${'gather*'} ${letText} ${working}`;
+	const soln1 = options?.reportInverse
+		? mathlify`$${'gather*'} ${letText} ${working} \\\\ f^{-1}(x) = ${fInv}`
+		: mathlify`$${'gather*'} ${letText} ${working}`;
+	return { working: soln1, exp: fInv };
+}
+
+export function quadraticInverse(state: State, rhs: Expression): { ans: string; soln: string } {
+	const { restriction, a, b, definition, unknownConstants } = state;
+	const yMinusB = sum('y', [-1, unknownConstants ? 'b' : b]).simplify();
+	const xPlusA = sum('x', unknownConstants ? 'a' : a).simplify();
+	const line1 = new EquationWorking([xPlusA, '^', 2], yMinusB);
+	if (restriction === false) throw new Error('restriction should not be false for quadratic case.');
+	const positive = restriction.type === 'right' ? 1 : -1;
+	const working = new EquationWorking(xPlusA, [positive, sqrtTerm(yMinusB)]);
+	working.isolate('x');
+	const fInv = working.eqn.rhs.subIn({ y: 'x' });
+	const domain = unknownConstants
+		? restriction.type === 'left'
+			? 'x \\leq -a'
+			: 'x \\geq -a'
+		: generateDomain(restriction);
+	const soln1 = mathlify`$${'gather*'} \\text{Let } y = ${rhs} \\\\ ${line1}
+\\\\ \\text{Since } ${domain},
+\\\\ ${working}`;
 	const soln2 = definition
 		? mathlify`$${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, rhs)} ${QED}`
 		: mathlify`$${{}} f^{-1}(x) = ${fInv} ${QED}
@@ -349,6 +351,76 @@ $${'align*'} D_{f^{-1}} &= R_{f} \\\\ &= ${generateRange(state, rhs).join(' \\cu
 \\
 ${{}} D_{f^{-1}} = R_{f} = ${generateRange(state, rhs).join(' \\cup ')}.`;
 	return { ans, soln: soln1 + soln2 };
+}
+
+export function logInverse(
+	rhs: Expression,
+	argument: Expression,
+	yMinusB: Expression,
+	options?: { definition?: boolean; state?: State },
+): { ans: string; soln: string } {
+	const working1 = new EquationWorking('y', rhs);
+	const working2 = new EquationWorking(logTerm(argument), yMinusB);
+	const working3 = new EquationWorking(argument, [e, '^', yMinusB]);
+	working3.isolate('x');
+	working3._makeSubjectFromProduct('x');
+	const fInv = working3.eqn.rhs.subIn({ y: 'x' });
+	const soln1 = mathlify`$${'gather*'} \\text{Let } ${working1} \\\\ ${working2} \\\\ ${working3}`;
+	if (options?.definition && options?.state === undefined)
+		throw new Error('state must be provided if definition is true');
+	if (options?.definition && options?.state === undefined)
+		throw new Error('state must be provided if definition is true');
+	const state = options?.state as State;
+	const Rf =
+		options?.state === undefined
+			? `\\left( -\\infty, \\infty \\right)`
+			: generateRange(state, rhs).join(' \\cup ');
+	const soln2 = options?.definition
+		? mathlify`$${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, rhs)} ${QED}`
+		: mathlify`$${{}} f^{-1}(x) = ${fInv} ${QED}
+
+$${'align*'} D_{f^{-1}} &= R_{f} \\\\ &= ${Rf} ${QED}`;
+
+	const ans = options?.definition
+		? mathlify`${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, rhs)}`
+		: mathlify`${{}} f^{-1}(x) = ${fInv}.
+\\
+${{}} D_{f^{-1}} = R_{f} = ${Rf}.`;
+	return { ans, soln: soln1 + soln2 };
+}
+
+export function expInverse(
+	rhs: Expression,
+	argument: Expression,
+	yMinusB: Expression,
+	options?: { definition?: boolean; state?: State; b?: number },
+): { ans: string; soln: string; exp: Expression } {
+	const working1 = new EquationWorking('y', rhs);
+	const working2 = new EquationWorking([e, '^', argument], yMinusB);
+	const working3 = new EquationWorking(argument, logTerm(yMinusB));
+	working3._makeSubjectFromProduct('x');
+	const fInv = working3.eqn.rhs.subIn({ y: 'x' });
+	const soln1 = mathlify`$${'gather*'} \\text{Let } ${working1} \\\\ ${working2} \\\\ ${working3}`;
+	if (options?.state === undefined && options?.b === undefined)
+		throw new Error('b must be provided if state is undefined');
+	if (options?.definition && options?.state === undefined)
+		throw new Error('state must be provided if definition is true');
+	const state = options?.state as State;
+	const Rf =
+		options?.state === undefined
+			? `\\left( ${options?.b}, \\infty \\right)`
+			: generateRange(options?.state, rhs).join(' \\cup ');
+	const soln2 = options?.definition
+		? mathlify`$${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, rhs)} ${QED}`
+		: mathlify`$${{}} f^{-1}(x) = ${fInv} ${QED}
+
+$${'align*'} D_{f^{-1}} &= R_{f} \\\\ &= ${Rf} ${QED}`;
+	const ans = options?.definition
+		? mathlify`${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, rhs)}`
+		: mathlify`${{}} f^{-1}(x) = ${fInv}.
+\\
+${{}} D_{f^{-1}} = R_{f} = ${Rf}.`;
+	return { ans, soln: soln1 + soln2, exp: fInv };
 }
 
 export function lessThan(inclusive: boolean): string {
@@ -380,7 +452,7 @@ function generateInequality(state: State, exp: Expression): string {
 				return ans + `, x ${greaterThan(inclusive)} b.`;
 			}
 			const y = exp.subIn({ x });
-			if ((x < -a && type === 'left') || (x > -a && type === 'right') || !inclusive) {
+			if ((x < -a && type === 'left') || (x > -a && type === 'right') || (x === -a && !inclusive)) {
 				return ans + `, x ${greaterThan(inclusive)} ${y}.`;
 			}
 		}
@@ -496,11 +568,11 @@ export function absoluteRationalInverse(
 	const newRHS = negative ? inner.negative() : inner;
 	const working1 = mathlify`$${{}} \\text{Let } y = \\left| ${inner} \\right|
 
-Since ${inner} ${sign} 0
+Since ${{}} {${inner} ${sign} 0}
 for
-${generateDomain(restriction)},
+${{}}{${generateDomain(restriction)},}
 `;
-	const { ans, soln } = generateImproperAns(state, {
+	const { ans, soln } = improperInverse(state, {
 		abs: true,
 		definition,
 		rhs: newRHS,
