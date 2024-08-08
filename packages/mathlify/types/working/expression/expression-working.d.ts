@@ -52,6 +52,11 @@ export class ExpressionWorking {
      */
     combineFraction(options?: WorkingOptions | undefined): ExpressionWorking;
     /**
+     * @param {WorkingOptions} [options] default to target both
+     * @returns {ExpressionWorking}
+     */
+    expandNegativeIntoQuotient(options?: WorkingOptions | undefined): ExpressionWorking;
+    /**
      * @param {SimplifyOptions & WorkingOptions} [options] - {brackets?, product?, sum?, quotient?, numeral?, exponent?, hide?}
      * @returns {ExpressionWorking}
      * */

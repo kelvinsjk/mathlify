@@ -15,20 +15,20 @@ import {
  * Sqrt Class
  * */
 export class Sqrt extends Fn {
+	functionName = 'sqrt';
 	/**
 	 * Creates a Sqrt term
 	 * @param {Shorthand} expression
 	 */
 	constructor(expression) {
 		super(shorthandToExpression(expression));
-		this.functionType = 'sqrt';
 	}
 
 	/**
 	 * @returns {string}
 	 */
 	toString() {
-		return `\\sqrt{${this.argument}}`;
+		return `\\sqrt{${this.argument.toString()}}`;
 	}
 
 	/**
@@ -192,9 +192,13 @@ export function simplifySurd(expression) {
  */
 export function surdConjugate(expression) {
 	if (expression.node.type !== 'sum')
-		throw new Error(`Expected a sum expression. ${expression} received.`);
+		throw new Error(
+			`Expected a sum expression. ${expression.toString()} received.`,
+		);
 	if (expression.node.terms.length !== 2)
-		throw new Error(`Expected a sum of two terms. ${expression} received.`);
+		throw new Error(
+			`Expected a sum of two terms. ${expression.toString()} received.`,
+		);
 	const [t1, t2] = /** @type {[Expression, Expression]} */ (
 		expression.node.terms
 	);
@@ -205,7 +209,7 @@ export function surdConjugate(expression) {
 		);
 	}
 	throw new Error(
-		`Expected a radical form for second term. ${t2} received in ${expression}`,
+		`Expected a radical form for second term. ${t2.toString()} received in ${expression.toString()}`,
 	);
 }
 
@@ -215,7 +219,7 @@ export function surdConjugate(expression) {
  * @returns {boolean}
  */
 function isRadicalForm(expression) {
-	if (expression.node.type === 'fn' && expression.node.functionType === 'sqrt')
+	if (expression.node.type === 'fn' && expression.node.functionName === 'sqrt')
 		return true;
 	if (expression.node.type !== 'product') return false;
 	const coeff = expression.node.coeff;

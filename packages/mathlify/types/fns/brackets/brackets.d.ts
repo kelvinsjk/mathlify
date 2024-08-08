@@ -4,6 +4,11 @@
  * */
 export class Brackets extends Fn {
     /**
+     * Creates a Bracketed term
+     * @param {Shorthand} expression
+     */
+    constructor(expression: Shorthand);
+    /**
      * @returns {Brackets}
      */
     clone(): Brackets;
@@ -19,6 +24,7 @@ export class Brackets extends Fn {
     }): Brackets;
 }
 export type Expression = import("../../index.js").Expression;
+export type Variable = import("../../index.js").Variable;
 export type ExpressionNode = import("../../core/expression/expression.js").ExpressionNode;
 export type SimplifyOptions = import("../../core/expression/expression.js").SimplifyOptions;
 export type Shorthand = import("../../core/expression/expression.js").Shorthand;

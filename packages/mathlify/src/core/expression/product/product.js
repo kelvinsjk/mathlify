@@ -60,21 +60,24 @@ export class Product {
 		for (let factor of this.factors) {
 			const times = str === '' ? '' : multiplicationSign;
 			if (
-				(factor.node.type === 'numeral' && factor.node.is.negative()) ||
-				(factor.node.type === 'sum' &&
-					(this.factors.length > 1 || !this.coeff.is.one())) ||
-				(factor.node.type === 'numeral' &&
-					(!this.coeff.abs().is.one() || this.factors.length > 1) &&
-					(factor.node.is.negative() || multiplicationSign === '')) ||
+				factor.node.type === 'numeral' ||
 				(factor.node.type === 'product' &&
-					(factor.node.coeff.is.negative() ||
+					!this.coeff.is.one() &&
+					((this.coeff.is.negative_one() && factor.node.coeff.is.negative()) ||
 						(!this.coeff.abs().is.one() &&
-							!factor.node.coeff.abs().is.one()))) ||
-				(factor.node.type === 'exponent' &&
-					factor.node.base.node.type === 'numeral' &&
-					(!this.coeff.is.one() || this.factors.length > 1))
+							factor.node.coeff.abs().is.one()))) ||
+				((!this.coeff.is.one() || this.factors.length > 1) &&
+					((factor.node.type === 'exponent' &&
+						factor.node.base.node.type === 'numeral') ||
+						factor.node.type === 'sum')) ||
+				(!this.coeff.abs().is.one() && factor.node.type === 'quotient')
 			) {
 				// these should have brackets
+				// case 1: factor is numeral -(-3), 2(3)
+				// case 2: factor is product: -(-3x) or 2(3x)
+				// case 3a: factor is num^f(x), other terms around (coeff not 1, other factors)
+				// case 3b: factor is sum, and other terms around (coeff not 1, other factors)
+				// case 3c: factor is quotient, other terms around (coeff not 1, other factors)
 				str += `${times}\\left( ${factor.toString()} \\right)`;
 			} else {
 				str += `${times}${factor.toString()}`;

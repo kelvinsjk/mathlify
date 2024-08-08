@@ -25,6 +25,11 @@ export function surdConjugate(expression: Expression): Sum;
  * */
 export class Sqrt extends Fn {
     /**
+     * Creates a Sqrt term
+     * @param {Shorthand} expression
+     */
+    constructor(expression: Shorthand);
+    /**
      * @returns {Sqrt}
      */
     clone(): Sqrt;

@@ -127,6 +127,12 @@ export class Equation {
      * @returns {Equation}
      */
     toGeneralPolynomial(variable?: string | undefined): Equation;
+    /**
+     * for f(x), e^f(x) and ln(f(x)), apply inverses to get
+     * x = f^{-1}(y), f(x) = ln(y) and f(x) = e^y
+     * @returns {Equation}
+     */
+    inverse(): Equation;
     factorize: {
         /**
          * factorizes by taking out common factor

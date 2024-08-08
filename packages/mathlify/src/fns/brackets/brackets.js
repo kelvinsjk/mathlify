@@ -1,4 +1,5 @@
 /** @typedef {import('../../index.js').Expression} Expression */
+/** @typedef {import('../../index.js').Variable} Variable */
 /** @typedef {import('../../core/expression/expression.js').ExpressionNode} ExpressionNode */
 /** @typedef {import('../../core/expression/expression.js').SimplifyOptions} SimplifyOptions */
 /** @typedef {import('../../core/expression/expression.js').Shorthand} Shorthand */
@@ -10,20 +11,20 @@ import { Fn } from '../../core/expression/fn/custom-function.js';
  * @property {Expression} expression - the expression within the parenthesis
  * */
 export class Brackets extends Fn {
+	functionName = 'brackets';
 	/**
 	 * Creates a Bracketed term
 	 * @param {Shorthand} expression
 	 */
 	constructor(expression) {
 		super(shorthandToExpression(expression));
-		this.functionType = 'brackets';
 	}
 
 	/**
 	 * @returns {string}
 	 */
 	toString() {
-		return `\\left( ${this.argument} \\right)`;
+		return `\\left( ${this.argument.toString()} \\right)`;
 	}
 
 	/**
@@ -56,5 +57,21 @@ export class Brackets extends Fn {
 	simplify(options) {
 		if (options?.verbatim) return this;
 		return this.argument.simplify(options).node;
+	}
+
+	/**
+	 * @param {number} x
+	 * @param {string|Variable} [variable]
+	 * @returns {number}
+	 */
+	fn = (x, variable) => {
+		return this.argument.fn(x, variable);
+	};
+
+	/**
+	 * @returns {number}
+	 */
+	valueOf() {
+		return this.argument.valueOf();
 	}
 }

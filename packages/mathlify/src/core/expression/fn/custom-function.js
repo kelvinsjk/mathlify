@@ -20,33 +20,39 @@ export class Fn {
 	/** @type {'fn'} */
 	type = 'fn';
 	/** @type {string} */
-	functionType;
+	functionName;
 	/** @type {Expression} */
 	argument;
 	/**
 	 * @constructor
 	 * Creates a Fn
-	 * @param {Shorthand} argument
+	 * @param {Expression} argument
+	 * @param {{functionName?: string}} [options]
 	 */
-	constructor(argument) {
-		if (
-			typeof argument === 'string' ||
-			typeof argument === 'number' ||
-			Array.isArray(argument) ||
-			argument.type !== 'expression'
-		)
-			throw new Error(
-				'This dummy identity function only accepts expressions as arguments',
-			);
+	constructor(argument, options) {
+		// if (
+		// 	typeof argument === 'string' ||
+		// 	typeof argument === 'number' ||
+		// 	Array.isArray(argument) ||
+		// 	argument.type !== 'expression'
+		// )
+		// 	// TODO: remove this requirement?
+		// 	throw new Error(
+		// 		'This dummy identity function only accepts expressions as arguments',
+		// 	);
 		this.argument = argument;
-		this.functionType = 'identity';
+		this.functionName = options?.functionName ?? 'f';
 	}
 
 	/**
 	 * @returns {string}
 	 */
 	toString() {
-		return this.argument.toString();
+		const knownFns = ['logarithm', 'sqrt', 'absolute', 'sin', 'cos', 'tan'];
+		return this.argument.node.type === 'fn' &&
+			!knownFns.includes(this.argument.node.functionName)
+			? `${this.functionName}${this.argument.toString()}`
+			: `${this.functionName}\\left(${this.argument.toString()}\\right)`;
 	}
 
 	/**
@@ -67,7 +73,7 @@ export class Fn {
 	 * @returns {string}
 	 */
 	_to_lexical_string() {
-		return this.argument._to_lexical_string();
+		return this.functionName + this.argument._to_lexical_string();
 	}
 
 	/**
@@ -84,32 +90,47 @@ export class Fn {
 	 * @returns {ExpressionNode}
 	 */
 	simplify(_options) {
-		return new Fn(this.argument.simplify());
+		return new Fn(this.argument.simplify(), {
+			functionName: this.functionName,
+		});
 	}
 
 	/**
 	 * @returns {Fn}
 	 */
 	clone() {
-		return new Fn(this.argument.clone());
+		return new Fn(this.argument.clone(), {
+			functionName: this.functionName,
+		});
 	}
 
 	/**
-	 * @param {Object.<string, Expression>} scope - variables to be replaced in the expression
+	 * @param {Record<string, Expression>} scope - variables to be replaced in the expression
 	 * @param {{verbatim: boolean|'quotient'}} options - default to automatic simplification
 	 * @returns {ExpressionNode}
 	 */
 	subIn(scope, options) {
-		return this.argument.subIn(scope, options).node;
+		const newArgument = this.argument.subIn(scope, options);
+		const tryFunctionScope = scope[this.functionName];
+		if (Object.keys(scope).length === 1 && tryFunctionScope !== undefined) {
+			// replacing the function, assuming the argument is 'x'
+			// TODO: support cases where argument is not x
+			return tryFunctionScope.subIn({ x: newArgument }, options).node;
+		}
+		// sub into the argument
+		return new Fn(newArgument, { functionName: this.functionName });
 	}
 
 	/**
-	 * @param {number} x
-	 * @param {string|Variable} [variable]
+	 * @param {number} _x
+	 * @param {string|Variable} [_variable]
 	 * @returns {number}
 	 */
-	fn = (x, variable) => {
-		return this.argument.fn(x, variable);
+	fn = (_x, _variable) => {
+		throw new Error(
+			'fn to convert number to number not implemented for generic function',
+		);
+		//return this.argument.fn(x, variable);
 	};
 
 	is = {
@@ -123,6 +144,9 @@ export class Fn {
 	 * @returns {number}
 	 */
 	valueOf() {
-		return this.argument.valueOf();
+		throw new Error(
+			'fn to convert number to number not implemented for generic function',
+		);
+		//return this.argument.valueOf();
 	}
 }

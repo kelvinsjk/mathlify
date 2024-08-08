@@ -19,13 +19,16 @@ export class Fn {
     /**
      * @constructor
      * Creates a Fn
-     * @param {Shorthand} argument
+     * @param {Expression} argument
+     * @param {{functionName?: string}} [options]
      */
-    constructor(argument: Shorthand);
+    constructor(argument: Expression, options?: {
+        functionName?: string;
+    } | undefined);
     /** @type {'fn'} */
     type: "fn";
     /** @type {string} */
-    functionType: string;
+    functionName: string;
     /** @type {Expression} */
     argument: Expression;
     /**
@@ -59,21 +62,19 @@ export class Fn {
      */
     clone(): Fn;
     /**
-     * @param {Object.<string, Expression>} scope - variables to be replaced in the expression
+     * @param {Record<string, Expression>} scope - variables to be replaced in the expression
      * @param {{verbatim: boolean|'quotient'}} options - default to automatic simplification
      * @returns {ExpressionNode}
      */
-    subIn(scope: {
-        [x: string]: Expression;
-    }, options: {
+    subIn(scope: Record<string, Expression>, options: {
         verbatim: boolean | "quotient";
     }): ExpressionNode;
     /**
-     * @param {number} x
-     * @param {string|Variable} [variable]
+     * @param {number} _x
+     * @param {string|Variable} [_variable]
      * @returns {number}
      */
-    fn: (x: number, variable?: string | import("../expression.js").Variable | undefined) => number;
+    fn: (_x: number, _variable?: string | import("../expression.js").Variable | undefined) => number;
     is: {
         /** @returns {boolean} */
         variable: () => boolean;

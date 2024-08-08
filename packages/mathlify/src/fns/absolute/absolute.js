@@ -13,20 +13,20 @@ import { Fn } from '../../core/expression/fn/custom-function.js';
  * @property {Expression} expression - the expression within the parenthesis
  * */
 export class Abs extends Fn {
+	functionName = 'absolute';
 	/**
 	 * Creates an absolute term
 	 * @param {Shorthand} expression
 	 */
 	constructor(expression) {
 		super(shorthandToExpression(expression));
-		this.functionType = 'absolute';
 	}
 
 	/**
 	 * @returns {string}
 	 */
 	toString() {
-		return `\\left\\lvert ${this.argument} \\right\\rvert`;
+		return `\\left\\lvert ${this.argument.toString()} \\right\\rvert`;
 	}
 
 	/**
