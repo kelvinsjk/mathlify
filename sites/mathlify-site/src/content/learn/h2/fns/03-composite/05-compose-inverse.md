@@ -30,3 +30,38 @@ have
 ```=comment
 Add a picture for these graphs
 ```
+
+## Using the result
+
+<!-- prettier-ignore-start -->
+
+::: example
+
+**Question**:
+
+$$`\begin{align*} &f: x \mapsto 2x-1, \quad && x \in \mathbb{R}, \\ &g:x\mapsto x^2 + 3, \quad && x \in \mathbb{R}.\end{align*}`$$
+
+We also know that $`f^{-1}(x) = \frac{x+1}{2}.`
+\
+Solve
+
+$$`fg(x) = 5.`$$
+
+Give a definition, in similar form, for the composite function $`fg.`
+
+---
+
+**Discussion**:
+
+We could tackle the question by finding a formula for the composite function $`fg(x).`
+
+However, if we already have a formula for $`f^{-1}(x),` we can get the answer in a simpler way by applying the result $`f^{-1}f(x) = x.`
+
+In particular, we use the result $`f^{-1}fg(x) = g(x)` in the following solution.
+
+**Solution**:
+
+$$`\begin{gather*} fg(x) = 7 \\ \text{Applying } f^{-1} \text{ on both sides}, \\ f^{-1}fg(x) = f^{-1}(5) \\ \text{Note that } f^{-1}fg(x)=g(x), \\ g(x) = f^{-1}(5) \\ x^2 + 3 = \frac{5+1}{2} \\ x^2 + 3 = 3 \\ x = 0 \; \QED \end{gather*}`$$
+
+:::
+<!-- prettier-ignore-end -->

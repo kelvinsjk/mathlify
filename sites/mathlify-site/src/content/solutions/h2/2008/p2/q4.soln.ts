@@ -26,7 +26,7 @@ const state: Parameters<typeof quadraticInverse>[0] &
 	definition: false,
 	unknownConstants: false,
 };
-const f = sum([new Polynomial([1, a]), '^', 2], 1);
+const f = sum([new Polynomial([1, a]), '^', 2], b);
 
 // a
 {

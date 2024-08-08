@@ -1,8 +1,8 @@
 import { Answer } from '$content/solutions/answerObject';
 import { mathlify, mathlifyQED } from '$lib/mathlifier';
-import { Expression, Polynomial, quotient } from 'mathlify';
+import { Expression, fnTerm, Polynomial, quotient } from 'mathlify';
 import { fractionalInverseWorking } from '$content/learn/h2/fns/02-inverse/03-formula.practice';
-import { EquationWorking } from 'mathlify/working';
+import { EquationWorking, ExpressionWorking } from 'mathlify/working';
 import { QED } from '$lib/utils/typesetting';
 
 export const answer = new Answer();
@@ -23,13 +23,14 @@ const f = quotient(num, den);
 // ai
 {
 	const x = 2;
-	const h2Verbatim = h.subIn({ x }, { verbatim });
-	const h2 = h2Verbatim.simplify();
-	const gh2Verbatim = g.subIn({ x: h2 }, { verbatim });
-	const gh2 = gh2Verbatim.simplify();
-	const soln = mathlifyQED`$${'align*'} gh(${x}) &= g\\left(${h2Verbatim}\\right)
-\\\\ &= g(${h2}) \\\\ &= ${gh2Verbatim} \\\\ &= ${gh2}`;
-	const ans = mathlify`${{}} gh(${x}) = ${gh2}.`;
+	const h2 = fnTerm('h', x);
+	const gh2 = fnTerm('g', h2);
+	const working = new ExpressionWorking(gh2);
+	working.subIn({ h }, { verbatim }).simplify().subIn({ g }, { verbatim }).simplify();
+	const finalAns = working.expression;
+
+	const soln = mathlifyQED`$${'align*'} ${working}`;
+	const ans = mathlify`${{}} ${gh2} = ${finalAns}.`;
 	answer.addSubPart(ans, soln);
 }
 // aii
@@ -97,19 +98,15 @@ ${{}} a \\in \\mathbb{R}, a \\neq ${a}.`;
 // bIII
 {
 	const x = -4;
-	const verbatimWorking = fInv.subIn({ x }, { verbatim });
-	const working2 = verbatimWorking.simplify();
-	const finalAns = expandNegativeIntoQuotient(working2);
+	const fInvX = fnTerm('f^{-1}', x);
+	const working = new ExpressionWorking(fInvX, { startOnFirstLine: true });
+	working
+		.subIn({ 'f^{-1}': fnTerm('f', x) })
+		.subIn({ f: fInv }, { verbatim })
+		.simplify()
+		.expandNegativeIntoQuotient();
+	const finalAns = working.expression;
 	const ans = mathlify`${{}} f^{-1}(${x}) = ${finalAns}.`;
-	const soln = mathlifyQED`$${'align*'} f^{-1}(${x}) &= f(${x})
-\\\\ &= ${verbatimWorking} \\\\ &= ${working2} \\\\ &= ${finalAns}`;
+	const soln = mathlifyQED`$${'align*'} ${working}`;
 	answer.addSubPart(ans, soln);
-}
-
-export function expandNegativeIntoQuotient(exp: Expression) {
-	if (!exp.is.negativeUnit()) throw new Error('Expected a product with coefficient -1');
-	const q = exp._getProductTerm();
-	if (q.node.type !== 'quotient') throw new Error('Expected a quotient');
-	const { num, den } = q.node;
-	return quotient(num.negative().expand(), den);
 }

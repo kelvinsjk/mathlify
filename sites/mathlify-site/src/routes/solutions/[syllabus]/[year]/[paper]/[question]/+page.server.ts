@@ -11,8 +11,7 @@ import type { Answer } from '$content/solutions/answerObject';
 const modules = import.meta.glob('/src/content/solutions/**/*.soln.ts');
 const keys = Object.keys(modules);
 
-export const load: PageServerLoad = async ({ params, depends }) => {
-	depends('md');
+export const load: PageServerLoad = async ({ params }) => {
 	const { syllabus, year, paper, question } = params;
 
 	const file = `/src/content/solutions/${syllabus}/${year}/${paper}/${question}.soln.ts`;
