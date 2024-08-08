@@ -55,14 +55,6 @@ const R_f = generateRange({ ...state, restriction: false }, exp).join(' \\cup ')
 	const { ans, soln } = compositeExists({ f: state, g: state, fg: true }, [exp, exp], {
 		gName: 'f',
 	});
-	//	const ans = mathlify`${{}}R_f \\not \\subseteq D_f.`;
-	//	const soln = mathlifyQED`Since ${{}} R_f = ${R_f}
-	//and ${{}} D_f = \\left( -\\infty, 3 \\right) \\cup \\left( 3, \\infty \\right),
-	//
-	//$${{}} R_f \\not \\subseteq D_f
-	//
-	//Hence the composite function ${'f^2'}
-	//does not exist`;
 	answer.addPart(ans, soln);
 }
 // d

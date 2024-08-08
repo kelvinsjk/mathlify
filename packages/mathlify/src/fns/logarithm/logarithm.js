@@ -15,6 +15,7 @@ import {
  * @property {Expression} expression - the expression within the parenthesis
  * */
 export class Logarithm extends Fn {
+	functionName = 'logarithm';
 	// TODO: add support for other bases
 	/**
 	 * Creates a Sqrt term
@@ -22,7 +23,6 @@ export class Logarithm extends Fn {
 	 */
 	constructor(expression) {
 		super(shorthandToExpression(expression));
-		this.functionType = 'logarithm';
 	}
 
 	/**
@@ -30,8 +30,9 @@ export class Logarithm extends Fn {
 	 */
 	toString() {
 		const node = this.argument.node;
-		const arg = node.type === 'sum' ? `\\left( ${node} \\right)` : node;
-		return `\\ln ${arg}`;
+		const arg =
+			node.type === 'sum' ? `\\left( ${node.toString()} \\right)` : node;
+		return `\\ln ${arg.toString()}`;
 	}
 
 	/**

@@ -5,7 +5,10 @@
 /** @typedef {import('../../core/expression/expression.js').Expression} Expression */
 
 import { combineFraction } from '../../algebra/combine-fraction.js';
-import { shorthandToExpression } from '../../core/expression/expression.js';
+import {
+	quotient,
+	shorthandToExpression,
+} from '../../core/expression/expression.js';
 
 /**
  * ExpressionWorking Class to handle the step-by-step working in manipulating an expression
@@ -65,6 +68,20 @@ export class ExpressionWorking {
 	 */
 	combineFraction(options) {
 		this.expression = combineFraction(this.expression);
+		return addStep(this, options);
+	}
+
+	/**
+	 * @param {WorkingOptions} [options] default to target both
+	 * @returns {ExpressionWorking}
+	 */
+	expandNegativeIntoQuotient(options) {
+		if (!this.expression.is.negativeUnit())
+			throw new Error('Expected a product with coefficient -1');
+		const q = this.expression._getProductTerm();
+		if (q.node.type !== 'quotient') throw new Error('Expected a quotient');
+		const { num, den } = q.node;
+		this.expression = quotient(num.negative().expand(), den);
 		return addStep(this, options);
 	}
 

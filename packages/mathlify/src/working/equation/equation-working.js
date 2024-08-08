@@ -561,6 +561,14 @@ export class EquationWorking {
 		return addStep(this, options);
 	}
 
+	/**
+	 * @returns {EquationWorking}
+	 */
+	inverse() {
+		this.eqn = this.eqn.inverse();
+		return addStep(this);
+	}
+
 	solve = {
 		/**
 		 * @param {string} [variable='x']

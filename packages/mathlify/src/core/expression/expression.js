@@ -1485,3 +1485,14 @@ export const pi = new Variable('pi', {
 	constantValue: Math.PI,
 	typesetString: '\\pi ',
 });
+
+/**
+ *
+ * @param {string} functionName
+ * @param {Shorthand} argument
+ * @returns {Expression}
+ */
+export function fnTerm(functionName, argument) {
+	const arg = new Expression(argument);
+	return new Expression(new Fn(arg, { functionName })).simplify();
+}

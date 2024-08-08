@@ -5,6 +5,7 @@ export {
 	sum,
 	quotient,
 	expTerm,
+	fnTerm,
 	e,
 	pi,
 } from './core/expression/expression.js';

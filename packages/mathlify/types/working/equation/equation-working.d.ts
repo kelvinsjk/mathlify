@@ -225,6 +225,10 @@ export class EquationWorking {
      * @returns {EquationWorking}
      */
     toGeneralPolynomial(variable?: string | undefined, options?: WorkingOptions | undefined): EquationWorking;
+    /**
+     * @returns {EquationWorking}
+     */
+    inverse(): EquationWorking;
     solve: {
         /**
          * @param {string} [variable='x']

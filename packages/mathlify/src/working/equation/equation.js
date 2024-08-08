@@ -1,4 +1,8 @@
-import { shorthandToExpression, e } from '../../core/expression/expression.js';
+import {
+	shorthandToExpression,
+	e,
+	Fn,
+} from '../../core/expression/expression.js';
 /** @typedef {import('../../core/expression/expression.js').Shorthand} Shorthand */
 /** @typedef {import('../../core/expression/expression.js').ExpressionNode} ExpressionNode */
 import { expressionToPolynomial } from '../../utils/expression-to-polynomial.js';
@@ -9,7 +13,7 @@ import {
 	Sum,
 } from '../../core/expression/expression.js';
 import { implicitlyDifferentiate } from '../../calculus/implicit-differentiation.js';
-import { Logarithm } from '../../fns/index.js';
+import { Logarithm, logTerm } from '../../fns/index.js';
 
 /** @typedef {'='|'>'|'>='|'<'|'<='|'!='} Sign */
 
@@ -229,6 +233,42 @@ export class Equation {
 			expressionToPolynomial(this.lhs, variable),
 			this.rhs,
 			this.options,
+		);
+	}
+
+	/**
+	 * for f(x), e^f(x) and ln(f(x)), apply inverses to get
+	 * x = f^{-1}(y), f(x) = ln(y) and f(x) = e^y
+	 * @returns {Equation}
+	 */
+	inverse() {
+		const lhsNode = this.lhs.node;
+		if (
+			lhsNode.type === 'exponent' &&
+			lhsNode.base.toString() === e.toString()
+		) {
+			return new Equation(
+				lhsNode.power.clone(),
+				logTerm(this.rhs.clone()),
+				this.options,
+			);
+		} else if (lhsNode.type === 'fn') {
+			if (lhsNode.functionName === 'logarithm') {
+				return new Equation(
+					lhsNode.argument.clone(),
+					[e, '^', this.rhs.clone()],
+					this.options,
+				);
+			}
+			// TODO: throw for cases like abs/brackets/sqrt/trigo
+			const f = lhsNode.functionName;
+			return new Equation(
+				lhsNode.argument.clone(),
+				new Fn(this.rhs.clone(), { functionName: `${f}^{-1}` }),
+			);
+		}
+		throw new Error(
+			`inverse only implemented for log, exp and fn at this moment`,
 		);
 	}
 

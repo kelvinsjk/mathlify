@@ -177,7 +177,14 @@ export function compositeFormula(
 	states: [Expression, Interval[], Expression, Interval[]], // fExp, fDomain, gExp, gDomain
 	isFg: boolean,
 	definition: boolean,
-	options?: { fName?: string; gName?: string; noDomain?: boolean; ansInline?: boolean },
+	options?: {
+		fName?: string;
+		gName?: string;
+		noDomain?: boolean;
+		ansInline?: boolean;
+		combineFraction?: boolean;
+		QED?: boolean;
+	},
 ): { ans: string; soln: string; exp: Expression } {
 	let f = options?.fName ?? 'f';
 	let g = options?.gName ?? 'g';
@@ -202,8 +209,11 @@ export function compositeFormula(
 	}
 	working.simplify();
 	working.expand({ onlyLinear: true });
+	if (options?.combineFraction) {
+		working.combineFraction();
+	}
 	const fgExp = working.expression;
-	const QEDSymbol = options?.noDomain ? '' : definition ? '' : QED;
+	const QEDSymbol = options?.noDomain ? (options?.QED ? QED : '') : definition ? '' : QED;
 	const domainInequality = options?.noDomain ? '' : generateInequality(gDomain);
 	const soln2 = options?.noDomain
 		? ''
@@ -219,10 +229,12 @@ ${fg}(x) &= ${f} \\left( ${gExp} \\right)
 ` + soln2;
 	let ans: string;
 	if (options?.ansInline) {
-		ans = definition
-			? mathlify`
+		ans = options?.noDomain
+			? mathlify`${fg}(x) = ${fgExp}.`
+			: definition
+				? mathlify`
 ${fg}:x\\mapsto ${fgExp}, \\quad \\allowbreak  {${domainInequality}}.`
-			: mathlify`${fg}(x) = ${fgExp}
+				: mathlify`${fg}(x) = ${fgExp}.
 \\
 ${{}}D_{${fg}} = ${gDomain.join(` \\cup `)}.`;
 	} else {

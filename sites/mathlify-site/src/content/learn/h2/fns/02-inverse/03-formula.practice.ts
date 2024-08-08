@@ -358,7 +358,7 @@ export function logInverse(
 	argument: Expression,
 	yMinusB: Expression,
 	options?: { definition?: boolean; state?: State },
-): { ans: string; soln: string } {
+): { ans: string; soln: string; exp: Expression } {
 	const working1 = new EquationWorking('y', rhs);
 	const working2 = new EquationWorking(logTerm(argument), yMinusB);
 	const working3 = new EquationWorking(argument, [e, '^', yMinusB]);
@@ -386,7 +386,7 @@ $${'align*'} D_{f^{-1}} &= R_{f} \\\\ &= ${Rf} ${QED}`;
 		: mathlify`${{}} f^{-1}(x) = ${fInv}.
 \\
 ${{}} D_{f^{-1}} = R_{f} = ${Rf}.`;
-	return { ans, soln: soln1 + soln2 };
+	return { ans, soln: soln1 + soln2, exp: fInv };
 }
 
 export function expInverse(
@@ -401,8 +401,10 @@ export function expInverse(
 	working3._makeSubjectFromProduct('x');
 	const fInv = working3.eqn.rhs.subIn({ y: 'x' });
 	const soln1 = mathlify`$${'gather*'} \\text{Let } ${working1} \\\\ ${working2} \\\\ ${working3}`;
-	if (options?.state === undefined && options?.b === undefined)
+	if (options?.state === undefined && options?.b === undefined) {
+		console.warn('b must be provided if state is undefined');
 		throw new Error('b must be provided if state is undefined');
+	}
 	if (options?.definition && options?.state === undefined)
 		throw new Error('state must be provided if definition is true');
 	const state = options?.state as State;
@@ -421,6 +423,91 @@ $${'align*'} D_{f^{-1}} &= R_{f} \\\\ &= ${Rf} ${QED}`;
 \\
 ${{}} D_{f^{-1}} = R_{f} = ${Rf}.`;
 	return { ans, soln: soln1 + soln2, exp: fInv };
+}
+
+/**
+ * Finds inverse of y = | num / den |
+ * @param fraction [num, den] as Expressions
+ * @param restriction {type: 'left'|'right', x: number, inclusive: boolean}
+ * @param options {swap: boolean}
+ * @returns `{ans: string, soln: string}`
+ */
+export function absoluteRationalInverse(
+	state: State,
+	fraction: [Expression, Expression],
+	options?: { swap?: boolean },
+): { ans: string; soln: string } {
+	const { restriction, definition } = state;
+	const swap = options?.swap ?? false;
+	if (restriction === false)
+		throw new Error('expected restriction when finding inverse of an absolute rational function');
+	const [num, den] = fraction;
+	const inner = new Expression([num, '/', den]);
+	const { type, x } = restriction;
+	const testPoint = type === 'left' ? x - 1 : x + 1;
+	const negative = inner.subIn({ x: testPoint }).is.negative();
+	const sign = negative ? '<' : '>';
+	const newRHS = negative ? inner.negative() : inner;
+	const working1 = mathlify`$${{}} \\text{Let } y = \\left| ${inner} \\right|
+
+Since ${{}} {${inner} ${sign} 0}
+for
+${{}}{${generateDomain(restriction)},}
+`;
+	const { ans, soln } = improperInverse(state, {
+		abs: true,
+		definition,
+		rhs: newRHS,
+		QED,
+		swap,
+	});
+	return { ans, soln: working1 + soln };
+}
+
+/**
+ * Finds inverse of y = ba^2 / (x^2 - a^2) or y = |b|a^2 / (a^2 - x^2)
+ * @param fraction [num, den] as Expressions
+ * @param restriction {type: 'left'|'right', x: number, inclusive: boolean}
+ * @param options {swap: boolean}
+ * @returns `{ans: string, soln: string}`
+ */
+export function specialInverse(
+	state: State,
+	exp: Expression,
+	//options?: { swap?: boolean },
+): { ans: string; soln: string } {
+	const { restriction, definition, b } = state;
+	//const swap = options?.swap ?? false;
+	if (restriction === false)
+		throw new Error('expected restriction when finding inverse of an absolute rational function');
+	const working = new EquationWorking('y', exp);
+	working.crossMultiply();
+	working.expand();
+	if (b < 0) working.swapSides({ hide: true });
+	working.isolate('x');
+	working.factorize.commonFactor();
+	working._makeSubjectFromProduct('x');
+	const { type, x } = restriction;
+	const testPoint = type === 'left' ? x - 1 : x + 1;
+	const negative = testPoint < 0;
+	const surdTerm = sqrtTerm(working.eqn.rhs);
+	const newRHS = negative ? surdTerm.negative() : surdTerm;
+	const fInv = newRHS.subIn({ y: 'x' });
+	const soln1 = mathlify`$${'gather*'} \\text{Let } ${working}
+			
+Since ${generateDomain(restriction)},
+$${'x'} = ${newRHS}`;
+	const soln2 = definition
+		? mathlify`$${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, exp)} ${QED}`
+		: mathlify`$${{}} f^{-1}(x) = ${fInv} ${QED}
+
+$${'align*'} D_{f^{-1}} &= R_{f} \\\\ &= ${generateRange(state, exp).join(' \\cup ')} ${QED}`;
+	const ans = definition
+		? mathlify`${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, exp)}`
+		: mathlify`${{}} f^{-1}(x) = ${fInv}.
+\\
+${{}} D_{f^{-1}} = R_{f} = ${generateRange(state, exp).join(' \\cup ')}.`;
+	return { ans, soln: soln1 + soln2 };
 }
 
 export function lessThan(inclusive: boolean): string {
@@ -541,91 +628,6 @@ function generateInequality(state: State, exp: Expression): string {
 			? ans + `, x \\leq 0 \\text{ or } x \\geq ${y}.`
 			: ans + `, x \\leq ${y} \\text{ or } x \\geq 0.`;
 	}
-}
-
-/**
- * Finds inverse of y = | num / den |
- * @param fraction [num, den] as Expressions
- * @param restriction {type: 'left'|'right', x: number, inclusive: boolean}
- * @param options {swap: boolean}
- * @returns `{ans: string, soln: string}`
- */
-export function absoluteRationalInverse(
-	state: State,
-	fraction: [Expression, Expression],
-	options?: { swap?: boolean },
-): { ans: string; soln: string } {
-	const { restriction, definition } = state;
-	const swap = options?.swap ?? false;
-	if (restriction === false)
-		throw new Error('expected restriction when finding inverse of an absolute rational function');
-	const [num, den] = fraction;
-	const inner = new Expression([num, '/', den]);
-	const { type, x } = restriction;
-	const testPoint = type === 'left' ? x - 1 : x + 1;
-	const negative = inner.subIn({ x: testPoint }).is.negative();
-	const sign = negative ? '<' : '>';
-	const newRHS = negative ? inner.negative() : inner;
-	const working1 = mathlify`$${{}} \\text{Let } y = \\left| ${inner} \\right|
-
-Since ${{}} {${inner} ${sign} 0}
-for
-${{}}{${generateDomain(restriction)},}
-`;
-	const { ans, soln } = improperInverse(state, {
-		abs: true,
-		definition,
-		rhs: newRHS,
-		QED,
-		swap,
-	});
-	return { ans, soln: working1 + soln };
-}
-
-/**
- * Finds inverse of y = ba^2 / (x^2 - a^2) or y = |b|a^2 / (a^2 - x^2)
- * @param fraction [num, den] as Expressions
- * @param restriction {type: 'left'|'right', x: number, inclusive: boolean}
- * @param options {swap: boolean}
- * @returns `{ans: string, soln: string}`
- */
-export function specialInverse(
-	state: State,
-	exp: Expression,
-	//options?: { swap?: boolean },
-): { ans: string; soln: string } {
-	const { restriction, definition, b } = state;
-	//const swap = options?.swap ?? false;
-	if (restriction === false)
-		throw new Error('expected restriction when finding inverse of an absolute rational function');
-	const working = new EquationWorking('y', exp);
-	working.crossMultiply();
-	working.expand();
-	if (b < 0) working.swapSides({ hide: true });
-	working.isolate('x');
-	working.factorize.commonFactor();
-	working._makeSubjectFromProduct('x');
-	const { type, x } = restriction;
-	const testPoint = type === 'left' ? x - 1 : x + 1;
-	const negative = testPoint < 0;
-	const surdTerm = sqrtTerm(working.eqn.rhs);
-	const newRHS = negative ? surdTerm.negative() : surdTerm;
-	const fInv = newRHS.subIn({ y: 'x' });
-	const soln1 = mathlify`$${'gather*'} \\text{Let } ${working}
-			
-Since ${generateDomain(restriction)},
-$${'x'} = ${newRHS}`;
-	const soln2 = definition
-		? mathlify`$${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, exp)} ${QED}`
-		: mathlify`$${{}} f^{-1}(x) = ${fInv} ${QED}
-
-$${'align*'} D_{f^{-1}} &= R_{f} \\\\ &= ${generateRange(state, exp).join(' \\cup ')} ${QED}`;
-	const ans = definition
-		? mathlify`${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, exp)}`
-		: mathlify`${{}} f^{-1}(x) = ${fInv}.
-\\
-${{}} D_{f^{-1}} = R_{f} = ${generateRange(state, exp).join(' \\cup ')}.`;
-	return { ans, soln: soln1 + soln2 };
 }
 
 export const practice: Practice = {

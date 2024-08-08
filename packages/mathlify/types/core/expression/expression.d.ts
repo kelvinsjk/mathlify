@@ -31,6 +31,13 @@ export function quotient(numerator: Shorthand, denominator: Shorthand, options?:
  */
 export function expTerm(power: Shorthand): Expression;
 /**
+ *
+ * @param {string} functionName
+ * @param {Shorthand} argument
+ * @returns {Expression}
+ */
+export function fnTerm(functionName: string, argument: Shorthand): Expression;
+/**
  * The `Expression` class contains the tree representation of
  * a mathematical expression built from the following nodes:
  * - `Numeral` for numbers (only "Fraction"s supported at the moment, support for floats in the future)

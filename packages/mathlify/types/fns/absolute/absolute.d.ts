@@ -9,6 +9,11 @@ export function absTerm(exp: Shorthand): Expression;
  * */
 export class Abs extends Fn {
     /**
+     * Creates an absolute term
+     * @param {Shorthand} expression
+     */
+    constructor(expression: Shorthand);
+    /**
      * @returns {Abs}
      */
     clone(): Abs;

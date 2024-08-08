@@ -13,6 +13,11 @@ export function logTerm(arg: Shorthand, options?: ({
  * */
 export class Logarithm extends Fn {
     /**
+     * Creates a Sqrt term
+     * @param {Shorthand} expression
+     */
+    constructor(expression: Shorthand);
+    /**
      * @returns {Logarithm}
      */
     clone(): Logarithm;

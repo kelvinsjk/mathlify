@@ -17,8 +17,13 @@ export class Sin extends Fn {
      * @returns {Expression}
      */
     static inverse(ratio: Shorthand): Expression;
+    /**
+     * Creates a Sqrt term
+     * @param {Shorthand} expression
+     */
+    constructor(expression: Shorthand);
     /** @type {'sin'} */
-    functionType: "sin";
+    functionName: "sin";
     /**
      * @returns {Sin}
      */
@@ -48,8 +53,13 @@ export class Cos extends Fn {
      * @returns {Expression}
      */
     static inverse(ratio: Shorthand): Expression;
+    /**
+     * Creates a Sqrt term
+     * @param {Shorthand} expression
+     */
+    constructor(expression: Shorthand);
     /** @type {'cos'} */
-    functionType: "cos";
+    functionName: "cos";
     /**
      * @returns {Cos}
      */
@@ -79,8 +89,13 @@ export class Tan extends Fn {
      * @returns {Expression}
      */
     static inverse(ratio: Shorthand): Expression;
+    /**
+     * Creates a Sqrt term
+     * @param {Shorthand} expression
+     */
+    constructor(expression: Shorthand);
     /** @type {'tan'} */
-    functionType: "tan";
+    functionName: "tan";
     /**
      * @returns {Tan}
      */

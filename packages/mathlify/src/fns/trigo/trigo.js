@@ -20,7 +20,7 @@ import { sqrtTerm, Sqrt } from '../sqrt/sqrt.js';
  * */
 export class Sin extends Fn {
 	/** @type {'sin'} */
-	functionType = 'sin';
+	functionName = 'sin';
 	/**
 	 * Creates a Sqrt term
 	 * @param {Shorthand} expression
@@ -34,7 +34,9 @@ export class Sin extends Fn {
 	 */
 	toString() {
 		const bracketedArg =
-			this.argument.node.type === 'sum' ? `(${this.argument})` : this.argument;
+			this.argument.node.type === 'sum'
+				? `(${this.argument.toString()})`
+				: this.argument.toString();
 		return `\\sin ${bracketedArg}`;
 	}
 
@@ -130,7 +132,7 @@ export class Sin extends Fn {
 			}
 		}
 		throw new Error(
-			`sin inverse of the provided value ${ratio} is not supported yet.`,
+			`sin inverse of the provided value ${ratio.toString()} is not supported yet.`,
 		);
 	}
 }
@@ -140,7 +142,7 @@ export class Sin extends Fn {
  * */
 export class Cos extends Fn {
 	/** @type {'cos'} */
-	functionType = 'cos';
+	functionName = 'cos';
 	/**
 	 * Creates a Sqrt term
 	 * @param {Shorthand} expression
@@ -154,7 +156,9 @@ export class Cos extends Fn {
 	 */
 	toString() {
 		const bracketedArg =
-			this.argument.node.type === 'sum' ? `(${this.argument})` : this.argument;
+			this.argument.node.type === 'sum'
+				? `(${this.argument.toString()})`
+				: this.argument.toString();
 		return `\\cos ${bracketedArg}`;
 	}
 
@@ -250,7 +254,7 @@ export class Cos extends Fn {
 			}
 		}
 		throw new Error(
-			`cos inverse of the provided value ${ratio} is not supported yet.`,
+			`cos inverse of the provided value ${ratio.toString()} is not supported yet.`,
 		);
 	}
 }
@@ -260,7 +264,7 @@ export class Cos extends Fn {
  * */
 export class Tan extends Fn {
 	/** @type {'tan'} */
-	functionType = 'tan';
+	functionName = 'tan';
 	/**
 	 * Creates a Sqrt term
 	 * @param {Shorthand} expression
@@ -274,7 +278,9 @@ export class Tan extends Fn {
 	 */
 	toString() {
 		const bracketedArg =
-			this.argument.node.type === 'sum' ? `(${this.argument})` : this.argument;
+			this.argument.node.type === 'sum'
+				? `(${this.argument.toString()})`
+				: this.argument.toString();
 		return `\\tan ${bracketedArg}`;
 	}
 
@@ -368,13 +374,13 @@ export class Tan extends Fn {
 				return new Expression([pi, '/', 4]);
 			}
 		} else if (exp.node.type === 'fn') {
-			if (`${exp}` === '\\sqrt{3}') return new Expression([pi, '/', 3]);
+			if (exp.toString() === '\\sqrt{3}') return new Expression([pi, '/', 3]);
 		} else if (exp.node.type === 'quotient') {
-			if (`${exp}` === '\\frac{\\sqrt{3}}{3}')
+			if (exp.toString() === '\\frac{\\sqrt{3}}{3}')
 				return new Expression([pi, '/', 6]);
 		}
 		throw new Error(
-			`tan inverse of the provided value ${ratio} is not supported yet.`,
+			`tan inverse of the provided value ${ratio.toString()} is not supported yet.`,
 		);
 	}
 }
