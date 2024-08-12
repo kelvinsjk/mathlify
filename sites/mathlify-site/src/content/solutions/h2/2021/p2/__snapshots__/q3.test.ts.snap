@@ -22,7 +22,7 @@ Answer {
             "body": "<p><math><mrow><mi>k</mi><mo>=</mo></mrow><mrow><mo form="prefix" stretchy="false">−</mo></mrow><mrow><mfrac><mi>b</mi><mn>2</mn></mfrac><mi>.</mi></mrow></math>
 <br>
 It must be excluded as <math><mi>f</mi></math>
-is not defined when <math><mrow><mi>x</mi><mo>=</mo><mo form="prefix" stretchy="false">−</mo><mfrac><mi>b</mi><mn>2</mn></mfrac></mrow></math></p>
+is not defined when <math><mrow><mi>x</mi><mo>=</mo><mo form="prefix" stretchy="false">−</mo><mfrac><mi>b</mi><mn>2</mn></mfrac><mi>.</mi></mrow></math></p>
 ",
           },
           {

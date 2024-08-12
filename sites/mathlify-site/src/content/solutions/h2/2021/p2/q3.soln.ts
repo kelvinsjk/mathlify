@@ -58,7 +58,7 @@ is not defined when ${{}} x = ${k}`;
 	const ans = mathlify`${{}} k = ${k}.
 \\
 It must be excluded as ${'f'}
-is not defined when ${{}} {x = ${k}}`;
+is not defined when ${{}} {x = ${k}.}`;
 	answer.addSubPart(ans, soln);
 }
 // bii

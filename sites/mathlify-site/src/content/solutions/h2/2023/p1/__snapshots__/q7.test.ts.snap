@@ -14,7 +14,7 @@ Answer {
       },
       {
         "body": "<p><math><msup><mi>f</mi><mn>2</mn></msup></math>
-does not exist as <math><mrow><mrow><msub><mi>R</mi><mi>f</mi></msub><mo>⊈</mo><msub><mi>D</mi><mi>f</mi></msub></mrow><mi>.</mi></mrow></math></p>
+does not exist as <math><mrow><msub><mi>R</mi><mi>f</mi></msub><mo>⊈</mo><msub><mi>D</mi><mi>f</mi></msub><mi>.</mi></mrow></math></p>
 ",
       },
       {

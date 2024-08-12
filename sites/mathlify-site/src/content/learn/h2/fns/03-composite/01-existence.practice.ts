@@ -103,7 +103,7 @@ the composite function ${fg}
 @${doesNotExist} ${QED}
 `;
 	const ans = mathlify`${fg}
-@${doesNotExist} as ${{}} {R_{${g}} ${not} \\subseteq D_{${f}}}.`;
+@${doesNotExist} as ${{}} {R_{${g}} ${not} \\subseteq D_{${f}}.}`;
 	return { ans, soln };
 }
 

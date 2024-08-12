@@ -7,7 +7,7 @@ Answer {
       {
         "body": "<p><math><mrow><mi>g</mi><mi>f</mi><mo lspace="0.2222em" rspace="0.2222em">:</mo></mrow><mrow><mi>x</mi><mo>↦</mo></mrow><mrow><mfrac><mn>1</mn><msup><mrow><mo fence="true" form="prefix">(</mo><mi>x</mi><mo>−</mo><mn>3</mn><mo fence="true" form="postfix">)</mo></mrow><mn>2</mn></msup></mfrac><mo separator="true">,</mo><mspace width="1em"></mspace></mrow><mrow><mo></mo><mrow><mi>x</mi><mo>∈</mo><mi>ℝ</mi><mo separator="true">,</mo><mi>x</mi><mo>≠</mo><mn>3</mn></mrow><mi>.</mi></mrow></math></p>
 <p><math><mrow><mi>f</mi><mi>g</mi></mrow></math>
-does not exist as <math><mrow><mrow><msub><mi>R</mi><mi>g</mi></msub><mo>⊈</mo><msub><mi>D</mi><mi>f</mi></msub></mrow><mi>.</mi></mrow></math></p>
+does not exist as <math><mrow><msub><mi>R</mi><mi>g</mi></msub><mo>⊈</mo><msub><mi>D</mi><mi>f</mi></msub><mi>.</mi></mrow></math></p>
 ",
       },
       {

@@ -206,16 +206,16 @@ export function specialExistence(state: State): { ans: string; soln: string } {
 	const { allHorizontalLines, line, atMostOnce, not, has } = state.restriction
 		? hasInverse
 		: {
-				line: `y=${state.b > 0 ? 1 : -1}`,
+				line: `{y=${state.b > 0 ? 1 : -1}}`,
 				...noInverse,
 			};
 	const ans = mathlify`@${allHorizontalLines} ${line}
-cuts the graph of ${'y=f(x)'}
+cuts the graph of ${'{y=f(x)}'}
 @${atMostOnce}. Hence ${'f'}
 is @${not} one-to-one and 
 @${has} an inverse.`;
 	const soln = mathlifyQED`@${allHorizontalLines} ${line}
-cuts the graph of ${'y=f(x)'}
+cuts the graph of ${'{y=f(x)}'}
 @${atMostOnce}. Hence ${'f'}
 is @${not} one-to-one and 
 @${has} an inverse`;
