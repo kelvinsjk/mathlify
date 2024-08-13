@@ -1,12 +1,12 @@
 /**
  * Creates a expression of the form a*sqrt{b}
  * @param {Shorthand} radicand
- * @param {{coeff?: number|Numeral|Expression}} [options]
+ * @param {{coeff?: number|Numeral|Expression} & SimplifyOptions} [options]
  * @returns {Expression}
  */
-export function sqrtTerm(radicand: Shorthand, options?: {
+export function sqrtTerm(radicand: Shorthand, options?: ({
     coeff?: number | Numeral | Expression;
-} | undefined): Expression;
+} & import("../../core/expression/expression.js").SimplifyOptions) | undefined): Expression;
 /**
  * Simplifies
  * - sqrt{a} sqrt{b} into sqrt{a*b}
