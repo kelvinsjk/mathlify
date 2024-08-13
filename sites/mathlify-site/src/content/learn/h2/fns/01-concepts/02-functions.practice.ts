@@ -179,7 +179,7 @@ ${`f(x)=${modB}`}.`
  */
 export function generateFn(
 	state: State,
-	options?: { fnName?: string; align?: boolean },
+	options?: { fnName?: string; align?: boolean; for?: boolean; splitPm?: boolean },
 ): [string, Expression, Interval[]] {
 	const alignChar = options?.align ? '&&' : '';
 	const f = options?.fnName ?? 'f';
@@ -214,7 +214,8 @@ export function generateFn(
 	} else if (fnType === 'linear' && a < 0 && b > 0) {
 		exp = new Expression(sum(b, [a, 'x']));
 	}
-	let domain = `x \\in \\mathbb{R}`;
+	const forText = options?.for ? `\\text{for }` : '';
+	let domain = `${forText}x \\in \\mathbb{R}`;
 	let d = [Interval.ALL_REAL];
 	const negativeA = unknownConstants ? new Expression([-1, 'a']) : new Expression(-a);
 	if (restriction) {
@@ -249,10 +250,13 @@ export function generateFn(
 				new Interval({ left: -Math.abs(a), right: Math.abs(a) }),
 				intervalBuilder('right', Math.abs(a), false),
 			];
-			domain += `, x \\neq \\pm ${Math.abs(a)}`;
+			domain += options?.splitPm
+				? `, x \\neq -${Math.abs(a)}, x \\neq ${Math.abs(a)}`
+				: `, x \\neq \\pm ${Math.abs(a)}`;
 		}
 	}
-	output += `${exp}, \\quad ${alignChar}${domain}`;
+	const comma = options?.for ? '' : ',';
+	output += `${exp}${comma} \\quad ${alignChar}${domain}`;
 	return [output, exp, d];
 }
 

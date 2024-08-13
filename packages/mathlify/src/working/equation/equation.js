@@ -267,6 +267,31 @@ export class Equation {
 				new Fn(this.rhs.clone(), { functionName: `${f}^{-1}` }),
 			);
 		}
+		const rhsNode = this.rhs.node;
+		if (
+			rhsNode.type === 'exponent' &&
+			rhsNode.base.toString() === e.toString()
+		) {
+			return new Equation(
+				logTerm(this.lhs.clone()),
+				rhsNode.power.clone(),
+				this.options,
+			);
+		} else if (rhsNode.type === 'fn') {
+			if (rhsNode.functionName === 'logarithm') {
+				return new Equation(
+					[e, '^', this.lhs.clone()],
+					rhsNode.argument.clone(),
+					this.options,
+				);
+			}
+			// TODO: throw for cases like abs/brackets/sqrt/trigo
+			const f = rhsNode.functionName;
+			return new Equation(
+				new Fn(this.lhs.clone(), { functionName: `${f}^{-1}` }),
+				rhsNode.argument.clone(),
+			);
+		}
 		throw new Error(
 			`inverse only implemented for log, exp and fn at this moment`,
 		);

@@ -56,6 +56,14 @@ export class ExpressionWorking {
      * @returns {ExpressionWorking}
      */
     expandNegativeIntoQuotient(options?: WorkingOptions | undefined): ExpressionWorking;
+    factorize: {
+        /**
+         * @param {'commonFactor'|'quadratic'} [method='quadratic'] - use quadratic factorization by default
+         * @param {WorkingOptions} [options]
+         * @returns {ExpressionWorking}
+         * */
+        denominator: (method?: "commonFactor" | "quadratic" | undefined, options?: WorkingOptions | undefined) => ExpressionWorking;
+    };
     /**
      * @param {SimplifyOptions & WorkingOptions} [options] - {brackets?, product?, sum?, quotient?, numeral?, exponent?, hide?}
      * @returns {ExpressionWorking}

@@ -6,7 +6,7 @@ import { chooseRandom, coinFlip, getRandomInt } from '$lib/utils/random';
 
 import type { PracticeState, PracticeQuestion, Practice } from '$lib/types/learn';
 import { mathlify } from '$lib/mathlifier';
-import type { Expression } from 'mathlify';
+import { quotient, type Expression } from 'mathlify';
 import { ExpressionWorking } from 'mathlify/working';
 
 // 1. inner: log, outer: linear or quad. no restrictions
@@ -184,6 +184,7 @@ export function compositeFormula(
 		ansInline?: boolean;
 		combineFraction?: boolean;
 		QED?: boolean;
+		factorizeDenominator?: boolean;
 	},
 ): { ans: string; soln: string; exp: Expression } {
 	let f = options?.fName ?? 'f';
@@ -212,6 +213,18 @@ export function compositeFormula(
 	if (options?.combineFraction) {
 		working.combineFraction();
 	}
+	if (options?.factorizeDenominator) {
+		working.factorize.denominator();
+		// workaround
+		const q = working.expression._getProductTerm()._getQuotientTerms();
+		const denFactors = q[1]._getProductTerms()[1];
+		const newQ = quotient(q[0], [
+			denFactors[1].times(-1, { expand: true }).rearrange([1, 0]),
+			denFactors[0],
+		]);
+		working.expression = newQ;
+		working.expressions[working.expressions.length - 1] = newQ;
+	}
 	const fgExp = working.expression;
 	const QEDSymbol = options?.noDomain ? (options?.QED ? QED : '') : definition ? '' : QED;
 	const domainInequality = options?.noDomain ? '' : generateInequality(gDomain);
@@ -238,10 +251,12 @@ ${fg}:x\\mapsto ${fgExp}, \\quad \\allowbreak  {${domainInequality}}.`
 \\
 ${{}}D_{${fg}} = ${gDomain.join(` \\cup `)}.`;
 	} else {
-		ans = definition
-			? mathlify`
+		ans = options?.noDomain
+			? mathlify`${fg}(x) = ${fgExp}.`
+			: definition
+				? mathlify`
 	$${fg}:x\\mapsto ${fgExp}, \\quad ${domainInequality}.`
-			: mathlify`${fg}(x) = ${fgExp}
+				: mathlify`${fg}(x) = ${fgExp}
 	\\
 	${{}}D_{${fg}} = ${gDomain.join(` \\cup `)}.`;
 	}

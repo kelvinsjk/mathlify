@@ -1,52 +1,55 @@
 # Piecewise functions
 
-## Finding a composite function
-
-To get the formula of a composite function $`fg,` we take the inner function
-$`g`
-and substitute into $`f.` For example, if $`{f(x)=2x-1}` and $`{g(x)=x^2},` then
-we have
-
-$$`\begin{align*} fg(x) &= f(x^2) \\ &= 2x^2 - 1 \end{align*}`$$
-
-and
-
-$$`\begin{align*} gf(x) &= g(2x+1) \\ &= (2x-1)^2 \end{align*}`$$
-
-## Domain of composite function
-
-Since the composite function $`fg` starts by applying $`g,` the domain of $`fg`
-will be the domain of $`g.`
-
 <!-- prettier-ignore-start -->
-::: formula
-
-- {=$`D_{fg} = D_g`=}
-- {=$`D_{gf} = D_f`=}
-
+::: citation
+Adapted from OpenStax Calculus Volume 1[^cite]
 :::
 <!-- prettier-ignore-end -->
 
-## Example
+## Introduction
 
-<!-- prettier-ignore-start -->
-::: example
+Sometimes a function is defined by different formulas on different parts of its
+domain. A function with this property is known as a **piecewise** function.
 
-**Question**:
+We will use the following example to better understand how to work with
+piecewise functions.
 
-$$`\begin{align*} &f: x \mapsto 2x-1, \quad && 0 \leq x < 10 \\ &g:x\mapsto x^2 + 3, \quad && -2 < x < 1.\end{align*}`$$
+$$`f(x) = \begin{cases} x + 3, & x < 1 \\ (x-2)^2, & x \geq 1 \end{cases}`$$
 
-Give a definition, in similar form, for the composite function $`fg.`
+## Evaluating piecewise functions
 
----
+To evaluate a piecewise function (e.g. find the value of
+$`f(2)`), we use the
+appropriate formula (the "piece") based on the part of the domain the value of
+$`x`
+is in.
 
-**Solution**:
+For example, $`f(0)=0+3=3,` $`f(1)=(1-2)^2=1` and $`f(2)=(2-2)^2=0.`
 
-$$`\begin{align*} fg(x) &= f(x^2+3) \\ &= 2(x^2+3) - 1 \\&= 2x^2 + 5 \end{align*}`$$
+## Graphing piecewise functions
 
-We note that $`{D_{fg} = D_g = (-2, 1),}` so
+To sketch a graph of our example $`f(x),` we graph the linear function
+$`{y=x+3}`
+on the interval $`(-\infty, 1)` and graph the quadratic function
+$`{y=(x-2)^2}`
+on the interval $`[1, \infty)`.
 
-$$`fg:x \mapsto 2x^2 + 5, \quad -2 < x < 1. \; \QED`$$
+Since the formula for a function is different for $`{x<1}` and $`{x>1,}` we need
+to pay special attention to what happens at $`{x=1}` when we graph the function.
 
-:::
-<!-- prettier-ignore-end -->
+$`f(1)=(1-2)^2=1` and this is different from the value we get when substituting
+$`{x=1}`
+into
+$`{x+3.}` We thus draw an open circle at $`{(1,4)}` and a closed circle at
+$`{(1,1)}`
+to indicate the behavior of $`f` at $`{x=1}` on our graph.
+
+![graphing a piecewise function](/images/h2/fns/openStax_functions_piecewise.jpeg)
+
+[^cite]:
+    Content in this page is adapted from OpenStax Calculus Volume 1 by Gilbert
+    Strang and Edwin "Jed" Herman under the
+    [Creative Commons Attribution Noncommercial Sharealike 4.0 License](https://creativecommons.org/licenses/by-nc-sa/4.0).\
+    Access
+    for free at
+    <https://openstax.org/books/calculus-volume-1/pages/1-2-basic-classes-of-functions>

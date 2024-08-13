@@ -73,6 +73,22 @@ export class EquationWorking {
 	}
 
 	/**
+	 * register a custom simplifier
+	 *  @argument {(exp: Expression)=>Expression} simplifier
+	 * 	@returns {void}
+	 */
+	static RegisterCustomSimplifier(simplifier) {
+		Expression.RegisterCustomSimplifier(simplifier);
+	}
+	/**
+	 * deregister the last custom simplifier
+	 * @returns {void}
+	 * */
+	static DeregisterCustomSimplifier() {
+		Expression.DeregisterCustomSimplifier();
+	}
+
+	/**
 	 * @param {WorkingOptions} [options]
 	 */
 	removeLogarithm(options) {
@@ -562,11 +578,12 @@ export class EquationWorking {
 	}
 
 	/**
+	 * @param {WorkingOptions} [options]
 	 * @returns {EquationWorking}
 	 */
-	inverse() {
+	inverse(options) {
 		this.eqn = this.eqn.inverse();
-		return addStep(this);
+		return addStep(this, options);
 	}
 
 	solve = {
@@ -629,7 +646,9 @@ export class EquationWorking {
 					);
 				const twoA = new Expression([2, a]);
 				const negativeB = new Expression([-1, b]);
-				const sqrtWorking = sqrtTerm(['+', [b, '^', 2], [-4, a, c]]);
+				const sqrtWorking = sqrtTerm(['+', [b, '^', 2], [-4, a, c]], {
+					verbatim: true,
+				});
 				const rootsWorking =
 					`x &= \\frac{${negativeB} \\pm ${sqrtWorking}}{${twoA}}` +
 					`\n\t\\\\ &= \\frac{${negativeB.simplify()} \\pm ${sqrtWorking.simplify()}}{${twoA.simplify()}}`;
@@ -841,7 +860,7 @@ export const solve = {
 	 * @param {Expression|Equation} expression
 	 * @param {string|Variable} [variable='x']
 	 * @param {{hideFirstLine?: boolean, aligned?: boolean, qed?: true|string}} [options]
-	 * @returns {{working: string, cols: number, roots: Expression[]}}
+	 * @returns {{working: string, roots: Expression[]}}
 	 */
 	zeroProduct: (expression, variable = 'x', options) => {
 		if (
@@ -864,7 +883,6 @@ export const solve = {
 			);
 			return {
 				working: working.toString() + qedSymbol,
-				cols: 1,
 				roots: [root],
 			};
 		} else if (expression.node.type === 'product') {
@@ -873,7 +891,10 @@ export const solve = {
 			/** @type {Expression[]} */
 			const roots = [];
 			expression.node.factors.forEach((factor) => {
-				const { working, root } = solve.linear(factor, variable, options);
+				const { working, root } = solve.linear(factor, variable, {
+					...options,
+					aligned: true,
+				});
 				workings.push(working);
 				roots.push(root);
 			});
@@ -893,8 +914,7 @@ export const solve = {
 					content += qed;
 				}
 			}
-			const alignatArg = workings.length * 2 - 1;
-			return { working: content, cols: alignatArg, roots };
+			return { working: content, roots };
 		} else {
 			throw new Error('The expression must be a product or an exponent');
 		}
@@ -903,7 +923,7 @@ export const solve = {
 	 * @param {Expression|Polynomial|Equation|[Expression, Expression]} exp
 	 * @param {string|Variable} [variable] - we will use variable if exp not of Polynomial class
 	 * @param {{hideFirstStep?: boolean, aligned?: boolean, qed?: true|string}} [options]
-	 * @returns {{factorizationWorking: EquationWorking, rootsWorking:string, cols: number, roots: Expression[]}}
+	 * @returns {{factorizationWorking: EquationWorking, rootsWorking:string, roots: Expression[]}}
 	 */
 	quadratic: (exp, variable, options) => {
 		// todo: options for alignment mode
@@ -919,15 +939,15 @@ export const solve = {
 		});
 		variable = variable ?? expressionToPolynomial(eqn.lhs).variable;
 		factorizationWorking.factorize.quadratic({ variable });
-		const {
-			working: rootsWorking,
-			roots,
-			cols,
-		} = solve.zeroProduct(factorizationWorking.eqn, variable, {
-			aligned: true,
-			...options,
-		});
-		return { factorizationWorking, rootsWorking, cols, roots };
+		const { working: rootsWorking, roots } = solve.zeroProduct(
+			factorizationWorking.eqn,
+			variable,
+			{
+				aligned: true,
+				...options,
+			},
+		);
+		return { factorizationWorking, rootsWorking, roots };
 	},
 	/**
 	 * @param {Expression|Polynomial|Equation|[Expression,Sign,Expression]} exp

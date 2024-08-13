@@ -1,0 +1,94 @@
+<svg
+	xmlns="http://www.w3.org/2000/svg"
+	class="critical-value-number-line svelte-1ew0o84"
+	viewBox="-55 -15 120 36"
+>
+	<style>
+		foreignObject {
+			color: black;
+			font-size: 7px;
+			overflow: visible;
+			white-space: nowrap;
+			display: grid;
+		}
+		foreignObject math {
+			flex-wrap: nowrap;
+			align-items: baseline;
+			white-space: nowrap;
+			transform: translate(-50%, -50%);
+		}
+	</style>
+	<defs>
+		<marker id="closed" markerWidth="5" markerHeight="5" refX="1" refY="1">
+			<circle cx="1" cy="1" r="1" fill="black"></circle>
+		</marker>
+		<marker id="open" markerWidth="5" markerHeight="5" refX="1" refY="1">
+			<circle
+				cx="1"
+				cy="1"
+				r="0.75"
+				fill="white"
+				markerUnits="strokeWidth"
+				style="stroke: black; stroke-width: 0.5"
+			></circle>
+		</marker>
+		<marker id="arrow" markerWidth="5" markerHeight="5" refX="0" refY="1" orient="auto">
+			<path d="M 0 0 L 2 1 L 0 2 z" fill="black"></path>
+		</marker>
+	</defs>
+	<line
+		marker-end="url(#arrow)"
+		x1="-50"
+		x2="55"
+		y1="0"
+		y2="0"
+		style="stroke: black; stroke-width: 2"
+	></line>
+	<foreignObject y="5" width="1" height="1" class="svelte-1ew0o84" x="59"
+		><div style="display: grid" xmlns="http://www.w3.org/1999/xhtml" class="svelte-1ew0o84">
+			<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>x</mi></math
+			><!---->
+		</div></foreignObject
+	>
+	<line x1="-25" x2="-25" y1="-4" y2="4" style="stroke: black; stroke-width: 1"></line>
+	<foreignObject width="1" height="1" class="svelte-1ew0o84" x="-25" y="10"
+		><div style="display: grid" xmlns="http://www.w3.org/1999/xhtml" class="svelte-1ew0o84">
+			<math xmlns="http://www.w3.org/1998/Math/MathML"><mn>2</mn></math
+			><!---->
+		</div></foreignObject
+	><foreignObject width="1" height="1" class="svelte-1ew0o84" x="-37.5" y="-7"
+		><div style="display: grid" xmlns="http://www.w3.org/1999/xhtml" class="svelte-1ew0o84">
+			<math xmlns="http://www.w3.org/1998/Math/MathML"><mo lspace="0em" rspace="0em">−</mo></math
+			><!---->
+		</div></foreignObject
+	><!---->
+	<line x1="0" x2="0" y1="-4" y2="4" style="stroke: black; stroke-width: 1"></line>
+	<foreignObject width="1" height="1" class="svelte-1ew0o84" x="0" y="10"
+		><div style="display: grid" xmlns="http://www.w3.org/1999/xhtml" class="svelte-1ew0o84">
+			<math xmlns="http://www.w3.org/1998/Math/MathML"><mn>3</mn></math
+			><!---->
+		</div></foreignObject
+	><foreignObject width="1" height="1" class="svelte-1ew0o84" x="-12.5" y="-7"
+		><div style="display: grid" xmlns="http://www.w3.org/1999/xhtml" class="svelte-1ew0o84">
+			<math xmlns="http://www.w3.org/1998/Math/MathML"><mo lspace="0em" rspace="0em">+</mo></math
+			><!---->
+		</div></foreignObject
+	><!---->
+	<line x1="25" x2="25" y1="-4" y2="4" style="stroke: black; stroke-width: 1"></line>
+	<foreignObject width="1" height="1" class="svelte-1ew0o84" x="25" y="10"
+		><div style="display: grid" xmlns="http://www.w3.org/1999/xhtml" class="svelte-1ew0o84">
+			<math xmlns="http://www.w3.org/1998/Math/MathML"><mn>4</mn></math
+			><!---->
+		</div></foreignObject
+	><foreignObject width="1" height="1" class="svelte-1ew0o84" x="12.5" y="-7"
+		><div style="display: grid" xmlns="http://www.w3.org/1999/xhtml" class="svelte-1ew0o84">
+			<math xmlns="http://www.w3.org/1998/Math/MathML"><mo lspace="0em" rspace="0em">+</mo></math
+			><!---->
+		</div></foreignObject
+	><foreignObject width="1" height="1" class="svelte-1ew0o84" x="37.5" y="-7"
+		><div style="display: grid" xmlns="http://www.w3.org/1999/xhtml" class="svelte-1ew0o84">
+			<math xmlns="http://www.w3.org/1998/Math/MathML"><mo lspace="0em" rspace="0em">−</mo></math
+			><!---->
+		</div></foreignObject
+	><!----><!---->
+</svg>

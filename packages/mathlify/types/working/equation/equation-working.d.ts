@@ -14,6 +14,17 @@ export { Equation };
  */
 export class EquationWorking {
     /**
+     * register a custom simplifier
+     *  @argument {(exp: Expression)=>Expression} simplifier
+     * 	@returns {void}
+     */
+    static RegisterCustomSimplifier(simplifier: (exp: Expression) => Expression): void;
+    /**
+     * deregister the last custom simplifier
+     * @returns {void}
+     * */
+    static DeregisterCustomSimplifier(): void;
+    /**
      * Creates an ExpressionWorking
      * @param {Equation|Shorthand} lhs - the initial expression on the left
      * @param {Shorthand} [rhs=0] - the initial expression on the right. (ignored if Equation supplied for previous argument)
@@ -226,9 +237,10 @@ export class EquationWorking {
      */
     toGeneralPolynomial(variable?: string | undefined, options?: WorkingOptions | undefined): EquationWorking;
     /**
+     * @param {WorkingOptions} [options]
      * @returns {EquationWorking}
      */
-    inverse(): EquationWorking;
+    inverse(options?: WorkingOptions | undefined): EquationWorking;
     solve: {
         /**
          * @param {string} [variable='x']

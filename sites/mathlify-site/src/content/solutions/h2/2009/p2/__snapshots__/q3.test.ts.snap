@@ -1,0 +1,49 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`2009p2q3 1`] = `
+Answer {
+  "answer": {
+    "parts": [
+      {
+        "body": "<p><math><mrow><msup><mi>f</mi><mrow><mo lspace="0em" rspace="0em">−</mo><mn>1</mn></mrow></msup><mo form="prefix" stretchy="false">(</mo><mi>x</mi><mo form="postfix" stretchy="false">)</mo><mo>=</mo></mrow><mrow><mfrac><mrow><mi>a</mi><mi>x</mi></mrow><mrow><mi>b</mi><mi>x</mi><mo>−</mo><mi>a</mi></mrow></mfrac><mi>.</mi></mrow></math></p>
+<p><math><mrow><msup><mi>f</mi><mn>2</mn></msup><mo form="prefix" stretchy="false">(</mo><mi>x</mi><mo form="postfix" stretchy="false">)</mo><mo>=</mo></mrow><mrow><mi>x</mi><mi>.</mi></mrow></math></p>
+<p><math><mrow><msub><mi>R</mi><msup><mi>f</mi><mn>2</mn></msup></msub><mo>=</mo></mrow><mrow><mrow><mo fence="true" form="prefix">(</mo><mo form="prefix" stretchy="false">−</mo><mi>∞</mi><mo separator="true">,</mo><mfrac><mi>a</mi><mi>b</mi></mfrac><mo fence="true" form="postfix">)</mo></mrow><mo>∪</mo></mrow><mrow><mrow><mo fence="true" form="prefix">(</mo><mfrac><mi>a</mi><mi>b</mi></mfrac><mo separator="true">,</mo><mi>∞</mi><mo fence="true" form="postfix">)</mo></mrow><mi>.</mi></mrow></math></p>
+",
+      },
+      {
+        "body": "<p>The composite function <math><mrow><mi>f</mi><mi>g</mi></mrow></math>
+does not exist as <math><mrow><msub><mi>R</mi><mi>g</mi></msub><mo>⊈</mo><msub><mi>D</mi><mi>f</mi></msub><mi>.</mi></mrow></math></p>
+",
+      },
+      {
+        "body": "<p><math><mrow><mi>x</mi><mo>=</mo></mrow><mrow><mn>0</mn><mtext> or </mtext><mfrac><mrow><mn>2</mn><mi>a</mi></mrow><mi>b</mi></mfrac><mi>.</mi></mrow></math></p>
+",
+      },
+    ],
+  },
+  "solution": {
+    "parts": [
+      {
+        "body": "<p><math display="block" class="tml-display" style="display:block math;"><mtable displaystyle="true"><mtr><mtd style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mtext>Let </mtext><mi>y</mi><mo>=</mo><mfrac><mrow><mi>a</mi><mi>x</mi></mrow><mrow><mi>b</mi><mi>x</mi><mo>−</mo><mi>a</mi></mrow></mfrac></mrow></mtd></mtr><mtr><mtd style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mi>y</mi><mrow><mo fence="true" form="prefix">(</mo><mi>b</mi><mi>x</mi><mo>−</mo><mi>a</mi><mo fence="true" form="postfix">)</mo></mrow><mo>=</mo><mi>a</mi><mi>x</mi></mrow></mtd></mtr><mtr><mtd style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mi>y</mi><mi>b</mi><mi>x</mi><mo>−</mo><mi>y</mi><mi>a</mi><mo>=</mo><mi>a</mi><mi>x</mi></mrow></mtd></mtr><mtr><mtd style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mi>y</mi><mi>b</mi><mi>x</mi><mo>−</mo><mi>a</mi><mi>x</mi><mo>=</mo><mi>y</mi><mi>a</mi></mrow></mtd></mtr><mtr><mtd style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mi>x</mi><mrow><mo fence="true" form="prefix">(</mo><mi>y</mi><mi>b</mi><mo>−</mo><mi>a</mi><mo fence="true" form="postfix">)</mo></mrow><mo>=</mo><mi>y</mi><mi>a</mi></mrow></mtd></mtr><mtr><mtd style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mi>x</mi><mo>=</mo><mfrac><mrow><mi>y</mi><mi>a</mi></mrow><mrow><mi>y</mi><mi>b</mi><mo>−</mo><mi>a</mi></mrow></mfrac></mrow></mtd></mtr><mtr><mtd style="padding:0.7ex 0em 0.7ex 0em;"><mrow><msup><mi>f</mi><mrow><mo lspace="0em" rspace="0em">−</mo><mn>1</mn></mrow></msup><mo form="prefix" stretchy="false">(</mo><mi>x</mi><mo form="postfix" stretchy="false">)</mo><mo>=</mo><mfrac><mrow><mi>x</mi><mi>a</mi></mrow><mrow><mi>x</mi><mi>b</mi><mo>−</mo><mi>a</mi></mrow></mfrac><mspace width="0.2778em"></mspace><mi>■</mi></mrow></mtd></mtr></mtable></math></p>
+<p><math display="block" class="tml-display" style="display:block math;"><mtable displaystyle="true" columnalign="right left"><mtr><mtd class="tml-right" style="padding:0.7ex 0em 0.7ex 0em;"><mrow><msup><mi>f</mi><mn>2</mn></msup><mo form="prefix" stretchy="false">(</mo><mi>x</mi><mo form="postfix" stretchy="false">)</mo></mrow></mtd><mtd class="tml-left" style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mo>=</mo><mi>f</mi><mi>f</mi><mo form="prefix" stretchy="false">(</mo><mi>x</mi><mo form="postfix" stretchy="false">)</mo></mrow></mtd></mtr><mtr><mtd class="tml-right" style="padding:0.7ex 0em 0.7ex 0em;"><mrow></mrow></mtd><mtd class="tml-left" style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mo>=</mo><mi>f</mi><msup><mi>f</mi><mrow><mo lspace="0em" rspace="0em">−</mo><mn>1</mn></mrow></msup><mo form="prefix" stretchy="false">(</mo><mi>x</mi><mo form="postfix" stretchy="false">)</mo></mrow></mtd></mtr><mtr><mtd class="tml-right" style="padding:0.7ex 0em 0.7ex 0em;"><mrow></mrow></mtd><mtd class="tml-left" style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mo>=</mo><mi>x</mi><mspace width="0.2778em"></mspace><mi>■</mi></mrow></mtd></mtr></mtable></math></p>
+",
+      },
+      {
+        "body": "<p><math display="block" class="tml-display" style="display:block math;"><mtable displaystyle="true" columnalign="right left"><mtr><mtd class="tml-right" style="padding:0.7ex 0em 0.7ex 0em;"><msub><mi>R</mi><mi>g</mi></msub></mtd><mtd class="tml-left" style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mo>=</mo><mrow><mo fence="true" form="prefix">(</mo><mo form="prefix" stretchy="false">−</mo><mi>∞</mi><mo separator="true">,</mo><mn>0</mn><mo fence="true" form="postfix">)</mo></mrow><mo>∪</mo><mrow><mo fence="true" form="prefix">(</mo><mn>0</mn><mo separator="true">,</mo><mi>∞</mi><mo fence="true" form="postfix">)</mo></mrow></mrow></mtd></mtr><mtr><mtd class="tml-right" style="padding:0.7ex 0em 0.7ex 0em;"><msub><mi>D</mi><mi>f</mi></msub></mtd><mtd class="tml-left" style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mo>=</mo><mrow><mo fence="true" form="prefix">(</mo><mo form="prefix" stretchy="false">−</mo><mi>∞</mi><mo separator="true">,</mo><mfrac><mi>a</mi><mi>b</mi></mfrac><mo fence="true" form="postfix">)</mo></mrow><mo>∪</mo><mrow><mo fence="true" form="prefix">(</mo><mfrac><mi>a</mi><mi>b</mi></mfrac><mo separator="true">,</mo><mi>∞</mi><mo fence="true" form="postfix">)</mo></mrow></mrow></mtd></mtr></mtable></math></p>
+<p>Since <math><mi>a</mi></math>
+and <math><mi>b</mi></math>
+are non-zero,</p>
+<p><math display="block" class="tml-display" style="display:block math;"><mrow><msub><mi>R</mi><mi>g</mi></msub><mo>⊈</mo><msub><mi>D</mi><mi>f</mi></msub></mrow></math></p>
+<p>so the composite function <math><mrow><mi>f</mi><mi>g</mi></mrow></math>
+does not exist<math><mrow><mspace width="0.2778em"></mspace><mi>■</mi></mrow></math></p>
+",
+      },
+      {
+        "body": "<p><math display="block" class="tml-display" style="display:block math;"><mtable displaystyle="true"><mtr><mtd style="padding:0.7ex 0em 0.7ex 0em;"><mrow><msup><mi>f</mi><mrow><mo lspace="0em" rspace="0em">−</mo><mn>1</mn></mrow></msup><mrow><mo fence="true" form="prefix">(</mo><mi>x</mi><mo fence="true" form="postfix">)</mo></mrow><mo>=</mo><mi>x</mi></mrow></mtd></mtr><mtr><mtd style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mfrac><mrow><mi>a</mi><mi>x</mi></mrow><mrow><mi>b</mi><mi>x</mi><mo>−</mo><mi>a</mi></mrow></mfrac><mo>=</mo><mi>x</mi></mrow></mtd></mtr><mtr><mtd style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mi>a</mi><mi>x</mi><mo>=</mo><msup><mi>x</mi><mn>2</mn></msup><mi>b</mi><mo>−</mo><mi>x</mi><mi>a</mi></mrow></mtd></mtr><mtr><mtd style="padding:0.7ex 0em 0.7ex 0em;"><mrow><msup><mi>x</mi><mn>2</mn></msup><mi>b</mi><mo>−</mo><mn>2</mn><mi>x</mi><mi>a</mi><mo>=</mo><mn>0</mn></mrow></mtd></mtr><mtr><mtd style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mi>x</mi><mrow><mo fence="true" form="prefix">(</mo><mi>x</mi><mi>b</mi><mo>−</mo><mn>2</mn><mi>a</mi><mo fence="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0</mn></mrow></mtd></mtr></mtable></math></p>
+<p><math display="block" class="tml-display" style="display:block math;"><mtable displaystyle="true" columnalign="right left right left right left"><mtr><mtd class="tml-right" style="padding:0.7ex 0em 0.7ex 0em;"><mi>x</mi></mtd><mtd class="tml-left" style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mo>=</mo><mn>0</mn><mspace width="1em"></mspace><mi>■</mi></mrow></mtd><mtd class="tml-right" style="padding:0.7ex 0em 0.7ex 1em;"><mrow></mrow></mtd><mtd class="tml-left" style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mspace width="1em"></mspace><mtext> or </mtext><mspace width="1em"></mspace></mrow></mtd><mtd class="tml-right" style="padding:0.7ex 0em 0.7ex 1em;"><mrow><mi>x</mi><mi>b</mi><mo>−</mo><mn>2</mn><mi>a</mi></mrow></mtd><mtd class="tml-left" style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mo>=</mo><mn>0</mn></mrow></mtd></mtr><mtr><mtd class="tml-right" style="padding:0.7ex 0em 0.7ex 0em;"><mrow></mrow></mtd><mtd class="tml-left" style="padding:0.7ex 0em 0.7ex 0em;"><mrow></mrow></mtd><mtd class="tml-right" style="padding:0.7ex 0em 0.7ex 1em;"><mrow></mrow></mtd><mtd class="tml-left" style="padding:0.7ex 0em 0.7ex 0em;"><mspace width="1em"></mspace></mtd><mtd class="tml-right" style="padding:0.7ex 0em 0.7ex 1em;"><mrow><mi>x</mi><mi>b</mi></mrow></mtd><mtd class="tml-left" style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mo>=</mo><mn>2</mn><mi>a</mi></mrow></mtd></mtr><mtr><mtd class="tml-right" style="padding:0.7ex 0em 0.7ex 0em;"><mrow></mrow></mtd><mtd class="tml-left" style="padding:0.7ex 0em 0.7ex 0em;"><mrow></mrow></mtd><mtd class="tml-right" style="padding:0.7ex 0em 0.7ex 1em;"><mrow></mrow></mtd><mtd class="tml-left" style="padding:0.7ex 0em 0.7ex 0em;"><mspace width="1em"></mspace></mtd><mtd class="tml-right" style="padding:0.7ex 0em 0.7ex 1em;"><mi>x</mi></mtd><mtd class="tml-left" style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mo>=</mo><mfrac><mrow><mn>2</mn><mi>a</mi></mrow><mi>b</mi></mfrac><mspace width="1em"></mspace><mi>■</mi></mrow></mtd></mtr></mtable></math></p>
+",
+      },
+    ],
+  },
+}
+`;

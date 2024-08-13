@@ -104,13 +104,13 @@ export class Sqrt extends Fn {
 /**
  * Creates a expression of the form a*sqrt{b}
  * @param {Shorthand} radicand
- * @param {{coeff?: number|Numeral|Expression}} [options]
+ * @param {{coeff?: number|Numeral|Expression} & SimplifyOptions} [options]
  * @returns {Expression}
  */
 export function sqrtTerm(radicand, options) {
 	return options?.coeff
-		? new Expression([options.coeff, new Sqrt(radicand)])
-		: new Expression(new Sqrt(radicand));
+		? new Expression([options.coeff, new Sqrt(radicand)]).simplify(options)
+		: new Expression(new Sqrt(radicand)).simplify(options);
 }
 
 /**

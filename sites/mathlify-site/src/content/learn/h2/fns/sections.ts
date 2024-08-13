@@ -6,7 +6,7 @@ export const sections: Section[] = [
 		shortTitle: 'Concepts',
 		slug: '01-concepts',
 		subsections: [
-			{ title: 'Describing sets of real numbers', slug: '01-interval', shortTitle: 'Interval' },
+			{ title: 'Describing sets of real numbers', slug: '01-interval', shortTitle: 'Intervals' },
 			{ title: 'Function, domain and range', slug: '02-functions', shortTitle: 'Functions' },
 		],
 	},
@@ -62,7 +62,7 @@ export const sections: Section[] = [
 			{
 				title: 'Composing with inverses',
 				slug: '05-compose-inverse',
-				shortTitle: 'Composing with inverses',
+				shortTitle: 'Composing inverses',
 			},
 		],
 	},
@@ -74,10 +74,9 @@ export const sections: Section[] = [
 			{ title: 'Self inverse functions', slug: '01-self-inverse', shortTitle: 'Self inverse' },
 			{ title: 'Piecewise functions', slug: '02-piecewise', shortTitle: 'Piecewise' },
 			{ title: 'Modulus functions', slug: '03-modulus', shortTitle: 'Modulus' },
-			{ title: 'Repeating functions', slug: '04-repeating', shortTitle: 'Repeating' },
 			{
 				title: 'Using the quadratic discriminant',
-				slug: '05-discriminant',
+				slug: '04-discriminant',
 				shortTitle: 'Discriminant',
 			},
 		],

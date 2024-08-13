@@ -2,7 +2,7 @@ import { getStaticContent } from '$lib/server/page';
 import type { PageServerLoad } from './$types';
 import { error } from '@sveltejs/kit';
 import { renderHTML, getToc } from 'djot-temml';
-import { subsections, sections } from '$lib/structure/learn/h2/fns/sections';
+import { subsections, sections } from '$content/learn/h2/fns/sections';
 
 export const prerender = true;
 export const trailingSlash = 'always';

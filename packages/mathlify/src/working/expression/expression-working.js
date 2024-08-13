@@ -9,6 +9,7 @@ import {
 	quotient,
 	shorthandToExpression,
 } from '../../core/expression/expression.js';
+import { expressionToPolynomial } from '../../utils/expression-to-polynomial.js';
 
 /**
  * ExpressionWorking Class to handle the step-by-step working in manipulating an expression
@@ -85,14 +86,35 @@ export class ExpressionWorking {
 		return addStep(this, options);
 	}
 
+	factorize = {
+		/**
+		 * @param {'commonFactor'|'quadratic'} [method='quadratic'] - use quadratic factorization by default
+		 * @param {WorkingOptions} [options]
+		 * @returns {ExpressionWorking}
+		 * */
+		denominator: (method = 'quadratic', options) => {
+			if (this.expression.node.type !== 'quotient')
+				throw new Error('lhs must be a quotient for target lhs');
+			const den = this.expression.node.den;
+			const factorizedDen =
+				method === 'quadratic'
+					? expressionToPolynomial(den).factorize.quadratic()
+					: den.factorize.commonFactor();
+			this.expression = quotient(
+				this.expression.node.num.clone(),
+				factorizedDen,
+			);
+			return addStep(this, options);
+		},
+	};
+
 	/**
 	 * @param {SimplifyOptions & WorkingOptions} [options] - {brackets?, product?, sum?, quotient?, numeral?, exponent?, hide?}
 	 * @returns {ExpressionWorking}
 	 * */
 	simplify(options) {
 		this.expression = this.expression.clone().simplify(options);
-		const working = addStep(this, options);
-		return working;
+		return addStep(this, options);
 	}
 
 	/**
