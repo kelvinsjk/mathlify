@@ -3,7 +3,7 @@ import { chooseRandom, coinFlip, getRandomInt } from '$lib/utils/random';
 // objectives
 // A: fnType
 
-import type { PracticeState, PracticeQuestion, Practice } from '$lib/types/learn';
+import type { PracticeState, PracticeQuestion } from '$lib/types/learn';
 import { mathlifyQED, mathlify } from '$lib/mathlifier';
 import type { Expression } from 'mathlify';
 
@@ -320,8 +320,3 @@ export function generateCompositeRange(fState: FnState, fExp: Expression, Rg: In
 	}
 	throw new Error('We only outer functions of the type linear/quadratic/exp/log/frac/improper');
 }
-
-export const practice: Practice = {
-	generateState,
-	generateQn,
-};

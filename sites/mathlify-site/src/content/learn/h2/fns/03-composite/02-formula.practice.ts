@@ -4,7 +4,7 @@ import { chooseRandom, coinFlip, getRandomInt } from '$lib/utils/random';
 // A: fnType
 // B: existence vs non-existence
 
-import type { PracticeState, PracticeQuestion, Practice } from '$lib/types/learn';
+import type { PracticeState, PracticeQuestion } from '$lib/types/learn';
 import { mathlify } from '$lib/mathlifier';
 import { quotient, type Expression } from 'mathlify';
 import { ExpressionWorking } from 'mathlify/working';
@@ -284,8 +284,3 @@ function generateInequality(domain: Interval[]): string {
 	}
 	throw new Error('Unexpected intervals received');
 }
-
-export const practice: Practice = {
-	generateState,
-	generateQn,
-};

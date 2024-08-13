@@ -5,7 +5,7 @@ import { chooseRandom, getRandomInt, coinFlip, getRandomNonZeroInt } from '$lib/
 // B: restricted domain
 // C: unknown constants
 
-import type { PracticeState, PracticeQuestion, Practice } from '$lib/types/learn';
+import type { PracticeState, PracticeQuestion } from '$lib/types/learn';
 import { mathlify } from '$lib/mathlifier';
 
 // ax+b (2013)
@@ -18,23 +18,14 @@ import { mathlify } from '$lib/mathlifier';
 // abs: | improper | (2023). No unknown constants if restricted
 // special: ba^2 / (x^2 - a^2). (2010,2015) No unknown constants.
 
-import { generateFn, generateRange } from '$content/learn/h2/fns/01-concepts/02-functions.practice';
+import {
+	generateFn,
+	generateRange,
+	types,
+	type Type,
+} from '$content/learn/h2/fns/01-concepts/02-functions.practice';
 import { Interval, intervalBuilder } from '$content/learn/h2/fns/intervals';
 import { Expression } from 'mathlify';
-
-const types = [
-	'linear',
-	'quadratic',
-	'log',
-	'exp',
-	'sqrt',
-	'frac',
-	'improper',
-	'abs',
-	'special',
-] as const;
-type Types = typeof types;
-type Type = Types[number];
 
 export interface State extends PracticeState {
 	fnType: Type;
@@ -206,8 +197,3 @@ export function generateDomain(state: State): Interval[] {
 	}
 	return [Interval.ALL_REAL];
 }
-
-export const practice: Practice = {
-	generateState,
-	generateQn,
-};

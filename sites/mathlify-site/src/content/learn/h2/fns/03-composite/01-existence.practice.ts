@@ -3,7 +3,7 @@ import { coinFlip, chooseRandomSubset } from '$lib/utils/random';
 // objectives
 // A: fnType
 
-import type { PracticeState, PracticeQuestion, Practice } from '$lib/types/learn';
+import type { PracticeState, PracticeQuestion } from '$lib/types/learn';
 import { mathlify } from '$lib/mathlifier';
 import type { Expression } from 'mathlify';
 import type { Interval } from '$content/learn/h2/fns/intervals';
@@ -120,8 +120,3 @@ function checkSubset(A: Interval[], B: Interval[]): boolean {
 	}
 	return true;
 }
-
-export const practice: Practice = {
-	generateState,
-	generateQn,
-};

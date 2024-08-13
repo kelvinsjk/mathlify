@@ -4,7 +4,7 @@ import { coinFlip, chooseRandom, getRandomNonZeroInt, getRandomInt } from '$lib/
 // A: fnType
 // B: fg(x) = rhs vs f(x) = rhs, where g(x) = x+c. a=0 indicate second case
 
-import type { PracticeState, PracticeQuestion, Practice } from '$lib/types/learn';
+import type { PracticeState, PracticeQuestion } from '$lib/types/learn';
 import { mathlify, mathlifyQED } from '$lib/mathlifier';
 import { generateFn } from '../01-concepts/02-functions.practice';
 import { expInverse, logInverse } from '../02-inverse/03-formula.practice';
@@ -109,8 +109,3 @@ export function generateAns(state: State, fInv: Expression): { ans: string; soln
 	}
 	return { ans, soln };
 }
-
-export const practice: Practice = {
-	generateState,
-	generateQn,
-};

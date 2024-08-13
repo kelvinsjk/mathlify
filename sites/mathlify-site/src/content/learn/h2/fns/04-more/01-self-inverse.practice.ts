@@ -6,7 +6,7 @@ import { coinFlip, chooseRandom, getRandomNonZeroInt, getRandomInt } from '$lib/
 // C: fnType
 // D: unknown constants (for rational)
 
-import type { PracticeState, PracticeQuestion, Practice } from '$lib/types/learn';
+import type { PracticeState, PracticeQuestion } from '$lib/types/learn';
 import { mathlify, mathlifyQED } from '$lib/mathlifier';
 import { fractionalInverseWorking, linearInverseWorking } from '../02-inverse/03-formula.practice';
 import { e, Expression, expTerm, Polynomial, quotient, sum } from 'mathlify';
@@ -281,7 +281,3 @@ function specialInverseWorking(
 	return { working: soln1 };
 }
 
-export const practice: Practice = {
-	generateState,
-	generateQn,
-};

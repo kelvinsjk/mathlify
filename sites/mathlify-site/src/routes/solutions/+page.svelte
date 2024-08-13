@@ -1,11 +1,27 @@
 <script lang="ts">
-	const solns = import.meta.glob('/src/content/solutions/**/*.soln.ts');
-	console.log(solns);
+	import {qns} from '$content/solutions/h2/topical';
 </script>
 
-<ul class="prose">
-	{#each Object.keys(solns) as key}
-		{@const soln = key.slice(12, key.length - 8)}
-		<li><a href={soln}>{soln.slice(11)}</a></li>
+<div class="prose" data-sveltekit-preload-data="false">
+	{#each Object.keys(qns) as topic}
+	<h2>{topic}</h2>
+	<div class="grid">
+		{#each qns[topic] as qnString}
+			{@const [year, paper, qn] = qnString.split('/')}
+				<span>
+					{year} P{paper.slice(1)} Q{qn.slice(1)}
+				</span>
+				<a href={`/solutions/h2/${year}/${paper}/${qn}`}>Solution</a>
+				<a href={`/protected/h2/${year}/${paper}/${qn}`}>Question</a>
+				<a href={`/protected/prototype/h2/${year}/${paper}/${qn}`}>Prototype</a>
+		{/each}
+	</div>
 	{/each}
-</ul>
+</div>
+
+<style>
+	div.grid {
+		display: grid;
+		grid-template-columns: repeat(4, auto);
+	}
+</style>

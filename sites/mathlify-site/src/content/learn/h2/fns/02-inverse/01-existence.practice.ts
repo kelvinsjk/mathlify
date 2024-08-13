@@ -5,7 +5,7 @@ import { chooseRandom, coinFlip, getRandomInt } from '$lib/utils/random';
 // B: restricted domain
 // C: unknown constants
 
-import type { PracticeState, PracticeQuestion, Practice } from '$lib/types/learn';
+import type { PracticeState, PracticeQuestion } from '$lib/types/learn';
 import { mathlify, mathlifyQED } from '$lib/mathlifier';
 import type { Expression } from 'mathlify';
 
@@ -221,8 +221,3 @@ is @${not} one-to-one and
 @${has} an inverse`;
 	return { ans, soln };
 }
-
-export const practice: Practice = {
-	generateState,
-	generateQn,
-};

@@ -6,7 +6,7 @@ import { chooseRandom, getRandomInt, getRandomNonZeroInt } from '$lib/utils/rand
 // C: inclusive vs exclusive
 // D (only for special): left2 vs right2 (0 vs \pm a)
 
-import type { PracticeState, PracticeQuestion, Practice } from '$lib/types/learn';
+import type { PracticeState, PracticeQuestion } from '$lib/types/learn';
 import { mathlify } from '$lib/mathlifier';
 import { Expression, Polynomial, e, sum } from 'mathlify';
 import { bisection, cubicRoot } from 'mathlify/numerical';
@@ -187,7 +187,3 @@ $${{}} x = ${x1String} ${QED}, \\quad x = ${x2String} ${QED}
 	return { ans, soln, roots };
 }
 
-export const practice: Practice = {
-	generateState,
-	generateQn,
-};

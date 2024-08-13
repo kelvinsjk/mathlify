@@ -8,6 +8,7 @@ export {
 	fnTerm,
 	e,
 	pi,
+	i,
 } from './core/expression/expression.js';
 export { greek } from './utils/greek-variable.js';
 export { Polynomial } from './core/polynomial/index.js';

@@ -6,7 +6,7 @@ import { chooseRandom, getRandomInt, coinFlip, getRandomNonZeroInt } from '$lib/
 // C: inclusive vs exclusive
 // D (only for special): left2 vs right2 (0 vs \pm a)
 
-import type { PracticeState, PracticeQuestion, Practice } from '$lib/types/learn';
+import type { PracticeState, PracticeQuestion } from '$lib/types/learn';
 import { mathlify, mathlifyQED } from '$lib/mathlifier';
 import { Expression } from 'mathlify';
 import { generateFn } from '$content/learn/h2/fns/01-concepts/02-functions.practice';
@@ -130,8 +130,3 @@ export function generateAns(state: State): Expression {
 		}
 	}
 }
-
-export const practice: Practice = {
-	generateState,
-	generateQn,
-};

@@ -262,6 +262,7 @@ export class Expression {
     unit(): Expression;
 }
 export const e: Variable;
+export const i: Variable;
 export const pi: Variable;
 export type ExpressionNode = Variable | Numeral | Sum | Product | Quotient | Exponent | Fn;
 export type SumShorthand = ["+", ...(number | string | Shorthand)[]];

@@ -5,7 +5,7 @@ import { chooseRandom, getRandomInt, coinFlip, getRandomNonZeroInt } from '$lib/
 // B: restricted domain
 // C: unknown constants
 
-import type { PracticeState, PracticeQuestion, Practice, SupportedTypes } from '$lib/types/learn';
+import type { PracticeState, PracticeQuestion, SupportedTypes } from '$lib/types/learn';
 import { mathlify } from '$lib/mathlifier';
 import { logTerm, sqrtTerm, absTerm } from 'mathlify/fns';
 import { Expression, sum, e } from 'mathlify';
@@ -357,8 +357,3 @@ export function generateRange(state: State, exp: Expression): Interval[] {
 			: [new Interval({ right: y, rightInclusive: true }), new Interval({ left: 0 })];
 	}
 }
-
-export const practice: Practice = {
-	generateState,
-	generateQn,
-};

@@ -326,7 +326,6 @@ export namespace solve {
         qed?: true | string;
     } | undefined): {
         working: string;
-        cols: number;
         roots: Expression[];
     };
     function quadratic(exp: Expression | Polynomial | Equation | [Expression, Expression], variable?: string | import("../../index.js").Variable | undefined, options?: {
@@ -336,7 +335,6 @@ export namespace solve {
     } | undefined): {
         factorizationWorking: EquationWorking;
         rootsWorking: string;
-        cols: number;
         roots: Expression[];
     };
     function quadraticInequality(exp: Expression | Polynomial | Equation | [Expression, Sign, Expression], variable?: string | import("../../index.js").Variable | undefined, options?: {

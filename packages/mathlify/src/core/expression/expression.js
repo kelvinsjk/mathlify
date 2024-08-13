@@ -617,7 +617,9 @@ function simplify_to_different_node(exp, options) {
 				new Expression(exp.factors[0].node.negative(options)),
 			).simplify(options);
 		} else {
-			// special case for negative coefficients with quotients: hoist any negative signs
+			// special case for negative coefficients with quotients
+			// simplify - (-2x/3) and - ( (-2x-1) / 3 )
+			// simplify - ( a-b ) / 3 and - (b - a ) / 3
 			if (
 				exp.coeff.is.negative() &&
 				arrayHasLengthEqualTo(exp.factors, 1) &&
@@ -627,21 +629,38 @@ function simplify_to_different_node(exp, options) {
 				const num = quotient.num;
 				const den = quotient.den;
 				if (num.is.negative()) {
-					if (den.is.negative()) {
-						return new Product(
-							exp.coeff,
-							new Expression([num.negative(), '/', den.negative()]),
-						);
-					}
 					return new Product(
 						exp.coeff.abs(),
 						new Expression(new Quotient(num.negative(), den.clone())),
 					).simplify(options);
-				} else if (den.is.negative()) {
-					return new Product(
-						exp.coeff.abs(),
-						new Expression(new Quotient(num.clone(), den.negative())),
-					).simplify(options);
+				} else if (num.node.type === 'sum') {
+					const terms = num._getSumTerms();
+					if (arrayHasLengthEqualTo(terms, 2)) {
+						const [t1, t2] = terms;
+						if (t1.is.negative()) {
+							// t2 must be positive or we will have been in earlier case
+							return new Product(
+								exp.coeff.abs(),
+								new Expression(
+									new Quotient(
+										new Expression(new Sum(t1.negative(), t2.negative())),
+										den.clone(),
+									),
+								),
+							);
+						} else if (t2.is.negative()) {
+							// - (a-b) becomes b-a
+							return new Product(
+								exp.coeff.abs(),
+								new Expression(
+									new Quotient(
+										new Expression(new Sum(t2.negative(), t1.negative())),
+										den.clone(),
+									),
+								),
+							);
+						}
+					}
 				}
 			}
 			const node = combine_factors(exp);
@@ -1480,6 +1499,9 @@ export function expTerm(power) {
 export const e = new Variable('e', {
 	constantValue: Math.E,
 	typesetString: '\\mathrm{e}',
+});
+export const i = new Variable('i', {
+	typesetString: '\\mathrm{i}',
 });
 export const pi = new Variable('pi', {
 	constantValue: Math.PI,

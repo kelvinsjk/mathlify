@@ -3,8 +3,8 @@ export { Equation };
 import {
 	Numeral,
 	Product,
-	Quotient,
 	Sum,
+	quotient,
 	shorthandToExpression,
 } from '../../core/expression/expression.js';
 import { Expression, Polynomial } from '../../index.js';
@@ -281,8 +281,20 @@ export class EquationWorking {
 				rhsTermsToKeep.push(this.eqn.rhs.clone());
 			}
 		}
-		const lhs = new Expression(new Sum(...lhsTermsToKeep, ...rhsTermsToMove));
-		const rhs = new Expression(new Sum(...rhsTermsToKeep, ...lhsTermsToMove));
+		let lhs = new Expression(new Sum(...lhsTermsToKeep, ...rhsTermsToMove));
+		let rhs = new Expression(new Sum(...rhsTermsToKeep, ...lhsTermsToMove));
+		if (lhs.is.negative()) {
+			lhs = new Expression(
+				new Sum(
+					...[...rhsTermsToMove, ...lhsTermsToKeep].map((x) => x.negative()),
+				),
+			);
+			rhs = new Expression(
+				new Sum(
+					...[...lhsTermsToMove, ...rhsTermsToKeep].map((x) => x.negative()),
+				),
+			);
+		}
 		if (options?.steps) {
 			this.eqn = new Equation(lhs.clone(), rhs.clone(), {
 				sign: this.eqn.sign,
@@ -460,7 +472,8 @@ export class EquationWorking {
 			}
 		}
 		const den = new Expression(new Product(coeff, ...factorsToMove)).simplify();
-		const rhs = new Expression(new Quotient(this.eqn.rhs, den));
+		//const rhs = new Expression(new Quotient(this.eqn.rhs, den));
+		const rhs = quotient(this.eqn.rhs, den);
 		const sign = coeff.is.negative()
 			? switchInequalitySign(this.eqn.sign)
 			: options?.forceSignChange
@@ -482,11 +495,17 @@ export class EquationWorking {
 				});
 				addStep(this, options);
 			} else if (options.steps === 'divide') {
-				this.addCustomStep(variable, `${this.eqn.rhs} \\div ${den}`);
+				this.addCustomStep(
+					variable,
+					`${this.eqn.rhs.toString()} \\div ${den.toString()}`,
+				);
 			} else if (options.steps === 'postMultiply') {
 				// only works for numeral at this moment
 				const reciprocal = den._getNumeral().reciprocal();
-				this.addCustomStep(variable, `${this.eqn.rhs} \\times ${reciprocal}`);
+				this.addCustomStep(
+					variable,
+					`${this.eqn.rhs.toString()} \\times ${reciprocal.toString()}`,
+				);
 			} else {
 				// only works for numeral at this moment
 				const reciprocal = den._getNumeral().reciprocal();
@@ -650,8 +669,8 @@ export class EquationWorking {
 					verbatim: true,
 				});
 				const rootsWorking =
-					`x &= \\frac{${negativeB} \\pm ${sqrtWorking}}{${twoA}}` +
-					`\n\t\\\\ &= \\frac{${negativeB.simplify()} \\pm ${sqrtWorking.simplify()}}{${twoA.simplify()}}`;
+					`x &= \\frac{${negativeB.toString()} \\pm ${sqrtWorking.toString()}}{${twoA.toString()}}` +
+					`\n\t\\\\ &= \\frac{${negativeB.simplify().toString()} \\pm ${sqrtWorking.simplify().toString()}}{${twoA.simplify().toString()}}`;
 				// TODO: simplification using gcd
 				// TODO: sort roots
 				const root1 = new Expression([
@@ -749,14 +768,14 @@ export class EquationWorking {
 		const firstEqn = this.eqns[0];
 		if (!firstEqn) return '';
 		const [firstLHS, sign, firstRHS] = firstEqn;
-		let str = `${firstLHS} ${align}${signToLaTeX(sign)}${firstRHS}`;
+		let str = `${firstLHS.toString()} ${align}${signToLaTeX(sign)}${firstRHS.toString()}`;
 		const index = this.interjections[0].indexOf(0);
 		if (index !== -1) str += `\n\t\\\\ ${this.interjections[1][index]}`;
 		let prevLHS = firstLHS.toString();
 		for (const [i, [lhs, sign, rhs]] of this.eqns.slice(1).entries()) {
 			const lhsString =
 				this.aligned && lhs.toString() === prevLHS ? '' : lhs.toString();
-			str += `\n\t\\\\ ${lhsString} ${align}${signToLaTeX(sign)}${rhs}`;
+			str += `\n\t\\\\ ${lhsString} ${align}${signToLaTeX(sign)}${rhs.toString()}`;
 			const index = this.interjections[0].indexOf(i + 1);
 			if (index !== -1) str += `\n\t\\\\ ${this.interjections[1][index]}`;
 			prevLHS = lhs.toString();
@@ -772,14 +791,14 @@ export class EquationWorking {
 		const firstEqn = this.eqns[0];
 		if (!firstEqn) return [];
 		const [firstLHS, sign, firstRHS] = firstEqn;
-		let str = [`${firstLHS} ${align}${sign}${firstRHS}`];
+		let str = [`${firstLHS.toString()} ${align}${sign}${firstRHS.toString()}`];
 		const index = this.interjections[0].indexOf(0);
 		if (index !== -1) str.push(`\n\t\\\\ ${this.interjections[1][index]}`);
 		let prevLHS = firstLHS.toString();
 		for (const [i, [lhs, sign, rhs]] of this.eqns.slice(1).entries()) {
 			const lhsString =
 				this.aligned && lhs.toString() === prevLHS ? '' : lhs.toString();
-			str.push(`${lhsString} ${align}${sign}${rhs}`);
+			str.push(`${lhsString} ${align}${sign}${rhs.toString()}`);
 			const index = this.interjections[0].indexOf(i + 1);
 			if (index !== -1)
 				str.push(/** @type {string} */ (this.interjections[1][index]));
@@ -831,7 +850,8 @@ function addStep(working, options) {
 	const rhs = working.eqn.rhs;
 	if (
 		!options?.hide &&
-		(`${prevLeft}` !== `${lhs}` || `${prevRight}` !== `${rhs}`)
+		(prevLeft.toString() !== lhs.toString() ||
+			prevRight.toString() !== rhs.toString())
 	) {
 		if (options?.string) {
 			working.eqns.push([lhs.toString(), working.eqn.sign, rhs.toString()]);
@@ -935,7 +955,7 @@ export const solve = {
 				: new Equation(exp);
 		const factorizationWorking = new EquationWorking(eqn, 0, options);
 		factorizationWorking.makeRhsZero({
-			hide: options?.hideFirstStep && `${eqn.rhs}` === '0',
+			hide: options?.hideFirstStep && eqn.rhs.toString() === '0',
 		});
 		variable = variable ?? expressionToPolynomial(eqn.lhs).variable;
 		factorizationWorking.factorize.quadratic({ variable });
@@ -963,7 +983,7 @@ export const solve = {
 				: new Equation(exp, 0, options);
 		const working = new EquationWorking(eqn, 0, options);
 		working.makeRhsZero({
-			hide: options?.hideFirstStep && `${eqn.rhs}` === '0',
+			hide: options?.hideFirstStep && eqn.rhs.toString() === '0',
 		});
 		const poly = expressionToPolynomial(working.eqn.lhs, variable);
 		variable = variable ?? poly.variable;
@@ -1003,7 +1023,7 @@ export const solve = {
 						}).toString(),
 					]
 				: [
-						`${roots[0]} ${signToLaTeX(lessThanSign)}${variable} ${signToLaTeX(lessThanSign)}${roots[1]}`,
+						`${roots[0].toString()} ${signToLaTeX(lessThanSign)}${variable.toString()} ${signToLaTeX(lessThanSign)}${roots[1].toString()}`,
 					];
 		return { working, roots, answers };
 	},
@@ -1021,7 +1041,7 @@ export const solve = {
 				: new Equation(exp, 0, options);
 		const working = new EquationWorking(eqn, 0, options);
 		working.makeRhsZero({
-			hide: options?.hideFirstStep && `${eqn.rhs}` === '0',
+			hide: options?.hideFirstStep && eqn.rhs.toString() === '0',
 		});
 		working.combineFraction();
 		working.factorize.fraction();
@@ -1047,7 +1067,7 @@ export const solve = {
 			(eqn.sign === '<' && testValueIsNegative) ||
 			(eqn.sign === '>' && !testValueIsNegative)
 		) {
-			answers.push(`${variable} < ${firstRoot}`);
+			answers.push(`${variable.toString()} < ${firstRoot.toString()}`);
 		}
 		for (const [i, root] of roots.entries()) {
 			if (i === roots.length - 1) {
@@ -1059,7 +1079,7 @@ export const solve = {
 					(eqn.sign === '<' && testValueIsNegative) ||
 					(eqn.sign === '>' && !testValueIsNegative)
 				) {
-					answers.push(`${variable} > ${root}`);
+					answers.push(`${variable.toString()} > ${root.toString()}`);
 				}
 			} else {
 				const root2 = /** @type {Numeral} */ (roots[i + 1]);
@@ -1071,7 +1091,9 @@ export const solve = {
 					(eqn.sign === '<' && testValueIsNegative) ||
 					(eqn.sign === '>' && !testValueIsNegative)
 				) {
-					answers.push(`${root} < ${variable} < ${root2}`);
+					answers.push(
+						`${root.toString()} < ${variable.toString()} < ${root2.toString()}`,
+					);
 				}
 			}
 		}

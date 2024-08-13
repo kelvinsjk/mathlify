@@ -3,7 +3,7 @@ import { coinFlip, chooseRandom } from '$lib/utils/random';
 // objectives
 // A: fnType
 
-import type { PracticeState, PracticeQuestion, Practice } from '$lib/types/learn';
+import type { PracticeState, PracticeQuestion } from '$lib/types/learn';
 import { mathlify } from '$lib/mathlifier';
 import {
 	types,
@@ -78,8 +78,3 @@ $${{}} ${fString}.` + qn2;
 			: compositeFormula([f, fDomain, f, fDomain], true, false, { ansInline: true, gName: 'f' });
 	return { qn, ...ansObject };
 }
-
-export const practice: Practice = {
-	generateState,
-	generateQn,
-};

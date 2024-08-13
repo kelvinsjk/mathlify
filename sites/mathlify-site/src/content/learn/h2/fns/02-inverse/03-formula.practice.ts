@@ -1,4 +1,4 @@
-import { coinFlip } from '$lib/utils/random';
+import { chooseRandom, coinFlip } from '$lib/utils/random';
 
 // objectives
 // A: fnType
@@ -8,7 +8,7 @@ import { coinFlip } from '$lib/utils/random';
 
 // we will omit the 'abs' case here, and apply it under 04/03
 
-import type { PracticeState, PracticeQuestion, Practice } from '$lib/types/learn';
+import type { PracticeState, PracticeQuestion } from '$lib/types/learn';
 import { mathlify } from '$lib/mathlifier';
 import { Expression, sum, e, Polynomial } from 'mathlify';
 import { EquationWorking } from 'mathlify/working';
@@ -29,6 +29,7 @@ import {
 	generateRange,
 	generateInequality as generateDomain,
 	type Type,
+	types,
 } from '$content/learn/h2/fns/01-concepts/02-functions.practice';
 import { generateState as generateState1 } from './02-domain.practice';
 
@@ -52,11 +53,8 @@ export interface State extends PracticeState {
 
 export function generateState(options?: { type?: Type }): State {
 	// we will omit the 'abs' case here, and apply it under 04/03
-	let state: ReturnType<typeof generateState1>;
-	do {
-		state = generateState1(options);
-	} while (state.fnType === 'abs');
-	return { ...generateState1(options), definition: coinFlip() };
+	const type = options?.type ?? chooseRandom(types.filter((x) => x !== 'abs'));
+	return { ...generateState1({ type }), definition: coinFlip() };
 }
 
 export function generateQn(state: PracticeState): PracticeQuestion {
@@ -655,8 +653,3 @@ function generateInequality(state: State, exp: Expression): string {
 			: ans + `, x \\leq ${y} \\text{ or } x \\geq 0.`;
 	}
 }
-
-export const practice: Practice = {
-	generateState,
-	generateQn,
-};
