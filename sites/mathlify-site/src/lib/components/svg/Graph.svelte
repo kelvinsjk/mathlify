@@ -393,7 +393,6 @@
 		{@const offset = point.offset ?? [0, 0]}
 		<path d={`M${x},${y}`} marker-start={`url(#${point.marker})`} style="stroke:black" />
 		<foreignObject x={x + offset[0]} y={y + offset[1]} width="1" height="1">
-			<!--@expect-error-->
 			<div style="display: grid" {...notTypeChecked({ xmlns: 'http://www.w3.org/1999/xhtml' })}>
 				{@html text}
 			</div>
