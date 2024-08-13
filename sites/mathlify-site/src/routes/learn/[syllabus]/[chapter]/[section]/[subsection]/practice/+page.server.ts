@@ -1,5 +1,5 @@
 import type { PageServerLoad } from './$types';
-import { subsections, sections } from '$lib/structure/learn/h2/fns/sections';
+import { subsections, sections } from '$content/learn/h2/fns/sections';
 import { error } from '@sveltejs/kit';
 
 export const prerender = true;

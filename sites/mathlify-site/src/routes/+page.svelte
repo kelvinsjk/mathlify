@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { sections } from '$lib/structure/learn/h2/fns/sections';
+	import { sections } from '$content/learn/h2/fns/sections';
 </script>
 
 <div class="content prose">

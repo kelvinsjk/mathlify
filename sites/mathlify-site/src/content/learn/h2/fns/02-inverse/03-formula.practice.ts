@@ -167,12 +167,7 @@ function generateAns(state: State, rhs: Expression): { ans: string; soln: string
 	const yMinusB = sum('y', [-1, unknownConstants ? 'b' : b]).simplify();
 	const xPlusA = sum('x', unknownConstants ? 'a' : a).simplify();
 	if (fnType === 'linear') {
-		const working = new EquationWorking('y', rhs);
-		if (unknownConstants || a > 0) working.swapSides({ hide: true });
-		working.isolate('x');
-		working._makeSubjectFromProduct('x');
-		const fInv = working.eqn.rhs.subIn({ y: 'x' });
-		const soln1 = mathlify`$${'gather*'} \\text{Let } ${working}`;
+		const { working, exp: fInv } = linearInverseWorking(rhs, { swap: unknownConstants || a > 0 });
 		const soln2 = definition
 			? mathlify`$${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, rhs)} ${QED}`
 			: mathlify`$${{}} f^{-1}(x) = ${fInv} ${QED}
@@ -183,7 +178,7 @@ $${'align*'} D_{f^{-1}} &= R_{f} \\\\ &= ${generateRange(state, rhs).join(' \\cu
 			: mathlify`${{}} f^{-1}(x) = ${fInv}.
 \\
 ${{}} D_{f^{-1}} = R_{f} = ${generateRange(state, rhs).join(' \\cup ')}.`;
-		return { ans, soln: soln1 + soln2 };
+		return { ans, soln: working + soln2 };
 	} else if (fnType === 'quadratic') {
 		return quadraticInverse(state, rhs);
 	} else if (fnType === 'log') {
@@ -305,20 +300,51 @@ ${{}} D_{f^{-1}} ${Rf} = ${generateRange(state, rhs).join(' \\cup ')}.`;
 export function fractionalInverseWorking(
 	rhs: Expression,
 	swap?: boolean,
-	options?: { abs?: boolean; reportInverse?: boolean },
+	options?: {
+		abs?: boolean;
+		reportInverse?: boolean;
+		f?: string;
+		qed?: boolean;
+		swapNum?: boolean;
+	},
 ): { working: string; exp: Expression } {
 	const letText = options?.abs ? '' : '\\text{Let } ';
+	const f = options?.f ?? 'f';
 	const working = new EquationWorking('y', rhs);
 	working.crossMultiply();
 	working.expand();
 	if (swap) working.swapSides({ hide: true });
-	working.isolate('x');
+	if (options?.swapNum) {
+		working.isolate('x', { hide: true }).rearrange([1, 0], { targetRight: true });
+	} else {
+		working.isolate('x');
+	}
 	working.factorize.commonFactor();
 	working._makeSubjectFromProduct('x');
 	const fInv = working.eqn.rhs.subIn({ y: 'x' });
+	const QEDString = options?.qed ? QED : '';
 	const soln1 = options?.reportInverse
-		? mathlify`$${'gather*'} ${letText} ${working} \\\\ f^{-1}(x) = ${fInv}`
+		? mathlify`$${'gather*'} ${letText} ${working} \\\\ ${f}^{-1}(x) = ${fInv} ${QEDString}`
 		: mathlify`$${'gather*'} ${letText} ${working}`;
+	return { working: soln1, exp: fInv };
+}
+
+export function linearInverseWorking(
+	rhs: Expression,
+	options?: {
+		swap?: boolean;
+		f?: string;
+		qed?: boolean;
+	},
+): { working: string; exp: Expression } {
+	const working = new EquationWorking('y', rhs);
+	const f = options?.f ?? 'f';
+	if (options?.swap) working.swapSides({ hide: true });
+	working.isolate('x');
+	working._makeSubjectFromProduct('x');
+	const fInv = working.eqn.rhs.subIn({ y: 'x' });
+	const QEDString = options?.qed ? QED : '';
+	const soln1 = mathlify`$${'gather*'} \\text{Let } ${working} \\\\ ${f}^{-1}(x) = ${fInv} ${QEDString}`;
 	return { working: soln1, exp: fInv };
 }
 
