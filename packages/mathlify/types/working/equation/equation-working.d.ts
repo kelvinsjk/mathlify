@@ -8,7 +8,7 @@ export { Equation };
 /** @typedef {import('../../core/expression/expression.js').Shorthand} Shorthand */
 /** @typedef {import('../../core/expression/expression.js').Variable} Variable */
 /** @typedef {import('./equation.js').Sign} Sign */
-/** @typedef {{hide?: boolean, string?: boolean}} WorkingOptions */
+/** @typedef {{hide?: boolean, string?: boolean, swapSides?: true}} WorkingOptions */
 /**
  * EqnWorking Class to handle the step-by-step working in manipulating an equation
  */
@@ -68,11 +68,11 @@ export class EquationWorking {
     simplify(options?: (WorkingOptions & import("../../core/expression/expression.js").SimplifyOptions) | undefined): EquationWorking;
     /**
      *
-     * @param {number|number[]} indices
+     * @param {number|number[]|[number[], number[]]} indices
      * @param {WorkingOptions & {fromRight?: boolean}} [options] - default from lhs
      * @returns {EquationWorking}
      */
-    moveTerms(indices: number | number[], options?: (WorkingOptions & {
+    moveTerms(indices: number | number[] | [number[], number[]], options?: (WorkingOptions & {
         fromRight?: boolean;
     }) | undefined): EquationWorking;
     /**
@@ -364,6 +364,7 @@ export type Sign = import("./equation.js").Sign;
 export type WorkingOptions = {
     hide?: boolean;
     string?: boolean;
+    swapSides?: true;
 };
 import { Equation } from './equation.js';
 import { Expression } from '../../index.js';

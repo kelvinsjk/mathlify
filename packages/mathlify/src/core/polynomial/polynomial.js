@@ -7,6 +7,8 @@ import {
 	Product,
 	Sum,
 	shorthandToExpression,
+	quotient,
+	sum,
 } from '../expression/expression.js';
 /** @typedef {import('../expression/expression.js').ExpressionNode} ExpressionNode */
 /** @typedef {import('../expression/expression.js').Shorthand} Shorthand */
@@ -138,7 +140,7 @@ export class Polynomial extends Expression {
 			poly2.degree !== 0
 		)
 			throw new Error(
-				`variables do not match, ${this.variable}, ${poly2.variable}, ${this.degree}, ${poly2.degree} ${this}`,
+				`variables do not match, ${this.variable.toString()}, ${poly2.variable.toString()}, ${this.degree}, ${poly2.degree} ${this.toString()}`,
 			);
 		let coeffs = pad_zeros(this.coeffs, poly2.degree + 1);
 		coeffs = coeffs.map(
@@ -320,7 +322,9 @@ export class Polynomial extends Expression {
 					: rhs;
 			const lhs = this.minus(rhsCoerced);
 			if (lhs.degree !== 1)
-				throw new Error(`Nonlinear polynomial ${this}=${rhs} received`);
+				throw new Error(
+					`Nonlinear polynomial ${this.toString()}=${rhs.toString()} received`,
+				);
 			const [b, a] = /** @type {[Numeral, Numeral]} */ (lhs.coeffs);
 			return new Expression(b.negative().divide(a));
 		},
@@ -378,7 +382,7 @@ export class Polynomial extends Expression {
 	quadraticDiscriminant() {
 		if (this.degree !== 2)
 			throw new Error(
-				`Cannot find quadratic discriminant for non-quadratic ${this}`,
+				`Cannot find quadratic discriminant for non-quadratic ${this.toString()}`,
 			);
 		const [c, b, a] = /** @type {[Expression, Expression, Expression]} */ (
 			this.coeffs.map((x) => new Expression(x.clone()))
@@ -442,10 +446,15 @@ export class Polynomial extends Expression {
 	}
 	/**
 	 * @param {Polynomial} divisor
-	 * @returns {{quotient: Polynomial, remainder: Polynomial}}
+	 * @returns {{quotient: Polynomial, remainder: Polynomial, result: Expression}}
 	 */
 	longDivide(divisor) {
-		return longDivide(this, divisor);
+		const { quotient, remainder } = longDivide(this, divisor);
+		return {
+			quotient,
+			remainder,
+			result: sum(quotient, [remainder, '/', divisor]),
+		};
 	}
 }
 
@@ -499,31 +508,27 @@ function longDivide(poly, divisor, carryOver) {
 		carryOver ??
 		new Polynomial([0], { ascending: poly.ascending, variable: poly.variable });
 	if (divisor.degree === 0) {
-		throw new Error(`Divisor ${divisor} must have degree > 0`);
+		throw new Error(`Divisor ${divisor.toString()} must have degree > 0`);
 	}
 	if (poly.degree < divisor.degree) {
 		return { quotient: carryOver, remainder: poly };
 	}
 	const a = poly.leadingCoefficient;
 	const b = divisor.leadingCoefficient;
-	// TODO: handle non-numerals
-	if (a.type !== 'numeral' || b.type !== 'numeral')
-		throw new Error('Non-numeral coefficients not yet supported');
+	const coeff = quotient(a, b);
 	return longDivide(
 		poly.minus(
-			divisor
-				.divide(b)
-				.times(a)
-				.times(
-					Polynomial.ofDegree(poly.degree - divisor.degree, {
-						variable: poly.variable,
-					}),
-				),
+			divisor.times(
+				Polynomial.ofDegree(poly.degree - divisor.degree, {
+					variable: poly.variable,
+					coeff,
+				}),
+			),
 		),
 		divisor,
 		carryOver.plus(
 			Polynomial.ofDegree(poly.degree - divisor.degree, {
-				coeff: a.divide(b),
+				coeff,
 				variable: poly.variable,
 			}),
 		),

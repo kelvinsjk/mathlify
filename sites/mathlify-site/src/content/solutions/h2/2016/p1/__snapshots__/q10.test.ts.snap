@@ -1,0 +1,93 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`2016p1q10 1`] = `
+Answer {
+  "answer": {
+    "parts": [
+      {
+        "parts": [
+          {
+            "body": "<p><math><mrow><msup><mi>f</mi><mrow><mo lspace="0em" rspace="0em">−</mo><mn>1</mn></mrow></msup><mo form="prefix" stretchy="false">(</mo><mi>x</mi><mo form="postfix" stretchy="false">)</mo><mo>=</mo></mrow><mrow><msup><mrow><mo fence="true" form="prefix">(</mo><mi>x</mi><mo>−</mo><mn>1</mn><mo fence="true" form="postfix">)</mo></mrow><mn>2</mn></msup><mi>.</mi></mrow></math>
+<br>
+<math><mrow><msub><mi>D</mi><msup><mi>f</mi><mrow><mo lspace="0em" rspace="0em">−</mo><mn>1</mn></mrow></msup></msub><mo>=</mo></mrow><mrow><msub><mi>R</mi><mi>f</mi></msub><mo>=</mo></mrow><mrow><mrow><mo fence="true" form="prefix">[</mo><mn>1</mn><mo separator="true">,</mo><mi>∞</mi><mo fence="true" form="postfix">)</mo></mrow><mi>.</mi></mrow></math></p>
+",
+          },
+          {
+            "body": "<p><math><mrow><mi>x</mi><mo>=</mo></mrow><mrow><mn>2.62</mn><mi>.</mi></mrow></math></p>
+",
+          },
+        ],
+      },
+      {
+        "parts": [
+          {
+            "body": "<p><math><mrow><mi>g</mi><mo form="prefix" stretchy="false">(</mo><mn>4</mn><mo form="postfix" stretchy="false">)</mo><mo>=</mo></mrow><mrow><mn>6</mn><mi>.</mi></mrow></math>
+<br>
+<math><mrow><mi>g</mi><mo form="prefix" stretchy="false">(</mo><mn>7</mn><mo form="postfix" stretchy="false">)</mo><mo>=</mo></mrow><mrow><mn>8</mn><mi>.</mi></mrow></math>
+<br>
+<math><mrow><mi>g</mi><mo form="prefix" stretchy="false">(</mo><mn>12</mn><mo form="postfix" stretchy="false">)</mo><mo>=</mo></mrow><mrow><mn>9</mn><mi>.</mi></mrow></math></p>
+",
+          },
+          {
+            "body": "<p><math><mi>g</mi></math>
+does not have an inverse as <math><mrow><mi>g</mi><mo form="prefix" stretchy="false">(</mo><mn>7</mn><mo form="postfix" stretchy="false">)</mo><mo>=</mo><mi>g</mi><mo form="prefix" stretchy="false">(</mo><mn>8</mn><mo form="postfix" stretchy="false">)</mo><mo>=</mo><mn>8</mn></mrow></math>
+so <math><mi>g</mi></math>
+is not a one-to-one function.</p>
+",
+          },
+        ],
+      },
+    ],
+  },
+  "solution": {
+    "parts": [
+      {
+        "parts": [
+          {
+            "body": "<p><math display="block" class="tml-display" style="display:block math;"><mtable displaystyle="true"><mtr><mtd style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mtext>Let </mtext><mi>y</mi><mo>=</mo><msqrt><mi>x</mi></msqrt><mo>+</mo><mn>1</mn></mrow></mtd></mtr><mtr><mtd style="padding:0.7ex 0em 0.7ex 0em;"><mrow><msqrt><mi>x</mi></msqrt><mo>=</mo><mi>y</mi><mo>−</mo><mn>1</mn></mrow></mtd></mtr><mtr><mtd style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mi>x</mi><mo>=</mo><msup><mrow><mo fence="true" form="prefix">(</mo><mi>y</mi><mo>−</mo><mn>1</mn><mo fence="true" form="postfix">)</mo></mrow><mn>2</mn></msup></mrow></mtd></mtr></mtable></math></p>
+<p><math display="block" class="tml-display" style="display:block math;"><mrow><msup><mi>f</mi><mrow><mo lspace="0em" rspace="0em">−</mo><mn>1</mn></mrow></msup><mo form="prefix" stretchy="false">(</mo><mi>x</mi><mo form="postfix" stretchy="false">)</mo><mo>=</mo><msup><mrow><mo fence="true" form="prefix">(</mo><mi>x</mi><mo>−</mo><mn>1</mn><mo fence="true" form="postfix">)</mo></mrow><mn>2</mn></msup><mspace width="0.2778em"></mspace><mi>■</mi></mrow></math></p>
+<p><math display="block" class="tml-display" style="display:block math;"><mtable displaystyle="true" columnalign="right left"><mtr><mtd class="tml-right" style="padding:0.7ex 0em 0.7ex 0em;"><msub><mi>D</mi><msup><mi>f</mi><mrow><mo lspace="0em" rspace="0em">−</mo><mn>1</mn></mrow></msup></msub></mtd><mtd class="tml-left" style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mo>=</mo><msub><mi>R</mi><mi>f</mi></msub></mrow></mtd></mtr><mtr><mtd class="tml-right" style="padding:0.7ex 0em 0.7ex 0em;"><mrow></mrow></mtd><mtd class="tml-left" style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mo>=</mo><mrow><mo fence="true" form="prefix">[</mo><mn>1</mn><mo separator="true">,</mo><mi>∞</mi><mo fence="true" form="postfix">)</mo></mrow><mspace width="0.2778em"></mspace><mi>■</mi></mrow></mtd></mtr></mtable></math></p>
+",
+          },
+          {
+            "body": "<p><math display="block" class="tml-display" style="display:block math;"><mtable displaystyle="true"><mtr><mtd style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mi>f</mi><mi>f</mi><mo form="prefix" stretchy="false">(</mo><mi>x</mi><mo form="postfix" stretchy="false">)</mo><mo>=</mo><mi>x</mi></mrow></mtd></mtr><mtr><mtd style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mi>f</mi><mrow><mo fence="true" form="prefix">(</mo><msqrt><mi>x</mi></msqrt><mo>+</mo><mn>1</mn><mo fence="true" form="postfix">)</mo></mrow><mo>=</mo><mi>x</mi></mrow></mtd></mtr><mtr><mtd style="padding:0.7ex 0em 0.7ex 0em;"><mrow><msqrt><mrow><msqrt><mi>x</mi></msqrt><mo>+</mo><mn>1</mn></mrow></msqrt><mo>+</mo><mn>1</mn><mo>=</mo><mi>x</mi></mrow></mtd></mtr><mtr><mtd style="padding:0.7ex 0em 0.7ex 0em;"><mrow><msqrt><mrow><msqrt><mi>x</mi></msqrt><mo>+</mo><mn>1</mn></mrow></msqrt><mo>=</mo><mi>x</mi><mo>−</mo><mn>1</mn></mrow></mtd></mtr><mtr><mtd style="padding:0.7ex 0em 0.7ex 0em;"><mrow><msqrt><mi>x</mi></msqrt><mo>+</mo><mn>1</mn><mo>=</mo><msup><mrow><mo fence="true" form="prefix">(</mo><mi>x</mi><mo>−</mo><mn>1</mn><mo fence="true" form="postfix">)</mo></mrow><mn>2</mn></msup></mrow></mtd></mtr><mtr><mtd style="padding:0.7ex 0em 0.7ex 0em;"><mrow><msqrt><mi>x</mi></msqrt><mo>+</mo><mn>1</mn><mo>=</mo><msup><mi>x</mi><mn>2</mn></msup><mo>−</mo><mn>2</mn><mi>x</mi><mo>+</mo><mn>1</mn></mrow></mtd></mtr><mtr><mtd style="padding:0.7ex 0em 0.7ex 0em;"><mrow><msqrt><mi>x</mi></msqrt><mo>=</mo><msup><mi>x</mi><mn>2</mn></msup><mo>−</mo><mn>2</mn><mi>x</mi></mrow></mtd></mtr><mtr><mtd style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mi>x</mi><mo>=</mo><msup><mrow><mo fence="true" form="prefix">(</mo><msup><mi>x</mi><mn>2</mn></msup><mo>−</mo><mn>2</mn><mi>x</mi><mo fence="true" form="postfix">)</mo></mrow><mn>2</mn></msup></mrow></mtd></mtr><mtr><mtd style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mi>x</mi><mo>=</mo><msup><mi>x</mi><mn>4</mn></msup><mo>−</mo><mn>4</mn><msup><mi>x</mi><mn>3</mn></msup><mo>+</mo><mn>4</mn><msup><mi>x</mi><mn>2</mn></msup></mrow></mtd></mtr><mtr><mtd style="padding:0.7ex 0em 0.7ex 0em;"><mrow><msup><mi>x</mi><mn>4</mn></msup><mo>−</mo><mn>4</mn><msup><mi>x</mi><mn>3</mn></msup><mo>+</mo><mn>4</mn><msup><mi>x</mi><mn>2</mn></msup><mo>−</mo><mi>x</mi><mo>=</mo><mn>0</mn></mrow></mtd></mtr><mtr><mtd style="padding:0.7ex 0em 0.7ex 0em;"><mrow><msup><mi>x</mi><mn>3</mn></msup><mo>−</mo><mn>4</mn><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><mn>4</mn><mi>x</mi><mo>−</mo><mn>1</mn><mo>=</mo><mn>0</mn><mspace width="0.2778em"></mspace><mi>■</mi></mrow></mtd></mtr></mtable></math></p>
+<p>Solving with a GC,</p>
+<p><math display="block" class="tml-display" style="display:block math;"><mrow><mi>x</mi><mo>=</mo><mn>0.382</mn><mo separator="true">,</mo><mspace width="1em"></mspace><mn>1</mn><mspace width="1em"></mspace><mtext>or</mtext><mspace width="1em"></mspace><mn>2.62</mn></mrow></math></p>
+<p>From <math><mrow><msqrt><mrow><msqrt><mi>x</mi></msqrt><mo>+</mo><mn>1</mn></mrow></msqrt><mo>+</mo><mn>1</mn><mo>=</mo><mi>x</mi><mo separator="true" lspace="0em" rspace="0em">,</mo></mrow></math>
+we observe that <math><mrow><mi>x</mi><mo>&gt;</mo><mn>1</mn><mi>.</mi></mrow></math>
+Hence</p>
+<p><math display="block" class="tml-display" style="display:block math;"><mrow><mi>x</mi><mo>=</mo><mn>2.62</mn><mspace width="0.2778em"></mspace><mi>■</mi></mrow></math></p>
+<p>From <math><mrow><mrow><mi>f</mi><mi>f</mi><mo form="prefix" stretchy="false">(</mo><mi>x</mi><mo form="postfix" stretchy="false">)</mo><mo>=</mo><mi>x</mi></mrow><mo separator="true">,</mo></mrow></math>
+we can apply <math><msup><mi>f</mi><mrow><mo lspace="0em" rspace="0em">−</mo><mn>1</mn></mrow></msup></math>
+on both sides</p>
+<p><math display="block" class="tml-display" style="display:block math;"><mtable displaystyle="true" columnalign="right left"><mtr><mtd class="tml-right" style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mi>f</mi><mi>f</mi><mo form="prefix" stretchy="false">(</mo><mi>x</mi><mo form="postfix" stretchy="false">)</mo></mrow></mtd><mtd class="tml-left" style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mo>=</mo><mi>x</mi></mrow></mtd></mtr><mtr><mtd class="tml-right" style="padding:0.7ex 0em 0.7ex 0em;"><mrow><msup><mi>f</mi><mrow><mo lspace="0em" rspace="0em">−</mo><mn>1</mn></mrow></msup><mi>f</mi><mi>f</mi><mo form="prefix" stretchy="false">(</mo><mi>x</mi><mo form="postfix" stretchy="false">)</mo></mrow></mtd><mtd class="tml-left" style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mo>=</mo><msup><mi>f</mi><mrow><mo form="prefix" stretchy="false" lspace="0em" rspace="0em">−</mo><mn>1</mn></mrow></msup><mo form="prefix" stretchy="false">(</mo><mi>x</mi><mo form="postfix" stretchy="false">)</mo></mrow></mtd></mtr><mtr><mtd class="tml-right" style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mi>f</mi><mo form="prefix" stretchy="false">(</mo><mi>x</mi><mo form="postfix" stretchy="false">)</mo></mrow></mtd><mtd class="tml-left" style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mo>=</mo><msup><mi>f</mi><mrow><mo form="prefix" stretchy="false" lspace="0em" rspace="0em">−</mo><mn>1</mn></mrow></msup><mo form="prefix" stretchy="false">(</mo><mi>x</mi><mo form="postfix" stretchy="false">)</mo></mrow></mtd></mtr></mtable></math></p>
+<p>Hence the value of <math><mi>x</mi></math>
+obtained satisfies the equation <math><mrow><mrow><mi>f</mi><mo form="prefix" stretchy="false">(</mo><mi>x</mi><mo form="postfix" stretchy="false">)</mo><mo>=</mo><msup><mi>f</mi><mrow><mo form="prefix" stretchy="false" lspace="0em" rspace="0em">−</mo><mn>1</mn></mrow></msup><mo form="prefix" stretchy="false">(</mo><mi>x</mi><mo form="postfix" stretchy="false" lspace="0em" rspace="0em">)</mo></mrow><mspace width="0.2778em"></mspace><mi>■</mi></mrow></math></p>
+",
+          },
+        ],
+      },
+      {
+        "parts": [
+          {
+            "body": "<p><math display="block" class="tml-display" style="display:block math;"><mtable displaystyle="true" columnalign="right left"><mtr><mtd class="tml-right" style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mi>g</mi><mo form="prefix" stretchy="false">(</mo><mn>2</mn><mo form="postfix" stretchy="false">)</mo></mrow></mtd><mtd class="tml-left" style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mo>=</mo><mn>2</mn><mo>+</mo><mi>g</mi><mrow><mo fence="true" form="prefix">(</mo><mn>1</mn><mo fence="true" form="postfix">)</mo></mrow></mrow></mtd></mtr><mtr><mtd class="tml-right" style="padding:0.7ex 0em 0.7ex 0em;"><mrow></mrow></mtd><mtd class="tml-left" style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mo>=</mo><mn>2</mn><mo>+</mo><mn>1</mn><mo>+</mo><mi>g</mi><mrow><mo fence="true" form="prefix">(</mo><mn>0</mn><mo fence="true" form="postfix">)</mo></mrow></mrow></mtd></mtr><mtr><mtd class="tml-right" style="padding:0.7ex 0em 0.7ex 0em;"><mrow></mrow></mtd><mtd class="tml-left" style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mo>=</mo><mn>3</mn><mo>+</mo><mn>1</mn></mrow></mtd></mtr><mtr><mtd class="tml-right" style="padding:0.7ex 0em 0.7ex 0em;"><mrow></mrow></mtd><mtd class="tml-left" style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mo>=</mo><mn>4</mn></mrow></mtd></mtr></mtable></math></p>
+<p><math display="block" class="tml-display" style="display:block math;"><mtable displaystyle="true" columnalign="right left"><mtr><mtd class="tml-right" style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mi>g</mi><mo form="prefix" stretchy="false">(</mo><mn>4</mn><mo form="postfix" stretchy="false">)</mo></mrow></mtd><mtd class="tml-left" style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mo>=</mo><mn>2</mn><mo>+</mo><mi>g</mi><mrow><mo fence="true" form="prefix">(</mo><mn>2</mn><mo fence="true" form="postfix">)</mo></mrow></mrow></mtd></mtr><mtr><mtd class="tml-right" style="padding:0.7ex 0em 0.7ex 0em;"><mrow></mrow></mtd><mtd class="tml-left" style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mo>=</mo><mn>2</mn><mo>+</mo><mn>4</mn></mrow></mtd></mtr><mtr><mtd class="tml-right" style="padding:0.7ex 0em 0.7ex 0em;"><mrow></mrow></mtd><mtd class="tml-left" style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mo>=</mo><mn>6</mn><mspace width="0.2778em"></mspace><mi>∎</mi></mrow></mtd></mtr></mtable></math></p>
+<p><math display="block" class="tml-display" style="display:block math;"><mtable displaystyle="true" columnalign="right left"><mtr><mtd class="tml-right" style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mi>g</mi><mo form="prefix" stretchy="false">(</mo><mn>6</mn><mo form="postfix" stretchy="false">)</mo></mrow></mtd><mtd class="tml-left" style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mo>=</mo><mn>2</mn><mo>+</mo><mi>g</mi><mrow><mo fence="true" form="prefix">(</mo><mn>3</mn><mo fence="true" form="postfix">)</mo></mrow></mrow></mtd></mtr><mtr><mtd class="tml-right" style="padding:0.7ex 0em 0.7ex 0em;"><mrow></mrow></mtd><mtd class="tml-left" style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mo>=</mo><mn>2</mn><mo>+</mo><mn>1</mn><mo>+</mo><mi>g</mi><mrow><mo fence="true" form="prefix">(</mo><mn>2</mn><mo fence="true" form="postfix">)</mo></mrow></mrow></mtd></mtr><mtr><mtd class="tml-right" style="padding:0.7ex 0em 0.7ex 0em;"><mrow></mrow></mtd><mtd class="tml-left" style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mo>=</mo><mn>3</mn><mo>+</mo><mn>4</mn></mrow></mtd></mtr><mtr><mtd class="tml-right" style="padding:0.7ex 0em 0.7ex 0em;"><mrow></mrow></mtd><mtd class="tml-left" style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mo>=</mo><mn>7</mn></mrow></mtd></mtr></mtable></math></p>
+<p><math display="block" class="tml-display" style="display:block math;"><mtable displaystyle="true" columnalign="right left"><mtr><mtd class="tml-right" style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mi>g</mi><mo form="prefix" stretchy="false">(</mo><mn>7</mn><mo form="postfix" stretchy="false">)</mo></mrow></mtd><mtd class="tml-left" style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mo>=</mo><mn>1</mn><mo>+</mo><mi>g</mi><mrow><mo fence="true" form="prefix">(</mo><mn>6</mn><mo fence="true" form="postfix">)</mo></mrow></mrow></mtd></mtr><mtr><mtd class="tml-right" style="padding:0.7ex 0em 0.7ex 0em;"><mrow></mrow></mtd><mtd class="tml-left" style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mo>=</mo><mn>1</mn><mo>+</mo><mn>7</mn></mrow></mtd></mtr><mtr><mtd class="tml-right" style="padding:0.7ex 0em 0.7ex 0em;"><mrow></mrow></mtd><mtd class="tml-left" style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mo>=</mo><mn>8</mn><mspace width="0.2778em"></mspace><mi>∎</mi></mrow></mtd></mtr></mtable></math></p>
+<p><math display="block" class="tml-display" style="display:block math;"><mtable displaystyle="true" columnalign="right left"><mtr><mtd class="tml-right" style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mi>g</mi><mo form="prefix" stretchy="false">(</mo><mn>12</mn><mo form="postfix" stretchy="false">)</mo></mrow></mtd><mtd class="tml-left" style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mo>=</mo><mn>2</mn><mo>+</mo><mi>g</mi><mrow><mo fence="true" form="prefix">(</mo><mn>6</mn><mo fence="true" form="postfix">)</mo></mrow></mrow></mtd></mtr><mtr><mtd class="tml-right" style="padding:0.7ex 0em 0.7ex 0em;"><mrow></mrow></mtd><mtd class="tml-left" style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mo>=</mo><mn>2</mn><mo>+</mo><mn>2</mn><mo>+</mo><mi>g</mi><mrow><mo fence="true" form="prefix">(</mo><mn>3</mn><mo fence="true" form="postfix">)</mo></mrow></mrow></mtd></mtr><mtr><mtd class="tml-right" style="padding:0.7ex 0em 0.7ex 0em;"><mrow></mrow></mtd><mtd class="tml-left" style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mo>=</mo><mn>2</mn><mo>+</mo><mn>7</mn></mrow></mtd></mtr><mtr><mtd class="tml-right" style="padding:0.7ex 0em 0.7ex 0em;"><mrow></mrow></mtd><mtd class="tml-left" style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mo>=</mo><mn>9</mn><mspace width="0.2778em"></mspace><mi>∎</mi></mrow></mtd></mtr></mtable></math></p>
+",
+          },
+          {
+            "body": "<p><math display="block" class="tml-display" style="display:block math;"><mtable displaystyle="true" columnalign="right left"><mtr><mtd class="tml-right" style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mi>g</mi><mo form="prefix" stretchy="false">(</mo><mn>8</mn><mo form="postfix" stretchy="false">)</mo></mrow></mtd><mtd class="tml-left" style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mo>=</mo><mn>2</mn><mo>+</mo><mi>g</mi><mrow><mo fence="true" form="prefix">(</mo><mn>4</mn><mo fence="true" form="postfix">)</mo></mrow></mrow></mtd></mtr><mtr><mtd class="tml-right" style="padding:0.7ex 0em 0.7ex 0em;"><mrow></mrow></mtd><mtd class="tml-left" style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mo>=</mo><mn>2</mn><mo>+</mo><mn>6</mn></mrow></mtd></mtr><mtr><mtd class="tml-right" style="padding:0.7ex 0em 0.7ex 0em;"><mrow></mrow></mtd><mtd class="tml-left" style="padding:0.7ex 0em 0.7ex 0em;"><mrow><mo>=</mo><mn>8</mn></mrow></mtd></mtr></mtable></math></p>
+<p>Since <math><mrow><mi>g</mi><mo form="prefix" stretchy="false">(</mo><mn>7</mn><mo form="postfix" stretchy="false">)</mo><mo>=</mo><mi>g</mi><mo form="prefix" stretchy="false">(</mo><mn>8</mn><mo form="postfix" stretchy="false">)</mo><mo>=</mo><mn>8</mn><mo separator="true" lspace="0em" rspace="0em">,</mo></mrow></math>
+<math><mi>g</mi></math>
+is not a one-to-one function and <math><mi>g</mi></math>
+does not have an inverse<math><mrow><mspace width="0.2778em"></mspace><mi>■</mi></mrow></math></p>
+",
+          },
+        ],
+      },
+    ],
+  },
+}
+`;

@@ -58,7 +58,8 @@ export function generateState(): State {
 	} else if (type === 2) {
 		// 2. inner: imp/frac, outer: linear or quad. 50% restriction: match domain with R_inner
 		const types = ['improper', 'frac'] as const;
-		const isRestricted = coinFlip();
+		//const isRestricted = coinFlip();
+		const isRestricted = true;
 		inner = generateFnState({ type: chooseRandom(types), unknownConstants: false, isRestricted });
 		outer = generateFnState({
 			type: coinFlip() ? 'linear' : 'quadratic',
@@ -74,6 +75,8 @@ export function generateState(): State {
 			const range = ranges[0];
 			if (range.isOneSided()) {
 				outer.restriction = range.toOneSidedInterval();
+			} else {
+				outer.restriction = false;
 			}
 		}
 	} else if (type === 3) {
@@ -256,7 +259,7 @@ ${{}}D_{${fg}} = ${gDomain.join(` \\cup `)}.`;
 			: definition
 				? mathlify`
 	$${fg}:x\\mapsto ${fgExp}, \\quad ${domainInequality}.`
-				: mathlify`${fg}(x) = ${fgExp}
+				: mathlify`${fg}(x) = ${fgExp}.
 	\\
 	${{}}D_{${fg}} = ${gDomain.join(` \\cup `)}.`;
 	}

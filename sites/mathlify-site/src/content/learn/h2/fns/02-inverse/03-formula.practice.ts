@@ -12,7 +12,7 @@ import type { PracticeState, PracticeQuestion } from '$lib/types/learn';
 import { mathlify } from '$lib/mathlifier';
 import { Expression, sum, e, Polynomial } from 'mathlify';
 import { EquationWorking } from 'mathlify/working';
-import { logTerm, sqrtTerm } from 'mathlify/fns';
+import { logTerm, simplifySurd, sqrtTerm } from 'mathlify/fns';
 
 // ax+b (2013)
 // (x+a)^2 + b, (2007,2008)
@@ -167,7 +167,7 @@ function generateAns(state: State, rhs: Expression): { ans: string; soln: string
 	if (fnType === 'linear') {
 		const { working, exp: fInv } = linearInverseWorking(rhs, { swap: unknownConstants || a > 0 });
 		const soln2 = definition
-			? mathlify`$${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, rhs)} ${QED}`
+			? mathlify`$${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, rhs, { noFullStop: true })} ${QED}`
 			: mathlify`$${{}} f^{-1}(x) = ${fInv} ${QED}
 
 $${'align*'} D_{f^{-1}} &= R_{f} \\\\ &= ${generateRange(state, rhs).join(' \\cup ')} ${QED}`;
@@ -192,7 +192,7 @@ ${{}} D_{f^{-1}} = R_{f} = ${generateRange(state, rhs).join(' \\cup ')}.`;
 		const fInv = working3.eqn.rhs.subIn({ y: 'x' });
 		const soln1 = mathlify`$${'gather*'} \\text{Let } ${working1} \\\\ ${working2} \\\\ ${working3}`;
 		const soln2 = definition
-			? mathlify`$${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, rhs)} ${QED}`
+			? mathlify`$${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, rhs, { noFullStop: true })} ${QED}`
 			: mathlify`$${{}} f^{-1}(x) = ${fInv} ${QED}
 
 $${'align*'} D_{f^{-1}} &= R_{f} \\\\ &= ${generateRange(state, rhs).join(' \\cup ')} ${QED}`;
@@ -214,7 +214,7 @@ ${{}} D_{f^{-1}} = R_{f} = ${generateRange(state, rhs).join(' \\cup ')}.`;
 		const fInv = working.eqn.rhs.subIn({ y: 'x' });
 		const soln1 = mathlify`$${'gather*'} \\text{Let } ${working}`;
 		const soln2 = definition
-			? mathlify`$${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, rhs)} ${QED}`
+			? mathlify`$${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, rhs, { noFullStop: true })} ${QED}`
 			: mathlify`$${{}} f^{-1}(x) = ${fInv} ${QED}
 
 $${'align*'} D_{f^{-1}} &= R_{f} \\\\ &= ${generateRange(state, rhs).join(' \\cup ')} ${QED}`;
@@ -251,7 +251,7 @@ ${{}} D_{f^{-1}} = R_{f} = ${generateRange(state, rhs).join(' \\cup ')}.`;
 Since ${{}} {${generateDomain(restriction)},}
 $${'x'} = ${newRHS}`;
 		const soln2 = definition
-			? mathlify`$${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, rhs)} ${QED}`
+			? mathlify`$${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, rhs, { noFullStop: true })} ${QED}`
 			: mathlify`$${{}} f^{-1}(x) = ${fInv} ${QED}
 
 $${'align*'} D_{f^{-1}} &= R_{f} \\\\ &= ${generateRange(state, rhs).join(' \\cup ')} ${QED}`;
@@ -281,7 +281,7 @@ export function improperInverse(
 	const domain = noDomain
 		? ''
 		: definition
-			? generateInequality(state, rhs)
+			? generateInequality(state, rhs, { noFullStop: true })
 			: mathlify`$${'align*'} D_{f^{-1}} &= R_{f} \\\\ &= ${generateRange(state, rhs).join(' \\cup ')} ${QED}`;
 	const Rf = options?.omitReasoningInAns ? '' : '= R_f';
 	const soln2 = definition
@@ -365,7 +365,7 @@ export function quadraticInverse(state: State, rhs: Expression): { ans: string; 
 \\\\ \\text{Since } ${domain},
 \\\\ ${working}`;
 	const soln2 = definition
-		? mathlify`$${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, rhs)} ${QED}`
+		? mathlify`$${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, rhs, { noFullStop: true })} ${QED}`
 		: mathlify`$${{}} f^{-1}(x) = ${fInv} ${QED}
 
 $${'align*'} D_{f^{-1}} &= R_{f} \\\\ &= ${generateRange(state, rhs).join(' \\cup ')} ${QED}`;
@@ -400,7 +400,7 @@ export function logInverse(
 			? `\\left( -\\infty, \\infty \\right)`
 			: generateRange(state, rhs).join(' \\cup ');
 	const soln2 = options?.definition
-		? mathlify`$${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, rhs)} ${QED}`
+		? mathlify`$${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, rhs, { noFullStop: true })} ${QED}`
 		: mathlify`$${{}} f^{-1}(x) = ${fInv} ${QED}
 
 $${'align*'} D_{f^{-1}} &= R_{f} \\\\ &= ${Rf} ${QED}`;
@@ -437,7 +437,7 @@ export function expInverse(
 			? `\\left( ${options?.b}, \\infty \\right)`
 			: generateRange(options?.state, rhs).join(' \\cup ');
 	const soln2 = options?.definition
-		? mathlify`$${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, rhs)} ${QED}`
+		? mathlify`$${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, rhs, { noFullStop: true })} ${QED}`
 		: mathlify`$${{}} f^{-1}(x) = ${fInv} ${QED}
 
 $${'align*'} D_{f^{-1}} &= R_{f} \\\\ &= ${Rf} ${QED}`;
@@ -446,6 +446,33 @@ $${'align*'} D_{f^{-1}} &= R_{f} \\\\ &= ${Rf} ${QED}`;
 		: mathlify`${{}} f^{-1}(x) = ${fInv}.
 \\
 ${{}} D_{f^{-1}} = R_{f} = ${Rf}.`;
+	return { ans, soln: soln1 + soln2, exp: fInv };
+}
+
+export function sqrtInverse(
+	state: State,
+	rhs: Expression,
+	options?: { definition?: boolean },
+): { ans: string; soln: string; exp: Expression } {
+	const hide = true;
+	const working = new EquationWorking('y', rhs);
+	working.swapSides({ hide }).isolate('x');
+	EquationWorking.RegisterCustomSimplifier(simplifySurd);
+	working.square();
+	working.solve.linear('x');
+	EquationWorking.DeregisterCustomSimplifier();
+	const fInv = working.eqn.rhs.subIn({ y: 'x' });
+	const soln1 = mathlify`$${'gather*'} \\text{Let } ${working}`;
+	const soln2 = options?.definition
+		? mathlify`$${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, rhs, { noFullStop: true })} ${QED}`
+		: mathlify`$${{}} f^{-1}(x) = ${fInv} ${QED}
+
+$${'align*'} D_{f^{-1}} &= R_{f} \\\\ &= ${generateRange(state, rhs).join(' \\cup ')} ${QED}`;
+	const ans = options?.definition
+		? mathlify`${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, rhs)}`
+		: mathlify`${{}} f^{-1}(x) = ${fInv}.
+\\
+${{}} D_{f^{-1}} = R_{f} = ${generateRange(state, rhs).join(' \\cup ')}.`;
 	return { ans, soln: soln1 + soln2, exp: fInv };
 }
 
@@ -522,7 +549,7 @@ export function specialInverse(
 Since ${generateDomain(restriction)},
 $${'x'} = ${newRHS}`;
 	const soln2 = definition
-		? mathlify`$${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, exp)} ${QED}`
+		? mathlify`$${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, exp, { noFullStop: true })} ${QED}`
 		: mathlify`$${{}} f^{-1}(x) = ${fInv} ${QED}
 
 $${'align*'} D_{f^{-1}} &= R_{f} \\\\ &= ${generateRange(state, exp).join(' \\cup ')} ${QED}`;
@@ -541,7 +568,12 @@ export function greaterThan(inclusive: boolean): string {
 	return inclusive ? `\\geq ` : '>';
 }
 
-function generateInequality(state: State, exp: Expression): string {
+function generateInequality(
+	state: State,
+	exp: Expression,
+	options?: { noFullStop?: boolean },
+): string {
+	const fullStop = options?.noFullStop ? '' : '.';
 	const { fnType, restriction, a, b, c, unknownConstants } = state;
 	const ans = `x \\in \\mathbb{R}`;
 	if (fnType === 'linear') {
@@ -549,32 +581,32 @@ function generateInequality(state: State, exp: Expression): string {
 			const { type, x, inclusive } = restriction;
 			const y = exp.subIn({ x });
 			if ((a > 0 && type === 'left') || (a < 0 && type === 'right')) {
-				return ans + `, x ${lessThan(inclusive)} ${y}.`;
+				return ans + `, x ${lessThan(inclusive)} ${y}${fullStop}`;
 			} else {
-				return ans + `, x ${greaterThan(inclusive)} ${y}.`;
+				return ans + `, x ${greaterThan(inclusive)} ${y}${fullStop}`;
 			}
 		}
-		return ans + '.';
+		return ans + fullStop;
 	} else if (fnType === 'quadratic') {
 		// (x+a)^2 + b
 		if (restriction) {
 			const { type, x, inclusive } = restriction;
 			if (unknownConstants) {
-				return ans + `, x ${greaterThan(inclusive)} b.`;
+				return ans + `, x ${greaterThan(inclusive)} b${fullStop}`;
 			}
 			const y = exp.subIn({ x });
 			if ((x < -a && type === 'left') || (x > -a && type === 'right') || (x === -a && !inclusive)) {
-				return ans + `, x ${greaterThan(inclusive)} ${y}.`;
+				return ans + `, x ${greaterThan(inclusive)} ${y}${fullStop}`;
 			}
 		}
 		const bString = unknownConstants ? 'b' : b;
-		return ans + `, x \\geq ${bString}.`;
+		return ans + `, x \\geq ${bString}${fullStop}`;
 	} else if (fnType === 'log') {
 		if (restriction) {
 			// chosen to be ln 1 and on the right
-			return ans + `, x ${greaterThan(restriction.inclusive)} ${b}.`;
+			return ans + `, x ${greaterThan(restriction.inclusive)} ${b}${fullStop}`;
 		}
-		return ans + '.';
+		return ans + fullStop;
 	} else if (fnType === 'exp') {
 		const bString = unknownConstants ? 'b' : b;
 		const bPlus1 = unknownConstants ? 'b+1' : b + 1;
@@ -582,34 +614,34 @@ function generateInequality(state: State, exp: Expression): string {
 			// chosen to be e^0 + b
 			const { inclusive, type } = restriction;
 			if ((type === 'left' && a > 0) || (type === 'right' && a < 0)) {
-				return ans + `, ${bString} < x ${lessThan(inclusive)} ${bPlus1}.`;
+				return ans + `, ${bString} < x ${lessThan(inclusive)} ${bPlus1}${fullStop}`;
 			} else {
-				return ans + `, x ${greaterThan(inclusive)} ${bPlus1}.`;
+				return ans + `, x ${greaterThan(inclusive)} ${bPlus1}${fullStop}`;
 			}
 		}
-		return ans + `, x > ${bString}.`;
+		return ans + `, x > ${bString}${fullStop}`;
 	} else if (fnType === 'sqrt') {
 		if (restriction) {
 			// chosen to be right
 			const { inclusive, x } = restriction;
 			const y = Math.sqrt(x + a) + b;
-			return ans + `, x ${greaterThan(inclusive)} ${y}.`;
+			return ans + `, x ${greaterThan(inclusive)} ${y}${fullStop}`;
 		}
 		const bString = unknownConstants ? 'b' : b;
-		return ans + `, x \\geq ${bString}.`;
+		return ans + `, x \\geq ${bString}${fullStop}`;
 	} else if (fnType === 'frac' || fnType == 'improper') {
 		if (restriction) {
 			// chosen to be a single interval
 			const { x, inclusive } = restriction;
 			const y = exp.subIn({ x });
 			if (y.valueOf() < b) {
-				return ans + `${y} ${lessThan(inclusive)} x < ${b}.`;
+				return ans + `${y} ${lessThan(inclusive)} x < ${b}${fullStop}`;
 			} else {
-				return ans + `${b} < x ${lessThan(inclusive)} ${y}.`;
+				return ans + `${b} < x ${lessThan(inclusive)} ${y}${fullStop}`;
 			}
 		}
 		const bString = unknownConstants ? 'b' : b;
-		return ans + `, x \\neq ${bString}.`;
+		return ans + `, x \\neq ${bString}${fullStop}`;
 	} else if (fnType === 'abs') {
 		if (restriction) {
 			const { x, inclusive, type } = restriction;
@@ -618,38 +650,38 @@ function generateInequality(state: State, exp: Expression): string {
 			if (-c / b < -a) {
 				if (type === 'left') {
 					if (x < -c / b) {
-						return ans + `, ${y} ${lessThan(inclusive)} x < ${Math.abs(b)}.`;
+						return ans + `, ${y} ${lessThan(inclusive)} x < ${Math.abs(b)}${fullStop}`;
 					} else {
 						return y.valueOf() < Math.abs(b)
-							? ans + `, 0 \\leq x < ${Math.abs(b)}.`
-							: ans + `, 0 \\leq x ${lessThan(inclusive)} ${y}.`;
+							? ans + `, 0 \\leq x < ${Math.abs(b)}${fullStop}`
+							: ans + `, 0 \\leq x ${lessThan(inclusive)} ${y}${fullStop}`;
 					}
 				} else {
-					return ans + `, ${Math.abs(b)} < x ${lessThan(inclusive)} ${y}.`;
+					return ans + `, ${Math.abs(b)} < x ${lessThan(inclusive)} ${y}${fullStop}`;
 				}
 			} else {
 				if (type === 'left') {
-					return ans + `, ${Math.abs(b)} < x ${lessThan(inclusive)} ${y}.`;
+					return ans + `, ${Math.abs(b)} < x ${lessThan(inclusive)} ${y}${fullStop}`;
 				} else {
 					if (x > -c / b) {
-						return ans + `, ${y} ${lessThan(inclusive)} x < ${Math.abs(b)}.`;
+						return ans + `, ${y} ${lessThan(inclusive)} x < ${Math.abs(b)}${fullStop}`;
 					} else {
 						return y.valueOf() < Math.abs(b)
-							? ans + `, 0 \\leq x < ${Math.abs(b)}.`
-							: ans + `, 0 \\leq x ${lessThan(inclusive)} ${y}.`;
+							? ans + `, 0 \\leq x < ${Math.abs(b)}${fullStop}`
+							: ans + `, 0 \\leq x ${lessThan(inclusive)} ${y}${fullStop}`;
 					}
 				}
 			}
 		}
-		return ans + `, x \\geq 0.`;
+		return ans + `, x \\geq 0${fullStop}`;
 	} else {
 		// special
 		const y = exp.subIn({ x: 0 });
 		if (restriction) {
-			return y.valueOf() < 0 ? ans + `, x > 0.` : `, x < 0.`;
+			return y.valueOf() < 0 ? ans + `, x > 0.` : `, x < 0${fullStop}`;
 		}
 		return b < 0
-			? ans + `, x \\leq 0 \\text{ or } x \\geq ${y}.`
-			: ans + `, x \\leq ${y} \\text{ or } x \\geq 0.`;
+			? ans + `, x \\leq 0 \\text{ or } x \\geq ${y}${fullStop}`
+			: ans + `, x \\leq ${y} \\text{ or } x \\geq 0${fullStop}`;
 	}
 }

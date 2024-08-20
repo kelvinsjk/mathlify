@@ -6,6 +6,7 @@ import {
 	Sum,
 	quotient,
 	shorthandToExpression,
+	sum,
 } from '../../core/expression/expression.js';
 import { Expression, Polynomial } from '../../index.js';
 import { expressionToPolynomial } from '../../utils/expression-to-polynomial.js';
@@ -16,7 +17,7 @@ import { Brackets, sqrtTerm, simplifySurd } from '../../fns/index.js';
 /** @typedef {import('../../core/expression/expression.js').Variable} Variable */
 /** @typedef {import('./equation.js').Sign} Sign */
 
-/** @typedef {{hide?: boolean, string?: boolean}} WorkingOptions */
+/** @typedef {{hide?: boolean, string?: boolean, swapSides?: true}} WorkingOptions */
 
 /**
  * EqnWorking Class to handle the step-by-step working in manipulating an equation
@@ -132,24 +133,66 @@ export class EquationWorking {
 
 	/**
 	 *
-	 * @param {number|number[]} indices
+	 * @param {number|number[]|[number[], number[]]} indices
 	 * @param {WorkingOptions & {fromRight?: boolean}} [options] - default from lhs
 	 * @returns {EquationWorking}
 	 */
 	moveTerms(indices, options) {
+		if (
+			Array.isArray(indices) &&
+			Array.isArray(indices[0]) &&
+			Array.isArray(indices[1])
+		) {
+			const [leftIndices, rightIndices] = indices;
+			const leftTerms =
+				this.eqn.lhs.node.type !== 'sum'
+					? [this.eqn.lhs]
+					: this.eqn.lhs._getSumTerms();
+			const rightTerms =
+				this.eqn.rhs.node.type !== 'sum'
+					? [this.eqn.rhs]
+					: this.eqn.rhs._getSumTerms();
+			const leftTermsToMove = leftTerms.filter((_, i) =>
+				leftIndices.includes(i),
+			);
+			const leftTermsToKeep = leftTerms.filter(
+				(_, i) => !leftIndices.includes(i),
+			);
+			const rightTermsToMove = rightTerms.filter((_, i) =>
+				rightIndices.includes(i),
+			);
+			const rightTermsToKeep = rightTerms.filter(
+				(_, i) => !rightIndices.includes(i),
+			);
+			const lhs = sum(
+				...leftTermsToKeep,
+				...rightTermsToMove.map((x) => x.negative()),
+			);
+			const rhs = sum(
+				...rightTermsToKeep,
+				...leftTermsToMove.map((x) => x.negative()),
+			);
+			this.eqn = new Equation(lhs, rhs, this.eqn.options);
+			return addStep(this, options);
+		}
 		// TODO: show steps to get final result
 		const exp = options?.fromRight ? this.eqn.rhs : this.eqn.lhs;
 		// note: moving singletons done via the makeRHSZero method
 		if (exp.node.type !== 'sum') {
-			throw new Error(
-				'Can only move terms in a sum. Consider using the makeRhsZero method instead',
-			);
+			if (indices !== 0)
+				throw new Error('unexpected index received when moving non-sum');
+			this.eqn = this.eqn.minus(exp);
+			return addStep(this, options);
 		}
-		const indicesArray = Array.isArray(indices) ? indices : [indices];
+		const indicesArray = typeof indices === 'number' ? [indices] : indices;
 		const terms = exp.node.terms;
 		/** @type {Expression[]} */
 		const newTerms = [];
 		for (const index of indicesArray) {
+			if (Array.isArray(index))
+				throw new Error(
+					'unexpected error. we believe we should not have an array at this moment',
+				);
 			// NOTE: user is to ensure validity of indices
 			const term = /** @type {Expression} */ (terms[index]);
 			newTerms.push(term.negative());
@@ -846,8 +889,12 @@ function addStep(working, options) {
 		working.eqn.sign,
 		'',
 	];
-	const lhs = working.eqn.lhs;
-	const rhs = working.eqn.rhs;
+	let lhs = working.eqn.lhs;
+	let rhs = working.eqn.rhs;
+	if (options?.swapSides) {
+		[lhs, rhs] = [rhs, lhs];
+		working.eqn = working.eqn.swapSides();
+	}
 	if (
 		!options?.hide &&
 		(prevLeft.toString() !== lhs.toString() ||

@@ -1,18 +1,23 @@
 import { Polynomial, Expression, Numeral } from '../index.js';
 import { divisors } from '../utils/divisors.js';
+import { expressionToPolynomial } from '../utils/expression-to-polynomial.js';
 import { bisection } from './bisection.js';
 
 /**
  * finds a rational root of a cubic if it exists,
  * or use the bisection method to find a numerical root
- * @param {Polynomial|[number,number,number,number]} cubic
+ * @param {Polynomial|[number,number,number,number]|Expression} cubic
  * @param {number} [lower=-10] lower bound to search for numerical root
  * @param {number} [upper=10] upper bound to search for numerical root
  * @param {number} [precision=5] number of digits after the decimal point to match before terminating
  * @returns {number|Expression}
  */
 export function cubicRoot(cubic, lower, upper, precision) {
-	const poly = Array.isArray(cubic) ? new Polynomial(cubic) : cubic;
+	const poly = Array.isArray(cubic)
+		? new Polynomial(cubic)
+		: cubic instanceof Polynomial
+			? cubic
+			: expressionToPolynomial(cubic);
 	const rational = rationalRoot(poly);
 	if (rational) return rational;
 	return bisection(poly.fn, lower ?? -10, upper ?? 10, precision);

@@ -138,7 +138,7 @@ $${'align*'}${rootsWorking}
 Since ${`x > ${-a},`}
 $${{}} x = ${root} ${QED}`;
 	} else if (fnType === 'cubic') {
-		const root = cubicRoot(exp as Polynomial, -5, 5);
+		const root = cubicRoot(exp.minus(Polynomial.ofDegree(1)) as Polynomial, -5, 5);
 		roots.push(root);
 		const rootString =
 			root instanceof Expression
@@ -186,4 +186,3 @@ $${{}} x = ${x1String} ${QED}, \\quad x = ${x2String} ${QED}
 	const ans = mathlify`${'x='}${answers.join(', ')}.`;
 	return { ans, soln, roots };
 }
-
