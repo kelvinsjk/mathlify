@@ -134,11 +134,12 @@ export class Polynomial extends Expression {
     clone(): Polynomial;
     /**
      * @param {Polynomial} divisor
-     * @returns {{quotient: Polynomial, remainder: Polynomial}}
+     * @returns {{quotient: Polynomial, remainder: Polynomial, result: Expression}}
      */
     longDivide(divisor: Polynomial): {
         quotient: Polynomial;
         remainder: Polynomial;
+        result: Expression;
     };
 }
 export type ExpressionNode = import("../expression/expression.js").ExpressionNode;

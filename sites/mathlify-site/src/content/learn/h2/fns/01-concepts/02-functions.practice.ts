@@ -40,6 +40,11 @@ export interface IntervalOneSided extends Record<string, SupportedTypes> {
 	inclusive: boolean;
 	x: number;
 }
+export interface IntervalTwoSided extends Record<string, SupportedTypes> {
+	type: 'two';
+	inclusive: [boolean, boolean];
+	x: [number, number];
+}
 
 export interface State extends PracticeState {
 	fnType: Type;

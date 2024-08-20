@@ -1,4 +1,4 @@
-# Repeating functions
+# Using the quadratic discriminant
 
 ## Self composition
 

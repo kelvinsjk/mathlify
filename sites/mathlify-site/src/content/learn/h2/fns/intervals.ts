@@ -29,6 +29,14 @@ export class Interval {
 		if (type === 'right') return `${x} ${greaterThan(this.leftInclusive)} ${this.left}`;
 		return `${this.left} ${lessThan(this.leftInclusive)} ${x} ${lessThan(this.rightInclusive)} ${this.right}`;
 	}
+	includes(x: number | Expression): boolean {
+		const xVal = x.valueOf();
+		if (xVal < this.left.valueOf()) return false;
+		if (xVal === this.left.valueOf()) return this.leftInclusive;
+		if (xVal === this.right.valueOf()) return this.rightInclusive;
+		if (xVal > this.right.valueOf()) return false;
+		return true;
+	}
 	isSubsetOf(other: Interval): boolean {
 		// (a, b) against (A, B)
 		const a = this.left.valueOf();

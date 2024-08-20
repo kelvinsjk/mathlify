@@ -70,7 +70,18 @@ export function generateState(): State {
 export function generateQn(state: PracticeState): PracticeQuestion {
 	const state1 = state as State;
 	const { show, n } = state1;
+	const [qnStart, f, fExp] = generatePreambleAndQn(state1);
+	const qn1 = show
+		? mathlify`Show that ${f}
+is self-inverse.`
+		: mathlify`Find ${f}^{-1}(x).`;
+	const qn2 = mathlify`Hence or otherwise find ${f}^{${n}}(x).`;
+	const qn = qnStart + qn1 + qn2;
+	return { qn, ...generateAns(state1, fExp, f) };
+}
 
+function generatePreambleAndQn(state: State): [string, string, Expression] {
+	const { show } = state;
 	const preamble = show
 		? mathlify`A function ${'f'}
 is said to be self-inverse if
@@ -79,14 +90,8 @@ for all ${'x'}
 in the domain of ${'f.'}`
 		: '';
 	const f = show ? 'g' : 'f';
-	const [fnDefinition, fExp] = generateFnDefinition(state1, f);
-	const qn1 = show
-		? mathlify`Show that ${f}
-is self-inverse.`
-		: mathlify`Find ${f}^{-1}(x).`;
-	const qn2 = mathlify`Hence or otherwise find ${f}^{${n}}(x).`;
-	const qn = preamble + fnDefinition + qn1 + qn2;
-	return { qn, ...generateAns(state1, fExp, f) };
+	const [fnDefinition, fExp] = generateFnDefinition(state, f);
+	return [preamble + fnDefinition, f, fExp];
 }
 
 function generateFnDefinition(state: State, f: string): [string, Expression] {
@@ -211,6 +216,7 @@ export function generateAns(
 	state: State,
 	fExp: Expression,
 	f: string,
+	options?: { hideF2?: boolean },
 ): { ans: string; soln: string } {
 	const { fnType, show, n } = state;
 	const { working } =
@@ -220,26 +226,13 @@ export function generateAns(
 				? linearInverseWorking(fExp, { f, qed: !show })
 				: specialInverseWorking(state, fExp, f, !show);
 	const ans1 = show ? '' : mathlify`${{}} ${f}^{-1}(x) = ${fExp}.`;
-	const even = n % 2 === 0;
-	const ansExp = even ? 'x' : fExp;
-	const ans2 = mathlify`${f}^{${n}}(x) = ${ansExp}.`;
 	const showSoln = show
 		? mathlifyQED`Hence ${f}
 is self-inverse as ${{}} {${f}(x) = ${f}^{-1}(x)}
 and ${{}} D_{${f}^{-1}} = R_${f} = D_${f}`
 		: '';
-	const finalStep = even ? `x` : `${f}(x) \\\\ &= ${fExp}`;
-	const fnSoln =
-		n > 3
-			? mathlifyQED`$${'align*'} ${f}^{${n}}(x) &= ${f}^{${n - 2}}${f}${f}(x)
-\\\\ &= ${f}^{${n - 2}}${f}${f}^{-1}(x)
-\\\\ &= ${f}^{${n - 2}}(x)
-\\\\ &= \\dotsb
-\\\\ &= ${finalStep}`
-			: n === 2
-				? mathlifyQED`$${'align*'} ${f}^{${n}}(x) &= ${f}${f}(x) \\\\ &= ${f}${f}^{-1}(x) \\\\ &= x`
-				: mathlifyQED`$${'align*'} ${f}^{${n}}(x) &= ${f}${f}${f}(x) \\\\ &= ${f}${f}${f}^{-1}(x) \\\\ &= ${finalStep}`;
-	const soln = working + showSoln + fnSoln;
+	const { ans: ans2, soln: fnSoln } = selfInverseWorking(fExp, n);
+	const soln = working + showSoln + (options?.hideF2 ? '' : fnSoln);
 	return { ans: ans1 + ans2, soln };
 }
 
@@ -281,3 +274,29 @@ function specialInverseWorking(
 	return { working: soln1 };
 }
 
+export function selfInverseWorking(
+	fExp: Expression,
+	n: number,
+	x: number | string | Expression = 'x',
+): { soln: string; ans: string } {
+	const f = 'f';
+	const even = n % 2 === 0;
+	const xExp = x instanceof Expression ? x : new Expression(x);
+	const variable = typeof x === 'string' ? x : 'x';
+	const subInObject: Record<string, Expression> = {};
+	subInObject[variable] = xExp;
+	const ansExp = even ? xExp.subIn(subInObject) : fExp.subIn(subInObject);
+	const ans = mathlify`${f}^{${n}}(${x}) = ${ansExp}.`;
+	const finalStep = even ? `${x}` : `${f}(${x}) \\\\ &= ${ansExp}`;
+	const soln =
+		n > 3
+			? mathlifyQED`$${'align*'} ${f}^{${n}}(${x}) &= ${f}^{${n - 2}}${f}${f}(${x})
+\\\\ &= ${f}^{${n - 2}}${f}${f}^{-1}(${x})
+\\\\ &= ${f}^{${n - 2}}(${x})
+\\\\ &= \\dotsb
+\\\\ &= ${finalStep}`
+			: n === 2
+				? mathlifyQED`$${'align*'} ${f}^{${n}}(${x}) &= ${f}${f}(${x}) \\\\ &= ${f}${f}^{-1}(${x}) \\\\ &= ${x}`
+				: mathlifyQED`$${'align*'} ${f}^{${n}}(${x}) &= ${f}${f}${f}(${x}) \\\\ &= ${f}${f}${f}^{-1}(${x}) \\\\ &= ${finalStep}`;
+	return { soln, ans };
+}
