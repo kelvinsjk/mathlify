@@ -1468,12 +1468,20 @@ function divide_by_factor(expression, divisor) {
 }
 
 /**
- * Creates an Expression instance representing a sum
+ * Creates an simplified Expression instance representing a sum
  * @param {Shorthand[]} terms
  * @returns {Expression}
  */
 export function sum(...terms) {
-	return new Expression(['+', ...terms]).simplify();
+	return sumVerbatim(...terms).simplify();
+}
+/**
+ * Creates an Expression instance representing a sum
+ * @param {Shorthand[]} terms
+ * @returns {Expression}
+ */
+export function sumVerbatim(...terms) {
+	return new Expression(['+', ...terms]);
 }
 
 /**

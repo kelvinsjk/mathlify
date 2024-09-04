@@ -3,6 +3,7 @@ export {
 	Variable,
 	Numeral,
 	sum,
+	sumVerbatim,
 	quotient,
 	expTerm,
 	fnTerm,
