@@ -11,11 +11,17 @@ export function shorthandToExpression(shorthand: Shorthand): Expression;
  */
 export function expression_gcd(...exps: Expression[]): Expression;
 /**
- * Creates an Expression instance representing a sum
+ * Creates an simplified Expression instance representing a sum
  * @param {Shorthand[]} terms
  * @returns {Expression}
  */
 export function sum(...terms: Shorthand[]): Expression;
+/**
+ * Creates an Expression instance representing a sum
+ * @param {Shorthand[]} terms
+ * @returns {Expression}
+ */
+export function sumVerbatim(...terms: Shorthand[]): Expression;
 /**
  * Creates an Expression instance representing a quotient
  * @param {Shorthand} numerator

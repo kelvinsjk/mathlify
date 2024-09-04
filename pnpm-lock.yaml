@@ -71,6 +71,9 @@ importers:
       djot-temml:
         specifier: workspace:*
         version: link:../djot-temml
+      mathlify:
+        specifier: workspace:*
+        version: link:../mathlify
     devDependencies:
       '@playwright/test':
         specifier: ^1.28.1
@@ -105,6 +108,9 @@ importers:
       globals:
         specifier: ^15.0.0
         version: 15.9.0
+      node-pandoc:
+        specifier: ^0.3.0
+        version: 0.3.0
       prettier:
         specifier: ^3.1.1
         version: 3.3.3
@@ -129,6 +135,12 @@ importers:
       vitest:
         specifier: ^2.0.0
         version: 2.0.5(@types/node@22.4.0)(lightningcss@1.26.0)(terser@5.31.6)
+      yaml:
+        specifier: ^2.5.0
+        version: 2.5.0
+      zod:
+        specifier: ^3.23.8
+        version: 3.23.8
 
   sites/kelvinsoh:
     dependencies:
@@ -3356,6 +3368,9 @@ packages:
   no-case@3.0.4:
     resolution: {integrity: sha512-fgAN3jGAh+RoxUGZHTSOLJIqUc2wmoBwGR4tbpNAKmmovFoWq0OdRkb0VkldReO2a2iBT/OEulG9XSUc10r3zg==}
 
+  node-pandoc@0.3.0:
+    resolution: {integrity: sha512-e+kANHQQFBlN7J8wEFf7sNc1sSCLltyPtPqNA/IEapiNsA1LjZ9mtV/B0lU6b2cAdvn7rrAVNBONw+Fo1YsY+A==}
+
   node-releases@2.0.18:
     resolution: {integrity: sha512-d9VeXT4SJ7ZeOqGX6R5EM022wpL+eWPooLI+5UpWn2jCT1aosUQEhQP214x33Wkwx3JQMvIm+tIoVOdodFS40g==}
 
@@ -4852,6 +4867,9 @@ packages:
 
   zimmerframe@1.1.2:
     resolution: {integrity: sha512-rAbqEGa8ovJy4pyBxZM70hg4pE6gDgaQ0Sl9M3enG3I0d6H4XSAM3GeNGLKnsBpuijUow064sf7ww1nutC5/3w==}
+
+  zod@3.23.8:
+    resolution: {integrity: sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==}
 
 snapshots:
 
@@ -8266,6 +8284,8 @@ snapshots:
       lower-case: 2.0.2
       tslib: 2.6.3
 
+  node-pandoc@0.3.0: {}
+
   node-releases@2.0.18: {}
 
   nodejs-polars-android-arm64@0.14.0:
@@ -9856,3 +9876,5 @@ snapshots:
   zimmerframe@1.1.0: {}
 
   zimmerframe@1.1.2: {}
+
+  zod@3.23.8: {}
