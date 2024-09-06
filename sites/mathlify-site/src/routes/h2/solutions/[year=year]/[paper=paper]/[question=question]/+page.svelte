@@ -17,7 +17,7 @@
 	});
 
 	// get copy of module (contentFile.ts);
-	const modules = import.meta.glob('/src/content/h2-2_h2_solutions/**/*.ts');
+	const modules = import.meta.glob('/src/content/h2-2_h2_solutions/**/[^_]*.ts');
 	const module = $derived(modules[data.filePath]());
 </script>
 

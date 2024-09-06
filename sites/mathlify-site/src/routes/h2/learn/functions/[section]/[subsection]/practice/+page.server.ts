@@ -28,7 +28,7 @@ export const load: PageServerLoad = async ({ params }) => {
 		throw error(400, 'Did not expect an md file');
 	} else {
 		// ts file
-		const modules = import.meta.glob('/src/content/h2-1_h2_learn/**/*.ts');
+		const modules = import.meta.glob('/src/content/h2-1_h2_learn/**/[^_]*.ts');
 		const keys = Object.keys(modules);
 		filePath = normalizePath(path.join('/', filePath + '.ts'));
 		if (!keys.includes(filePath)) throw error(404, 'Not Found');

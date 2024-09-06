@@ -22,7 +22,7 @@ export const load: PageServerLoad = async ({ params }) => {
 	let filePath = path.join('src/content', directory[slugPath]);
 
 	// ts file
-	const modules = import.meta.glob('/src/content/h2-2_h2_solutions/**/*.ts');
+	const modules = import.meta.glob('/src/content/h2-2_h2_solutions/**/[^_]*.ts');
 	const keys = Object.keys(modules);
 	filePath = normalizePath(path.join('/', filePath + '.ts'));
 	if (!keys.includes(filePath)) throw error(404, 'file not found');

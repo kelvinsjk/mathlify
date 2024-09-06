@@ -119,15 +119,15 @@
 		grid-template-columns: 1fr min(65ch, 100%) 1fr;
 	}
 	#answers-section {
-		background-color: hsla(50, 100%, 50%, 0.5);
+		background-color: hsla(var(--secondary-hsl), 0.25);
 		padding-block: 1.5em;
 	}
 	div.bleed-left {
-		background-color: hsla(50, 100%, 50%, 0.5);
+		background-color: hsla(var(--secondary-hsl), 0.25);
 		grid-column: 1;
 	}
 	div.bleed-right {
-		background-color: hsla(50, 100%, 50%, 0.5);
+		background-color: hsla(var(--secondary-hsl), 0.25);
 		grid-column: 3;
 	}
 	.prose-container > * {
