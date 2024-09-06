@@ -14,13 +14,9 @@ const config = {
 		adapter: adapter(),
 		alias: {
 			$lib: './src/lib',
-			$content: './src/content',
-			$static: './static',
-		},
-		prerender: {
-			handleHttpError: 'warn',
-		},
-	},
+			$content: './src/content'
+		}
+	}
 };
 
 export default config;

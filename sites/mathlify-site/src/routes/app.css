@@ -1,0 +1,25 @@
+/** from tailwind font family */
+html {
+	line-height: 1.5;
+	font-family:
+		ui-sans-serif,
+		system-ui,
+		sans-serif,
+		'Apple Color Emoji',
+		'Segoe UI Emoji',
+		Segoe UI Symbol,
+		'Noto Color Emoji';
+}
+
+*,
+*:before,
+*:after {
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	width: 100%;
+	height: 100vh;
+	height: 100dvh;
+}
