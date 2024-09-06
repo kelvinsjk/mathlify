@@ -16,7 +16,8 @@ for (const [key, value] of Object.entries(directory)) {
 	}
 }
 
-export const prerender = true;
+// TODO
+// export const prerender = true;
 
 export const load: PageServerLoad = async () => {
 	return {
