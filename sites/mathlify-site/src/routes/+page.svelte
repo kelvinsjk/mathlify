@@ -1,18 +1,20 @@
 <script lang="ts">
-	import { sections } from '$content/learn/h2/fns/sections';
+	const links = [
+		{ title: 'Learn', slug: '/h2/learn/functions/concepts/intervals/theory' },
+		{ title: 'Solutions', slug: '/h2/solutions/2023/p1/q7' }
+	];
 </script>
 
-<div class="content prose">
-	<ul>
-		{#each sections as section}
-			<li>{section.title}</li>
-			<ul>
-				{#each section.subsections as subsection}
-					<li>
-						<a href={`/learn/h2/fns/${section.slug}/${subsection.slug}`}>{subsection.title}</a>
-					</li>
-				{/each}
-			</ul>
-		{/each}
-	</ul>
-</div>
+<main>
+	{#each links as link}
+		<a href={link.slug}>{link.title}</a>
+	{/each}
+</main>
+
+<style>
+	main {
+		margin: 1.5rem;
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+	}
+</style>

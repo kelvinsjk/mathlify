@@ -19,9 +19,3 @@ Thumbs.db
 # Vite
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
-
-# Qn state testing
-*.state.*
-# Protected content
-/src/content/protected
-/src/routes/protected/prototype
