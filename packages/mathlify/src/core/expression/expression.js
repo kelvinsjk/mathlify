@@ -127,11 +127,15 @@ export class Expression {
 		).simplify(options);
 	}
 	/**
-	 * @param {SimplifyOptions} [options]
+	 * @param {SimplifyOptions & { expand?: boolean}} [options]
 	 * @return {Expression}
 	 */
 	negative(options) {
-		return new Expression(new Product(-1, this.clone())).simplify(options);
+		let newExp = new Expression(new Product(-1, this.clone()));
+		if (options?.expand) {
+			newExp = newExp.expand(options);
+		}
+		return newExp.simplify(options);
 	}
 	/**
 	 * @returns {Expression}

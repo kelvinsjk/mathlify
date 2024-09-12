@@ -11,7 +11,7 @@ import {
 	generateState as generateState1,
 	type Type,
 	type IntervalOneSided
-} from '../../01_concepts/02_domain-and-range/02_practice';
+} from '../../01_concepts/02_domain-and-range/02_practice-1';
 import { compositeExists } from '../01_existence/02_practice';
 import { compositeFormula } from '../02_formula/02_practice';
 
@@ -33,6 +33,8 @@ interface State {
 	restriction: IntervalOneSided | false;
 	qnType: 'exist' | 'formula';
 }
+
+export const practiceTitle = 'composing functions with itself';
 
 export function generateState(): State {
 	const formulaTypes = ['linear', 'sqrt', 'frac', 'improper'] as const;

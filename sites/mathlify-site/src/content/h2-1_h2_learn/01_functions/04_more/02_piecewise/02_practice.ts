@@ -15,7 +15,7 @@ import {
 	type IntervalTwoSided,
 	generateFn,
 	generateState as generateState1
-} from '../../01_concepts/02_domain-and-range/02_practice';
+} from '../../01_concepts/02_domain-and-range/02_practice-1';
 import { Interval, intervalBuilder } from '../../_intervals';
 
 const typesG = ['linear', 'quadratic', 'exp', 'const'] as const;
@@ -39,6 +39,8 @@ interface State {
 	};
 	x: number;
 }
+
+export const practiceTitle = 'piecewise functions';
 
 export function generateState(): State {
 	// handle h

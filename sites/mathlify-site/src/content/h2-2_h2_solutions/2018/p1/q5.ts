@@ -21,7 +21,7 @@ const verbatim = true;
 	const working = new ExpressionWorking(f.subIn({ x: f }, { verbatim }), { leadingEqual: true });
 	working.combineFraction().simplify();
 	const working2 = new EquationWorking(working.expression, g);
-	working2.crossMultiply().expand().toPolynomial({ target: 'b' });
+	working2.crossMultiply().expand().toPolynomial('x', { target: 'b' });
 	const b = -1;
 	const fInv = f.subIn({ b });
 	const soln = mathlifier`$${'align*'} ff(x) &= f\\left( ${f} \\right) \\\\ ${working}
@@ -30,7 +30,7 @@ Since ${'ff = g'},
 $${'gather*'} ${working2}
 
 Comparing coefficients of ${'x^2'},
-$${'align*'} 1+b &= 0 \\\\ b &= ${b} ${QED}
+$${'align*'} 1+b &= 0 \\\\ b &= ${b} \\; ${QED}
 
 $${'align*'} 
 ff(x) &= g(x)
@@ -38,9 +38,9 @@ ff(x) &= g(x)
 \\\\ f(x) &= f^{-1}(x)
 \\\\ f^{-1}(x) &= f(x)
 \\\\ &= ${f}
-\\\\ &= ${fInv} ${QED}
+\\\\ &= ${fInv} \\; ${QED}
 `;
-	const ans = mathlifier`${{}} b=${b}.
+	const ans = mathlifier`${{}} b = ${b}.
 \\
 ${{}} f^{-1}(x) = ${fInv}.`;
 	answer.addBody(ans, soln);

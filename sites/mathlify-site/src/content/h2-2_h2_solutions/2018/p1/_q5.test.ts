@@ -6,10 +6,10 @@ const ans = answer.answer;
 const actual: typeof ans = {
 	body: mathlifier`${{}} b = -1.
 \\
-${{}} f^{-1}(x) = \\frac{x+a}{x-1}.`
+${{}} f^{-1}(x) = \\frac{x + a}{x - 1}.`
 };
 
 it('2018p1q5', () => {
-	expect(answer).toMatchSnapshot();
 	expect(ans).toEqual(actual);
+	expect(answer).toMatchSnapshot();
 });

@@ -7,19 +7,19 @@ const actual: typeof ans = {
 	parts: [
 		{ body: mathlifier`[Sketch](#soln-1).` },
 		{
-			body: mathlifier`${{}} f^{-1}(x) = \\sqrt{x-1} + 4.
+			body: mathlifier`${{}} f^{-1}(x) = \\sqrt{x - 1} + 4.
 \\
-${{}} D_{f^{-1}} = R_f = \\left(1, \\infty\\right).`
+${{}} D_{f^{-1}} = R_{f} = \\left( 1, \\infty \\right).`
 		},
 		{ body: mathlifier`[Sketch](#soln-3).` },
 		{
 			body: mathlifier`Line ${'y=x.'}
 
-${{}} x = \\frac{9+\\sqrt{13}}{2}.`
+${{}}x = \\frac{9 + \\sqrt{13}}{2}.`
 		}
 	]
 };
 it('2008p2q4', () => {
-	expect(answer).toMatchSnapshot();
 	expect(ans).toEqual(actual);
+	expect(answer).toMatchSnapshot();
 });

@@ -29,7 +29,7 @@ import {
 	generateInequality as generateDomain,
 	type Type,
 	types
-} from '../../01_concepts/02_domain-and-range/02_practice';
+} from '../../01_concepts/02_domain-and-range/02_practice-1';
 import { generateState as generateState1 } from '../02_domain/02_practice';
 
 const QED = '\\; \\blacksquare ';
@@ -49,6 +49,8 @@ export interface State {
 	unknownConstants: boolean;
 	definition: boolean;
 }
+
+export const practiceTitle = 'formula of inverse functions';
 
 export function generateState(options?: { type?: Type }): State {
 	// we will omit the 'abs' case here, and apply it under 04/03
@@ -362,7 +364,7 @@ export function quadraticInverse(state: State, rhs: Expression): { ans: string; 
 		: generateDomain(restriction);
 	const soln1 = mathlifier`$${'gather*'} \\text{Let } y = ${rhs} \\\\ ${line1}
 \\\\ \\text{Since } ${domain},
-\\\\ ${working}`;
+\\\\ ${working}\n\n`;
 	const soln2 = definition
 		? mathlifier`$${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, rhs, { noFullStop: true })} ${QED}`
 		: mathlifier`$${{}} f^{-1}(x) = ${fInv} ${QED}
@@ -502,9 +504,7 @@ export function absoluteRationalInverse(
 
 Since ${{}} {${inner} ${sign} 0}
 for
-${{}}{${generateDomain(restriction)},}
-
-`;
+${{}}{${generateDomain(restriction)},}`;
 	const { ans, soln } = improperInverse(state, {
 		abs: true,
 		definition,
@@ -547,7 +547,7 @@ export function specialInverse(
 	const soln1 = mathlifier`$${'gather*'} \\text{Let } ${working}
 			
 Since ${generateDomain(restriction)},
-$${'x'} = ${newRHS}`;
+$${'x'} = ${newRHS}\n\n`;
 	const soln2 = definition
 		? mathlifier`$${{}} f^{-1}: x \\mapsto ${fInv}, \\quad ${generateInequality(state, exp, { noFullStop: true })} ${QED}`
 		: mathlifier`$${{}} f^{-1}(x) = ${fInv} ${QED}

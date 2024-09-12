@@ -29,7 +29,7 @@ const f = quotient(num, den);
 	working.subIn({ h }, { verbatim }).simplify().subIn({ g }, { verbatim }).simplify();
 	const finalAns = working.expression;
 
-	const soln = mathlifier`$${'align*'} ${working}`;
+	const soln = mathlifier`$${'align*'} ${working} \\; ${QED}`;
 	const ans = mathlifier`${{}} ${gh2} = ${finalAns}.`;
 	answer.addSubPart(ans, soln);
 }
@@ -39,7 +39,7 @@ const f = quotient(num, den);
 	const working = new EquationWorking(g, b);
 	working.crossMultiply().expand().solve.linear('x');
 	const x = working.eqn.rhs;
-	const soln = mathlifier`$${'gather*'} g(x) = ${b.valueOf()} \\\\ ${working}`;
+	const soln = mathlifier`$${'gather*'} g(x) = ${b.valueOf()} \\\\ ${working} \\; ${QED}`;
 	const ans = mathlifier`${{}} x = ${x}.`;
 	answer.addSubPart(ans, soln);
 }
@@ -54,7 +54,7 @@ $${'gather*'}${working}
 Hence ${{}}k=${k}
 and it must be excluded from the domain of ${'f'}
 since ${'f'}
-is not defined when ${{}} x = ${k}`;
+is not defined when ${{}} {x = ${k}} \\; ${QED}`;
 	const ans = mathlifier`${{}} k = ${k}.
 \\
 It must be excluded as ${'f'}
@@ -107,6 +107,6 @@ ${{}} a \\in \\mathbb{R}, a \\neq ${a}.`;
 		.expandNegativeIntoQuotient();
 	const finalAns = working.expression;
 	const ans = mathlifier`${{}} f^{-1}(${x}) = ${finalAns}.`;
-	const soln = mathlifier`$${'align*'} ${working}`;
+	const soln = mathlifier`$${'align*'} ${working} \\; ${QED}`;
 	answer.addSubPart(ans, soln);
 }

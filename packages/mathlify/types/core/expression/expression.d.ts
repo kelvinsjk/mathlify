@@ -131,10 +131,12 @@ export class Expression {
      */
     divide(x: Shorthand, options?: SimplifyOptions | undefined): Expression;
     /**
-     * @param {SimplifyOptions} [options]
+     * @param {SimplifyOptions & { expand?: boolean}} [options]
      * @return {Expression}
      */
-    negative(options?: SimplifyOptions | undefined): Expression;
+    negative(options?: (SimplifyOptions & {
+        expand?: boolean;
+    }) | undefined): Expression;
     /**
      * @returns {Expression}
      */

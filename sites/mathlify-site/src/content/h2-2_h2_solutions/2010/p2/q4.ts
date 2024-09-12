@@ -3,7 +3,7 @@ import { QED } from '$lib/typesetting/utils';
 import { Expression, Polynomial } from 'mathlify';
 import { mathlifierDj as mathlifier } from 'mathlifier';
 
-import { generateFn } from '$content/h2-1_h2_learn/01_functions/01_concepts/02_domain-and-range/02_practice';
+import { generateFn } from '$content/h2-1_h2_learn/01_functions/01_concepts/02_domain-and-range/02_practice-1';
 import { compositeFormula } from '$content/h2-1_h2_learn/01_functions/03_composite/02_formula/02_practice';
 import svg from '$static/images/h2/fns/2010p2q4a.svg?raw';
 import svg2 from '$static/images/h2/fns/2010p2q4d.svg?raw';
@@ -30,7 +30,7 @@ const g = new Polynomial([1, -3]).reciprocal();
 
 // a
 {
-	const soln = svg;
+	const soln = `\`\`\` =html\n${svg}\n\`\`\`\n\n`;
 	const ans = mathlifier`[Sketch](#soln-1).`;
 	answer.addPart(ans, soln);
 }
@@ -63,8 +63,9 @@ let fg: Expression;
 }
 // d
 {
+	const img = `\n\n\`\`\` =html\n${svg2}\n\`\`\`\n\n`;
 	const soln =
-		mathlifier`$${fg} > 0` + svg2 + mathlifier`$${{}} 2 < x < 3 \\; \\text{ or } \\; 3 < x < 4`;
+		mathlifier`$${fg} > 0` + img + mathlifier`$${{}} 2 < x < 3 \\; \\text{ or } \\; 3 < x < 4`;
 	const ans = mathlifier`${{}}{2 < x < 3}
 or ${{}} {3 < x < 4.}`;
 	answer.addPart(ans, soln);

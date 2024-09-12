@@ -99,11 +99,12 @@ export class Polynomial extends Expression {
 
 	// * Arithmetic methods
 	/**
+	 * @param {import('../expression/expression.js').SimplifyOptions & {expand?: boolean}} [options]
 	 * @returns {Polynomial}
 	 */
-	negative() {
+	negative(options) {
 		return new_poly_from_ascending_coeffs(
-			this.coeffs.map((x) => new Expression(x).negative().node),
+			this.coeffs.map((x) => new Expression(x).negative(options).node),
 			this.options,
 		);
 	}

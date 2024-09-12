@@ -9,7 +9,7 @@ import { chooseRandom, getRandomInt, coinFlip, getRandomNonZeroInt } from '$lib/
 import type { PracticeQuestion } from '$content/_types';
 import { mathlifierDj as mathlifier } from 'mathlifier';
 import { Expression } from 'mathlify';
-import { generateFn } from '../../01_concepts/02_domain-and-range/02_practice';
+import { generateFn } from '../../01_concepts/02_domain-and-range/02_practice-1';
 import { lessThan, greaterThan } from '../03_formula/02_practice';
 import { capitalizeFirstLetter, QED } from '$lib/typesetting/utils';
 
@@ -31,6 +31,8 @@ interface State {
 	zeroLeft: boolean;
 	zeroAns: boolean;
 }
+
+export const practiceTitle = 'domain restriction';
 
 export function generateState(options?: { type?: Type }): State {
 	const fnType = options?.type ?? chooseRandom(types);

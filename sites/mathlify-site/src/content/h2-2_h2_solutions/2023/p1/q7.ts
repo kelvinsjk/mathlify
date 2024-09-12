@@ -2,12 +2,12 @@ import { Answer } from '$lib/classes/answer';
 import { mathlifierDj as mathlifier } from 'mathlifier';
 import { Polynomial } from 'mathlify';
 import { absTerm } from 'mathlify/fns';
-import { generateRange } from '$content/h2-1_h2_learn/01_functions/01_concepts/02_domain-and-range/02_practice';
+import { generateRange } from '$content/h2-1_h2_learn/01_functions/01_concepts/02_domain-and-range/02_practice-1';
 import { absoluteRationalInverse } from '$content/h2-1_h2_learn/01_functions/02_inverse/03_formula/02_practice';
 import { domainRestriction } from '$content/h2-1_h2_learn/01_functions/02_inverse/04_restriction/02_practice';
 import { compositeExists } from '$content/h2-1_h2_learn/01_functions/03_composite/01_existence/02_practice';
 import { QED } from '$lib/typesetting/utils';
-//import svg from '$static/images/h2/fns/2023p1q7.svg?raw';
+import svg from '$static/images/h2/fns/2023p1q7a.svg?raw';
 
 export const answer = new Answer();
 
@@ -40,7 +40,7 @@ const restriction = { type: 'left', x: -2, inclusive: true } as const;
 
 // a
 {
-	const soln = ''; //svg;
+	const soln = `\`\`\` =html\n${svg}\n\`\`\``;
 	const ans = mathlifier`[Sketch](#soln-1).`;
 	answer.addPart(ans, soln);
 }

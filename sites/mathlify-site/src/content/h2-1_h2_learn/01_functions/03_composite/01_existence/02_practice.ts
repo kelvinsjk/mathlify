@@ -14,7 +14,7 @@ import {
 	generateState as generateState1,
 	type Type,
 	type IntervalOneSided
-} from '../../01_concepts/02_domain-and-range/02_practice';
+} from '../../01_concepts/02_domain-and-range/02_practice-1';
 import { generateDomain } from '../../02_inverse/02_domain/02_practice';
 import { QED } from '$lib/typesetting/utils';
 
@@ -41,6 +41,8 @@ interface State {
 	g: fnState;
 	fg: boolean;
 }
+
+export const practiceTitle = 'existence of composite functions';
 
 export function generateState(): State {
 	const [type1, type2] = chooseRandomSubset(types, 2);

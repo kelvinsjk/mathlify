@@ -2,8 +2,8 @@ import { Answer } from '$lib/classes/answer';
 import { mathlifierDj as mathlifier } from 'mathlifier';
 import { Polynomial, sum } from 'mathlify';
 import { logInverse } from '$content/h2-1_h2_learn/01_functions/02_inverse/03_formula/02_practice';
-import { inverseRelationshipSolver } from '$content/h2-1_h2_learn/01_functions/02_inverse/05_relationship/02_practice';
-import svg from '$static/images/h2/fns/2011p2q3.svg?raw';
+import { inverseRelationshipSolver } from '$content/h2-1_h2_learn/01_functions/02_inverse/05_relationship/02_practice-1';
+import svg from '$static/images/h2/fns/2011p2q3b.svg?raw';
 import { logTerm } from 'mathlify/fns';
 
 export const answer = new Answer();
@@ -23,7 +23,7 @@ const f = sum(logTerm(argument), b);
 }
 // b
 {
-	const soln = svg;
+	const soln = `\`\`\` =html\n${svg}\n\`\`\`\n\n`;
 	const ans = mathlifier`[Sketch](#soln-2).`;
 	answer.addPart(ans, soln);
 }

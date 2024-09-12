@@ -6,11 +6,12 @@ import { coinFlip, chooseRandom, getRandomNonZeroInt, getRandomInt } from '$lib/
 
 import type { PracticeQuestion } from '$content/_types';
 import { mathlifierDj as mathlifier } from 'mathlifier';
-import { generateFn } from '../../01_concepts/02_domain-and-range/02_practice';
+import { generateFn } from '../../01_concepts/02_domain-and-range/02_practice-1';
 import { expInverse, logInverse } from '../../02_inverse/03_formula/02_practice';
 import { Expression, quotient, sum } from 'mathlify';
 import { EquationWorking } from 'mathlify/working';
 import { logTerm } from 'mathlify/fns';
+import { QED } from '$lib/typesetting/utils';
 
 // ln(x+a) + b (2011). No unknown constants if restricted
 // exp(ax) + b (2019). unknown constants + restriction: x=0
@@ -22,6 +23,8 @@ interface State {
 	c: number;
 	rhs: number;
 }
+
+export const practiceTitle = 'composing functions with inverses';
 
 export function generateState(): State {
 	const fnTypes = ['exp', 'log'] as const;
@@ -71,11 +74,16 @@ Solve the equation $${fg}(x) = ${rhs}.`;
 	return { qn, ...generateAns(state1, fInv) };
 }
 
-export function generateAns(state: State, fInv: Expression): { ans: string; soln: string } {
+export function generateAns(
+	state: State,
+	fInv: Expression,
+	options?: { qed: boolean }
+): { ans: string; soln: string } {
 	const { fnType, b, c, rhs } = state;
 	const verbatim = true;
 	let ans: string;
 	let soln: string;
+	const qed = options?.qed ? `\\; ${QED}` : '';
 	if (c === 0) {
 		const working = new EquationWorking('x', fInv.subIn({ x: rhs }, { verbatim }));
 		working.simplify();
@@ -89,7 +97,7 @@ export function generateAns(state: State, fInv: Expression): { ans: string; soln
 			working.simplify();
 		}
 		const x = working.eqn.rhs;
-		soln = mathlifier`$${'gather*'} f(x) = ${rhs} \\\\ f^{-1}f(x) = f^{-1}(${rhs}) \\\\ ${working}`;
+		soln = mathlifier`$${'gather*'} f(x) = ${rhs} \\\\ f^{-1}f(x) = f^{-1}(${rhs}) \\\\ ${working} ${qed}`;
 		ans = mathlifier`${{}} x=${x}.`;
 	} else {
 		const verbatimTerm = fInv.subIn({ x: rhs }, { verbatim });
@@ -104,7 +112,7 @@ export function generateAns(state: State, fInv: Expression): { ans: string; soln
 			working.simplify();
 		}
 		const { root } = working.solve.linear('x');
-		soln = mathlifier`$${'gather*'} fg(x) = ${rhs} \\\\ f^{-1}fg(x) = f^{-1}(${rhs}) \\\\ g(x) = ${verbatimTerm} \\\\ ${working}`;
+		soln = mathlifier`$${'gather*'} fg(x) = ${rhs} \\\\ f^{-1}fg(x) = f^{-1}(${rhs}) \\\\ g(x) = ${verbatimTerm} \\\\ ${working} ${qed}`;
 		ans = mathlifier`${{}} x=${root}.`;
 	}
 	return { ans, soln };

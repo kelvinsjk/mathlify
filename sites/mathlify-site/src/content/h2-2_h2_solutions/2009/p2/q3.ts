@@ -6,6 +6,7 @@ import {
 	generateFracFnDefinition
 } from '$content/h2-1_h2_learn/01_functions/04_more/01_self-inverse/02_practice';
 import { EquationWorking, solve } from 'mathlify/working';
+import { QED } from '$lib/typesetting/utils';
 
 export const answer = new Answer();
 
@@ -25,11 +26,14 @@ const fState: Parameters<typeof generateFracFnDefinition>[0] = {
 const fExp = generateFracFnDefinition(fState, { for: true })[1];
 // a
 {
-	const { ans, soln } = generateAns(fState, fExp, 'f');
+	const { ans, soln } = generateAns(fState, fExp, 'f', { qed: true });
 	answer.addPart(
 		ans +
-			mathlifier`${{}}R_{f^2} = \\left( -\\infty, \\frac{a}{b} \\right) \\cup \\left( \\frac{a}{b}, \\infty \\right).`,
-		soln
+			mathlifier`\\
+${{}}R_{f^2} = \\left( -\\infty, \\frac{a}{b} \\right) \\cup \\left( \\frac{a}{b}, \\infty \\right).`,
+		soln +
+			mathlifier`\n
+$${{}} R_{f^2} = \\left( -\\infty, \\frac{a}{b} \\right) \\cup \\left( \\frac{a}{b}, \\infty \\right) \\; ${QED}`
 	);
 }
 // b
@@ -44,7 +48,7 @@ are non-zero,
 $${{}} R_g \\not \\subseteq D_f
 
 so the composite function ${'fg'}
-does not exist`;
+does not exist ${QED}`;
 	answer.addPart(
 		mathlifier`The composite function ${'fg'}
 does not exist as ${{}} {R_g \\not \\subseteq D_f.}`,

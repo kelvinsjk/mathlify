@@ -19,7 +19,7 @@ import {
 	generateRange,
 	type IntervalOneSided,
 	type Type
-} from '../../01_concepts/02_domain-and-range/02_practice';
+} from '../../01_concepts/02_domain-and-range/02_practice-1';
 import { Interval, intervalBuilder } from '../../_intervals';
 
 interface FnState {
@@ -35,6 +35,8 @@ export interface State {
 	outer: FnState;
 	fg: boolean;
 }
+
+export const practiceTitle = 'range of composite functions';
 
 export function generateState(): State {
 	const type = getRandomInt(1, 5);

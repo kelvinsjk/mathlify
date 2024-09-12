@@ -2,7 +2,7 @@ import { Answer } from '$lib/classes/answer';
 import { mathlifierDj as mathlifier } from 'mathlifier';
 import { Polynomial, sum } from 'mathlify';
 import { quadraticInverse } from '$content/h2-1_h2_learn/01_functions/02_inverse/03_formula/02_practice';
-import { inverseRelationshipSolver } from '$content/h2-1_h2_learn/01_functions/02_inverse/05_relationship/02_practice';
+import { inverseRelationshipSolver } from '$content/h2-1_h2_learn/01_functions/02_inverse/05_relationship/02_practice-1';
 import svg from '$static/images/h2/fns/2008p2q4a.svg?raw';
 import svg2 from '$static/images/h2/fns/2008p2q4c.svg?raw';
 
@@ -30,7 +30,7 @@ const f = sum([new Polynomial([1, a]), '^', 2], b);
 
 // a
 {
-	const soln = svg;
+	const soln = `\`\`\` =html\n${svg}\n\`\`\`\n\n`;
 	const ans = mathlifier`[Sketch](#soln-1).`;
 	answer.addPart(ans, soln);
 }
@@ -41,7 +41,7 @@ const f = sum([new Polynomial([1, a]), '^', 2], b);
 }
 // c
 {
-	const soln = svg2;
+	const soln = `\`\`\` =html\n${svg2}\n\`\`\`\n\n`;
 	const ans = mathlifier`[Sketch](#soln-3).`;
 	answer.addPart(ans, soln);
 }
@@ -50,5 +50,5 @@ const f = sum([new Polynomial([1, a]), '^', 2], b);
 	const { ans, soln } = inverseRelationshipSolver(state, f, { lineQED: true });
 	//const soln = '';
 	const ansLine = mathlifier`Line ${'y=x'}.`;
-	answer.addPart(ansLine + ans, soln);
+	answer.addPart(ansLine + '\n\n' + ans, soln);
 }

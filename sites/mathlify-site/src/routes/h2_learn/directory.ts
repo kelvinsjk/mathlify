@@ -5,8 +5,10 @@ export const directory: Record<string, string> = {
     "h2-1_h2_learn/01_functions/01_concepts/01_intervals/02_practice",
   "h2_learn/functions/concepts/domain-and-range/theory":
     "h2-1_h2_learn/01_functions/01_concepts/02_domain-and-range/01_theory",
-  "h2_learn/functions/concepts/domain-and-range/practice":
-    "h2-1_h2_learn/01_functions/01_concepts/02_domain-and-range/02_practice",
+  "h2_learn/functions/concepts/domain-and-range/practice-1":
+    "h2-1_h2_learn/01_functions/01_concepts/02_domain-and-range/02_practice-1",
+  "h2_learn/functions/concepts/domain-and-range/practice-2":
+    "h2-1_h2_learn/01_functions/01_concepts/02_domain-and-range/02_practice-2",
   "h2_learn/functions/inverse/existence/theory":
     "h2-1_h2_learn/01_functions/02_inverse/01_existence/01_theory",
   "h2_learn/functions/inverse/existence/practice":
@@ -25,8 +27,10 @@ export const directory: Record<string, string> = {
     "h2-1_h2_learn/01_functions/02_inverse/04_restriction/02_practice",
   "h2_learn/functions/inverse/relationship/theory":
     "h2-1_h2_learn/01_functions/02_inverse/05_relationship/01_theory",
-  "h2_learn/functions/inverse/relationship/practice":
-    "h2-1_h2_learn/01_functions/02_inverse/05_relationship/02_practice",
+  "h2_learn/functions/inverse/relationship/practice-1":
+    "h2-1_h2_learn/01_functions/02_inverse/05_relationship/02_practice-1",
+  "h2_learn/functions/inverse/relationship/practice-2":
+    "h2-1_h2_learn/01_functions/02_inverse/05_relationship/02_practice-2",
   "h2_learn/functions/composite/existence/theory":
     "h2-1_h2_learn/01_functions/03_composite/01_existence/01_theory",
   "h2_learn/functions/composite/existence/practice":
@@ -61,4 +65,6 @@ export const directory: Record<string, string> = {
     "h2-1_h2_learn/01_functions/04_more/03_modulus/02_practice",
   "h2_learn/functions/more/discriminant/theory":
     "h2-1_h2_learn/01_functions/04_more/04_discriminant/01_theory",
+  "h2_learn/functions/more/discriminant/practice":
+    "h2-1_h2_learn/01_functions/04_more/04_discriminant/02_practice",
 };

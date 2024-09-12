@@ -23,10 +23,10 @@ const g = sum(1, [-1, quotient(1, new Polynomial([1, -1], { ascending: true }))]
 ${{}} ${pt1b}.`,
 		mathlifier`We apply a scaling of scale factor ${half}
 parallel to the ${'x\\text{-axis}'}
-on ${'y=f(x)'}
+on ${'{y=f(x)}'}
 
-$${'gather*'} ${pt1a} ${QED}
-\\\\ ${pt1b} ${QED}`
+$${'gather*'} ${pt1a} \\; ${QED}
+\\\\ ${pt1b} \\; ${QED}`
 	);
 	// aii
 	const aPlus1 = a.plus(1);
@@ -35,9 +35,9 @@ $${'gather*'} ${pt1a} ${QED}
 		mathlifier`${pt2}.`,
 		mathlifier`We apply a translation of ${'1'}
 unit in the positive ${'x\\text{-axis}'}
-direction on ${'y=f(x)'}
+direction on ${'{y=f(x)}'}
 
-$${{}} ${pt2} ${QED}`
+$${{}} ${pt2} \\; ${QED}`
 	);
 	// a iii
 	const aPlus1Over2 = aPlus1.divide(2);
@@ -46,10 +46,10 @@ $${{}} ${pt2} ${QED}`
 		mathlifier`${pt3}.`,
 		mathlifier`We apply a scaling of scale factor ${half}
 parallel to the ${'x\\text{-axis}'}
-on ${'y=f(x-1)'}
+on ${'{y=f(x-1)}'}
 from the previous part
 
-$${{}} ${pt2} ${QED}`
+$${{}} ${pt2} \\; ${QED}`
 	);
 	// a iv
 	const pt4a = `\\left( 0, ${a} \\right)`;
@@ -60,8 +60,8 @@ ${pt4b}.`,
 		mathlifier`We apply a reflection of the curve ${'y=f(x)'}
 about the line ${'{y=x.}'}
 
-$${'gather*'} ${pt4a} ${QED}
-\\\\ ${pt4b} ${QED}`
+$${'gather*'} ${pt4a} \\; ${QED}
+\\\\ ${pt4b} \\; ${QED}`
 	);
 }
 
@@ -72,7 +72,7 @@ answer.addSubPart(
 \\
 It must be excluded as ${'g'}
 is not defined when ${'{x=1.}'}`,
-	mathlifier`$${{}} a=1 ${QED}
+	mathlifier`$${{}} a=1 \\; ${QED}
 
 ${'x=1'}
 has to be excluded from the domain of ${'g'}
@@ -89,13 +89,13 @@ let gInv: Expression;
 	const soln1 = mathlifier`$${'align*'} g^2(x) &= gg(x)
 \\\\ ${working}
 \\\\ &= 1 - \\left( ${term2.expand()} \\right)
-\\\\ &= x`;
+\\\\ &= x \\; ${QED}`;
 	g2 = new Expression('x');
 	gInv = g.clone();
 	const soln2 = mathlifier`$${'align*'} gg(x) &= x
 \\\\ g^{-1}gg(x) 	&= g^{-1}(x)
 \\\\ g(x) 				&= g^{-1}(x)
-\\\\ g^{-1}(x) 		&= ${g}`;
+\\\\ g^{-1}(x) 		&= ${g} \\; ${QED}`;
 	const ans = mathlifier`${{}} g^2(x) = x.
 \\
 ${{}} g^{-1}(x) = ${g}.`;
@@ -109,7 +109,7 @@ ${{}} g^{-1}(x) = ${g}.`;
 	const soln = mathlifier`$${'gather*'} g^2(b) = g^{-1}(b)
 \\\\ ${working}
 \\\\ 1-b = \\pm 1
-\\\\ b=0 ${QED} \\quad \\text{or} \\quad b=2${QED}`;
+\\\\ b=0 \\; ${QED} \\quad \\text{or} \\quad b=2 \\; ${QED}`;
 	const ans = mathlifier`${{}} {b=0}
 or ${{}} {b=2.}`;
 	answer.addSubPart(ans, soln);

@@ -1,0 +1,73 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`2022p1q6 1`] = `
+Answer {
+  "answer": {
+    "parts": [
+      {
+        "body": "Translate the curve $\`  {y=\\frac{1}{x}} \`
+by $\` a \`
+units in the positive $\` x\\text{-axis} \`
+direction.
+\\
+Scale the resulting curve by a factor of $\` a^2 + k \`
+parallel to the $\` y\\text{-axis}. \`
+\\
+Translate the resulting curve by $\` a \`
+units in the positive $\` y\\text{-axis} \`
+direction.",
+      },
+      {
+        "body": "$\`  f^{-1}(x) = \\frac{xa + k}{x - a}. \`",
+      },
+      {
+        "body": "$\` f^2(x)=x. \`",
+      },
+      {
+        "body": "$\` f^{2023}(1) = \\frac{a + k}{1 - a}. \`",
+      },
+    ],
+  },
+  "solution": {
+    "parts": [
+      {
+        "body": "$$\`  \\frac{ax + k}{x - a} = a + \\frac{a^2 + k}{x - a} \`
+
+- Translate the curve $\`  {y=\\frac{1}{x}} \`
+by $\` a \`
+units in the positive $\` x\\text{-axis} \`
+direction
+- Scale the resulting curve by a factor of $\` a^2 + k \`
+parallel to the $\` y\\text{-axis} \`
+- Translate the resulting curve by $\` a \`
+units in the positive $\` y\\text{-axis} \`
+direction",
+      },
+      {
+        "body": "$$\` \\begin{gather*} \\text{Let }  y = \\frac{ax + k}{x - a}
+	\\\\ y\\left( x - a \\right) = ax + k
+	\\\\ yx - ya = ax + k
+	\\\\ yx - ax = ya + k
+	\\\\ x\\left( y - a \\right) = ya + k
+	\\\\ x = \\frac{ya + k}{y - a} \\\\ f^{-1}(x) = \\frac{xa + k}{x - a} \\; \\blacksquare
+\\end{gather*} \`",
+      },
+      {
+        "body": "We observe from part (b) that $\`  {f(x) = f^{-1}(x).} \`
+Hence $$\` \\begin{align*} f^2(x) &= ff(x)
+\\\\ &= ff^{-1}(x)
+\\\\ &= x \\; \\QED
+\\end{align*} \`",
+      },
+      {
+        "body": "$$\` \\begin{align*} f^{2023}(1) &= f^{2021}ff(1)
+\\\\ &= f^{2021}ff^{-1}(1)
+\\\\ &= f^{2021}(1)
+\\\\ &= \\dotsb
+\\\\ &= f(1) \\\\ &= \\frac{a + k}{1 - a} \\; \\QED
+\\end{align*} \`",
+      },
+    ],
+  },
+}
+`;

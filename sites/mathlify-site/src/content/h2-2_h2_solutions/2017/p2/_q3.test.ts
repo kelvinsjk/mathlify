@@ -8,32 +8,32 @@ const actual: typeof ans = {
 		{
 			parts: [
 				{
-					body: mathlifier`${{}} \\left( \\frac{a}{2}, 0 \\right), 
+					body: mathlifier`${{}}\\left( \\frac{a}{2}, 0 \\right),
 ${{}} \\left( 0, b \\right).`
 				},
-				{ body: mathlifier`${{}} \\left(a+1, 0\\right).` },
-				{ body: mathlifier`${{}} \\left(\\frac{a+1}{2}, 0\\right).` },
+				{ body: mathlifier`${{}}\\left( a + 1, 0 \\right).` },
+				{ body: mathlifier`${{}}\\left( \\frac{a + 1}{2}, 0 \\right).` },
 				{
-					body: mathlifier`${{}} \\left( 0,a \\right), 
-${{}} \\left( b,0 \\right).`
+					body: mathlifier`${{}}\\left( 0, a \\right),
+${{}}\\left( b, 0 \\right).`
 				}
 			]
 		},
 		{
 			parts: [
 				{
-					body: mathlifier`${{}} a = 1.
+					body: mathlifier`${{}}a=1.
 \\
 It must be excluded as ${'g'}
 is not defined when ${'{x=1.}'}`
 				},
 				{
-					body: mathlifier`${{}} g^2(x)=x.
+					body: mathlifier`${{}} g^2(x) = x.
 \\
-${{}} g^{-1}(x) = 1 - \\frac{1}{1-x}.`
+${{}} g^{-1}(x) = 1 - \\frac{1}{1 - x}.`
 				},
 				{
-					body: mathlifier`${{}}{b=0}
+					body: mathlifier`${{}} {b=0}
 or ${{}} {b=2.}`
 				}
 			]
