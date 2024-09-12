@@ -14,17 +14,17 @@ const actual: typeof ans = {
 		{
 			parts: [
 				{
-					body: mathlifier`${{}} k = -\\frac{b}{2}.
+					body: mathlifier`${{}} k = - \\frac{b}{2}.
 \\
 It must be excluded as ${'f'}
-is not defined when ${{}} {x = -\\frac{b}{2}.}`
+is not defined when ${{}} {x = - \\frac{b}{2}.}`
 				},
 				{
-					body: mathlifier`${{}} b=-1.
+					body: mathlifier`${{}} b = -1.
 \\
-${{}} a \\in \\mathbb{R}, a \\neq -\\frac{1}{2}.`
+${{}} a \\in \\mathbb{R}, a \\neq - \\frac{1}{2}.`
 				},
-				{ body: mathlifier`${{}} f^{-1}(-4) = \\frac{4-a}{9}.` }
+				{ body: mathlifier`${{}} f^{-1}(-4) = \\frac{4 - a}{9}.` }
 			]
 		}
 	]

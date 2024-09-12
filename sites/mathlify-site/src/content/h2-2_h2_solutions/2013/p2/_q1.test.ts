@@ -6,13 +6,14 @@ const ans = answer.answer;
 const actual: typeof ans = {
 	parts: [
 		{
-			body: mathlifier`${{}} fg
-does not exist as ${{}} {R_{g} \\not \\subseteq D_{f}.}`
+			body: mathlifier`${{}}fg
+does not exist as ${{}} {R_{g} \\not  \\subseteq D_{f}.}`
 		},
 		{
-			body: mathlifier`${{}} gf(x) = \\frac{-3-3x}{1-x}.
-
-${{}} (gf)^{-1}(5) = 4.`
+			body:
+				mathlifier`${{}}gf(x) = \\frac{- 3 - 3x}{1 - x}.` +
+				'\\\n' +
+				mathlifier`${{}} (gf)^{-1} (5) = 4.`
 		}
 	]
 };

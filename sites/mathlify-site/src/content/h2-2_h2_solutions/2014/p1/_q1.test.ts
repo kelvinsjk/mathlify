@@ -6,9 +6,9 @@ const ans = answer.answer;
 const actual: typeof ans = {
 	parts: [
 		{
-			body: mathlifier`${{}} f^2(x) = f^{-1}(x) = \\frac{x-1}{x}.`
+			body: mathlifier`${{}}f^2(x)=f^{-1}(x) = \\frac{x - 1}{x}.`
 		},
-		{ body: mathlifier`${{}} f^3(x)=x.` }
+		{ body: mathlifier`${{}}f^3(x)=x.` }
 	]
 };
 

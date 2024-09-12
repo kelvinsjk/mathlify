@@ -1,3 +1,5 @@
+export { gcd } from "./core/expression/numeral/fraction/gcd.js";
+export { lcm } from "./core/expression/numeral/fraction/lcm.js";
 export { greek } from "./utils/greek-variable.js";
 export { Polynomial } from "./core/polynomial/index.js";
 export { expressionToPolynomial } from "./utils/expression-to-polynomial.js";

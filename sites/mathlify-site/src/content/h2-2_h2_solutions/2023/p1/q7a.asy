@@ -1,0 +1,22 @@
+settings.outformat = "svg";
+defaultpen(fontsize(12pt));
+
+draw((-100,0) -- (100,0), Arrow );
+draw((0,-15) -- (0,100) , Arrow );
+draw((-100,18){right} .. (-20,0)  );
+draw((-20,0) .. (0,13.3) .. {up}(28,100)  );
+draw((32,100){down} .. {right}(100,22)  );
+draw((-100,20)--(100,20), dashed);
+draw((30,-15)--(30,100), dashed);
+label("$x$", (100,0), S);
+label("$y$", (0,100), W);
+label("$0$", (0,0), SW);
+draw((-20,5)--(-20,-5));
+label("$\left( -2, 0 \right)$", (-27,0), S);
+dot((0,13.3));
+label("$\left( 0, \frac{4}{3} \right)$", (3,15), NW);
+label("$y=2$", (-100,20), NE);
+label("$x=3$", (30,-15), NE);
+label("$y=f(x)$", (75,50));
+draw((-105,-20), invisible);
+draw((105,0), invisible);

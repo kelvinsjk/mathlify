@@ -6,6 +6,7 @@ import { compositeFormula } from '$content/h2-1_h2_learn/01_functions/03_composi
 import { EquationWorking } from 'mathlify/working';
 import { mathlifierDj as mathlifier } from 'mathlifier';
 import { Interval } from '$content/h2-1_h2_learn/01_functions/_intervals';
+import { QED } from '$lib/typesetting/utils';
 
 export const answer = new Answer();
 
@@ -66,7 +67,7 @@ const compositeStateFg: Parameters<typeof compositeExists>[0] = {
 		soln1 +
 		mathlifier`$${'align*'} \\text{Let } \\quad x &= (gf)^{-1}(${rhs})  \\\\ ${working}
 	
-	$${{}} (gf)^{-1} (${rhs}) = ${root}`;
-	const ans = ans1 + mathlifier`${{}} (gf)^{-1} (${rhs}) = ${root}.`;
+	$${{}} (gf)^{-1} (${rhs}) = ${root} \\; ${QED}`;
+	const ans = ans1 + '\\\n' + mathlifier`${{}} (gf)^{-1} (${rhs}) = ${root}.`;
 	answer.addPart(ans, soln);
 }

@@ -223,11 +223,11 @@ export class EquationWorking {
         target?: "l" | "r" | "b";
     } & WorkingOptions) | undefined): EquationWorking;
     /**
-     *
+     * @param {string|Variable} [variable]
      * @param {WorkingOptions & {target?: 'l'|'r'|'b'}} [options]
      * @returns {EquationWorking}
      */
-    toPolynomial(options?: (WorkingOptions & {
+    toPolynomial(variable?: string | import("../../index.js").Variable | undefined, options?: (WorkingOptions & {
         target?: "l" | "r" | "b";
     }) | undefined): EquationWorking;
     /**
@@ -270,7 +270,7 @@ export class EquationWorking {
         /**
          * @param {string} [variable] - we will use variable if exp not of Polynomial class
          * @param {{sign?: Sign, hideFirstStep?: boolean, aligned?: boolean, qed?: true|string}} [options]
-         * @returns {EquationWorking & {answers: string[], roots: [Numeral, Numeral]}}
+         * @returns {EquationWorking & {answers: string[], roots: Expression[], rootsWorking?: string}}
          */
         quadraticInequality: (variable?: string | undefined, options?: {
             sign?: Sign;
@@ -279,7 +279,8 @@ export class EquationWorking {
             qed?: true | string;
         } | undefined) => EquationWorking & {
             answers: string[];
-            roots: [Numeral, Numeral];
+            roots: Expression[];
+            rootsWorking?: string;
         };
     };
     /**
@@ -368,6 +369,6 @@ export type WorkingOptions = {
 };
 import { Equation } from './equation.js';
 import { Expression } from '../../index.js';
-import { Numeral } from '../../core/expression/expression.js';
 import { Polynomial } from '../../index.js';
+import { Numeral } from '../../core/expression/expression.js';
 //# sourceMappingURL=equation-working.d.ts.map

@@ -2,57 +2,45 @@
 title: Using the quadratic discriminant
 ---
 
-## Self composition
+So far we have mostly found the range of functions by graphical methods. For example, the following is a sketch of the
+graph of $y=f(x)=\frac{2x}{x^2+1}$.
 
-Just like we can compose two functions $`f` and $`g` to get $`fg,` we can also
-compose a function with itself. This function is denoted by $`f^2 = ff` and is
-not to be confused with squaring the original function.
+The curve has a minimum point at $(-1,-1)$ and a maximum point $(1, 1)$. Hence the range of the function is
+$`[-1, 1]`.
 
-For example, if
-$`{f(x) = 2x + 3,}` then
-$`f^2(x) = ff(x) = {f(2x+3)} = {2(2x+3) + 3} = {4x + 9},`
-which is not the same as $`{\big(f(x)\big)^2 = (2x+3)^2.}`
+## An algebraic method to find the range
 
-In a similar fashion to the existence of $`fg,` we also have that the composite
-function $`f^2` exists if $`R_f \subseteq D_f.`
+Instead of the graphical method above, the range of some functions can be found using the quadratic discriminant.
 
-### A note about notation
+The idea behind this method is that the range of a function is the set of values of $y$ for which the equation
+$y=f(x)$ has real roots in $x$. If $y=f(x)$ can be manipulated into a quadratic equation in $x$, then we will
+be able to use the quadratic discriminant to find the range of the function.
 
-We have just seen that
-$`f^2(x)` stands for $`ff(x)` and is different from the
-square of $`f` which we denote $`\big(f(x)\big)^2.` In a similar fashion, we
-note that the previous section on inverse functions use the notation
-$`f^{-1}(x)`
-to denote the "reverse" and is not to be confused with the reciprocal
-$`{\big(f(x)\big)^{-1} = \frac{1}{f(x)}.}`
+For our earlier example, the range of the function corresponds to the horizontal lines
+that cut the curve $y=f(x)$ at one or two points. This corresponds to the case that our quadratic discriminant ${b^2-4ac} \geq 0$.
 
-## Composing with inverses
+## Example
 
-We can also compose a function with its inverse to get composite functions
-$`ff^{-1}` and $`f^{-1}f.`
+$$
+\begin{gather*}
+  y = \frac{2x}{x^2+1} \\
+  yx^2 + y = 2x \\
+  yx^2 - 2x + y = 0
+\end{gather*}
+$$
 
-We can try to find the formula for $`f^{-1}(x)` and perform composition, but
-turns out we can get the result in a simpler manner by consideration the meaning
-of this composition.
+For the range of $f$,
 
-$`f^{-1}` is the function that reverses $`f,` so $`f^{-1}f`
-will take a number, apply $`f` to it and then try to reverse the process. We
-then end up with the original number. A similar argument can be made for
-$`ff^{-1},`
-leading us to the following results.
+$$
+\begin{gather*}
+  b^2 - 4ac \geq 0 \\
+  (-2)^2 - 4(y)(y) \geq 0 \\
+  4 - 4y^2 \geq 0 \\
+  y^2 - 1 \leq 0 \\
+  (y+1)(y-1) \leq 0 \\
+  -1 \leq y \leq 1
+\end{gather*}
+$$
 
-- $`ff^{-1}(x) = x`
-- $`f^{-1}f(x) = x`
-
-### Differences between the two functions
-
-So is $`ff^{-1}(x)` and $`f^{-1}f(x)` the exact same function? Turns out that is
-not true because of domain considerations. Recall that $`{D_{fg} = D_g}` so we
-have
-
-- $`D_{f^{-1}f} = D_f`
-- $`D_{ff^{-1}} = D_{f^{-1}}`
-
-```=comment
-Add a picture for these graphs
-```
+Hence the range of $f$ is
+$`[-1, 1]`.

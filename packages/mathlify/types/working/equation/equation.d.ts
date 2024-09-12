@@ -115,11 +115,13 @@ export class Equation {
      * @param {string} [variable='x']
      */
     differentiate(variable?: string | undefined): Equation;
+    /** @typedef {import('../../core/expression/expression.js').Variable} Variable */
     /**
+     * @param {string|Variable} [variable]
      * @param {{target?: 'l'|'r'|'b'}} [options] default to the left
      * @returns {Equation}
      */
-    toPolynomial(options?: {
+    toPolynomial(variable?: string | import("../../core/expression/expression.js").Variable | undefined, options?: {
         target?: "l" | "r" | "b";
     } | undefined): Equation;
     /**

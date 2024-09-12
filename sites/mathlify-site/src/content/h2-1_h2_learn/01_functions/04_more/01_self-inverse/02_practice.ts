@@ -45,6 +45,8 @@ interface StateOthers {
 
 type State = StateFrac | StateLinear | StateOthers;
 
+export const practiceTitle = 'self-inverse functions';
+
 export function generateState(): State {
 	const show = coinFlip();
 	const fnTypes = ['frac', 'linear', 'log', 'sqrt'] as const;
@@ -116,7 +118,7 @@ function generateOtherFnDefinition(
 			mathlifier`The function ${f}
 is defined by
 
-$${{}} ${f}: x \\mapsto ${fExp}, \\quad \\text{for } x \\in \\mathbb{R}.`,
+$${{}} ${f}: x \\mapsto ${fExp}, \\quad \\text{for } x \\in \\mathbb{R}.\n\n`,
 			fExp
 		];
 	} else {
@@ -131,7 +133,7 @@ $${{}} ${f}: x \\mapsto ${fExp}, \\quad \\text{for } x \\in \\mathbb{R}.`,
 			mathlifier`The function ${f}
 is defined by
 
-$${{}} ${f}: x \\mapsto ${fExp}, \\quad \\text{for } x \\in \\mathbb{R}, x > ${x}.`,
+$${{}} ${f}: x \\mapsto ${fExp}, \\quad \\text{for } x \\in \\mathbb{R}, x > ${x}.\n\n`,
 			fExp
 		];
 	}
@@ -188,7 +190,7 @@ function fnDefinitionWithPotentialUnknowns(
 			? mathlifier`The function ${f}
 is defined by
 
-$${{}} ${f}: x \\mapsto ${fExp}, \\quad ${forString} x \\in \\mathbb{R}, x \\neq ${x}.`
+$${{}} ${f}: x \\mapsto ${fExp}, \\quad ${forString} x \\in \\mathbb{R}, x \\neq ${x}.\n\n`
 			: mathlifier`The function ${f}
 is defined by
 
@@ -220,9 +222,10 @@ export function generateAns(
 	state: State,
 	fExp: Expression,
 	f: string,
-	options?: { hideF2?: boolean }
+	options?: { hideF2?: boolean; qed?: boolean }
 ): { ans: string; soln: string } {
 	const { fnType, show, n } = state;
+	const qed = options?.qed ? `\\; ${QED}` : '';
 	const { working } =
 		fnType === 'frac'
 			? fractionalInverseWorking(fExp, false, { reportInverse: true, f, qed: !show, swapNum: true })
@@ -231,13 +234,13 @@ export function generateAns(
 				: specialInverseWorking(state, fExp, f, !show);
 	const ans1 = show ? '' : mathlifier`${{}} ${f}^{-1}(x) = ${fExp}.`;
 	const showSoln = show
-		? mathlifier`Hence ${f}
+		? mathlifier`\n\nHence ${f}
 is self-inverse as ${{}} {${f}(x) = ${f}^{-1}(x)}
-and ${{}} D_{${f}^{-1}} = R_${f} = D_${f}`
+and ${{}} {D_{${f}^{-1}} = R_${f} = D_${f}} ${qed} \n\n`
 		: '';
-	const { ans: ans2, soln: fnSoln } = selfInverseWorking(fExp, n);
+	const { ans: ans2, soln: fnSoln } = selfInverseWorking(fExp, n, { qed: options?.qed });
 	const soln = working + showSoln + (options?.hideF2 ? '' : fnSoln);
-	return { ans: ans1 + ans2, soln };
+	return { ans: ans1 + '\\\n' + ans2, soln };
 }
 
 function specialInverseWorking(
@@ -281,10 +284,14 @@ function specialInverseWorking(
 export function selfInverseWorking(
 	fExp: Expression,
 	n: number,
-	x: number | string | Expression = 'x'
+	options?: {
+		x?: number | string | Expression;
+		qed?: boolean;
+	}
 ): { soln: string; ans: string } {
 	const f = 'f';
 	const even = n % 2 === 0;
+	const x = options?.x ?? 'x';
 	const xExp = x instanceof Expression ? x : new Expression(x);
 	const variable = typeof x === 'string' ? x : 'x';
 	const subInObject: Record<string, Expression> = {};
@@ -292,15 +299,16 @@ export function selfInverseWorking(
 	const ansExp = even ? xExp.subIn(subInObject) : fExp.subIn(subInObject);
 	const ans = mathlifier`${f}^{${n}}(${x}) = ${ansExp}.`;
 	const finalStep = even ? `${x}` : `${f}(${x}) \\\\ &= ${ansExp}`;
+	const qed = options?.qed ? '\\; ' + QED : '';
 	const soln =
 		n > 3
 			? mathlifier`$${'align*'} ${f}^{${n}}(${x}) &= ${f}^{${n - 2}}${f}${f}(${x})
 \\\\ &= ${f}^{${n - 2}}${f}${f}^{-1}(${x})
 \\\\ &= ${f}^{${n - 2}}(${x})
 \\\\ &= \\dotsb
-\\\\ &= ${finalStep}`
+\\\\ &= ${finalStep} ${qed}`
 			: n === 2
-				? mathlifier`$${'align*'} ${f}^{${n}}(${x}) &= ${f}${f}(${x}) \\\\ &= ${f}${f}^{-1}(${x}) \\\\ &= ${x}`
-				: mathlifier`$${'align*'} ${f}^{${n}}(${x}) &= ${f}${f}${f}(${x}) \\\\ &= ${f}${f}${f}^{-1}(${x}) \\\\ &= ${finalStep}`;
+				? mathlifier`$${'align*'} ${f}^{${n}}(${x}) &= ${f}${f}(${x}) \\\\ &= ${f}${f}^{-1}(${x}) \\\\ &= ${x} ${qed}`
+				: mathlifier`$${'align*'} ${f}^{${n}}(${x}) &= ${f}${f}${f}(${x}) \\\\ &= ${f}${f}${f}^{-1}(${x}) \\\\ &= ${finalStep} ${qed}`;
 	return { soln, ans };
 }

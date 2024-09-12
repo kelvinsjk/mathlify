@@ -15,7 +15,9 @@ import {
 	generateState as generateState1,
 	generateFn,
 	type State
-} from '../../01_concepts/02_domain-and-range/02_practice';
+} from '../../01_concepts/02_domain-and-range/02_practice-1';
+
+export const practiceTitle = 'existence of inverse functions';
 
 export function generateState(): State {
 	// more chance to get non-inverses
@@ -212,8 +214,7 @@ export function specialExistence(state: State): { ans: string; soln: string } {
 	const ans = mathlifier`@${allHorizontalLines} ${line}
 cuts the graph of ${'{y=f(x)}'}
 @${atMostOnce}. Hence ${'f'}
-is @${not} one-to-one and 
-@${has} an inverse.`;
+is @${not} one-to-one and @${has} an inverse.`;
 	const soln = mathlifier`@${allHorizontalLines} ${line}
 cuts the graph of ${'{y=f(x)}'}
 @${atMostOnce}. Hence ${'f'}

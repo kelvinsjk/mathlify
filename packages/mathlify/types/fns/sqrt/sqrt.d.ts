@@ -45,9 +45,9 @@ export class Sqrt extends Fn {
     }): Sqrt;
     /**
      * @param {SimplifyOptions} [options]
-     * @returns {Sqrt|Product|Numeral}
+     * @returns {Sqrt|Product|Numeral|Quotient}
      */
-    simplify(options?: import("../../core/expression/expression.js").SimplifyOptions | undefined): Sqrt | Product | Numeral;
+    simplify(options?: import("../../core/expression/expression.js").SimplifyOptions | undefined): Sqrt | Product | Numeral | Quotient;
 }
 export type ExpressionNode = import("../../core/expression/expression.js").ExpressionNode;
 export type SimplifyOptions = import("../../core/expression/expression.js").SimplifyOptions;
@@ -58,4 +58,5 @@ import { Expression } from '../../core/expression/expression.js';
 import { Sum } from '../../core/expression/expression.js';
 import { Fn } from '../../core/expression/fn/custom-function.js';
 import { Product } from '../../core/expression/expression.js';
+import { Quotient } from '../../core/expression/expression.js';
 //# sourceMappingURL=sqrt.d.ts.map

@@ -45,9 +45,9 @@ const compositeStateFg: Parameters<typeof compositeExists>[0] = {
 		[f, generateDomain(fState), g, generateDomain(gState)],
 		false,
 		true,
-		{ ansInline: true }
+		{ ansInline: true, QED: true }
 	);
-	answer.addPart(ans + ans2, soln + soln2);
+	answer.addPart(ans + '\\\n' + ans2, soln + '\n\n' + soln2);
 }
 // b
 {

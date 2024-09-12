@@ -37,6 +37,8 @@ export interface State {
 	definition: boolean;
 }
 
+export const practiceTitle = 'modulus functions';
+
 export function generateState(): State {
 	const state: State = { ...generateState1({ type: 'abs' }), definition: coinFlip() };
 	//delete state.fnType;

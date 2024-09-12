@@ -8,30 +8,25 @@ const actual: typeof ans = {
 		{
 			parts: [
 				{
-					body: mathlifier`All horizontal lines ${{}} {y =k,}
-${{}} {k\\in\\mathbb{R}}
-cuts the graph of ${{}} {y=f(x)}
+					body: mathlifier`All horizontal lines ${{}}{y=k, k \\in \\mathbb{R},}
+cuts the graph of ${{}}{y=f(x)}
 at most once. Hence ${'f'}
-is one-to-one and has an inverse.`
+is  one-to-one and has an inverse.`
 				},
 				{
-					body: mathlifier`${{}} f^{-1}(x) = \\sqrt{\\frac{x-1}{x}}.
+					body: mathlifier`${{}} f^{-1}(x) = \\sqrt{\\frac{x - 1}{x}}.
 \\
-D_{f^{-1}} = R_f = (-\\infty, 0).`
+${{}} D_{f^{-1}} = R_{f} = \\left( -\\infty, 0 \\right).`
 				}
 			]
 		},
 		{
-			body: mathlifier`${{}} \\left(-\\infty, \\frac{2-\\sqrt{3}}{2} \\right] \\cup \\left[ \\frac{2+\\sqrt{3}}{2}, \\infty ).`
+			body: mathlifier`${{}} \\left( -\\infty, \\frac{2 - \\sqrt{3}}{2} \\right] \\allowbreak \\cup \\left[ \\frac{2 + \\sqrt{3}}{2}, \\infty \\right).`
 		}
 	]
 };
 
-it('dummy', () => {
-	expect(2).toEqual(2);
+it('2015p2q3', () => {
+	expect(ans).toEqual(actual);
+	expect(answer).toMatchSnapshot();
 });
-
-//it('2018p1q5', () => {
-//	expect(answer).toMatchSnapshot();
-//	expect(ans).toEqual(actual);
-//});

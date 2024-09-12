@@ -22,7 +22,7 @@ import {
 	generateRange,
 	type IntervalOneSided,
 	type Type
-} from '../../01_concepts/02_domain-and-range/02_practice';
+} from '../../01_concepts/02_domain-and-range/02_practice-1';
 import { QED } from '$lib/typesetting/utils';
 import type { Interval } from '../../_intervals';
 
@@ -40,6 +40,8 @@ export interface State {
 	definition: boolean;
 	fg: boolean;
 }
+
+export const practiceTitle = 'formula of composite functions';
 
 export function generateState(): State {
 	const type = getRandomInt(1, 6);
@@ -229,15 +231,22 @@ export function compositeFormula(
 		working.expressions[working.expressions.length - 1] = newQ;
 	}
 	const fgExp = working.expression;
-	const QEDSymbol = options?.noDomain ? (options?.QED ? QED : '') : definition ? '' : QED;
+	const QEDSymbol = options?.noDomain
+		? options?.QED
+			? `\\; ${QED}`
+			: ''
+		: definition
+			? ''
+			: `\\; ${QED}`;
+	const definitionQED = options?.QED ? `\\; ${QED}` : '';
 	const domainInequality = options?.noDomain ? '' : generateInequality(gDomain);
 	const soln2 = options?.noDomain
 		? ''
 		: definition
 			? mathlifier`
-$${{}} ${fg}: x \\mapsto ${fgExp}, \\quad ${domainInequality} ${QED}`
+$${{}} ${fg}: x \\mapsto ${fgExp}, \\quad ${domainInequality} ${definitionQED}`
 			: mathlifier`
-$${'align*'} D_{${fg}} &= D_${g} \\\\ &= ${gDomain.join(` \\cup `)} ${QED}`;
+$${'align*'} D_{${fg}} &= D_${g} \\\\ &= ${gDomain.join(` \\cup `)} ${QEDSymbol}`;
 	const soln =
 		mathlifier`$${'align*'}
 ${fg}(x) &= ${f} \\left( ${gExp} \\right)
@@ -248,8 +257,7 @@ ${fg}(x) &= ${f} \\left( ${gExp} \\right)
 		ans = options?.noDomain
 			? mathlifier`${fg}(x) = ${fgExp}.`
 			: definition
-				? mathlifier`
-${fg}:x\\mapsto ${fgExp}, \\quad \\allowbreak  {${domainInequality}}.`
+				? mathlifier`${fg}:x\\mapsto ${fgExp}, \\quad \\allowbreak  {${domainInequality}}.`
 				: mathlifier`${fg}(x) = ${fgExp}.
 \\
 ${{}}D_{${fg}} = ${gDomain.join(` \\cup `)}.`;
@@ -257,8 +265,7 @@ ${{}}D_{${fg}} = ${gDomain.join(` \\cup `)}.`;
 		ans = options?.noDomain
 			? mathlifier`${fg}(x) = ${fgExp}.`
 			: definition
-				? mathlifier`
-	$${fg}:x\\mapsto ${fgExp}, \\quad ${domainInequality}.`
+				? mathlifier`$${fg}:x\\mapsto ${fgExp}, \\quad ${domainInequality}.`
 				: mathlifier`${fg}(x) = ${fgExp}.
 	\\
 	${{}}D_{${fg}} = ${gDomain.join(` \\cup `)}.`;

@@ -23,7 +23,7 @@ import {
 	generateRange,
 	types,
 	type Type
-} from '../../01_concepts/02_domain-and-range/02_practice';
+} from '../../01_concepts/02_domain-and-range/02_practice-1';
 import { Interval, intervalBuilder } from '../../_intervals';
 import { Expression } from 'mathlify';
 
@@ -41,6 +41,8 @@ export interface State {
 		| false;
 	unknownConstants: boolean;
 }
+
+export const practiceTitle = 'domain and range of inverse functions';
 
 export function generateState(options?: { type?: Type }): State {
 	// we try to get a final range between -5 and 5;

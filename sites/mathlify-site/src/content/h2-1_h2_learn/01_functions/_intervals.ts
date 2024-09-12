@@ -1,5 +1,5 @@
 import type { Expression } from 'mathlify';
-import type { IntervalOneSided } from './01_concepts/02_domain-and-range/02_practice';
+import type { IntervalOneSided } from './01_concepts/02_domain-and-range/02_practice-1';
 
 export class Interval {
 	left: number | Expression;

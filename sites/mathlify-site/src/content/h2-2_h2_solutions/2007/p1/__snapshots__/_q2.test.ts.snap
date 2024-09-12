@@ -1,0 +1,55 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`2007p1q2 1`] = `
+Answer {
+  "answer": {
+    "parts": [
+      {
+        "body": "$\` gf:x\\mapsto \\frac{1}{\\left( x - 3 \\right)^2}, \\quad \\allowbreak  {x \\in \\mathbb{R}, x \\neq 3}. \`\\
+$\` fg \`
+does not exist as $\`  {R_{g} \\not  \\subseteq D_{f}.} \`",
+      },
+      {
+        "body": "$\`  f^{-1}(x) = \\frac{1 + 3x}{x}. \`
+\\
+$\`  D_{f^{-1}}  = \\left( -\\infty, 0 \\right) \\cup \\left( 0, \\infty \\right). \`",
+      },
+    ],
+  },
+  "solution": {
+    "parts": [
+      {
+        "body": "$$\` \\begin{align*}
+gf(x) &= g \\left( \\frac{1}{x - 3} \\right)
+\\\\ &= \\left( \\frac{1}{x - 3} \\right)^2
+	\\\\ &= \\frac{1}{\\left( x - 3 \\right)^2}
+\\end{align*} \`
+$$\`  gf: x \\mapsto \\frac{1}{\\left( x - 3 \\right)^2}, \\quad x \\in \\mathbb{R}, x \\neq 3 \\; \\QED  \`
+
+$$\` \\begin{align*}
+R_{g} &= \\left[ 0, \\infty \\right) \\\\
+D_{f} &= \\left( -\\infty, 3 \\right) \\cup \\left( 3, \\infty \\right)
+\\end{align*} \`
+
+Since $\`  R_{g} \\not  \\subseteq D_{f}, \`
+the composite function $\` fg \`
+does not exist $\` \\QED  \`
+",
+      },
+      {
+        "body": "$$\` \\begin{gather*} \\text{Let }  y = \\frac{1}{x - 3}
+	\\\\ y\\left( x - 3 \\right) = 1
+	\\\\ yx - 3y = 1
+	\\\\ yx = 1 + 3y
+	\\\\ x = \\frac{1 + 3y}{y}
+\\end{gather*} \`
+
+$$\`  f^{-1}(x) = \\frac{1 + 3x}{x} \\QED  \`
+
+$$\` \\begin{align*} D_{f^{-1}} &= R_{f} \\\\ &= \\left( -\\infty, 0 \\right) \\cup \\left( 0, \\infty \\right) \\QED
+\\end{align*} \`",
+      },
+    ],
+  },
+}
+`;

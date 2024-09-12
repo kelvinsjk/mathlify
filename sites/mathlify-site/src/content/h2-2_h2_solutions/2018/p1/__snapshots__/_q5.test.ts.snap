@@ -1,0 +1,37 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`2018p1q5 1`] = `
+Answer {
+  "answer": {
+    "body": "$\`  b = -1. \`
+\\
+$\`  f^{-1}(x) = \\frac{x + a}{x - 1}. \`",
+  },
+  "solution": {
+    "body": "$$\` \\begin{align*} ff(x) &= f\\left( \\frac{x + a}{x + b} \\right) \\\\ &= \\frac{\\frac{x + a}{x + b} + a}{\\frac{x + a}{x + b} + b}
+	\\\\ &= \\frac{\\frac{x + a + ax + ab}{x + b}}{\\frac{x + a + bx + b^2}{x + b}}
+	\\\\ &= \\frac{x + a + ax + ab}{x + a + bx + b^2}
+\\end{align*} \`
+
+Since $\` ff = g, \`
+$$\` \\begin{gather*} \\frac{x + a + ax + ab}{x + a + bx + b^2} = x
+	\\\\ x + a + ax + ab = x\\left( x + a + bx + b^2 \\right)
+	\\\\ x + a + ax + ab = x^2 + xa + x^2b + xb^2
+	\\\\ \\left( 1 + a \\right)x + ab + a = \\left( 1 + b \\right)x^2 + \\left( a + b^2 \\right)x
+\\end{gather*} \`
+
+Comparing coefficients of $\` x^2, \`
+$$\` \\begin{align*} 1+b &= 0 \\\\ b &= -1 \\; \\QED
+\\end{align*} \`
+
+$$\` \\begin{align*} 
+ff(x) &= g(x)
+\\\\ ff(x) &= x
+\\\\ f(x) &= f^{-1}(x)
+\\\\ f^{-1}(x) &= f(x)
+\\\\ &= \\frac{x + a}{x + b}
+\\\\ &= \\frac{x + a}{x - 1} \\; \\QED
+\\end{align*} \`",
+  },
+}
+`;

@@ -26,6 +26,6 @@ let fInv: Expression;
 // ii
 {
 	const x = 5;
-	const { ans, soln } = solveFgx({ a, b, c, rhs: x, fnType: 'exp' }, fInv);
+	const { ans, soln } = solveFgx({ a, b, c, rhs: x, fnType: 'exp' }, fInv, { qed: true });
 	answer.addPart(ans, soln);
 }

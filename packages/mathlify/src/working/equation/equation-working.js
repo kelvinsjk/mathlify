@@ -413,7 +413,6 @@ export class EquationWorking {
 		commonFactor: (options) => {
 			this.eqn = this.eqn.clone().factorize.commonFactor(options);
 			addStep(this, options);
-			options;
 			if (options?.verbatim) {
 				return this;
 			}
@@ -620,12 +619,12 @@ export class EquationWorking {
 	}
 
 	/**
-	 *
+	 * @param {string|Variable} [variable]
 	 * @param {WorkingOptions & {target?: 'l'|'r'|'b'}} [options]
 	 * @returns {EquationWorking}
 	 */
-	toPolynomial(options) {
-		this.eqn = this.eqn.toPolynomial(options);
+	toPolynomial(variable, options) {
+		this.eqn = this.eqn.toPolynomial(variable, options);
 		return addStep(this, options);
 	}
 
@@ -706,13 +705,40 @@ export class EquationWorking {
 					throw new Error(
 						`Unexpected coefficients: expected quadratic equation.`,
 					);
+				if (b.valueOf() === 0) {
+					// ax^2 + c = 0;
+					// (sqrt(a) x + sqrt(c))(sqrt(a) x + sqrt(c)) = 0
+					// assumes a and c of opposing sign from previous steps: does not check
+					const aAbs = new Expression(a).abs();
+					const cAbs = new Expression(c).abs();
+					const factor1 = sum([sqrtTerm(aAbs), 'x'], sqrtTerm(cAbs));
+					const factor2 = sum(
+						[sqrtTerm(aAbs), 'x'],
+						sqrtTerm(cAbs, { coeff: -1 }),
+					);
+					const lhs = new Expression([factor1, factor2]).simplify();
+					this.addCustomStep(lhs);
+					const root = sqrtTerm(cAbs.divide(aAbs));
+					const roots = [root.negative(), root];
+					const { working } = solve.zeroProduct(lhs, variable);
+					/** @type {EquationWorking & {rootsWorking?:string, roots?: Expression[]}} */
+					const eqnWorking = this.clone();
+					eqnWorking.roots = roots;
+					eqnWorking.rootsWorking = working;
+					Expression.DeregisterCustomSimplifier();
+					return /** @type {EquationWorking & {rootsWorking:string, roots: Expression[]}} */ (
+						eqnWorking
+					);
+				}
 				const twoA = new Expression([2, a]);
 				const negativeB = new Expression([-1, b]);
-				const sqrtWorking = sqrtTerm(['+', [b, '^', 2], [-4, a, c]], {
+				const radicand = new Expression(['+', [b, '^', 2], [-4, a, c]]);
+				const sqrtWorking = sqrtTerm(radicand, {
 					verbatim: true,
 				});
 				const rootsWorking =
-					`x &= \\frac{${negativeB.toString()} \\pm ${sqrtWorking.toString()}}{${twoA.toString()}}` +
+					`${variable} &= \\frac{${negativeB.toString()} \\pm ${sqrtWorking.toString()}}{${twoA.toString()}}` +
+					`\n\t\\\\ &= \\frac{${negativeB.simplify().toString()} \\pm \\sqrt{${radicand.simplify().toString()}}}{${twoA.simplify().toString()}}` +
 					`\n\t\\\\ &= \\frac{${negativeB.simplify().toString()} \\pm ${sqrtWorking.simplify().toString()}}{${twoA.simplify().toString()}}`;
 				// TODO: simplification using gcd
 				// TODO: sort roots
@@ -739,23 +765,149 @@ export class EquationWorking {
 		/**
 		 * @param {string} [variable] - we will use variable if exp not of Polynomial class
 		 * @param {{sign?: Sign, hideFirstStep?: boolean, aligned?: boolean, qed?: true|string}} [options]
-		 * @returns {EquationWorking & {answers: string[], roots: [Numeral, Numeral]}}
+		 * @returns {EquationWorking & {answers: string[], roots: Expression[], rootsWorking?: string}}
 		 */
 		quadraticInequality: (variable, options) => {
-			const { working, roots, answers } = solve.quadraticInequality(
-				this.eqn,
-				variable,
-				{ ...options },
-			);
-			this.eqns = this.eqns.concat(working.eqns.slice(1));
-			this.eqn = working.eqn;
-			/** @type {EquationWorking & {answers?: string[], roots?: [Numeral, Numeral]}} */
-			const eqnWorking = this.clone();
-			eqnWorking.answers = answers;
-			eqnWorking.roots = roots;
-			return /** @type {EquationWorking & {answers: string[], roots: [Numeral, Numeral]}} */ (
-				eqnWorking
-			);
+			this.makeRhsZero();
+			const polynomial =
+				this.eqn.lhs instanceof Polynomial
+					? this.eqn.lhs
+					: expressionToPolynomial(this.eqn.lhs, variable);
+			const discriminant = polynomial.quadraticDiscriminant();
+			if (discriminant.is.negative()) {
+				throw new Error('we do not support complex roots at this moment');
+			}
+			Expression.RegisterCustomSimplifier(simplifySurd);
+			const sqrtDiscriminant = sqrtTerm(discriminant).simplify();
+			if (sqrtDiscriminant.is.numeral()) {
+				Expression.DeregisterCustomSimplifier();
+				const { working, roots, answers } = solve.quadraticInequality(
+					this.eqn,
+					variable,
+					{ ...options },
+				);
+				this.eqns = this.eqns.concat(working.eqns.slice(1));
+				this.eqn = working.eqn;
+				/** @type {EquationWorking & {answers?: string[], roots?: Expression[]}} */
+				const eqnWorking = this.clone();
+				eqnWorking.answers = answers;
+				eqnWorking.roots = roots.map((x) => new Expression(x));
+				return /** @type {EquationWorking & {answers: string[], roots: Expression[]}} */ (
+					eqnWorking
+				);
+			} else {
+				const [c, b, a] = polynomial.coeffs;
+				if (c === undefined || b === undefined || a === undefined)
+					throw new Error(
+						`Unexpected coefficients: expected quadratic equation.`,
+					);
+				if (b.valueOf() === 0) {
+					// ax^2 + c = 0;
+					// (sqrt(a) x + sqrt(c))(sqrt(a) x + sqrt(c)) = 0
+					// assumes a and c of opposing sign from previous steps: does not check
+					const aAbs = new Expression(a).abs();
+					const cAbs = new Expression(c).abs();
+					const lhs = new Expression([
+						sum([sqrtTerm(aAbs), 'x'], sqrtTerm(cAbs)),
+						sum([sqrtTerm(aAbs), 'x'], sqrtTerm(cAbs, { coeff: -1 })),
+					]).simplify();
+					this.addCustomStep(lhs);
+					const root = sqrtTerm(cAbs.divide(aAbs));
+					const roots = [root.negative(), root];
+					/** @type {EquationWorking & {answers?: string[], roots?: Expression[]}} */
+					const eqnWorking = this.clone();
+					eqnWorking.roots = roots;
+					if (
+						(a.valueOf() > 0 &&
+							(this.eqn.sign === '>' || this.eqn.sign === '>=')) ||
+						(a.valueOf() < 0 &&
+							(this.eqn.sign === '<' || this.eqn.sign === '<='))
+					) {
+						const leftSign =
+							this.eqn.sign === '>=' || this.eqn.sign === '<=' ? '\\leq' : '<';
+						const rightSign =
+							this.eqn.sign === '>=' || this.eqn.sign === '<=' ? '\\geq' : '>';
+						eqnWorking.answers = [
+							`${variable} ${leftSign} ${roots[0]?.toString()}`,
+							`${variable} ${rightSign} ${roots[1]?.toString()}`,
+						];
+					} else {
+						const sign =
+							this.eqn.sign === '>=' || this.eqn.sign === '<=' ? '\\leq' : '<';
+						eqnWorking.answers = [
+							`${roots[0]?.toString()} ${sign} ${variable} ${sign} ${roots[1]?.toString()}`,
+						];
+					}
+					Expression.DeregisterCustomSimplifier();
+					return /** @type {EquationWorking & {answers: string[], roots: Expression[]}} */ (
+						eqnWorking
+					);
+				}
+				const twoA = new Expression([2, a]);
+				const negativeB = new Expression([-1, b]);
+				const radicand = new Expression(['+', [b, '^', 2], [-4, a, c]]);
+				const sqrtWorking = sqrtTerm(radicand, {
+					verbatim: true,
+				});
+				// manually typed because of the plus/minus
+				let rootsWorking =
+					`${variable} &= \\frac{${negativeB.toString()} \\pm ${sqrtWorking.toString()}}{${twoA.toString()}}` +
+					`\n\t\\\\ &= \\frac{${negativeB.simplify().toString()} \\pm \\sqrt{${radicand.simplify().toString()}}}{${twoA.simplify().toString()}}` +
+					`\n\t\\\\ &= \\frac{${negativeB.simplify().toString()} \\pm ${sqrtWorking.simplify().toString()}}{${twoA.simplify().toString()}}`;
+				// TODO: simplification using gcd
+				// TODO: sort roots
+				let root1 = new Expression([
+					['+', negativeB, [-1, sqrtWorking]],
+					'/',
+					twoA,
+				]).simplify();
+				let root2 = new Expression([
+					['+', negativeB, sqrtWorking],
+					'/',
+					twoA,
+				]).simplify();
+				if (
+					!(
+						`\\frac{${negativeB.simplify().toString()} - ${sqrtWorking.simplify().toString()}}{${twoA.simplify().toString()}}` ===
+							root1.toString() ||
+						`\\frac{${negativeB.simplify().toString()} + ${sqrtWorking.simplify().toString()}}{${twoA.simplify().toString()}}` ===
+							root1.toString()
+					)
+				) {
+					rootsWorking += `\n\t\\\\ &= ${root1.toString()} \\text{ or } ${root2.toString()}`;
+				}
+				if (root1.valueOf() > root2.valueOf()) {
+					[root1, root2] = [root2, root1];
+				}
+				/** @type {EquationWorking & {rootsWorking?:string, roots?: Expression[], answers?: string[]}} */
+				const eqnWorking = this.clone();
+				eqnWorking.rootsWorking = rootsWorking;
+				eqnWorking.roots = [root1, root2];
+				if (
+					(a.valueOf() > 0 &&
+						(this.eqn.sign === '>' || this.eqn.sign === '>=')) ||
+					(a.valueOf() < 0 && (this.eqn.sign === '<' || this.eqn.sign === '<='))
+				) {
+					const leftSign =
+						this.eqn.sign === '>=' || this.eqn.sign === '<=' ? '\\leq' : '<';
+					const rightSign =
+						this.eqn.sign === '>=' || this.eqn.sign === '<=' ? '\\geq' : '>';
+					eqnWorking.answers = [
+						`${variable} ${leftSign} ${root1.toString()}`,
+						`${variable} ${rightSign} ${root2.toString()}`,
+					];
+				} else {
+					const sign =
+						this.eqn.sign === '>=' || this.eqn.sign === '<=' ? '\\leq' : '<';
+					eqnWorking.answers = [
+						`${root1.toString()} ${sign} ${variable} ${sign} ${root2.toString()}`,
+					];
+				}
+				Expression.DeregisterCustomSimplifier();
+				return /** @type {EquationWorking & {rootsWorking:string, roots: Expression[], answers: string[]}} */ (
+					eqnWorking
+				);
+			}
 		},
 	};
 
@@ -871,7 +1023,10 @@ export class EquationWorking {
 				: new Equation(
 						shorthandToExpression(lhs),
 						rhs ? shorthandToExpression(rhs) : this.eqn.rhs,
-						options,
+						{
+							sign: this.eqn.sign,
+							...options,
+						},
 					);
 		return addStep(this, options);
 	}
@@ -1054,8 +1209,7 @@ export const solve = {
 		const roots = /** @type {[Numeral, Numeral]} */ ([
 			numerals[0],
 			numerals[1],
-		]);
-		// assumed roots are already sorted from factorization step
+		]).sort((a, b) => a.valueOf() - b.valueOf());
 		// test sign of left side
 		const testPoint = roots[0].minus(1);
 		const val = poly.evaluate(testPoint);

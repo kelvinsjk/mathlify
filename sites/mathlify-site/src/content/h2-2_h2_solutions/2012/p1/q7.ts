@@ -6,11 +6,10 @@ import {
 	generateFracFnDefinition
 } from '$content/h2-1_h2_learn/01_functions/04_more/01_self-inverse/02_practice';
 import { expressionToPolynomial } from 'mathlify';
-import svg from '$static/images/h2/fns/2012p1q7.svg?raw';
+import svg from '$static/images/h2/fns/2012p1q7b.svg?raw';
 
 export const answer = new Answer();
 
-// TODO: sketch (ii), transformations (iii)
 // f(x) = ax/(bx-a)
 // g(x) = 1/x
 
@@ -26,12 +25,12 @@ const fState: Parameters<typeof generateFracFnDefinition>[0] = {
 const fExp = generateFracFnDefinition(fState, { for: true })[1];
 // a
 {
-	const { soln } = generateAns(fState, fExp, 'g', { hideF2: true });
+	const { soln } = generateAns(fState, fExp, 'g', { hideF2: true, qed: true });
 	answer.addPart(mathlifier`[Show](#soln-1).`, soln);
 }
 // b
 {
-	const soln = svg;
+	const soln = `\`\`\` =html\n${svg}\n\`\`\`\n\n`;
 	const ans = mathlifier`[Sketch](#soln-2).`;
 	answer.addPart(ans, soln);
 }
@@ -54,7 +53,7 @@ parallel to the ${{}} y\\text{-axis}.
 Translate the resulting curve by ${quotient}
 unit in the positive ${{}} y\\text{-axis}
 direction.`;
-	const soln = mathlifier`Line of symmetry: ${{}} y = x ${QED}
+	const soln = mathlifier`Line of symmetry: ${{}} y = x \\; ${QED}
 
 $${fExp} = ${result}
 

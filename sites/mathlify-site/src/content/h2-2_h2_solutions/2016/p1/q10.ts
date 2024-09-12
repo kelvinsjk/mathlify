@@ -2,7 +2,7 @@ import { Answer } from '$lib/classes/answer';
 import { fnTerm, sum } from 'mathlify';
 
 import { sqrtInverse } from '$content/h2-1_h2_learn/01_functions/02_inverse/03_formula/02_practice';
-import { generateFn } from '$content/h2-1_h2_learn/01_functions/01_concepts/02_domain-and-range/02_practice';
+import { generateFn } from '$content/h2-1_h2_learn/01_functions/01_concepts/02_domain-and-range/02_practice-1';
 import { EquationWorking } from 'mathlify/working';
 import { mathlifierDj as mathlifier } from 'mathlifier';
 import { simplifySurd } from 'mathlify/fns';
@@ -54,7 +54,7 @@ From ${{}} {\\sqrt{\\sqrt{x}+1}+1=x,}
 we observe that ${{}} {x>1.}
 Hence
 
-$${{}} x = ${x3.toPrecision(3)}`;
+$${{}} x = ${x3.toPrecision(3)} \\; ${QED} \n\n`;
 	const soln3 = mathlifier`From ${{}}{ff(x)=x},
 we can apply ${'f^{-1}'}
 on both sides
@@ -64,7 +64,7 @@ $${'align*'} ff(x) &= x
 \\\\ f(x) &= f^{-1}(x)
 
 Hence the value of ${'x'}
-obtained satisfies the equation ${{}} {f(x)=f^{-1}(x)}`;
+obtained satisfies the equation ${{}} {f(x)=f^{-1}(x)} \\; ${QED}`;
 	const ans = mathlifier`${{}} x = ${x3.toPrecision(3)}.`;
 	answer.addSubPart(ans, soln1 + soln2 + soln3);
 }
@@ -80,7 +80,7 @@ answer.newPart();
 
 $${'align*'} g(4) &= ${evenCase.subIn({ n: 4 })}
 \\\\ &= 2 + 4
-\\\\ &= 6 ${QED}
+\\\\ &= 6 \\; ${QED}
 
 $${'align*'} g(6) &= ${evenCase.subIn({ n: 6 })}
 \\\\ &= 2 + ${oddCase.subIn({ n: 3 })}
@@ -89,12 +89,12 @@ $${'align*'} g(6) &= ${evenCase.subIn({ n: 6 })}
 
 $${'align*'} g(7) &= ${oddCase.subIn({ n: 7 })}
 \\\\ &= 1 + 7
-\\\\ &= 8 ${QED}
+\\\\ &= 8 \\; ${QED}
 
 $${'align*'} g(12) &= ${evenCase.subIn({ n: 12 })}
 \\\\ &= 2 + ${evenCase.subIn({ n: 6 })}
 \\\\ &= 2 + 7
-\\\\ &= 9 ${QED}
+\\\\ &= 9 \\; ${QED}
 `;
 	const ans = mathlifier`${{}} g(4) = 6.
 \\
@@ -111,7 +111,7 @@ ${{}} g(12) = 9.`;
 Since ${{}} {g(7)=g(8)=8,}
 ${'g'}
 is not a one-to-one function and ${'g'}
-does not have an inverse`;
+does not have an inverse ${QED}`;
 	const ans2 = mathlifier`${'g'}
 does not have an inverse as ${{}}{g(7)=g(8)=8}
 so ${'g'}

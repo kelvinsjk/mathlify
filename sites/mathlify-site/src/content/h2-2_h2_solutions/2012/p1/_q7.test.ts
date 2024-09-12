@@ -10,12 +10,12 @@ const actual: typeof ans = {
 		{
 			body: mathlifier`Line of symmetry: ${{}} {y=x.}
 
-Translate the curve ${{}} {y=\\frac{1}{x}}
+Translate the curve ${{}} {y = \\frac{1}{x}}
 by ${1}
 unit in the positive ${{}} x\\text{-axis}
 direction.
 \\
-Scale the resulting curve by a factor of ${'1+k'}
+Scale the resulting curve by a factor of ${'1 + k'}
 parallel to the ${{}} y\\text{-axis}.
 \\
 Translate the resulting curve by ${1}
