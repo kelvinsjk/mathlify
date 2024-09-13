@@ -38,8 +38,8 @@
 		box-shadow: none;
 	}
 	svg {
-		height: 1.25rem;
-		width: 1.25rem;
+		height: 1.5rem;
+		width: 1.5rem;
 		color: var(--primary, hsl(240, 63%, 47%));
 	}
 	.mobile-nav-button-container {

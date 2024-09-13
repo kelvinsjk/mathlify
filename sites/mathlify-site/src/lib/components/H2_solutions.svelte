@@ -109,6 +109,7 @@
 		width: 100%;
 		height: 100%;
 		overflow-y: auto;
+		scroll-behavior: smooth;
 	}
 	.prose-container {
 		display: grid;
@@ -183,5 +184,12 @@
 		max-width: min(100%, 100vw, 65ch);
 		max-width: min(100%, 100dvw, 65ch);
 		max-height: 40vh;
+	}
+	/** make content font size larger for wider viewport.   */
+	@media (min-width: 72rem) {
+		.prose-container,
+		:global(.prose-container math) {
+			font-size: clamp(1rem, 1vw + 0.25rem, 1.5rem);
+		}
 	}
 </style>

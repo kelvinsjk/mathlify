@@ -1,32 +1,14 @@
 <script lang="ts">
 	import './app.css';
-	import type { Session, SupabaseClient } from '@supabase/supabase-js';
-	import { onMount, type Snippet } from 'svelte';
+	import { type Snippet } from 'svelte';
 	import Header from '$lib/components/mathlified/Header.svelte';
-	import { invalidate } from '$app/navigation';
 	const name = 'Mathlify';
 
 	let {
-		children,
-		data
+		children
 	}: {
 		children: Snippet;
-		data: {
-			session: Session | null;
-			supabase: SupabaseClient;
-		};
 	} = $props();
-	const session = $state(data.session);
-	const supabase = $state(data.supabase);
-	onMount(() => {
-		const { data } = supabase.auth.onAuthStateChange((_, newSession) => {
-			if (newSession?.expires_at !== session?.expires_at) {
-				invalidate('supabase:auth');
-			}
-		});
-
-		return () => data.subscription.unsubscribe();
-	});
 </script>
 
 <div class="layout-base" style="display:contents">

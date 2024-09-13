@@ -19,3 +19,10 @@ Thumbs.db
 # Vite
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# TYS Qns
+src/content/h2-3_h2_tys_questions/*
+!src/content/h2-3_h2_tys_questions/2007
+
+# ignore
+ignore

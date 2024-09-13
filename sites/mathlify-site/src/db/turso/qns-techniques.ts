@@ -25,3 +25,11 @@ export const tysQuestionsToTechniques = sqliteTable('tys_questions_to_techniques
 	question: text('question').references(() => tysQuestions.id),
 	technique: text('technique').references(() => techniques.id)
 });
+
+export const tysQuestionsTexts = sqliteTable('tys_questions_texts', {
+	id: text('id').primaryKey(),
+	year: integer('year').notNull(),
+	paper: integer('paper').notNull(),
+	question: integer('question').notNull(),
+	text: text('text', { mode: 'json' }).notNull()
+});
