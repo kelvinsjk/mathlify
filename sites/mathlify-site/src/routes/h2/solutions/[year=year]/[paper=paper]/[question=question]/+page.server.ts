@@ -15,7 +15,7 @@ import { preprocess } from '$lib/server/h2_solutions';
 import path from 'node:path';
 import { normalizePath } from 'vite';
 
-export const prerender = true;
+//export const prerender = true;
 
 export const load: PageServerLoad = async ({ params }) => {
 	const { year, paper, question } = params;

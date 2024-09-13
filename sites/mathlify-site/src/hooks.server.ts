@@ -1,12 +1,10 @@
 import type { Handle } from '@sveltejs/kit';
-import { sequence } from '@sveltejs/kit/hooks';
-import { handleClerk } from 'clerk-sveltekit/server';
-import { CLERK_SECRET_KEY } from '$env/static/private';
+import { PUBLIC_CLERK_PUBLISHABLE_KEY } from '$env/static/public';
 
-export const handle: Handle = sequence(
-	handleClerk(CLERK_SECRET_KEY, {
-		//debug: true,
-		protectedPaths: ['h2/questions/tys'],
-		signInUrl: '/auth/login'
-	})
-);
+import { withClerkHandler } from 'svelte-clerk/server';
+export const handle: Handle = withClerkHandler({
+	debug: true,
+	afterSignInUrl: '/',
+	afterSignUpUrl: '/',
+	publishableKey: PUBLIC_CLERK_PUBLISHABLE_KEY
+});

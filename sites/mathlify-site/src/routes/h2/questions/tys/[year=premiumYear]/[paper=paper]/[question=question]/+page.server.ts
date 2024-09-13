@@ -21,19 +21,19 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		...x,
 		slug: x.slug.replace('h2_solutions', 'h2/solutions')
 	}));
-
-	const role = locals.session?.claims.metadata.role;
+	const role = locals.auth?.sessionClaims?.metadata.role;
 	const results =
-		role === undefined
+		role === undefined || role === 'member'
 			? [{ text: '{}' }]
 			: await turso
 					.select({ text: tysQuestionsTexts.text })
 					.from(tysQuestionsTexts)
-					.where(eq(tysQuestionsTexts.id, '2008/p2/q4'));
+					.where(eq(tysQuestionsTexts.id, `${year}/${paper}/${question}`));
 	if (results[0]) {
 		const text = z.string().parse(results[0].text);
 		const questionObject = questionSchema.parse(JSON.parse(text));
 		const data = {
+			role,
 			year,
 			paper: paper.slice(1),
 			questionNo: question.slice(1),

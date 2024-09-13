@@ -2,12 +2,11 @@ declare global {
 	namespace App {
 		// interface Error {}
 		interface Locals {
-			session:
+			auth:
 				| undefined
-				| {
-						userId: string;
-						claims: { metadata: { role: 'admin' | 'super' | 'member' | 'premium' } };
-				  };
+				| (import('@clerk/backend').AuthObject & {
+						sessionClaims: null | { metadata: { role: 'admin' | 'super' | 'member' | 'premium' } };
+				  });
 		}
 		//interface PageData {}
 		// interface PageState {}

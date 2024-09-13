@@ -6,7 +6,7 @@ import { match as matchOpen } from '$params/openYear';
 import { match as matchMember } from '$params/memberYear';
 import { match as matchPremium } from '$params/premiumYear';
 
-export const load: LayoutServerLoad = async (event) => {
+export const load: LayoutServerLoad = async ({ locals }) => {
 	const items = toReplacedSlug(
 		h2_tys_questionsNav,
 		'h2_tys_questions',
@@ -25,7 +25,7 @@ export const load: LayoutServerLoad = async (event) => {
 			superNodes.push({ ...item, color: 'red' });
 		}
 	}
-	const role = event.locals.session?.claims.metadata.role;
+	const role = locals.auth?.sessionClaims?.metadata.role;
 
 	return {
 		nav: [...main, ...(role === 'admin' || role === 'super' ? superNodes : [])]
