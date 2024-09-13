@@ -14,8 +14,13 @@ const config = {
 		adapter: adapter(),
 		alias: {
 			$lib: './src/lib',
+			$db: './src/db',
+			$params: './src/params',
 			$content: './src/content',
-			$static: './static',
+			$static: './static'
+		},
+		prerender: {
+			handleHttpError: 'warn'
 		}
 	}
 };
