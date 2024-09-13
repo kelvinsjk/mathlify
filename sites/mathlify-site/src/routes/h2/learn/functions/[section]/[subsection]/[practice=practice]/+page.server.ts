@@ -18,7 +18,7 @@ import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { normalizePath } from 'vite';
 
-export const prerender = true;
+//export const prerender = true;
 
 export const load: PageServerLoad = async ({ params }) => {
 	const slugPath = path.join(params.section, params.subsection, params.practice);

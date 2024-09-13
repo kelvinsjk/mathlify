@@ -15,9 +15,9 @@ import { preprocess } from '$lib/server/h2_tys_questions';
 import path from 'node:path';
 import { normalizePath } from 'vite';
 
-export const prerender = true;
+//export const prerender = true;
 
-export const load: PageServerLoad = async ({ params, locals, cookies }) => {
+export const load: PageServerLoad = async ({ params }) => {
 	const { year, paper, question } = params;
 	const slugPath = path.join('h2_tys_questions', year, paper, question);
 	let filePath = path.join('src/content', directory[slugPath]);

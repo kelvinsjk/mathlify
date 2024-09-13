@@ -10,8 +10,7 @@ import path from 'node:path';
 import { eq } from 'drizzle-orm';
 
 export const load: PageServerLoad = async ({ params, locals }) => {
-	const { year, paper, question } = params;
-	const slugPath = path.join('h2_tys_questions', year, paper, question);
+	const slugPath = path.join('h2_tys_questions', params.path);
 	let index = sequential.findIndex((x) => x.slug === path.join('/', slugPath));
 	const onlyCurrentPaper = sequential.filter((x) =>
 		x.slug.startsWith(sequential[index]?.slug.slice(0, -3))
@@ -21,19 +20,20 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		...x,
 		slug: x.slug.replace('h2_solutions', 'h2/solutions')
 	}));
-
 	const role = locals.auth?.sessionClaims?.metadata.role;
-	const results =
-		role === undefined
-			? [{ text: '{}' }]
-			: await turso
-					.select({ text: tysQuestionsTexts.text })
-					.from(tysQuestionsTexts)
-					.where(eq(tysQuestionsTexts.id, `${year}/${paper}/${question}`));
+	if (!(role === 'admin' || role === 'super')) {
+		throw error(401, 'Unauthorized access or question not found');
+	}
+	const [year, paper, question] = params.path.split('/');
+	const results = await turso
+		.select({ text: tysQuestionsTexts.text })
+		.from(tysQuestionsTexts)
+		.where(eq(tysQuestionsTexts.id, params.path));
 	if (results[0]) {
 		const text = z.string().parse(results[0].text);
 		const questionObject = questionSchema.parse(JSON.parse(text));
 		const data = {
+			role,
 			year,
 			paper: paper.slice(1),
 			questionNo: question.slice(1),

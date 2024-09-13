@@ -5,11 +5,14 @@
 	 */
 	let { name } = $props();
 	import MobileNav from './MobileNav.svelte';
-	import UserButton from 'clerk-sveltekit/client/UserButton.svelte';
-	import SignedIn from 'clerk-sveltekit/client/SignedIn.svelte';
-	import SignedOut from 'clerk-sveltekit/client/SignedOut.svelte';
-	import SignInButton from 'clerk-sveltekit/client/SignInButton.svelte';
-	import SignUpButton from 'clerk-sveltekit/client/SignUpButton.svelte';
+	import {
+		SignInButton,
+		SignUpButton,
+		SignedIn,
+		SignedOut,
+		UserButton
+	} from 'svelte-clerk/components';
+	import { page } from '$app/stores';
 </script>
 
 <header>
@@ -21,8 +24,8 @@
 			<UserButton afterSignOutUrl="/" />
 		</SignedIn>
 		<SignedOut>
-			<SignInButton mode="modal" afterSignInUrl="redirect/h2/questions/tys/2007/p1/q2" />
-			<SignUpButton mode="modal" />
+			<SignInButton mode="modal" forceRedirectUrl={$page.url.pathname} />
+			<SignUpButton mode="modal" forceRedirectUrl={$page.url.pathname} />
 			<!-- <a href="/auth/login">Sign in</a> <span>|</span> <a href="/auth/register">Sign up</a> -->
 			<!-- You could also use <SignInButton mode="modal" /> and <SignUpButton mode="modal" /> here -->
 		</SignedOut>

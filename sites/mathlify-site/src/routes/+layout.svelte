@@ -4,17 +4,25 @@
 	import Header from '$lib/components/mathlified/Header.svelte';
 	const name = 'Mathlify';
 
+	import type { LayoutData } from './$types';
+	import { ClerkProvider } from 'svelte-clerk';
+	import { PUBLIC_CLERK_PUBLISHABLE_KEY } from '$env/static/public';
+
 	let {
-		children
+		children,
+		data
 	}: {
 		children: Snippet;
+		data: LayoutData;
 	} = $props();
 </script>
 
-<div class="layout-base" style="display:contents">
-	<Header {name} />
-	{@render children()}
-</div>
+<ClerkProvider {...data} publishableKey={PUBLIC_CLERK_PUBLISHABLE_KEY}>
+	<div class="layout-base" style="display:contents">
+		<Header {name} />
+		{@render children()}
+	</div>
+</ClerkProvider>
 
 <style>
 	.layout-base {
