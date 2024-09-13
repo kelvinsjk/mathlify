@@ -1,13 +1,19 @@
+<script module lang="ts">
+	import { type NavNode } from '../nav';
+	export type NavNodePlusColor = NavNode & { color?: 'blue' | 'green' | 'red' };
+</script>
+
 <script lang="ts">
 	/**
 	 * Mathlified Nav version 0.0.1
 	 * generated on 9/4/2024, 8:48:56 PM
 	 */
 
-	import { nav as baseNav, type NavNode } from '../nav';
-	let { nested, nav: propNav }: { nested?: boolean; nav?: NavNode[] } = $props();
+	import { nav as baseNav } from '../nav';
 
-	const nav = propNav ?? baseNav ?? [];
+	let { nested, nav: propNav }: { nested?: boolean; nav?: NavNodePlusColor[] } = $props();
+
+	const nav: NavNodePlusColor[] = propNav ?? baseNav ?? [];
 
 	import { page } from '$app/stores';
 </script>
@@ -23,6 +29,9 @@
 					(3) we are in the last item in the preceding folder (3 levels deep)
 				-->
 				<details
+					class:blue={node.color === 'blue'}
+					class:green={node.color === 'green'}
+					class:red={node.color === 'red'}
 					class="nav-details"
 					open={$page.url.pathname.startsWith(node.slug) ||
 						($page.url.pathname === '/' && !nested && i === 0) ||
@@ -119,5 +128,14 @@
 	}
 	* {
 		margin: 0;
+	}
+	.blue {
+		color: #001aea;
+	}
+	.green {
+		color: #006827;
+	}
+	.red {
+		color: #5b001a;
 	}
 </style>
