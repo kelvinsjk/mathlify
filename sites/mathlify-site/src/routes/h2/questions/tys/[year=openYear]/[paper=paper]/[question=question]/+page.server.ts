@@ -1,8 +1,3 @@
-/**
- * Mathlified Custom Page Server version 0.0.1
- * generated on 9/4/2024, 9:34:40 PM
- */
-
 import type { PageServerLoad } from './$types';
 import { error } from '@sveltejs/kit';
 
@@ -11,11 +6,10 @@ import { h2_tys_questionsSequential as sequential } from '$lib/components/nav';
 
 import { preprocess } from '$lib/server/h2_tys_questions';
 
-//import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { normalizePath } from 'vite';
 
-//export const prerender = true;
+export const prerender = true;
 
 export const load: PageServerLoad = async ({ params }) => {
 	const { year, paper, question } = params;

@@ -1,0 +1,86 @@
+diff --git a/dist/server/clerkClient.js b/dist/server/clerkClient.js
+index eb6c48f850d6bef2edaa0f06c4e4ceb02c05538a..0dc0b7e4fc50deddcd1ac7d7a3de5074e5e3fc29 100644
+--- a/dist/server/clerkClient.js
++++ b/dist/server/clerkClient.js
+@@ -1,12 +1,12 @@
+-import { createClerkClient } from '@clerk/backend';
+-import { API_URL, API_VERSION, JWT_KEY, SECRET_KEY, TELEMETRY_DEBUG, TELEMETRY_DISABLED } from './constants.js';
+-export const clerkClient = createClerkClient({
+-    secretKey: SECRET_KEY,
+-    apiUrl: API_URL,
+-    apiVersion: API_VERSION,
+-    jwtKey: JWT_KEY,
+-    telemetry: {
+-        disabled: TELEMETRY_DISABLED,
+-        debug: TELEMETRY_DEBUG
+-    }
+-});
++//import { createClerkClient } from '@clerk/backend';
++//import { API_URL, API_VERSION, JWT_KEY, SECRET_KEY, TELEMETRY_DEBUG, TELEMETRY_DISABLED } from './constants.js';
++//export const clerkClient = createClerkClient({
++//    secretKey: SECRET_KEY,
++//    apiUrl: API_URL,
++//    apiVersion: API_VERSION,
++//    jwtKey: JWT_KEY,
++//    telemetry: {
++//        disabled: TELEMETRY_DISABLED,
++//        debug: TELEMETRY_DEBUG
++//    }
++//});
+diff --git a/dist/server/constants.js b/dist/server/constants.js
+index feb47aeef34784a056b417da9489077e1c809fde..62941cf22a79dadbf4ae0e47f34471b74e560be1 100644
+--- a/dist/server/constants.js
++++ b/dist/server/constants.js
+@@ -1,12 +1,12 @@
+ import { constants } from '@clerk/backend/internal';
+-import { env as privateEnv } from '$env/dynamic/private';
+-import { env as publicEnv } from '$env/dynamic/public';
+-import { isTruthy } from '@clerk/shared/underscore';
+-export const API_VERSION = publicEnv.PUBLIC_CLERK_API_VERSION || 'v1';
+-export const SECRET_KEY = privateEnv.CLERK_SECRET_KEY || '';
+-export const PUBLISHABLE_KEY = publicEnv.PUBLIC_CLERK_PUBLISHABLE_KEY || '';
+-export const API_URL = publicEnv.PUBLIC_CLERK_API_URL;
+-export const JWT_KEY = privateEnv.CLERK_JWT_KEY || '';
+-export const TELEMETRY_DISABLED = isTruthy(publicEnv.PUBLIC_CLERK_TELEMETRY_DISABLED);
+-export const TELEMETRY_DEBUG = isTruthy(publicEnv.PUBLIC_CLERK_TELEMETRY_DEBUG);
++//import { env as privateEnv } from '$env/dynamic/private';
++//import { env as publicEnv } from '$env/dynamic/public';
++//import { isTruthy } from '@clerk/shared/underscore';
++//export const API_VERSION = publicEnv.PUBLIC_CLERK_API_VERSION || 'v1';
++//export const SECRET_KEY = privateEnv.CLERK_SECRET_KEY || '';
++//export const PUBLISHABLE_KEY = publicEnv.PUBLIC_CLERK_PUBLISHABLE_KEY || '';
++//export const API_URL = publicEnv.PUBLIC_CLERK_API_URL;
++//export const JWT_KEY = privateEnv.CLERK_JWT_KEY || '';
++//export const TELEMETRY_DISABLED = isTruthy(publicEnv.PUBLIC_CLERK_TELEMETRY_DISABLED);
++//export const TELEMETRY_DEBUG = isTruthy(publicEnv.PUBLIC_CLERK_TELEMETRY_DEBUG);
+ export const { Cookies, Headers } = constants;
+diff --git a/dist/server/withClerkHandler.js b/dist/server/withClerkHandler.js
+index 9adb925b1adb3bd18f1a03cc4b980c3221efe179..3a158d9e695b3003dea5147e4f66317b139669d6 100644
+--- a/dist/server/withClerkHandler.js
++++ b/dist/server/withClerkHandler.js
+@@ -1,8 +1,13 @@
+ import {} from '@sveltejs/kit';
+-import { clerkClient } from './clerkClient.js';
++//import { clerkClient } from './clerkClient.js';
+ import * as constants from './constants.js';
+ import { AuthStatus, createClerkRequest } from '@clerk/backend/internal';
++import { createClerkClient } from '@clerk/backend';
++
++
++
+ export default function withClerkHandler(middlewareOptions) {
++    const clerkClient = createClerkClient(middlewareOptions);
+     return async ({ event, resolve }) => {
+         const { debug = false, ...options } = middlewareOptions ?? {};
+         const clerkWebRequest = createClerkRequest(event.request);
+@@ -11,8 +16,8 @@ export default function withClerkHandler(middlewareOptions) {
+         }
+         const requestState = await clerkClient.authenticateRequest(clerkWebRequest, {
+             ...options,
+-            secretKey: options?.secretKey ?? constants.SECRET_KEY,
+-            publishableKey: options?.publishableKey ?? constants.PUBLISHABLE_KEY
++            secretKey: options?.secretKey ?? '',
++            publishableKey: options?.publishableKey ?? ''
+         });
+         const locationHeader = requestState.headers.get(constants.Headers.Location);
+         if (locationHeader) {

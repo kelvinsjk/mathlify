@@ -17,7 +17,7 @@ for (const [key, value] of Object.entries(directory)) {
 import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 
-//export const prerender = true;
+export const prerender = true;
 
 export const load: PageServerLoad = async ({ params, depends }) => {
 	const slugPath = path.join(params.section, params.subsection, 'theory');

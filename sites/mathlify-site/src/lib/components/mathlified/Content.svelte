@@ -255,14 +255,6 @@
 		width: 100%;
 		overflow-x: auto;
 	}
-	/** math display */
-	:global(.content *:has(> math.tml-display)) {
-		width: 100%;
-		overflow-x: auto;
-	}
-	:global(math.tml-display) {
-		padding-bottom: 0.5rem;
-	}
 	/** tables */
 	:global(.content table) {
 		border-collapse: collapse;
@@ -405,7 +397,7 @@
 		margin-block: 3em;
 	}
 	:global(.prose :where(blockquote):not(:where([class~='not-prose'] *))) {
-		font-weight: 500;
+		/* font-weight: 500; */
 		font-style: italic;
 		border-inline-start-width: 0.25rem;
 		quotes: '“' '”' '‘' '’';

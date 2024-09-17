@@ -37,7 +37,13 @@ figcaption {
 	text-wrap: pretty;
 	max-width: 65ch;
 }
-
-math {
+main {
 	font-size: 1rem;
+}
+*:has(> math.tml-display) {
+	width: 100%;
+	overflow-x: auto;
+}
+math.tml-display {
+	padding-bottom: 0.5rem;
 }
