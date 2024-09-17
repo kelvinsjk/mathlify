@@ -1,0 +1,38 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`2014p1q1 1`] = `
+Answer {
+  "answer": {
+    "parts": [
+      {
+        "body": "$\` f^2(x)=f^{-1}(x) = \\frac{x - 1}{x}. \`",
+      },
+      {
+        "body": "$\` f^3(x)=x. \`",
+      },
+    ],
+  },
+  "solution": {
+    "parts": [
+      {
+        "body": "$$\` \\begin{align*}
+f^2(x) &= f \\left( \\frac{1}{1 - x} \\right)
+\\\\ &= \\frac{1}{1 - \\frac{1}{1 - x}}
+	\\\\ &= \\frac{1}{- \\frac{x}{1 - x}}
+	\\\\ &= - \\frac{1 - x}{x}
+	\\\\ &= \\frac{x - 1}{x}
+\\end{align*} \`$$\` \\begin{gather*} \\text{Let }  y = \\frac{1}{1 - x}
+	\\\\ y\\left( 1 - x \\right) = 1
+	\\\\ y - yx = 1
+	\\\\ yx = y - 1
+	\\\\ x = \\frac{y - 1}{y} \\\\ f^{-1}(x) = \\frac{x - 1}{x}
+\\end{gather*} \`Hence $\` f^2(x) = f^{-1}(x) \\; \\QED  \`",
+      },
+      {
+        "body": "$$\` \\begin{align*} f^3(x) &= f^2f(x) \\\\ &= f^{-1}f(x) \\quad \\text{since } f^2(x)=f^{-1}(x) \\\\ &= x \\; \\QED
+\\end{align*} \`",
+      },
+    ],
+  },
+}
+`;

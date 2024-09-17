@@ -1,0 +1,120 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`2017p2q3 1`] = `
+Answer {
+  "answer": {
+    "parts": [
+      {
+        "parts": [
+          {
+            "body": "$\` \\left( \\frac{a}{2}, 0 \\right), \`
+$\`  \\left( 0, b \\right). \`",
+          },
+          {
+            "body": "$\` \\left( a + 1, 0 \\right). \`",
+          },
+          {
+            "body": "$\` \\left( \\frac{a + 1}{2}, 0 \\right). \`",
+          },
+          {
+            "body": "$\` \\left( 0, a \\right), \`
+$\` \\left( b, 0 \\right). \`",
+          },
+        ],
+      },
+      {
+        "parts": [
+          {
+            "body": "$\` a=1. \`
+\\
+It must be excluded as $\` g \`
+is not defined when $\` {x=1.} \`",
+          },
+          {
+            "body": "$\`  g^2(x) = x. \`
+\\
+$\`  g^{-1}(x) = 1 - \\frac{1}{1 - x}. \`",
+          },
+          {
+            "body": "$\`  {b=0} \`
+or $\`  {b=2.} \`",
+          },
+        ],
+      },
+    ],
+  },
+  "solution": {
+    "parts": [
+      {
+        "parts": [
+          {
+            "body": "We apply a scaling of scale factor $\` \\frac{1}{2} \`
+parallel to the $\` x\\text{-axis} \`
+on $\` {y=f(x)} \`
+
+$$\` \\begin{gather*} \\left( \\frac{a}{2}, 0 \\right) \\; \\QED 
+\\\\ \\left( 0, b \\right) \\; \\QED
+\\end{gather*} \`",
+          },
+          {
+            "body": "We apply a translation of $\` 1 \`
+unit in the positive $\` x\\text{-axis} \`
+direction on $\` {y=f(x)} \`
+
+$$\`  \\left( a + 1, 0 \\right) \\; \\QED  \`",
+          },
+          {
+            "body": "We apply a scaling of scale factor $\` \\frac{1}{2} \`
+parallel to the $\` x\\text{-axis} \`
+on $\` {y=f(x-1)} \`
+from the previous part
+
+$$\`  \\left( a + 1, 0 \\right) \\; \\QED  \`",
+          },
+          {
+            "body": "We apply a reflection of the curve $\` y=f(x) \`
+about the line $\` {y=x.} \`
+
+$$\` \\begin{gather*} \\left( 0, a \\right) \\; \\QED 
+\\\\ \\left( b, 0 \\right) \\; \\QED
+\\end{gather*} \`",
+          },
+        ],
+      },
+      {
+        "parts": [
+          {
+            "body": "$$\`  a=1 \\; \\QED  \`
+
+$\` x=1 \`
+has to be excluded from the domain of $\` g \`
+as $\` g(1) \`
+is not defined $\` \\QED  \`",
+          },
+          {
+            "body": "$$\` \\begin{align*} g^2(x) &= gg(x)
+\\\\ &= g\\left(1 - \\frac{1}{1 - x}\\right)
+	\\\\ &= 1 - \\frac{1}{1 - \\left( 1 - \\frac{1}{1 - x} \\right)}
+\\\\ &= 1 - \\left( 1 - x \\right)
+\\\\ &= x \\; \\QED
+\\end{align*} \`$$\` \\begin{align*} gg(x) &= x
+\\\\ g^{-1}gg(x) 	&= g^{-1}(x)
+\\\\ g(x) 				&= g^{-1}(x)
+\\\\ g^{-1}(x) 		&= 1 - \\frac{1}{1 - x} \\; \\QED
+\\end{align*} \`",
+          },
+          {
+            "body": "$$\` \\begin{gather*} g^2(b) = g^{-1}(b)
+\\\\ b = 1 - \\frac{1}{1 - b}
+	\\\\ 1 - b = \\frac{1}{1 - b}
+	\\\\ \\left( 1 - b \\right)^2 = 1
+\\\\ 1-b = \\pm 1
+\\\\ b=0 \\; \\QED  \\quad \\text{or} \\quad b=2 \\; \\QED
+\\end{gather*} \`",
+          },
+        ],
+      },
+    ],
+  },
+}
+`;

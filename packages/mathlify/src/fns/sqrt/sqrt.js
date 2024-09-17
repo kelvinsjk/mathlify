@@ -7,6 +7,7 @@ import {
 	Expression,
 	Numeral,
 	Product,
+	Quotient,
 	Sum,
 	shorthandToExpression,
 } from '../../core/expression/expression.js';
@@ -72,7 +73,7 @@ export class Sqrt extends Fn {
 
 	/**
 	 * @param {SimplifyOptions} [options]
-	 * @returns {Sqrt|Product|Numeral}
+	 * @returns {Sqrt|Product|Numeral|Quotient}
 	 */
 	simplify(options) {
 		if (options?.verbatim) return this;
@@ -90,12 +91,25 @@ export class Sqrt extends Fn {
 			const radicand = new Numeral([radicandNum, radicandDen]);
 			if (n.is.equalTo(radicand)) return new Sqrt(arg);
 			const coeff = new Numeral([coeffNum, coeffDen]);
-			return radicand.is.one()
-				? coeff
-				: new Product(
-						new Expression(coeff),
-						new Expression(new Sqrt(radicand)),
-					);
+			if (radicand.is.one()) {
+				return coeff;
+			} else if (radicandNum === 1) {
+				return new Quotient(
+					new Expression(coeffNum),
+					new Expression(
+						new Product(coeffDen, new Expression(new Sqrt(radicandDen))),
+					),
+				);
+			} else if (radicandDen === 1 && coeffDen !== 1) {
+				return new Quotient(
+					new Expression(
+						new Product(coeffNum, new Expression(new Sqrt(radicandNum))),
+					),
+					new Expression(coeffDen),
+				);
+			} else {
+				return new Product(coeff, new Expression(new Sqrt(radicand)));
+			}
 		}
 		return new Sqrt(arg);
 	}

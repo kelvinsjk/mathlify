@@ -1,0 +1,49 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`2013p2q1 1`] = `
+Answer {
+  "answer": {
+    "parts": [
+      {
+        "body": "$\` fg \`
+does not exist as $\`  {R_{g} \\not  \\subseteq D_{f}.} \`",
+      },
+      {
+        "body": "$\` gf(x) = \\frac{- 3 - 3x}{1 - x}. \`\\
+$\`  (gf)^{-1} (5) = 4. \`",
+      },
+    ],
+  },
+  "solution": {
+    "parts": [
+      {
+        "body": "$$\` \\begin{align*}
+R_{g} &= \\left( -\\infty, \\infty \\right) \\\\
+D_{f} &= \\left( -\\infty, 1 \\right) \\cup \\left( 1, \\infty \\right)
+\\end{align*} \`
+
+Since $\`  R_{g} \\not  \\subseteq D_{f}, \`
+the composite function $\` fg \`
+does not exist $\` \\QED  \`
+",
+      },
+      {
+        "body": "$$\` \\begin{align*}
+gf(x) &= g \\left( \\frac{2 + x}{1 - x} \\right)
+\\\\ &= 1 - 2\\left( \\frac{2 + x}{1 - x} \\right)
+	\\\\ &= 1 - \\frac{2\\left( 2 + x \\right)}{1 - x}
+	\\\\ &= 1 - \\frac{4 + 2x}{1 - x}
+	\\\\ &= \\frac{- 3 - 3x}{1 - x} \\; \\QED
+\\end{align*} \`$$\` \\begin{align*} \\text{Let } \\quad x &= (gf)^{-1}(5)  \\\\ gf\\left(x\\right) &= 5
+	\\\\ \\frac{- 3 - 3x}{1 - x} &= 5
+	\\\\ - 3 - 3x &= 5 - 5x
+	\\\\ 2x &= 8
+	\\\\ x &= 4
+\\end{align*} \`
+	
+	$$\`  (gf)^{-1} (5) = 4 \\; \\QED  \`",
+      },
+    ],
+  },
+}
+`;

@@ -19,7 +19,12 @@
     "build:site": "pnpm --filter mathlify-site run build"
   },
   "devDependencies": {
-    "npm-run-all": "^4.1.5",
-    "@changesets/cli": "^2.27.7"
+    "@changesets/cli": "^2.27.7",
+    "npm-run-all": "^4.1.5"
+  },
+  "pnpm": {
+    "patchedDependencies": {
+      "svelte-clerk@0.1.7": "patches/svelte-clerk@0.1.7.patch"
+    }
   }
 }

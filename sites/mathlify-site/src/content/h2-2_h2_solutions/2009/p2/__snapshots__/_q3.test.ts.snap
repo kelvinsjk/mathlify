@@ -1,0 +1,65 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`2009p2q3 1`] = `
+Answer {
+  "answer": {
+    "parts": [
+      {
+        "body": "$\`  f^{-1}(x) = \\frac{ax}{bx - a}. \`\\
+$\` f^{2}(x) = x. \`\\
+$\` R_{f^2} = \\left( -\\infty, \\frac{a}{b} \\right) \\cup \\left( \\frac{a}{b}, \\infty \\right). \`",
+      },
+      {
+        "body": "The composite function $\` fg \`
+does not exist as $\`  {R_g \\not \\subseteq D_f.} \`",
+      },
+      {
+        "body": "$\` x = 0 \\text{ or }\\frac{2a}{b}. \`",
+      },
+    ],
+  },
+  "solution": {
+    "parts": [
+      {
+        "body": "$$\` \\begin{gather*} \\text{Let }  y = \\frac{ax}{bx - a}
+	\\\\ y\\left( bx - a \\right) = ax
+	\\\\ ybx - ya = ax
+	\\\\ ybx - ax = ya
+	\\\\ x\\left( yb - a \\right) = ya
+	\\\\ x = \\frac{ya}{yb - a} \\\\ f^{-1}(x) = \\frac{xa}{xb - a} \\; \\blacksquare
+\\end{gather*} \`$$\` \\begin{align*} f^{2}(x) &= ff(x) \\\\ &= ff^{-1}(x) \\\\ &= x \\; \\QED
+\\end{align*} \`
+
+$$\`  R_{f^2} = \\left( -\\infty, \\frac{a}{b} \\right) \\cup \\left( \\frac{a}{b}, \\infty \\right) \\; \\QED  \`",
+      },
+      {
+        "body": "$$\` \\begin{align*} R_g &= \\left( -\\infty, 0 \\right) \\cup \\left( 0, \\infty \\right)
+\\\\ D_f &= \\left( -\\infty, \\frac{a}{b} \\right) \\cup \\left( \\frac{a}{b}, \\infty \\right)
+\\end{align*} \`
+
+Since $\` a \`
+and $\` b \`
+are non-zero,
+
+$$\`  R_g \\not \\subseteq D_f \`
+
+so the composite function $\` fg \`
+does not exist $\` \\QED  \`",
+      },
+      {
+        "body": "$$\` \\begin{gather*} f^{-1}\\left(x\\right) = x
+	\\\\ \\frac{ax}{bx - a} = x
+	\\\\ ax = x^2b - xa
+	\\\\ x^2b - 2xa = 0
+	\\\\ x\\left( xb - 2a \\right) = 0
+\\end{gather*} \`
+
+$$\` \\begin{align*} x &=0\\quad\\blacksquare  &&\\quad\\text{ or }\\quad& xb - 2a &=0
+	\\\\ & &&\\quad& xb &=2a
+	\\\\ & &&\\quad& x &=\\frac{2a}{b}\\quad\\blacksquare
+\\end{align*} \`",
+      },
+    ],
+  },
+}
+`;

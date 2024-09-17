@@ -1,0 +1,49 @@
+/** from tailwind font family */
+html {
+	line-height: 1.5;
+	font-family:
+		ui-sans-serif,
+		system-ui,
+		sans-serif,
+		'Apple Color Emoji',
+		'Segoe UI Emoji',
+		Segoe UI Symbol,
+		'Noto Color Emoji';
+}
+
+*,
+*:before,
+*:after {
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	width: 100%;
+	height: 100vh;
+	height: 100dvh;
+}
+
+h1,
+h2,
+h3,
+h4 {
+	text-wrap: balance;
+}
+
+p,
+li,
+figcaption {
+	text-wrap: pretty;
+	max-width: 65ch;
+}
+main {
+	font-size: 1rem;
+}
+*:has(> math.tml-display) {
+	width: 100%;
+	overflow-x: auto;
+}
+math.tml-display {
+	padding-bottom: 0.5rem;
+}

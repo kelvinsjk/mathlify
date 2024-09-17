@@ -1,4 +1,4 @@
-<script context="module" lang="ts">
+<script module lang="ts">
 	import temml from 'temml';
 	const math = temml.renderToString;
 
@@ -18,7 +18,7 @@
 	 */
 	export function xToNumber(
 		x: number | [number, number],
-		options: { xMin: number; xMax: number; xLeft: number; xRight: number },
+		options: { xMin: number; xMax: number; xLeft: number; xRight: number }
 	): number {
 		const { xMin, xMax, xLeft, xRight } = options;
 		const xVal = typeof x === 'number' ? x : x[0] / x[1];
@@ -43,8 +43,8 @@
 		intervals = [
 			{ type: 'left', x: -7, inclusive: false },
 			{ type: 'two', x2: -5, x1: [-1, 2], inclusive: [true, false] },
-			{ type: 'right', x: 3, inclusive: true },
-		],
+			{ type: 'right', x: 3, inclusive: true }
+		]
 	}: { xMin?: number; xMax?: number; intervals: Interval[] } = $props();
 
 	// viewBox:

@@ -14,6 +14,7 @@ import {
 } from '../../core/expression/expression.js';
 import { implicitlyDifferentiate } from '../../calculus/implicit-differentiation.js';
 import { Logarithm, logTerm } from '../../fns/index.js';
+import { Polynomial } from '../../core/polynomial/polynomial.js';
 
 /** @typedef {'='|'>'|'>='|'<'|'<='|'!='} Sign */
 
@@ -210,16 +211,27 @@ export class Equation {
 		);
 	}
 
+	/** @typedef {import('../../core/expression/expression.js').Variable} Variable */
 	/**
+	 * @param {string|Variable} [variable]
 	 * @param {{target?: 'l'|'r'|'b'}} [options] default to the left
 	 * @returns {Equation}
 	 */
-	toPolynomial(options) {
+	toPolynomial(variable, options) {
 		const left = !(options?.target === 'r');
 		const right = options?.target === 'r' || options?.target === 'b';
+		if (variable === undefined) {
+			if (this.lhs instanceof Polynomial) {
+				variable = this.lhs.variable;
+			} else if (this.rhs instanceof Polynomial) {
+				variable = this.rhs.variable;
+			} else {
+				variable = 'x';
+			}
+		}
 		return new Equation(
-			left ? expressionToPolynomial(this.lhs) : this.lhs,
-			right ? expressionToPolynomial(this.rhs) : this.rhs,
+			left ? expressionToPolynomial(this.lhs, variable) : this.lhs,
+			right ? expressionToPolynomial(this.rhs, variable) : this.rhs,
 			this.options,
 		);
 	}

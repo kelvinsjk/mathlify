@@ -1,10 +1,14 @@
-// See https://kit.svelte.dev/docs/types#app
-// for information about these interfaces
 declare global {
 	namespace App {
 		// interface Error {}
-		// interface Locals {}
-		// interface PageData {}
+		interface Locals {
+			auth:
+				| undefined
+				| (import('@clerk/backend').AuthObject & {
+						sessionClaims: null | { metadata: { role: 'admin' | 'super' | 'member' | 'premium' } };
+				  });
+		}
+		//interface PageData {}
 		// interface PageState {}
 		// interface Platform {}
 	}

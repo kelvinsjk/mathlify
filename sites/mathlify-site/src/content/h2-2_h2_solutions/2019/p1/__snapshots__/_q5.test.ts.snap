@@ -1,0 +1,38 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`2019p1q5 1`] = `
+Answer {
+  "answer": {
+    "parts": [
+      {
+        "body": "$\`  f^{-1}(x) = \\frac{\\ln \\left( x + 4 \\right)}{2}. \`
+\\
+$\`  D_{f^{-1}} = R_{f} = \\left( -4, \\infty \\right). \`",
+      },
+      {
+        "body": "$\`  x=\\ln 3 - 2. \`",
+      },
+    ],
+  },
+  "solution": {
+    "parts": [
+      {
+        "body": "$$\` \\begin{gather*} \\text{Let } y = \\mathrm{e}^{2x} - 4 \\\\ \\mathrm{e}^{2x} = y + 4 \\\\ 2x = \\ln \\left( y + 4 \\right)
+	\\\\ x = \\frac{\\ln \\left( y + 4 \\right)}{2}
+\\end{gather*} \`$$\`  f^{-1}(x) = \\frac{\\ln \\left( x + 4 \\right)}{2} \\; \\blacksquare  \`
+
+$$\` \\begin{align*} D_{f^{-1}} &= R_{f} \\\\ &= \\left( -4, \\infty \\right) \\; \\blacksquare
+\\end{align*} \`",
+      },
+      {
+        "body": "$$\` \\begin{gather*} fg(x) = 5 \\\\ f^{-1}fg(x) = f^{-1}(5) \\\\ g(x) = \\frac{\\ln \\left( 5 + 4 \\right)}{2} \\\\ x + 2 = \\frac{\\ln 9}{2}
+	\\\\ x + 2 = \\frac{\\ln 3^2}{2}
+	\\\\ x + 2 = \\frac{2\\ln 3}{2}
+	\\\\ x + 2 = \\ln 3
+	\\\\ x = \\ln 3 - 2 \\; \\QED
+\\end{gather*} \`",
+      },
+    ],
+  },
+}
+`;

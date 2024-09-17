@@ -1,0 +1,133 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`2016p1q10 1`] = `
+Answer {
+  "answer": {
+    "parts": [
+      {
+        "parts": [
+          {
+            "body": "$\`  f^{-1}(x) = \\left( x - 1 \\right)^2. \`
+\\
+$\`  D_{f^{-1}} = R_{f} = \\left[ 1, \\infty \\right). \`",
+          },
+          {
+            "body": "$\`  x = 2.62. \`",
+          },
+        ],
+      },
+      {
+        "parts": [
+          {
+            "body": "$\`  g(4) = 6. \`
+\\
+$\`  g(7) = 8. \`
+\\
+$\`  g(12) = 9. \`",
+          },
+          {
+            "body": "$\` g \`
+does not have an inverse as $\` {g(7)=g(8)=8} \`
+so $\` g \`
+is not a one-to-one function.",
+          },
+        ],
+      },
+    ],
+  },
+  "solution": {
+    "parts": [
+      {
+        "parts": [
+          {
+            "body": "$$\` \\begin{gather*} \\text{Let } y = \\sqrt{x} + 1
+	\\\\ \\sqrt{x} = y - 1
+	\\\\ x = \\left( y - 1 \\right)^2
+\\end{gather*} \`$$\`  f^{-1}(x) = \\left( x - 1 \\right)^2 \\; \\blacksquare  \`
+
+$$\` \\begin{align*} D_{f^{-1}} &= R_{f} \\\\ &= \\left[ 1, \\infty \\right) \\; \\blacksquare
+\\end{align*} \`",
+          },
+          {
+            "body": "$$\` \\begin{gather*} ff(x) = x \\\\ f\\left(\\sqrt{x} + 1\\right) = x
+	\\\\ \\sqrt{\\sqrt{x} + 1} + 1 = x
+	\\\\ \\sqrt{\\sqrt{x} + 1} = x - 1
+	\\\\ \\sqrt{x} + 1 = \\left( x - 1 \\right)^2
+	\\\\ \\sqrt{x} + 1 = x^2 - 2x + 1
+	\\\\ \\sqrt{x} = x^2 - 2x
+	\\\\ x = \\left( x^2 - 2x \\right)^2
+	\\\\ x = x^4 - 4x^3 + 4x^2
+	\\\\ x^4 - 4x^3 + 4x^2 - x = 0
+	\\\\ x^3 - 4x^2 + 4x - 1 = 0
+\\end{gather*} \`Solving with a GC,
+
+$$\`  x = 0.382, \\quad 1 \\quad \\text{or} \\quad 2.62 \`
+
+From $\`  {\\sqrt{\\sqrt{x}+1}+1=x,} \`
+we observe that $\`  {x>1.} \`
+Hence
+
+$$\`  x = 2.62 \\; \\QED   \`
+
+From $\` {ff(x)=x}, \`
+we can apply $\` f^{-1} \`
+on both sides
+
+$$\` \\begin{align*} ff(x) &= x
+\\\\ f^{-1}ff(x) &= f^{-1}(x)
+\\\\ f(x) &= f^{-1}(x)
+\\end{align*} \`
+
+Hence the value of $\` x \`
+obtained satisfies the equation $\`  {f(x)=f^{-1}(x)} \\; \\QED  \`",
+          },
+        ],
+      },
+      {
+        "parts": [
+          {
+            "body": "$$\` \\begin{align*} g(2) &= 2 + g\\left(1\\right)
+\\\\ &= 2 + 1 + g\\left(0\\right)
+\\\\ &= 3 + 1
+\\\\ &= 4
+\\end{align*} \`
+
+$$\` \\begin{align*} g(4) &= 2 + g\\left(2\\right)
+\\\\ &= 2 + 4
+\\\\ &= 6 \\; \\QED
+\\end{align*} \`
+
+$$\` \\begin{align*} g(6) &= 2 + g\\left(3\\right)
+\\\\ &= 2 + 1 + g\\left(2\\right)
+\\\\ &= 3 + 4
+\\\\ &= 7
+\\end{align*} \`
+
+$$\` \\begin{align*} g(7) &= 1 + g\\left(6\\right)
+\\\\ &= 1 + 7
+\\\\ &= 8 \\; \\QED
+\\end{align*} \`
+
+$$\` \\begin{align*} g(12) &= 2 + g\\left(6\\right)
+\\\\ &= 2 + 2 + g\\left(3\\right)
+\\\\ &= 2 + 7
+\\\\ &= 9 \\; \\QED
+\\end{align*} \`",
+          },
+          {
+            "body": "$$\` \\begin{align*} g(8) &= 2 + g\\left(4\\right)
+\\\\ &= 2 + 6
+\\\\ &= 8
+\\end{align*} \`
+
+Since $\`  {g(7)=g(8)=8,} \`
+$\` g \`
+is not a one-to-one function and $\` g \`
+does not have an inverse $\` \\QED  \`",
+          },
+        ],
+      },
+    ],
+  },
+}
+`;

@@ -1,17 +1,35 @@
 <script lang="ts">
-	import '../app.css';
-  import Header from '$lib/components/Header/Header.svelte';
+	import './app.css';
+	import { type Snippet } from 'svelte';
+	import Header from '$lib/components/mathlified/Header.svelte';
+	const name = 'Mathlify';
 
-  let {children} = $props();
+	import type { LayoutData } from './$types';
+	import { ClerkProvider } from 'svelte-clerk';
+	import { PUBLIC_CLERK_PUBLISHABLE_KEY } from '$env/static/public';
+
+	let {
+		children,
+		data
+	}: {
+		children: Snippet;
+		data: LayoutData;
+	} = $props();
 </script>
 
-<Header />
-<main>
-  {@render children()}
-</main>
+<ClerkProvider {...data} publishableKey={PUBLIC_CLERK_PUBLISHABLE_KEY}>
+	<div class="layout-base" style="display:contents">
+		<Header {name} />
+		{@render children()}
+	</div>
+</ClerkProvider>
 
 <style>
-  main {
-    height: calc(100% - var(--header-height));
-  }
+	.layout-base {
+		--primary: midnightblue;
+		--primary-hsl: 240, 64%, 27%;
+		--header-height: 3.875rem;
+		--secondary-hsl: 50, 100%, 50%;
+		--secondary: hsl(var(--secondary-hsl));
+	}
 </style>

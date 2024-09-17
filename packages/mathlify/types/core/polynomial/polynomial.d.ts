@@ -46,9 +46,12 @@ export class Polynomial extends Expression {
      */
     set ascending(asc: boolean);
     /**
+     * @param {import('../expression/expression.js').SimplifyOptions & {expand?: boolean}} [options]
      * @returns {Polynomial}
      */
-    negative(): Polynomial;
+    negative(options?: (import("../expression/expression.js").SimplifyOptions & {
+        expand?: boolean;
+    }) | undefined): Polynomial;
     /**
      * @overload
      * @param {number|Polynomial} p2
