@@ -1,8 +1,3 @@
-/**
- * Mathlified Generic Page Server version 0.0.1
- * generated on 9/4/2024, 9:34:40 PM
- */
-
 import type { PageServerLoad } from './$types';
 import { error } from '@sveltejs/kit';
 
@@ -16,6 +11,7 @@ for (const [key, value] of Object.entries(directory)) {
 }
 import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
+import { extractFrontmatter, mdToDjotWorkaround } from '$lib/utils/typesetting';
 
 export const prerender = true;
 
@@ -44,35 +40,9 @@ export const load: PageServerLoad = async ({ params, depends }) => {
 	// 3) put punctuation in math inline to prevent awkward line breaks
 	// 4) table alignment: prettier-markdown to djot syntax
 	// 5) change &dollar;
-	content = content
-		.replace(/(?<!\\)\$\$(?!`)([^]+?)\$\$/g, (_, match) => `$$\`${match.replaceAll('\\_', '_')}\``)
-		.replace(/(?<!\\)\$(?!`)(.+?)(?<!\\)\$/g, (_, match) => `$\`${match.replaceAll('\\_', '_')}\``)
-		.replace(/(?<!\$)(\$`)([^`]+)`([.,])/g, '$1$2$3`')
-		.replace(/ ?(\|) (-+|:-+|-+:|:-+:) (\|) ?/g, '$1$2$3')
-		.replaceAll('&dollar;', '$')
-		.replaceAll('<!-- prettier-ignore-start -->', '')
-		.replaceAll('<!-- prettier-ignore-end -->', '');
+	content = mdToDjotWorkaround(content);
 	return {
 		title,
 		content
 	};
 };
-
-// adapted from https://github.com/sveltejs/site-kit/blob/master/packages/site-kit/src/lib/markdown/utils.js
-function extractFrontmatter(markdown: string) {
-	const match = /^---\r?\n([\s\S]+?)\r?\n---/.exec(markdown);
-	if (!match) return { metadata: {}, body: markdown };
-	const frontmatter = match[1];
-	const body = markdown.slice(match[0].length);
-
-	const metadata: Record<string, string> = {};
-	frontmatter.split('\n').forEach((pair) => {
-		const i = pair.indexOf(':');
-		metadata[pair.slice(0, i).trim()] = removeQuotes(pair.slice(i + 1).trim());
-	});
-
-	return { metadata, body };
-}
-function removeQuotes(str: string) {
-	return str.replace(/(^["']|["']$)/g, '');
-}

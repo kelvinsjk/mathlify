@@ -15,11 +15,7 @@
 		return { name: x.name, slug: x.slug.replace('h2_learn', 'h2/learn') };
 	});
 	const index = $derived(sequentialNav.findIndex((x) => x.slug === $page.url.pathname));
-	const prev = $derived(
-		sequentialNav[index - 1]?.name === 'Practice'
-			? sequentialNav[index - 2]
-			: sequentialNav[index - 1]
-	);
+	const prev = $derived(sequentialNav.slice(0, index).findLast((x) => x.name !== 'Practice'));
 	const sequential = $derived({ prev, next: sequentialNav[index + 1] });
 
 	if (i < 0) throw new Error('Starting sequential nav item not found');

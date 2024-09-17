@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { Djot } from 'svelte-djot-math';
-	import Content from './mathlified/Content.svelte';
 	import SequentialNav from './mathlified/SequentialNav.svelte';
 	import type { AnswerObject } from '$lib/classes/answer';
 	let {
@@ -8,12 +7,13 @@
 	}: {
 		data: {
 			isMd: false;
-			title: string;
+			year: number;
+			paperNo: number;
+			questionNo: number;
 			answer: AnswerObject;
 			solution: AnswerObject;
 			sequential: { prev?: { name: string; slug: string }; next?: { name: string; slug: string } };
 		};
-		//module: null | Promise<unknown>;
 	} = $props();
 	let [answer, solution] = $derived(data.isMd ? [{}, {}] : [data.answer, data.solution]);
 
@@ -33,7 +33,15 @@
 
 <div class="main-container">
 	<div class="prose-container">
-		<h1>{data.title}</h1>
+		<h1>
+			{data.year}
+			<span class="no-break">
+				Paper {data.paperNo}
+			</span>
+			<span class="no-break">
+				Question {data.questionNo}
+			</span>
+		</h1>
 		<div class="bleed-left"></div>
 		<section id="answers-section" aria-labelledby="answers">
 			<h2 id="answers">Answers</h2>
@@ -150,6 +158,9 @@
 	}
 	.qn-body.span-two {
 		grid-column: span 2;
+	}
+	.no-break {
+		white-space: nowrap;
 	}
 	:global(.body-content > p:first-child) {
 		margin-block-start: 0;
