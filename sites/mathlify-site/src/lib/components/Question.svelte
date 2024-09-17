@@ -61,6 +61,11 @@
 				{/if}
 				{#if question.parts}
 					{#each question.parts as part, i}
+						{#if part.uplevel}
+							<div class="part-uplevel">
+								<Djot djot={texToDjot(part.uplevel)} />
+							</div>
+						{/if}
 						<div class="part-label" id={`qn-${i + 1}`}>({String.fromCharCode(i + 97)})</div>
 						{#if part.body}
 							<div class="span-two body-content" class:no-marks={part.marks === undefined}>
@@ -72,10 +77,15 @@
 						{/if}
 						{#if part.parts}
 							{#each part.parts as subpart, j}
-								<div id={`qn-${i + 1}-${j + 1}`} class="part-label">
+								{#if subpart.uplevel}
+									<div class="subpart-uplevel">
+										<Djot djot={texToDjot(subpart.uplevel)} />
+									</div>
+								{/if}
+								<div id={`qn-${i + 1}-${j + 1}`} class="part-label subpart-label">
 									({toRoman(j)})
 								</div>
-								<div class="body-content" class:no-marks={subpart.marks !== undefined}>
+								<div class="body-content" class:no-marks={subpart.marks === undefined}>
 									<Djot djot={texToDjot(subpart.body ?? '')} />
 								</div>
 								{#if subpart.marks !== undefined}
@@ -111,20 +121,29 @@
 		display: grid;
 		grid-template-columns: auto auto 1fr auto;
 		align-items: flex-start;
-		row-gap: 0.5rem;
+		gap: 0.5rem;
 	}
 	.body-content {
 		max-width: 65ch;
 		line-height: 1.75;
 	}
-	.part-label ~ .body-content {
+	/* .part-label ~ .body-content {
 		padding-inline-start: 0.5rem;
-	}
+	} */
 	.marks {
 		align-self: flex-end;
 	}
 	.part-label {
 		line-height: 1.75;
+	}
+	.subpart-label {
+		grid-column: 2;
+	}
+	.part-uplevel {
+		grid-column: 1 / span 4;
+	}
+	.subpart-uplevel {
+		grid-column: 2 / span 3;
 	}
 	.body-content.no-marks,
 	.body-content.span-two {

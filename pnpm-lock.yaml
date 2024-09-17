@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  svelte-clerk@0.1.7:
+    hash: 4icmibopayth5poqsej24k47ke
+    path: patches/svelte-clerk@0.1.7.patch
+
 importers:
 
   .:
@@ -267,7 +272,7 @@ importers:
         version: link:../../packages/mathlify
       svelte-clerk:
         specifier: ^0.1.7
-        version: 0.1.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(svelte@5.0.0-next.244)
+        version: 0.1.7(patch_hash=4icmibopayth5poqsej24k47ke)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(svelte@5.0.0-next.244)
       svelte-djot-math:
         specifier: ^0.0.1
         version: 0.0.1(svelte@5.0.0-next.244)
@@ -10035,7 +10040,7 @@ snapshots:
     transitivePeerDependencies:
       - picomatch
 
-  svelte-clerk@0.1.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(svelte@5.0.0-next.244):
+  svelte-clerk@0.1.7(patch_hash=4icmibopayth5poqsej24k47ke)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(svelte@5.0.0-next.244):
     dependencies:
       '@clerk/backend': 1.11.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@clerk/shared': 2.7.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)

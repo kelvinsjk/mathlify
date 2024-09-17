@@ -104,10 +104,10 @@
 - 2018: 🎉. Can potentially be abstracted.
 - 2017: 🎉.
 - 2016: 🎉. Can potentially be abstracted.
-- 2015: ½: awaiting discriminant
+- 2015: 🎉.
 - 2014: 🎉.
 - 2013: 🎉.
-- 2012: ½: awaiting tranformations
+- 2012: 🎉.
 - 2011: 🎉.
 - 2010: 🎉. Can potentially be abstracted. To incorporate inequalities.
 - 2009: 🎉.
