@@ -1,5 +1,6 @@
 ---
 title: Rational functions
+copyright: College Algebra 2e
 ---
 
 <!-- prettier-ignore-start -->
@@ -24,6 +25,9 @@ and a horizontal asymptote $y=a$.
 
 The curve of ${y=\displaystyle 3 + \frac{1}{x+2}}$
 has a vertical asymptote $x=-2$ and a horizontal asymptote $y=3$.
+
+We can then use a graphing calculator to sketch the curve, using our asymptotes
+to better understand the shape of the curve.
 
 ![rectangular hyperbola 3+1/(x+2)](/images/h2/graphs/openStax_graphs_rectangular_hyperbola.jpeg)
 

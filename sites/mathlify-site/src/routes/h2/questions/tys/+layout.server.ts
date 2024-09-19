@@ -5,6 +5,7 @@ import type { LayoutServerLoad } from './$types';
 import { match as matchOpen } from '$params/openYear';
 import { match as matchMember } from '$params/memberYear';
 import { match as matchPremium } from '$params/premiumYear';
+import { buildClerkProps } from 'svelte-clerk/server';
 
 export const load: LayoutServerLoad = async ({ locals }) => {
 	const items = toReplacedSlug(
@@ -28,6 +29,7 @@ export const load: LayoutServerLoad = async ({ locals }) => {
 	const role = locals.auth?.sessionClaims?.metadata.role;
 
 	return {
+		...buildClerkProps(locals.auth),
 		nav: [...main, ...(role === 'admin' || role === 'super' ? superNodes : [])]
 	};
 };

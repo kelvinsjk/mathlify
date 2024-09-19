@@ -4,7 +4,7 @@
 	import { SignInButton, SignUpButton } from 'svelte-clerk/components';
 
 	const { data } = $props();
-	const role = $state(data.data.role);
+	const role = $derived(data.data.role);
 </script>
 
 <svelte:head>

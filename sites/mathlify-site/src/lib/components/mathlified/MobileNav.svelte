@@ -49,7 +49,7 @@
 		/** use anchor in future for positioning?*/
 		position: absolute;
 		inset: unset;
-		top: 3.25rem;
+		top: 3.75rem;
 		right: 0;
 		width: 100%;
 		height: max-content;
@@ -58,9 +58,7 @@
 		padding: 0;
 		overflow-y: auto;
 	}
-	@media (min-width: 40rem) {
-		.mobile-nav-button-container {
-			display: none;
-		}
+	:global(#mobile-nav-container ul li) {
+		margin-inline: auto;
 	}
 </style>

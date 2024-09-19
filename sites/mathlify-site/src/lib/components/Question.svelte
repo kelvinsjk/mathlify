@@ -2,20 +2,38 @@
 	import { Djot } from 'svelte-djot-math';
 	import SequentialNav from './mathlified/SequentialNav.svelte';
 	import type { QuestionObject } from '$lib/classes/question';
+	import type { NavNodePlusColor } from './mathlified/Nav.svelte';
+	import Nav from './mathlified/Nav.svelte';
 	let {
 		data
 	}: {
 		data: {
-			isMd?: false;
+			role?: 'admin' | 'super' | 'member' | 'premium';
 			year: string;
 			paper: string;
-			questionNo: string;
+			questionNo: number;
 			question: QuestionObject;
 			sequential: { prev?: { name: string; slug: string }; next?: { name: string; slug: string } };
+			topicalNav: NavNodePlusColor[];
 		};
-		//module: null | Promise<unknown>;
 	} = $props();
-	let question = $derived(data.isMd ? {} : data.question);
+	let question = $derived(data.question);
+	let nav = $derived.by(() => {
+		if (data.role === 'admin' || data.role === 'super') {
+			return data.topicalNav;
+		}
+		const topicalNav: NavNodePlusColor[] = [];
+		for (const { name, children } of data.topicalNav) {
+			topicalNav.push({
+				name,
+				// @ts-expect-error color may be undefined
+				children: children?.filter((x) => x.color !== 'red'),
+				slug: '',
+				fileSlug: ''
+			});
+		}
+		return topicalNav;
+	});
 
 	function toRoman(k: number): string {
 		return ['i', 'ii', 'iii', 'iv', 'v'][k];
@@ -32,14 +50,41 @@
 </script>
 
 <div class="main-container">
+	<nav class="toc-container">
+		<details class="mobile-toc">
+			<summary>
+				<svg
+					aria-hidden="true"
+					class="caret"
+					width="16"
+					height="16"
+					viewBox="0 0 24 24"
+					fill="currentColor"
+					style="--sl-icon-size: 1.25rem;"
+					><path
+						d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"
+					></path></svg
+				>
+				Topical navigation
+			</summary>
+			<Nav {nav} />
+		</details>
+		<div class="desktop-toc">
+			<Nav {nav} />
+		</div>
+	</nav>
 	<div class="prose-container">
 		<div class="bleed-left"></div>
 		<div class="paper-and-question">
 			<h1>{data.year} H2 Mathematics</h1>
 			<div class="h2-container">
 				<h2>
-					Paper {data.paper}
-					Question {data.questionNo}
+					<span class="no-break">
+						Paper {data.paper}
+					</span>
+					<span class="no-break">
+						Question {data.questionNo}
+					</span>
 				</h2>
 				<div>
 					<a class="button" href={`/h2/solutions/${data.year}/p${data.paper}/q${data.questionNo}`}
@@ -105,14 +150,26 @@
 
 <style>
 	.main-container {
-		width: 100%;
+		height: 100%;
+		display: grid;
+	}
+	.prose-container {
 		height: 100%;
 		overflow-y: auto;
 		scroll-behavior: smooth;
-	}
-	.prose-container {
 		display: grid;
 		grid-template-columns: 1fr min(65ch, 100%) 1fr;
+	}
+	.toc-container {
+		background-color: var(--surface, hsl(60, 5%, 96%));
+		padding-inline: 1rem;
+		height: 100%;
+		overflow-y: auto;
+		scroll-behavior: smooth;
+		border-block: 1px solid rgba(0, 0, 0, 0.25);
+	}
+	.desktop-toc {
+		display: none;
 	}
 	.prose-container > * {
 		grid-column: 2;
@@ -164,6 +221,9 @@
 	:global(.body-content:not(.no-marks) > p:last-child) {
 		margin-block-end: 0;
 	}
+	.no-break {
+		white-space: nowrap;
+	}
 	section {
 		padding-inline: 1rem;
 	}
@@ -172,16 +232,6 @@
 		font-size: 2.25em;
 		padding-inline: 1rem;
 		line-height: 1.1111111;
-	}
-	@media (min-width: 40rem) {
-		h1 {
-			margin-block-start: 0.5rem;
-		}
-	}
-	@media (min-width: 60rem) {
-		h1 {
-			margin-block-start: 1.5rem;
-		}
 	}
 	.h2-container {
 		padding-inline: 1rem;
@@ -228,6 +278,7 @@
 		border: none;
 		text-decoration: none;
 		color: inherit;
+		display: inline-block;
 
 		&:hover {
 			background-color: hsla(var(--secondary-hsl), 0.9);
@@ -239,5 +290,53 @@
 		:global(.prose-container math) {
 			font-size: clamp(1rem, 1vw + 0.25rem, 1.5rem);
 		}
+	}
+	@media (min-width: 40rem) {
+		.toc-container {
+			border-block: none;
+		}
+	}
+	@media (min-width: 60rem) {
+		.desktop-toc {
+			display: block;
+		}
+		.mobile-toc {
+			display: none;
+		}
+		.main-container {
+			grid-template-columns: 1fr 15rem;
+			align-content: stretch;
+		}
+		.toc-container {
+			order: 2;
+			padding-block-start: 1rem;
+			height: 100%;
+			overflow-y: auto;
+			border-inline-start: 1px solid var(--content, black);
+		}
+	}
+	summary {
+		font-weight: 600;
+		font-size: 1rem;
+		padding-block: 0.25rem;
+		margin-block: 0.25rem;
+	}
+	summary {
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		line-height: 1.4;
+	}
+	svg {
+		width: 1em;
+		height: 1em;
+		transition: transform 0.2s ease-in-out;
+	}
+	details[open] > summary > svg {
+		transform: rotate(90deg);
+	}
+	details[open] {
+		padding-block-end: 0.5rem;
 	}
 </style>

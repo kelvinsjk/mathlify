@@ -31,6 +31,6 @@ ${{}} a \\in \\mathbb{R}, a \\neq - \\frac{1}{2}.`
 };
 
 it('2021p2q3', () => {
-	expect(answer).toMatchSnapshot();
 	expect(ans).toEqual(actual);
+	expect(answer).toMatchSnapshot();
 });

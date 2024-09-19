@@ -16,9 +16,9 @@
 	});
 	const index = $derived(sequentialNav.findIndex((x) => x.slug === $page.url.pathname));
 	const prev = $derived(
-		sequentialNav[index - 1]?.name === 'Practice'
-			? sequentialNav[index - 2]
-			: sequentialNav[index - 1]
+		sequentialNav
+			.slice(0, index)
+			.findLast((x) => x.name !== 'Practice' && x.name !== 'Practice 1' && x.name !== 'Practice 2')
 	);
 	const sequential = $derived({ prev, next: sequentialNav[index + 1] });
 

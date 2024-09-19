@@ -6,6 +6,9 @@ import { error } from '@sveltejs/kit';
 import { directory } from '../../../../../h2_solutions/directory';
 import { h2_solutionsSequential as sequential } from '$lib/components/nav';
 import { preprocess } from '$lib/server/h2_solutions';
+import { topicalDirectory, questionsToTopic } from '../../../../topical';
+import type { NavNodePlusColor } from '$lib/components/mathlified/Nav.svelte';
+import { capitalizeFirstLetter } from '$lib/typesetting/utils';
 
 export const prerender = true;
 
@@ -28,14 +31,29 @@ export const load: PageServerLoad = async ({ params }) => {
 		...x,
 		slug: x.slug.replace('h2_solutions', 'h2/solutions')
 	}));
+	const paperNo = Number(paper.slice(1));
+	const questionNo = Number(question.slice(1));
+	const topics = questionsToTopic[`${year} P${paperNo} Q${questionNo}`];
+	const topicalNav: NavNodePlusColor[] = [];
+	for (const topic of topics) {
+		topicalNav.push({
+			name: capitalizeFirstLetter(topic),
+			children: topicalDirectory[topic]?.map((x) => ({
+				...x,
+				slug: `/h2/solutions/${x.slug}`
+			})),
+			slug: '',
+			fileSlug: ''
+		});
+	}
 	if (preprocess['module']) {
 		const data = {
 			...preprocess.module(module),
-			isMd: false,
 			year: Number(year),
-			paperNo: Number(paper.slice(1)),
-			questionNo: Number(question.slice(1)),
-			sequential: { prev: sequentialFixed[index - 1], next: sequentialFixed[index + 1] }
+			paperNo,
+			questionNo,
+			sequential: { prev: sequentialFixed[index - 1], next: sequentialFixed[index + 1] },
+			topicalNav
 		} as const;
 		return {
 			data,

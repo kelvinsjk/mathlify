@@ -8,6 +8,9 @@ import { questionSchema } from '$lib/classes/question';
 import { z } from 'zod';
 import path from 'node:path';
 import { eq } from 'drizzle-orm';
+import { topicalDirectory, questionsToTopic } from '../../../../../topical';
+import type { NavNodePlusColor } from '$lib/components/mathlified/Nav.svelte';
+import { capitalizeFirstLetter } from '$lib/typesetting/utils';
 
 export const load: PageServerLoad = async ({ params, locals }) => {
 	const { year, paper, question } = params;
@@ -22,6 +25,20 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		slug: x.slug.replace('h2_solutions', 'h2/solutions')
 	}));
 	const role = locals.auth?.sessionClaims?.metadata.role;
+	const questionNo = Number(question.slice(1));
+	const topics = questionsToTopic[`${year} P${paper.slice(1)} Q${questionNo}`];
+	const topicalNav: NavNodePlusColor[] = [];
+	for (const topic of topics) {
+		topicalNav.push({
+			name: capitalizeFirstLetter(topic),
+			children: topicalDirectory[topic]?.map((x) => ({
+				...x,
+				slug: `/h2/questions/tys/${x.slug}`
+			})),
+			slug: '',
+			fileSlug: ''
+		});
+	}
 	const results =
 		role === undefined || role === 'member'
 			? [{ text: '{}' }]
@@ -36,9 +53,10 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 			role,
 			year,
 			paper: paper.slice(1),
-			questionNo: question.slice(1),
+			questionNo,
 			sequential: { prev: sequentialFixed[index - 1], next: sequentialFixed[index + 1] },
-			question: questionObject
+			question: questionObject,
+			topicalNav
 		} as const;
 		return {
 			data

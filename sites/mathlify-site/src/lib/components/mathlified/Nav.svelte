@@ -1,19 +1,19 @@
 <script module lang="ts">
 	import { type NavNode } from '../nav';
-	export type NavNodePlusColor = NavNode & { color?: 'blue' | 'green' | 'red' };
+	export type NavNodePlusColor = NavNode & {
+		color?: 'blue' | 'green' | 'red';
+		children?: NavNodePlusColor[];
+	};
 </script>
 
 <script lang="ts">
-	/**
-	 * Mathlified Nav version 0.0.1
-	 * generated on 9/4/2024, 8:48:56 PM
-	 */
+	let {
+		nested,
+		nav: propNav,
+		hasColor = true
+	}: { nested?: boolean; nav?: NavNodePlusColor[]; hasColor?: boolean } = $props();
 
-	import { nav as baseNav } from '../nav';
-
-	let { nested, nav: propNav }: { nested?: boolean; nav?: NavNodePlusColor[] } = $props();
-
-	const nav: NavNodePlusColor[] = propNav ?? baseNav ?? [];
+	let nav = $derived(propNav ?? []);
 
 	import { page } from '$app/stores';
 </script>
@@ -29,9 +29,9 @@
 					(3) we are in the last item in the preceding folder (3 levels deep)
 				-->
 				<details
-					class:blue={node.color === 'blue'}
-					class:green={node.color === 'green'}
-					class:red={node.color === 'red'}
+					class:blue={hasColor && node.color === 'blue'}
+					class:green={hasColor && node.color === 'green'}
+					class:red={hasColor && node.color === 'red'}
 					class="nav-details"
 					open={$page.url.pathname.startsWith(node.slug) ||
 						($page.url.pathname === '/' && !nested && i === 0) ||
@@ -58,11 +58,14 @@
 							></path></svg
 						>
 					</summary>
-					<svelte:self nav={node.children} nested={true} />
+					<svelte:self nav={node.children} {hasColor} nested={true} />
 				</details>
 			{:else}
 				<a
 					class:top-level={!nested}
+					class:blue={hasColor && node.color === 'blue'}
+					class:green={hasColor && node.color === 'green'}
+					class:red={hasColor && node.color === 'red'}
 					href={node.slug}
 					class:active={$page.url.pathname.startsWith(node.slug)}
 					>{node.name}
