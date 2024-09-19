@@ -178,7 +178,6 @@
 		align-items: center;
 		gap: 0.5rem;
 		line-height: 1.4;
-		cursor: pointer;
 	}
 	svg {
 		width: 1em;

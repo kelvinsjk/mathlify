@@ -1,5 +1,5 @@
 ---
-title: Functions, domain and range
+title: Extended curve sketching
 copyright: College Algebra 2e
 ---
 
@@ -7,92 +7,54 @@ copyright: College Algebra 2e
 ::: citation
 Adapted from OpenStax College Algebra 2e[^cite]
 :::
-
-::: definition
-A **_function_** is a relation in which each possible input value
-leads to exactly one output value.
-
-The input values make up the **_domain_**, and the output values make up the
-**_range_**.
-
-We denote the domain and range of a function $`f` by $`D_f` and $`R_f` respectively.
-:::
 <!-- prettier-ignore-end -->
 
-## Defining functions
+The techniques we have discussed to graph more complicated functions. The knowledge of the asymptotes
+and use of a graphing calculator will help us better understand the key features of the graphs.
 
-We can **_define_** a function by giving its rule and describing its domain
-using the following notation:
+## Example 1
 
-$$ f:x \mapsto x^2 + 1, \quad \text{for } x \in \mathbb{R}, -1 < x < 3. $$
+$$ \text{Example}: y = \frac{3x^2+2}{x^2+4x-5} $$
 
-The _rule_, or formula for the function $f$ is given by
-$f(x)=x^2+1$, allowing
-us to do computations such as $f(3)=3^2+1=10$.
+### Long division
 
-The _domain_ of $f$ is described by $-1 < x < 3.$ Written in set notation, we
-have ${D_f = (1,3).}$
+We can perform long division to express the equation of the curve as
 
-## Domain of a function
+$$ y = 3 + \frac{-10x+17}{x^2+4x-5} $$
 
-Domains should be specified when defining a function, as seen in the above
-example. The reason for this could be due to context. For example, if $`x`
-represents the number of hours in a day we study, then an appropriate domain
-would be $`[0, 24].`
+As $\frac{-10x+17}{x^2+4x-5}$ is a proper rational function, it will approach $0$ as $x \to \infty$.
+Hence our curve has a horizontal asymptote $y=3$.
 
-### Largest possible domains
+### Factorizing the denominator
 
-The domain could also be due to considerations of what is mathematically
-permitted. For example, we **cannot**
+We can then factorize the denominator to get
 
-- divide by zero,
-- take square roots of negative numbers, or,
-- take the logarithm of zero or a negative number.
+$$ y = 3 + \frac{-10x+17}{(x+5)(x-1)} $$
 
-For example, the function
+Hence the curve has vertical asymptotes ${x=-5}$ and ${x=1.}$
 
-$$ f: x \mapsto \frac{1}{x-2}, \quad \text{for } x \in \mathbb{R}, x \neq 2 $$
+### Graph of example 1
 
-has
-$`x = 2` omitted from its domain to avoid division by zero. Meanwhile, the largest possible domains for $`{g(x)=\sqrt{x+3}}` is $`{D_g = [-3, \infty)}` while that of
-$`{h(x) = \ln (x+3)}`
-is $`{D_h = (-3, \infty).}`
+![y=(3x^2+2)/(x^2+4x-5)](/images/h2/graphs/openStax_graphs_more-1.jpeg)
 
-## Range of a function
+## Example 2
 
-### Using graphs to find the range
+$$ \text{Example}: y = \frac{3}{2\mathrm{e}^{-x}+1} $$
 
-We recall that the range of a function refers to the set of all possible output
-values. Finding the range is most easily done graphically where we get all the
-possible values of $`y.`
+There are no vertical asymptotes for this curve as the denominator
+${2\mathrm{e}^{-x}+1}$ is always positive.
 
-As the following examples will illustrate, the important features of graphs that
-often affect the range of functions are:
+### Horizontal asymptotes
 
-- end-points (be careful of inclusive vs exclusive cases!),
-- turning points,
-- asymptotes.
+As ${x \to -\infty,}$ ${\mathrm{e}^{-x} \to \infty}$ so ${\frac{3}{2\mathrm{e}^{-x}+1} \to 0.}$
 
-### Examples
+As ${x \to \infty,}$ ${\mathrm{e}^{-x} \to 0}$ so ${\frac{3}{2\mathrm{e}^{-x}+1} \to 3.}$
 
-![range of a function using end point](/images/h2/fns/openStax_functions_range.jpeg)
+Hence our curve has two horizontal asymptotes ${y=0}$ and ${y=3.}$
 
-The above function has a left end point with coordinate
-$`{(-5,5).}` By
-considering all possible $`y\text{-values},` we get the range
-$`{R_f = (-\infty, 5]}.`
+### Graph of example 2
 
-![range of a function using turning point](/images/h2/fns/openStax_functions_range3.jpeg)
-
-The above function has both end points tending towards infinity. However, there
-is a minimum point on our graph at the origin, which appears in the computed
-range of $`[0,\infty).`
-
-![range of a function using asymptote](/images/h2/fns/openStax_functions_range2.jpeg)
-
-For this last example above, the range consists of all values **except** $`0`
-which is a result of the horizontal asymptote $`y=0.` Hence the range can be
-written as a union of two exclusive intervals.
+![y=3/(2e^{-x}+1)](/images/h2/graphs/0104_exp.svg)
 
 [^cite]:
     Content in this page is adapted from OpenStax College Algebra 2e by Jay
@@ -100,4 +62,4 @@ written as a union of two exclusive intervals.
     [Creative Commons Attribution License](https://creativecommons.org/licenses/by/4.0/).\
     Access
     for free at
-    <https://openstax.org/books/college-algebra-2e/pages/3-1-functions-and-function-notation>
+    <https://openstax.org/books/college-algebra-2e/pages/5-6-rational-functions>

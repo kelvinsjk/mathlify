@@ -22,6 +22,7 @@
 		"@sveltejs/vite-plugin-svelte": "^4.0.0-next.6",
 		"@types/eslint": "^9.6.1",
 		"@types/fs-extra": "^11.0.4",
+		"@zerodevx/svelte-toast": "^0.9.5",
 		"drizzle-kit": "^0.24.2",
 		"eslint": "^9.10.0",
 		"eslint-config-prettier": "^9.1.0",

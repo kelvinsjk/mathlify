@@ -8,6 +8,10 @@
 	import { ClerkProvider } from 'svelte-clerk';
 	import { PUBLIC_CLERK_PUBLISHABLE_KEY } from '$env/static/public';
 
+	import { SvelteToast } from '@zerodevx/svelte-toast';
+	import { toast } from '@zerodevx/svelte-toast';
+	import { navigating } from '$app/stores';
+
 	let {
 		children,
 		data
@@ -15,6 +19,15 @@
 		children: Snippet;
 		data: LayoutData;
 	} = $props();
+
+	const nav = $derived($navigating);
+	$effect(()=>{
+		if (nav){
+			toast.push('Loading...', {initial: 0, dismissable: false});
+		} else {
+			toast.pop(0);
+		}
+	})
 </script>
 
 <ClerkProvider {...data} publishableKey={PUBLIC_CLERK_PUBLISHABLE_KEY}>
@@ -23,6 +36,7 @@
 		{@render children()}
 	</div>
 </ClerkProvider>
+<SvelteToast />
 
 <style>
 	.layout-base {

@@ -2,20 +2,23 @@
 	import { Djot } from 'svelte-djot-math';
 	import SequentialNav from './mathlified/SequentialNav.svelte';
 	import type { AnswerObject } from '$lib/classes/answer';
+	import type { NavNodePlusColor } from './mathlified/Nav.svelte';
+	import Nav from './mathlified/Nav.svelte';
 	let {
 		data
 	}: {
 		data: {
-			isMd: false;
 			year: number;
 			paperNo: number;
 			questionNo: number;
 			answer: AnswerObject;
 			solution: AnswerObject;
+			topicalNav: NavNodePlusColor[];
 			sequential: { prev?: { name: string; slug: string }; next?: { name: string; slug: string } };
 		};
 	} = $props();
-	let [answer, solution] = $derived(data.isMd ? [{}, {}] : [data.answer, data.solution]);
+	let [answer, solution] = $derived([data.answer, data.solution]);
+	let nav = $derived(data.topicalNav);
 
 	function toRoman(k: number): string {
 		return ['i', 'ii', 'iii', 'iv', 'v'][k];
@@ -32,6 +35,29 @@
 </script>
 
 <div class="main-container">
+	<nav class="toc-container">
+		<details class="mobile-toc">
+			<summary>
+				<svg
+					aria-hidden="true"
+					class="caret"
+					width="16"
+					height="16"
+					viewBox="0 0 24 24"
+					fill="currentColor"
+					style="--sl-icon-size: 1.25rem;"
+					><path
+						d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"
+					></path></svg
+				>
+				Topical navigation
+			</summary>
+			<Nav {nav} hasColor={false} />
+		</details>
+		<div class="desktop-toc">
+			<Nav {nav} hasColor={false} />
+		</div>
+	</nav>
 	<div class="prose-container">
 		<h1>
 			{data.year}
@@ -114,10 +140,52 @@
 
 <style>
 	.main-container {
-		width: 100%;
+		height: 100%;
+		display: grid;
+	}
+	.prose-container {
 		height: 100%;
 		overflow-y: auto;
 		scroll-behavior: smooth;
+		padding-block-start: 1rem;
+	}
+	.toc-container {
+		background-color: var(--surface, hsl(60, 5%, 96%));
+		padding-inline: 1rem;
+		height: 100%;
+		overflow-y: auto;
+		scroll-behavior: smooth;
+		border-block: 1px solid rgba(0, 0, 0, 0.25);
+	}
+	.desktop-toc {
+		display: none;
+	}
+	@media (min-width: 40rem) {
+		.toc-container {
+			border-block: none;
+		}
+	}
+
+	@media (min-width: 60rem) {
+		.desktop-toc {
+			display: block;
+		}
+		.mobile-toc {
+			display: none;
+		}
+	}
+	@media (min-width: 60rem) {
+		.main-container {
+			grid-template-columns: 1fr 15rem;
+			align-content: stretch;
+		}
+		.toc-container {
+			order: 2;
+			padding-block-start: 1rem;
+			height: 100%;
+			overflow-y: auto;
+			border-inline-start: 1px solid var(--content, black);
+		}
 	}
 	.prose-container {
 		display: grid;
@@ -202,5 +270,32 @@
 		:global(.prose-container math) {
 			font-size: clamp(1rem, 1vw + 0.25rem, 1.5rem);
 		}
+		:global(.prose-container svg math) {
+			font-size: inherit;
+		}
+	}
+	summary {
+		font-weight: 600;
+		font-size: 1rem;
+		padding-block: 0.25rem;
+		margin-block: 0.25rem;
+	}
+	summary {
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		line-height: 1.4;
+	}
+	svg {
+		width: 1em;
+		height: 1em;
+		transition: transform 0.2s ease-in-out;
+	}
+	details[open] > summary > svg {
+		transform: rotate(90deg);
+	}
+	details[open] {
+		padding-block-end: 0.5rem;
 	}
 </style>

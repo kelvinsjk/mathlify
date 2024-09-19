@@ -1,5 +1,6 @@
 <script lang="ts">
 	let { checked = $bindable() }: { checked: boolean } = $props();
+	// modified from daisyui and tailwindcss
 </script>
 
 <input type="checkbox" class="switch" bind:checked />

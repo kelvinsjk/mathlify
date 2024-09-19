@@ -1,8 +1,4 @@
 <script lang="ts">
-	/**
-	 * Mathlified generic Page version 0.0.1
-	 * generated on 9/4/2024, 9:34:40 PM
-	 */
 	import { invalidate } from '$app/navigation';
 	import Content from '$lib/components/mathlified/Content.svelte';
 	import { h2_learnSequential } from '$lib/components/nav';
@@ -15,7 +11,11 @@
 		return { name: x.name, slug: x.slug.replace('h2_learn', 'h2/learn') };
 	});
 	const index = $derived(sequentialNav.findIndex((x) => x.slug === $page.url.pathname));
-	const prev = $derived(sequentialNav.slice(0, index).findLast((x) => x.name !== 'Practice'));
+	const prev = $derived(
+		sequentialNav
+			.slice(0, index)
+			.findLast((x) => x.name !== 'Practice' && x.name !== 'Practice 1' && x.name !== 'Practice 2')
+	);
 	const sequential = $derived({ prev, next: sequentialNav[index + 1] });
 
 	if (i < 0) throw new Error('Starting sequential nav item not found');

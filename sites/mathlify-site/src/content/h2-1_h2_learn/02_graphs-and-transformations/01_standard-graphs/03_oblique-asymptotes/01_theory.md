@@ -1,46 +1,42 @@
 ---
 title: Oblique asymptotes
+copyright: College Algebra 2e
 ---
 
 <!-- prettier-ignore-start -->
 ::: citation
 Adapted from OpenStax College Algebra 2e[^cite]
 :::
+<!-- prettier-ignore-end -->
 
+In addition to horizontal and vertical asymptotes, we can also have _oblique_ (slanted) asymptotes.
+
+<!-- prettier-ignore-start -->
 ::: technique
 
 ## Asymptotes
 
-The curve of ${y=\displaystyle a + \frac{b}{cx+d}}$
-has a vertical asymptote $x=-\frac{c}{d}$
-and a horizontal asymptote $y=a$.
+The curve of ${y=\displaystyle ax+b + \frac{c}{dx+e}}$
+has a vertical asymptote ${x=-\frac{e}{d}}$
+and an **_oblique asymptote_** ${y=ax+b.}$
 
 :::
 <!-- prettier-ignore-end -->
 
-## Rectangular hyperbolas
+## Example
 
-### Example
+The curve of ${y=\displaystyle 3x+1 + \frac{2}{x-1}}$
+has a vertical asymptote ${x=1}$ and an oblique asymptote ${y=3x+1.}$
 
-The curve of ${y=\displaystyle 3 + \frac{1}{x+2}}$
-has a vertical asymptote $x=-2$ and a horizontal asymptote $y=3$.
+![oblique asymptote y=3x+1 + 2/(x-1)](/images/h2/graphs/openStax_graphs_oblique_asymptotes.jpeg)
 
-![rectangular hyperbola 3+1/(x+2)](/images/h2/graphs/openStax_graphs_rectangular_hyperbola.jpeg)
+## Long division
 
-Curves of this form are called rectangular hyperbolas, and appears frequently in our study.
+Similar to the previous section, long division can be used to find asymptotes (including oblique ones)
+of improper rational functions.
 
-## Improper rational functions
-
-A rational function is considered _improper_ if the degree of the numerator is greater or equal to the degree of the denominator.
-
-For example, ${y=\displaystyle \frac{3x+7}{x+2}}$ is improper because the degree of both the numerator and denominator is $1$.
-
-### Long division
-
-To find the asymptotes of an improper rational function, we can use **_long division_**.
-
-${\displaystyle \frac{3x+7}{x+2}}$ can be rewritten as ${\displaystyle 3 + \frac{1}{x+2}}$
-via long division. We can now use this form to deduce that the asymptotes are $x=-2$ and $y=3$.
+For example, ${\displaystyle \frac{3x^2-2x+1}{x-2}}$ can be rewritten as ${\displaystyle 3x+1 + \frac{2}{x-1}}$
+via long division. We can now use this form to deduce that the asymptotes are ${x=1}$ and ${y=3x+1.}$
 
 [^cite]:
     Content in this page is adapted from OpenStax College Algebra 2e by Jay

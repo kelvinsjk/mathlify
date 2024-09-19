@@ -1,13 +1,14 @@
 import type { PageServerLoad } from './$types';
+import path from 'node:path';
+import { normalizePath } from 'vite';
 import { error } from '@sveltejs/kit';
 
 import { directory } from '../../../../../../h2_tys_questions/directory';
 import { h2_tys_questionsSequential as sequential } from '$lib/components/nav';
-
 import { preprocess } from '$lib/server/h2_tys_questions';
-
-import path from 'node:path';
-import { normalizePath } from 'vite';
+import { topicalDirectory, questionsToTopic } from '../../../../../topical';
+import type { NavNodePlusColor } from '$lib/components/mathlified/Nav.svelte';
+import { capitalizeFirstLetter } from '$lib/typesetting/utils';
 
 export const prerender = true;
 
@@ -30,14 +31,30 @@ export const load: PageServerLoad = async ({ params }) => {
 		...x,
 		slug: x.slug.replace('h2_solutions', 'h2/solutions')
 	}));
+	const questionNo = Number(question.slice(1));
+	const topics = questionsToTopic[`${year} P${paper.slice(1)} Q${questionNo}`];
+	const topicalNav: NavNodePlusColor[] = [];
+	for (const topic of topics) {
+		topicalNav.push({
+			name: capitalizeFirstLetter(topic),
+			children: topicalDirectory[topic]
+				?.filter((x) => x.color !== 'red')
+				?.map((x) => ({
+					...x,
+					slug: `/h2/questions/tys/${x.slug}`
+				})),
+			slug: '',
+			fileSlug: ''
+		});
+	}
 	if (preprocess['module']) {
 		const data = {
 			...preprocess.module(module),
-			isMd: false,
 			year,
 			paper: paper.slice(1),
-			questionNo: question.slice(1),
-			sequential: { prev: sequentialFixed[index - 1], next: sequentialFixed[index + 1] }
+			questionNo,
+			sequential: { prev: sequentialFixed[index - 1], next: sequentialFixed[index + 1] },
+			topicalNav
 		} as const;
 		return {
 			data,
