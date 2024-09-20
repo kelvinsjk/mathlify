@@ -22,7 +22,6 @@ export const load: LayoutServerLoad = async () => {
 			main.push({ ...item, color: 'green' });
 		}
 	}
-
 	return {
 		nav: [...main]
 	};

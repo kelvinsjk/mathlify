@@ -4,7 +4,6 @@ import { normalizePath } from 'vite';
 import { error } from '@sveltejs/kit';
 
 import { directory } from '../../../../../../h2_tys_questions/directory';
-import { h2_tys_questionsSequential as sequential } from '$lib/components/nav';
 import { preprocess } from '$lib/server/h2_tys_questions';
 import { topicalDirectory, questionsToTopic } from '../../../../../topical';
 import type { NavNodePlusColor } from '$lib/components/mathlified/Nav.svelte';
@@ -22,15 +21,6 @@ export const load: PageServerLoad = async ({ params }) => {
 	filePath = normalizePath(path.join('/', filePath + '.ts'));
 	if (!keys.includes(filePath)) throw error(404, 'file not found');
 	const module = await modules[filePath]();
-	let index = sequential.findIndex((x) => x.slug === path.join('/', slugPath));
-	const onlyCurrentPaper = sequential.filter((x) =>
-		x.slug.startsWith(sequential[index]?.slug.slice(0, -3))
-	);
-	index = onlyCurrentPaper.findIndex((x) => x.slug === path.join('/', slugPath));
-	const sequentialFixed = onlyCurrentPaper.map((x) => ({
-		...x,
-		slug: x.slug.replace('h2_solutions', 'h2/solutions')
-	}));
 	const questionNo = Number(question.slice(1));
 	const topics = questionsToTopic[`${year} P${paper.slice(1)} Q${questionNo}`];
 	const topicalNav: NavNodePlusColor[] = [];
@@ -53,7 +43,6 @@ export const load: PageServerLoad = async ({ params }) => {
 			year,
 			paper: paper.slice(1),
 			questionNo,
-			sequential: { prev: sequentialFixed[index - 1], next: sequentialFixed[index + 1] },
 			topicalNav
 		} as const;
 		return {

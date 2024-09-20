@@ -11,7 +11,7 @@
 </svelte:head>
 
 <SignedIn>
-	<Question data={data.data} />
+	<Question data={data.data} nav={data.nav} />
 </SignedIn>
 <main>
 	<SignedOut>

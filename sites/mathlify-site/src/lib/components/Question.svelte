@@ -5,7 +5,8 @@
 	import type { NavNodePlusColor } from './mathlified/Nav.svelte';
 	import Nav from './mathlified/Nav.svelte';
 	let {
-		data
+		data,
+		nav: yearlyNav
 	}: {
 		data: {
 			role?: 'admin' | 'super' | 'member' | 'premium';
@@ -13,10 +14,13 @@
 			paper: string;
 			questionNo: number;
 			question: QuestionObject;
-			sequential: { prev?: { name: string; slug: string }; next?: { name: string; slug: string } };
 			topicalNav: NavNodePlusColor[];
 		};
+		nav: NavNodePlusColor[];
 	} = $props();
+	const questionsNav = $derived(yearlyNav[0].children?.at(0)?.children ?? []);
+	const index = $derived(questionsNav.findIndex((x) => x.name === `Q${data.questionNo}`));
+	const sequential = $derived({ prev: questionsNav[index - 1], next: questionsNav[index + 1] });
 	let question = $derived(data.question);
 	let nav = $derived.by(() => {
 		if (data.role === 'admin' || data.role === 'super') {
@@ -143,7 +147,7 @@
 			</div>
 		</section>
 		<div>
-			<SequentialNav sequential={data.sequential} />
+			<SequentialNav {sequential} />
 		</div>
 	</div>
 </div>

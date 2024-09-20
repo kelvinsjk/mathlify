@@ -8,4 +8,4 @@
 	<title>{data.data.year} Paper {data.data.paper} Question {data.data.questionNo}</title>
 </svelte:head>
 
-<Question data={data.data} />
+<Question data={data.data} nav={data.nav} />
