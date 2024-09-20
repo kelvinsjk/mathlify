@@ -45,7 +45,7 @@ export function generateState(): State {
 	return { type, a, b, c, d };
 }
 
-export function getCoprimeB(a: number): number {
+function getCoprimeB(a: number): number {
 	if (Math.abs(a) === 1) {
 		return getRandomInt(0, 4);
 	} else if (Math.abs(a) === 2) {
@@ -58,7 +58,7 @@ export function getCoprimeB(a: number): number {
 	return chooseRandom([1, 2, 3, 4]);
 }
 
-export function generateExp(state: State): Expression {
+function generateExp(state: State): Expression {
 	const { type, a, b, c, d } = state;
 	const poly = generateAxPlusB(a, b);
 	return type === 'rational'
@@ -67,12 +67,12 @@ export function generateExp(state: State): Expression {
 			? sum(c, [d, expTerm(poly)])
 			: sum(c, [d, new Logarithm(poly)]);
 }
-function generateAxPlusB(
+export function generateAxPlusB(
 	a: number | string | [-1, string],
 	b: number | string | [-1, string]
 ): Polynomial {
-	const aExp = Array.isArray(a) ? new Expression([-1, 'a']) : new Expression(a);
-	const bExp = Array.isArray(b) ? new Expression([-1, 'b']) : new Expression(b);
+	const aExp = Array.isArray(a) ? new Expression([-1, a[1]]) : new Expression(a);
+	const bExp = Array.isArray(b) ? new Expression([-1, b[1]]) : new Expression(b);
 	return aExp.is.negative()
 		? new Polynomial([bExp, aExp], { ascending: true })
 		: new Polynomial([aExp, bExp]);
@@ -88,8 +88,11 @@ export function generateQn(state: State): {
 	if (typeof b !== 'number') unknowns.push('b');
 	if (typeof c !== 'number') unknowns.push('c');
 	if (typeof d !== 'number') unknowns.push('d');
-	const unknownText = mathlifier`where ${unknowns.join(', ')}
-@${unknowns.length > 1 ? 'are' : 'is a'} positive real number@${unknowns.length > 2 ? 's' : ''}.`;
+	const unknownText =
+		unknowns.length > 0
+			? mathlifier`where ${unknowns.join(', ')}
+@${unknowns.length > 1 ? 'are' : 'is a'} positive real number@${unknowns.length > 1 ? 's' : ''}.`
+			: '';
 	const exp = generateExp(state);
 	const eqn = `y = ${exp}`;
 	const qn =

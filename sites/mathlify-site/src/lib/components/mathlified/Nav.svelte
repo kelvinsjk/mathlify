@@ -67,7 +67,7 @@
 					class:green={hasColor && node.color === 'green'}
 					class:red={hasColor && node.color === 'red'}
 					href={node.slug}
-					class:active={$page.url.pathname.startsWith(node.slug)}
+					class:active={$page.url.pathname === node.slug}
 					>{node.name}
 				</a>
 			{/if}

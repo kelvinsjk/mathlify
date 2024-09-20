@@ -13,8 +13,8 @@ Adapted from OpenStax College Algebra 2e[^cite]
 ## Asymptotes
 
 The curve of ${y=\displaystyle a + \frac{b}{cx+d}}$
-has a vertical asymptote $x=-\frac{c}{d}$
-and a horizontal asymptote $y=a$.
+has a vertical asymptote ${\displaystyle x=-\frac{c}{d}}$
+and a horizontal asymptote ${y=a.}$
 
 :::
 <!-- prettier-ignore-end -->

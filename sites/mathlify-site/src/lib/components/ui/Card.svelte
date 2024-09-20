@@ -2,10 +2,12 @@
 	import type { Snippet } from 'svelte';
 	let {
 		children,
-		title
+		title,
+		end
 	}: {
 		title?: Snippet;
 		children: Snippet;
+		end?: Snippet;
 	} = $props();
 </script>
 
@@ -18,6 +20,11 @@
 		{/if}
 		{@render children()}
 	</div>
+	{#if end}
+		<div class="card-end">
+			{@render end()}
+		</div>
+	{/if}
 </div>
 
 <style>
@@ -47,6 +54,8 @@
 		/* width: 20rem; */
 		background-color: hsla(var(--secondary-hsl, 50, 100%, 50%), 0.25);
 		display: grid;
+		grid-template-rows: 1fr auto;
+		grid-template-rows: auto 1fr;
 		/* &.bordered {
     @apply border-base-200 border;
   }
@@ -78,7 +87,6 @@
 		display: flex;
 		flex-direction: column;
 		gap: 0.5rem;
-		justify-content: space-between;
 		/* @apply flex flex-col gap-2; */
 	}
 	.card-title {
