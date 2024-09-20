@@ -1,134 +1,121 @@
 import { chooseRandom, getRandomInt, coinFlip, getRandomNonZeroInt } from '$lib/utils/random';
+import { mathlifierDj as mathlifier } from 'mathlifier';
+import { Expression, Polynomial, sum, quotient, expTerm } from 'mathlify';
+import { Logarithm } from 'mathlify/fns';
+import { solve } from 'mathlify/working';
 
 // objectives
-// A: fnType
-// B: left vs right
-// C: inclusive vs exclusive
-// D (only for special): left2 vs right2 (0 vs \pm a)
+// A: fnType: rational vs exp vs log
+// B: integers vs unknown constants
 
-import type { PracticeQuestion } from '$content/_types';
-import { mathlifierDj as mathlifier } from 'mathlifier';
-import { Expression } from 'mathlify';
-import { generateFn } from '../../01_standard-graphs/02_rational-functions/02_practice-1';
-import { lessThan, greaterThan } from '../03_hyperbola/02_practice';
-import { capitalizeFirstLetter, QED } from '$lib/typesetting/utils';
+type FnType = 'rational' | 'exp' | 'log';
+type State = {
+	type: FnType;
+	a: number | string | [-1, string];
+	b: number | string | [-1, string];
+	c: number | string | [-1, string];
+	d: number | string | [-1, string];
+};
 
-// (x+a)^2 + b, (2007,2008)
-// abs: | (bx+c) / (x+a) | (2023).
-// special: ba^2 / (x^2 - a^2). (2010,2015). inclusive asks for x < -a or x > a. Exclusive asks for 0 \leq x < a or -a < x \leq 0
-
-const types = ['quadratic', 'abs', 'special'] as const;
-type Types = typeof types;
-type Type = Types[number];
-
-interface State {
-	fnType: Type;
-	a: number;
-	b: number;
-	c: number;
-	inclusive: boolean;
-	type: 'left' | 'right';
-	zeroLeft: boolean;
-	zeroAns: boolean;
-}
-
-export const practiceTitle = 'domain restriction';
-
-export function generateState(options?: { type?: Type }): State {
-	const fnType = options?.type ?? chooseRandom(types);
-	let a = getRandomInt(-4, 4);
-	let b = getRandomInt(-4, 4);
-	const c = getRandomInt(-4, 4);
-	const type = coinFlip() ? 'left' : 'right';
-	let inclusive = coinFlip();
-	let zeroLeft = true;
-	let zeroAns = true;
-	if (fnType === 'special') a = getRandomInt(1, 4);
-	if (fnType === 'abs' || fnType === 'special') b = getRandomNonZeroInt(1, 4);
-	if (fnType === 'abs') {
-		if (c / b === a) return generateState(options);
-		if ((-c / b < -a && type === 'right') || (-c / b > -a && type === 'left')) {
-			inclusive = false;
+export function generateState(): State {
+	const type = chooseRandom(['rational', 'exp', 'log'] as const);
+	// (1-0.8)^3 = 0.512 chance of no unknowns
+	const abUnknown = coinFlip(0.2);
+	let a: number | string | [-1, string];
+	let b: number | string | [-1, string];
+	if (abUnknown) {
+		b = chooseRandom([0, 'b', [-1, 'b']] as const);
+		if (b === 0) {
+			a = 'a';
+		} else {
+			a =
+				typeof b === 'string'
+					? chooseRandom([1, -1, 2, -2, 'a', [-1, 'a']] as const)
+					: chooseRandom(['a', 1, 2]);
 		}
-	} else if (fnType === 'special') {
-		a = Math.abs(a);
-		if (inclusive) {
-			zeroLeft = coinFlip();
-			zeroAns = coinFlip();
+	} else {
+		a = getRandomNonZeroInt(1, 5);
+		b = getCoprimeB(a);
+		if (a > 0) {
+			b = b * getRandomNonZeroInt(1, 1);
 		}
 	}
-	return { fnType, a, b, c, type, inclusive, zeroLeft, zeroAns };
+	const c = coinFlip(0.2) ? 'c' : getRandomInt(-4, 4);
+	const d = coinFlip(0.2) ? 'd' : getRandomNonZeroInt(1, 4);
+	return { type, a, b, c, d };
 }
 
-export function generateQn(state: State): PracticeQuestion {
-	const state1 = state;
-	const [fnString] = generateFn({ ...state1, restriction: false, unknownConstants: false });
-	const { fnType, type, inclusive, zeroLeft, zeroAns, a } = state1;
-	const sign = type === 'left' ? lessThan(inclusive) : greaterThan(inclusive);
-	let restriction = `x ${sign} a`;
-	let greatest: 'greatest' | 'least' = type === 'left' ? 'greatest' : 'least';
-	if (fnType === 'special') {
-		if (inclusive) {
-			// 0 \\leq x < a or a < x \\leq 0
-			if (zeroLeft) {
-				restriction = zeroAns ? `a \\leq x < ${a}` : `0 \\leq x < a`;
-				greatest = zeroAns ? 'least' : 'greatest';
-			} else {
-				restriction = zeroAns ? `${-a} < x \\leq a` : `a < x \\leq 0`;
-				greatest = zeroAns ? 'greatest' : 'least';
-			}
-		}
+function getCoprimeB(a: number): number {
+	if (Math.abs(a) === 1) {
+		return getRandomInt(0, 4);
+	} else if (Math.abs(a) === 2) {
+		return chooseRandom([1, 3, 5, 7]);
+	} else if (Math.abs(a) === 3) {
+		return chooseRandom([1, 2, 4, 5]);
+	} else if (Math.abs(a) === 4) {
+		return chooseRandom([1, 3, 5, 7]);
 	}
-	const qn = mathlifier`The function ${'f'}
-is defined by
+	return chooseRandom([1, 2, 3, 4]);
+}
 
-$${fnString}.
+function generateExp(state: State): Expression {
+	const { type, a, b, c, d } = state;
+	const poly = generateAxPlusB(a, b);
+	return type === 'rational'
+		? sum(c, quotient(d, poly))
+		: type === 'exp'
+			? sum(c, [d, expTerm(poly)])
+			: sum(c, [d, new Logarithm(poly)]);
+}
+export function generateAxPlusB(
+	a: number | string | [-1, string],
+	b: number | string | [-1, string]
+): Polynomial {
+	const aExp = Array.isArray(a) ? new Expression([-1, a[1]]) : new Expression(a);
+	const bExp = Array.isArray(b) ? new Expression([-1, b[1]]) : new Expression(b);
+	return aExp.is.negative()
+		? new Polynomial([bExp, aExp], { ascending: true })
+		: new Polynomial([aExp, bExp]);
+}
 
-The domain of ${'f'}
-is restricted to ${restriction},
-where ${'a'}
-is a constant.
+export function generateQn(state: State): {
+	qn: string;
+	ans: string;
+} {
+	const unknowns: string[] = [];
+	const { a, b, c, d } = state;
+	if (typeof a !== 'number') unknowns.push('a');
+	if (typeof b !== 'number') unknowns.push('b');
+	if (typeof c !== 'number') unknowns.push('c');
+	if (typeof d !== 'number') unknowns.push('d');
+	const unknownText =
+		unknowns.length > 0
+			? mathlifier`where ${unknowns.join(', ')}
+@${unknowns.length > 1 ? 'are' : 'is a'} positive real number@${unknowns.length > 1 ? 's' : ''}.`
+			: '';
+	const exp = generateExp(state);
+	const eqn = `y = ${exp}`;
+	const qn =
+		mathlifier`The curve ${'C'}
+has equation
 
-State the @${greatest} value of ${'a'}
-such that the function ${'f^{-1}'}
-exists.`;
-
-	const { ans } = domainRestriction(state1, greatest);
+$${eqn}${unknowns.length === 0 ? '.' : ','}` +
+		`\n\n${unknownText}` +
+		'\n\n' +
+		mathlifier`Write down the asymptote(s) of ${'C'}.`;
+	const ans = generateAns(state);
 	return { qn, ans };
 }
 
-export function domainRestriction(
-	state: State,
-	greatest: 'greatest' | 'least'
-): { ans: string; soln: string } {
-	const a = generateAns(state);
-	const greatestCap = capitalizeFirstLetter(greatest);
-	const ans = mathlifier`@${greatestCap} value of ${{}} {a = ${a}.}`;
-	const soln = mathlifier`@${greatestCap} value of ${{}} {a = ${a}} \\; ${QED}`;
-	return { ans, soln };
-}
-
-export function generateAns(state: State): Expression {
-	const { fnType, a, b, c, type, inclusive, zeroLeft, zeroAns } = state;
-	const aExp = new Expression(a);
-	const minusA = new Expression(-a);
-	const zero = new Expression(0);
-	if (fnType === 'quadratic') {
-		return minusA;
-	} else if (fnType === 'abs') {
-		return (-c / b < -a && type === 'right') || (-c / b > -a && type === 'left')
-			? minusA
-			: new Expression([-c, '/', b]).simplify();
-	} else {
-		// special
-		if (inclusive) {
-			if (zeroAns) {
-				return zero;
-			} else {
-				return zeroLeft ? aExp : minusA;
-			}
-		} else {
-			return type === 'left' ? minusA : aExp;
-		}
+function generateAns(state: State): string {
+	if (state.type === 'exp') {
+		return mathlifier`y = ${state.c}.`;
 	}
+	const poly = generateAxPlusB(state.a, state.b);
+	const { root: x1 } = solve.linear(poly);
+	const vertical = `x = ${x1}`;
+	return state.type === 'log'
+		? mathlifier`${vertical}.`
+		: mathlifier`${vertical}
+and ${{}} y = ${state.c}.`;
 }
