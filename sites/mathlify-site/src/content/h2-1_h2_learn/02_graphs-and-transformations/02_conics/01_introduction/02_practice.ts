@@ -1,224 +1,121 @@
-import { chooseRandom, coinFlip, getRandomInt } from '$lib/utils/random';
+import { chooseRandom, getRandomInt, coinFlip, getRandomNonZeroInt } from '$lib/utils/random';
+import { mathlifierDj as mathlifier } from 'mathlifier';
+import { Expression, Polynomial, sum, quotient, expTerm } from 'mathlify';
+import { Logarithm } from 'mathlify/fns';
+import { solve } from 'mathlify/working';
 
 // objectives
-// A: fnType
-// B: restricted domain
-// C: unknown constants
+// A: fnType: rational vs exp vs log
+// B: integers vs unknown constants
 
-import type { PracticeQuestion } from '$content/_types';
-import { mathlifierDj as mathlifier } from 'mathlifier';
-import type { Expression } from 'mathlify';
-
-// similar to 01/02, but without linear case
-
-import {
-	generateState as generateState1,
-	generateFn,
-	type State
-} from '../../01_standard-graphs/02_rational-functions/02_practice-1';
-
-export const practiceTitle = 'existence of inverse functions';
+type FnType = 'rational' | 'exp' | 'log';
+type State = {
+	type: FnType;
+	a: number | string | [-1, string];
+	b: number | string | [-1, string];
+	c: number | string | [-1, string];
+	d: number | string | [-1, string];
+};
 
 export function generateState(): State {
-	// more chance to get non-inverses
-	const typesWithNoInverse = ['quadratic', 'abs', 'special'] as const;
-	const state = coinFlip()
-		? generateState1()
-		: generateState1({ type: chooseRandom(typesWithNoInverse) });
-	if (state.fnType === 'linear') return generateState();
-	return state;
-}
-
-export function generateQn(state: State): PracticeQuestion {
-	const state1 = state;
-	const [fnString, exp] = generateFn(state1);
-	let qn: string;
-	if (state.unknownConstants) {
-		if (state1.fnType === 'frac') {
-			qn = mathlifier`The function ${'f'}
-is defined by 
-
-$${fnString}
-
-where ${'a'},
-${'b'}
-and ${'c'}
-are positive constants.
-
-Determine, with reason, if ${'f'}
-has an inverse.`;
-		} else if (state1.fnType === 'abs' || state1.fnType === 'improper') {
-			qn = mathlifier`The function ${'f'}
-is defined by
-
-$${fnString}
-
-where ${'a'},
-${'b'}
-and ${'c'}
-are positive constants and ${'\\frac{c}{b} \\neq a'}.
-
-Determine, with reason, if ${'f'}
-has an inverse.
-
-Remark: what happens to ${'f'}
-if ${'\\frac{c}{b} = a'}?`;
+	const type = chooseRandom(['rational', 'exp', 'log'] as const);
+	// (1-0.8)^3 = 0.512 chance of no unknowns
+	const abUnknown = coinFlip(0.2);
+	let a: number | string | [-1, string];
+	let b: number | string | [-1, string];
+	if (abUnknown) {
+		b = chooseRandom([0, 'b', [-1, 'b']] as const);
+		if (b === 0) {
+			a = 'a';
 		} else {
-			qn = mathlifier`The function ${'f'}
-is defined by
-
-$${fnString}
-
-where ${'a'}
-and ${'b'}
-are positive constants.
-
-Determine, with reason, if ${'f'}
-has an inverse.`;
+			a =
+				typeof b === 'string'
+					? chooseRandom([1, -1, 2, -2, 'a', [-1, 'a']] as const)
+					: chooseRandom(['a', 1, 2]);
 		}
 	} else {
-		qn = mathlifier`The function ${'f'}
-is defined by
-
-$${fnString}.
-
-Determine, with reason, if ${'f'}
-has an inverse.`;
+		a = getRandomNonZeroInt(1, 5);
+		b = getCoprimeB(a);
+		if (a > 0) {
+			b = b * getRandomNonZeroInt(1, 1);
+		}
 	}
-	const modB = state1.fnType === 'abs' ? '|b|' : 'b';
-	const { allHorizontalLines, line, atMostOnce, not, has } = generateAns(state1, exp);
-	const ans =
-		(state1.fnType === 'abs' || state1.fnType === 'improper') && state1.unknownConstants
-			? mathlifier`@${allHorizontalLines} ${line}
-cuts the graph of ${'{y=f(x)}'}
-@${atMostOnce}. Hence ${'f'}
-is @${not} one-to-one and 
-@${has} an inverse.
+	const c = coinFlip(0.2) ? 'c' : getRandomInt(-4, 4);
+	const d = coinFlip(0.2) ? 'd' : getRandomNonZeroInt(1, 4);
+	return { type, a, b, c, d };
+}
 
-If ${'{\\frac{c}{b} = a}'}, 
-then ${'f'}
-will be a constant function
-${`f(x)=${modB}`},
-which does not have an inverse as it is not one-to-one.`
-			: mathlifier`@${allHorizontalLines} ${line}
-cuts the graph of ${'{y=f(x)}'}
-@${atMostOnce}. Hence ${'f'}
-is @${not} one-to-one and 
-@${has} an inverse.`;
+function getCoprimeB(a: number): number {
+	if (Math.abs(a) === 1) {
+		return getRandomInt(0, 4);
+	} else if (Math.abs(a) === 2) {
+		return chooseRandom([1, 3, 5, 7]);
+	} else if (Math.abs(a) === 3) {
+		return chooseRandom([1, 2, 4, 5]);
+	} else if (Math.abs(a) === 4) {
+		return chooseRandom([1, 3, 5, 7]);
+	}
+	return chooseRandom([1, 2, 3, 4]);
+}
+
+function generateExp(state: State): Expression {
+	const { type, a, b, c, d } = state;
+	const poly = generateAxPlusB(a, b);
+	return type === 'rational'
+		? sum(c, quotient(d, poly))
+		: type === 'exp'
+			? sum(c, [d, expTerm(poly)])
+			: sum(c, [d, new Logarithm(poly)]);
+}
+export function generateAxPlusB(
+	a: number | string | [-1, string],
+	b: number | string | [-1, string]
+): Polynomial {
+	const aExp = Array.isArray(a) ? new Expression([-1, a[1]]) : new Expression(a);
+	const bExp = Array.isArray(b) ? new Expression([-1, b[1]]) : new Expression(b);
+	return aExp.is.negative()
+		? new Polynomial([bExp, aExp], { ascending: true })
+		: new Polynomial([aExp, bExp]);
+}
+
+export function generateQn(state: State): {
+	qn: string;
+	ans: string;
+} {
+	const unknowns: string[] = [];
+	const { a, b, c, d } = state;
+	if (typeof a !== 'number') unknowns.push('a');
+	if (typeof b !== 'number') unknowns.push('b');
+	if (typeof c !== 'number') unknowns.push('c');
+	if (typeof d !== 'number') unknowns.push('d');
+	const unknownText =
+		unknowns.length > 0
+			? mathlifier`where ${unknowns.join(', ')}
+@${unknowns.length > 1 ? 'are' : 'is a'} positive real number@${unknowns.length > 1 ? 's' : ''}.`
+			: '';
+	const exp = generateExp(state);
+	const eqn = `y = ${exp}`;
+	const qn =
+		mathlifier`The curve ${'C'}
+has equation
+
+$${eqn}${unknowns.length === 0 ? '.' : ','}` +
+		`\n\n${unknownText}` +
+		'\n\n' +
+		mathlifier`Write down the asymptote(s) of ${'C'}.`;
+	const ans = generateAns(state);
 	return { qn, ans };
 }
 
-const hasInverse = {
-	allHorizontalLines: 'All horizontal lines',
-	line: '{y=k, k \\in \\mathbb{R},}',
-	atMostOnce: 'at most once',
-	not: '',
-	has: 'has'
-};
-const noInverse = {
-	allHorizontalLines: 'The horizontal line',
-	atMostOnce: 'more than once',
-	not: 'not',
-	has: 'does not have'
-};
-
-function generateAns(
-	state: State,
-	exp: Expression
-): {
-	allHorizontalLines: string;
-	line: string;
-	atMostOnce: string;
-	not: string;
-	has: string;
-} {
-	const { fnType, restriction, a, b, c, unknownConstants } = state;
-	if (fnType === 'quadratic') {
-		// (x+a)^2 + b
-		let bPlus1 = b + 1;
-		if (restriction) {
-			const { type, x } = restriction;
-			if ((x < -a && type === 'left') || (x > -a && type === 'right') || x === -a) {
-				return hasInverse;
-			}
-			const y2 = exp.subIn({ x });
-			bPlus1 = getRandomInt(bPlus1, y2.valueOf() - 0.01);
-		}
-		const line = unknownConstants ? `{y=b+1}` : `{y=${bPlus1}}`;
-		return {
-			line,
-			...noInverse
-		};
-	} else if (
-		fnType === 'log' ||
-		fnType === 'exp' ||
-		fnType === 'sqrt' ||
-		fnType === 'frac' ||
-		fnType === 'improper'
-	) {
-		return hasInverse;
-	} else if (fnType === 'abs') {
-		const y = Math.abs(b) === 1 ? '0.5' : '1';
-		const noInverse1 = { line: `{y=${y}}`, ...noInverse };
-		if (restriction) {
-			const { x, type } = restriction;
-			// https://www.desmos.com/calculator/yb2bwgxywr
-			if (-c / b < -a) {
-				if (type === 'left') {
-					if (x < -c / b) {
-						return hasInverse;
-					} else {
-						const y2 = exp.subIn({ x });
-						const half = y2.divide(2);
-						const y3 = half.valueOf() < 1 ? half : 1;
-						return y2.valueOf() >= Math.abs(b) ? noInverse1 : { line: `{y=${y3}}`, ...noInverse };
-					}
-				} else {
-					return hasInverse;
-				}
-			} else {
-				if (type === 'left') {
-					return hasInverse;
-				} else {
-					if (x > -c / b) {
-						return hasInverse;
-					} else {
-						const y2 = exp.subIn({ x });
-						const half = y2.divide(2);
-						const y3 = half.valueOf() < 1 ? half : 1;
-						return y2.valueOf() >= Math.abs(b) ? noInverse1 : { line: `{y=${y3}}`, ...noInverse };
-					}
-				}
-			}
-		}
-		return unknownConstants ? { line: `{y=b+1}`, ...noInverse } : noInverse1;
-	} else if (fnType === 'special') {
-		return state.restriction
-			? hasInverse
-			: {
-					line: `y=${state.b > 0 ? 1 : -1}`,
-					...noInverse
-				};
-	} else {
-		throw new Error(`Did not expect ${fnType} fnType.`);
+function generateAns(state: State): string {
+	if (state.type === 'exp') {
+		return mathlifier`y = ${state.c}.`;
 	}
-}
-
-export function specialExistence(state: State): { ans: string; soln: string } {
-	const { allHorizontalLines, line, atMostOnce, not, has } = state.restriction
-		? hasInverse
-		: {
-				line: `{y=${state.b > 0 ? 1 : -1}}`,
-				...noInverse
-			};
-	const ans = mathlifier`@${allHorizontalLines} ${line}
-cuts the graph of ${'{y=f(x)}'}
-@${atMostOnce}. Hence ${'f'}
-is @${not} one-to-one and @${has} an inverse.`;
-	const soln = mathlifier`@${allHorizontalLines} ${line}
-cuts the graph of ${'{y=f(x)}'}
-@${atMostOnce}. Hence ${'f'}
-is @${not} one-to-one and 
-@${has} an inverse`;
-	return { ans, soln };
+	const poly = generateAxPlusB(state.a, state.b);
+	const { root: x1 } = solve.linear(poly);
+	const vertical = `x = ${x1}`;
+	return state.type === 'log'
+		? mathlifier`${vertical}.`
+		: mathlifier`${vertical}
+and ${{}} y = ${state.c}.`;
 }

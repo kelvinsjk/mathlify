@@ -1,201 +1,121 @@
 import { chooseRandom, getRandomInt, coinFlip, getRandomNonZeroInt } from '$lib/utils/random';
+import { mathlifierDj as mathlifier } from 'mathlifier';
+import { Expression, Polynomial, sum, quotient, expTerm } from 'mathlify';
+import { Logarithm } from 'mathlify/fns';
+import { solve } from 'mathlify/working';
 
 // objectives
-// A: fnType
-// B: restricted domain
-// C: unknown constants
+// A: fnType: rational vs exp vs log
+// B: integers vs unknown constants
 
-import type { PracticeQuestion } from '$content/_types';
-import { mathlifierDj as mathlifier } from 'mathlifier';
+type FnType = 'rational' | 'exp' | 'log';
+type State = {
+	type: FnType;
+	a: number | string | [-1, string];
+	b: number | string | [-1, string];
+	c: number | string | [-1, string];
+	d: number | string | [-1, string];
+};
 
-// ax+b (2013)
-// (x+a)^2 + b, (2007,2008)
-// ln(x+a) + b (2011). No unknown constants if restricted
-// exp(ax) + b (2019)
-// sqrt(x+a) + b (2016). No unknown constants if restricted
-// frac: c/(x+a) + b (2007,2009). No unknown constants if restricted
-// improper: (bx+c) / (x+a) (2009). No unknown constants if restricted
-// abs: | improper | (2023). No unknown constants if restricted
-// special: ba^2 / (x^2 - a^2). (2010,2015) No unknown constants.
-
-import {
-	generateFn,
-	generateRange,
-	types,
-	type Type
-} from '../../01_standard-graphs/02_rational-functions/02_practice-1';
-import { Interval, intervalBuilder } from '../../../01_functions/_intervals';
-import { Expression } from 'mathlify';
-
-export interface State {
-	fnType: Type;
-	a: number;
-	b: number;
-	c: number;
-	restriction:
-		| {
-				type: 'left' | 'right';
-				inclusive: boolean;
-				x: number;
-		  }
-		| false;
-	unknownConstants: boolean;
-}
-
-export const practiceTitle = 'domain and range of inverse functions';
-
-export function generateState(options?: { type?: Type }): State {
-	// we try to get a final range between -5 and 5;
-	const fnType = options?.type ?? chooseRandom(types);
-	let a = getRandomInt(-4, 4);
-	let b = getRandomInt(-4, 4);
-	let c = getRandomInt(-4, 4);
-	let unknownConstants = Math.random() < 0.3;
-	let isRestricted = Math.random() < 0.3;
-	if (fnType === 'linear' || fnType === 'special') a = getRandomNonZeroInt(1, 4);
-	if (fnType === 'special') {
-		unknownConstants = false;
-		a = Math.abs(a);
-	}
-	if (fnType === 'linear' && unknownConstants) a = 1;
-	if (fnType === 'exp') a = getRandomNonZeroInt(1, 2);
-	if (fnType === 'frac') c = getRandomNonZeroInt(1, 4);
-	if (fnType === 'improper' || fnType === 'abs' || fnType === 'special')
-		b = getRandomNonZeroInt(1, 4);
-	if ((fnType === 'improper' || fnType === 'abs') && c / b === a) return generateState(options);
-	if (fnType === 'quadratic' || fnType === 'abs' || fnType === 'special') isRestricted = true;
-	let restriction:
-		| {
-				type: 'left' | 'right';
-				inclusive: boolean;
-				x: number;
-		  }
-		| false = false;
-	if (isRestricted) {
-		let type: 'left' | 'right' = coinFlip() ? 'left' : 'right';
-		let inclusive = coinFlip();
-		let x = 0; // for exponential case
-		if (fnType === 'linear') {
-			x = unknownConstants ? 0 : getRandomInt((-4 - b) / a, (4 - b) / a);
-		} else if (fnType === 'quadratic') {
-			x = unknownConstants
-				? -a
-				: type === 'left'
-					? getRandomInt(-a - 2, -a)
-					: getRandomInt(-a, -a + 2);
-		} else if (fnType === 'log') {
-			unknownConstants = false;
-			x = -a + 1;
-			type = 'right';
-		} else if (fnType === 'sqrt') {
-			unknownConstants = false;
-			x = chooseRandom([-a, -a + 4, -a + 9, -a + 16].filter((x) => x < 9));
-			type = 'right';
-			if (x === -a && inclusive) {
-				const restriction = { x, inclusive: false, type };
-				return { fnType, a, b, c, unknownConstants, restriction };
-			}
-		} else if (fnType === 'frac' || fnType === 'improper' || fnType === 'abs') {
-			unknownConstants = false;
-			x = type === 'left' ? getRandomInt(-a - 4, -a - 1) : getRandomInt(-a + 1, -a + 4);
-			if (fnType === 'improper' || fnType === 'abs') {
-				c = getRandomInt(-5 * (x + a) - b * x, 5 * (x + a) - b * x);
-				const intercept = c / b;
-				if (intercept === a || Math.abs(intercept) > 8) return generateState(options);
-			}
-			if (fnType === 'abs') {
-				// https://www.desmos.com/calculator/yb2bwgxywr
-				if (-c / b < -a && type === 'left') {
-					x = getRandomInt(-c / b - 4, -c / b);
-				} else if (-c / b > -a && type === 'right') {
-					x = getRandomInt(-c / b, -c / b + 4);
-				}
-				if (Math.abs(x) > 8) return generateState(options);
-			}
-		} else if (fnType === 'special') {
-			x = type === 'left' ? -a : a;
-			inclusive = false;
-		}
-		restriction = { type, inclusive, x };
-	}
-	return { fnType, a, b, c, unknownConstants, restriction };
-}
-
-export function generateQn(state: State): PracticeQuestion {
-	const state1 = state;
-	const [fnString, exp] = generateFn(state1);
-	let qn: string;
-	if (state.unknownConstants) {
-		if (state1.fnType === 'frac') {
-			qn = mathlifier`The function ${'f'}
-is defined by
-
-$${fnString}
-
-where ${'a'},
-${'b'}
-and ${'c'}
-are positive constants.
-
-Find the range and domain of the inverse function ${'f^{-1}.'}`;
-		} else if (state1.fnType === 'abs' || state1.fnType === 'improper') {
-			qn = mathlifier`The function ${'f'}
-is defined by
-
-$${fnString}
-
-where ${'a'},
-${'b'}
-and ${'c'}
-are positive constants and ${'\\frac{c}{b} \\neq a'}.
-
-Find the range and domain of the inverse function ${'f^{-1}.'}`;
+export function generateState(): State {
+	const type = chooseRandom(['rational', 'exp', 'log'] as const);
+	// (1-0.8)^3 = 0.512 chance of no unknowns
+	const abUnknown = coinFlip(0.2);
+	let a: number | string | [-1, string];
+	let b: number | string | [-1, string];
+	if (abUnknown) {
+		b = chooseRandom([0, 'b', [-1, 'b']] as const);
+		if (b === 0) {
+			a = 'a';
 		} else {
-			qn = mathlifier`The function ${'f'}
-is defined by
-
-$${fnString}
-
-where ${'a'}
-and ${'b'}
-are positive constants.
-
-Find the range and domain of the inverse function ${'f^{-1}.'}`;
+			a =
+				typeof b === 'string'
+					? chooseRandom([1, -1, 2, -2, 'a', [-1, 'a']] as const)
+					: chooseRandom(['a', 1, 2]);
 		}
 	} else {
-		qn = mathlifier`The function ${'f'}
-is defined by
-
-$${fnString}.
-
-Find the range and domain of the inverse function ${'f^{-1}.'}`;
+		a = getRandomNonZeroInt(1, 5);
+		b = getCoprimeB(a);
+		if (a > 0) {
+			b = b * getRandomNonZeroInt(1, 1);
+		}
 	}
-	const ans = mathlifier`
-${'D_{f^{-1}}'} = R_f = ${generateRange(state1, exp).join(' \\cup ')}.
-\\
-${'R_{f^{-1}}'} = D_f = ${generateDomain(state1).join(' \\cup ')}.`;
+	const c = coinFlip(0.2) ? 'c' : getRandomInt(-4, 4);
+	const d = coinFlip(0.2) ? 'd' : getRandomNonZeroInt(1, 4);
+	return { type, a, b, c, d };
+}
+
+function getCoprimeB(a: number): number {
+	if (Math.abs(a) === 1) {
+		return getRandomInt(0, 4);
+	} else if (Math.abs(a) === 2) {
+		return chooseRandom([1, 3, 5, 7]);
+	} else if (Math.abs(a) === 3) {
+		return chooseRandom([1, 2, 4, 5]);
+	} else if (Math.abs(a) === 4) {
+		return chooseRandom([1, 3, 5, 7]);
+	}
+	return chooseRandom([1, 2, 3, 4]);
+}
+
+function generateExp(state: State): Expression {
+	const { type, a, b, c, d } = state;
+	const poly = generateAxPlusB(a, b);
+	return type === 'rational'
+		? sum(c, quotient(d, poly))
+		: type === 'exp'
+			? sum(c, [d, expTerm(poly)])
+			: sum(c, [d, new Logarithm(poly)]);
+}
+export function generateAxPlusB(
+	a: number | string | [-1, string],
+	b: number | string | [-1, string]
+): Polynomial {
+	const aExp = Array.isArray(a) ? new Expression([-1, a[1]]) : new Expression(a);
+	const bExp = Array.isArray(b) ? new Expression([-1, b[1]]) : new Expression(b);
+	return aExp.is.negative()
+		? new Polynomial([bExp, aExp], { ascending: true })
+		: new Polynomial([aExp, bExp]);
+}
+
+export function generateQn(state: State): {
+	qn: string;
+	ans: string;
+} {
+	const unknowns: string[] = [];
+	const { a, b, c, d } = state;
+	if (typeof a !== 'number') unknowns.push('a');
+	if (typeof b !== 'number') unknowns.push('b');
+	if (typeof c !== 'number') unknowns.push('c');
+	if (typeof d !== 'number') unknowns.push('d');
+	const unknownText =
+		unknowns.length > 0
+			? mathlifier`where ${unknowns.join(', ')}
+@${unknowns.length > 1 ? 'are' : 'is a'} positive real number@${unknowns.length > 1 ? 's' : ''}.`
+			: '';
+	const exp = generateExp(state);
+	const eqn = `y = ${exp}`;
+	const qn =
+		mathlifier`The curve ${'C'}
+has equation
+
+$${eqn}${unknowns.length === 0 ? '.' : ','}` +
+		`\n\n${unknownText}` +
+		'\n\n' +
+		mathlifier`Write down the asymptote(s) of ${'C'}.`;
+	const ans = generateAns(state);
 	return { qn, ans };
 }
 
-export function generateDomain(state: State): Interval[] {
-	const { fnType, restriction, a, unknownConstants } = state;
-	const negativeA = new Expression(unknownConstants ? [-1, 'a'] : -a);
-	if (fnType === 'quadratic' && restriction) {
-		return [intervalBuilder(restriction.type, restriction.x, restriction.inclusive)];
+function generateAns(state: State): string {
+	if (state.type === 'exp') {
+		return mathlifier`y = ${state.c}.`;
 	}
-	if (restriction) return [intervalBuilder(restriction.type, restriction.x, restriction.inclusive)];
-	if (fnType === 'log') {
-		return [intervalBuilder('right', negativeA, false)];
-	} else if (fnType === 'sqrt') {
-		return [intervalBuilder('right', negativeA, true)];
-	} else if (fnType === 'improper' || fnType === 'abs' || fnType === 'frac') {
-		return [intervalBuilder('left', negativeA, false), intervalBuilder('right', negativeA, false)];
-	} else if (fnType === 'special') {
-		return [
-			intervalBuilder('left', -Math.abs(a), false),
-			new Interval({ left: -Math.abs(a), right: Math.abs(a) }),
-			intervalBuilder('right', Math.abs(a), false)
-		];
-	}
-	return [Interval.ALL_REAL];
+	const poly = generateAxPlusB(state.a, state.b);
+	const { root: x1 } = solve.linear(poly);
+	const vertical = `x = ${x1}`;
+	return state.type === 'log'
+		? mathlifier`${vertical}.`
+		: mathlifier`${vertical}
+and ${{}} y = ${state.c}.`;
 }
