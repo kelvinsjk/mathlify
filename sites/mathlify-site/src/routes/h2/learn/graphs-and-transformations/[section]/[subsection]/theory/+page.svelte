@@ -8,7 +8,7 @@
 	import { h2_learnSequential } from '$lib/components/nav';
 	import { page } from '$app/stores';
 	const i = h2_learnSequential.findIndex(
-		(x) => x.slug === '/h2_learn/functions/concepts/intervals/theory'
+		(x) => x.slug === '/h2_learn/graphs-and-transformations/standard-graphs/asymptotes/theory'
 	);
 	// TODO: j for functions end
 	const sequentialNav = h2_learnSequential.slice(i).map((x) => {

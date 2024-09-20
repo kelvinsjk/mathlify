@@ -10,8 +10,8 @@ import { directory } from '../../../../../../h2_learn/directory';
 
 const fnDirectory: Record<string, string> = {};
 for (const [key, value] of Object.entries(directory)) {
-	if (key.startsWith('h2_learn/functions')) {
-		fnDirectory[key.split('/functions/')[1]] = value;
+	if (key.startsWith('h2_learn/graphs-and-transformations')) {
+		fnDirectory[key.split('/graphs-and-transformations/')[1]] = value;
 	}
 }
 import { existsSync } from 'node:fs';

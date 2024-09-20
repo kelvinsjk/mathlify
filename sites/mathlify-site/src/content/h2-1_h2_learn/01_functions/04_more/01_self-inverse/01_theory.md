@@ -20,9 +20,9 @@ $`{f^2(x) = ff(x)}` and $`{ff^{-1}(x) = x.}`
 For self inverse functions, since $`{f=f^{-1},}` we have
 $`f^2(x)=ff(x)=ff^{-1}(x)=x.`
 
-The result that $`{f^2(x)=x}` is really powerful: it means that applying $`f`
+The result that $`{f^2(x)=x}` is rather powerful: it means that applying $`f`
 twice has the same result of not doing anything. This allows us to simplify
-cases where a function is composed many times.
+cases where we compose a function several times.
 
 For example, $`f^3(x)=ff^2(x)=f(x)` and $`f^4(x)=f^2f^2(x)=f^2(x)=x.` Are you
 able to figure out what $`f^{314}(x)` and $`f^{999}(x)` are?

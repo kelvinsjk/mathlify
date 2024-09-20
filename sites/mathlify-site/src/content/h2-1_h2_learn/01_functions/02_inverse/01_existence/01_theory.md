@@ -27,16 +27,15 @@ aim (we will learn how to find this in a later section).
 
 ## Inverse functions may not exist
 
-Consider the function $`g(x)=x^2.` Using it regularly (i.e. start with $`x` and
-try to find $`g(x)`) works like we expect it to: every input leads to exactly
-one output. However, the reverse is not true: an output of $`y=4` could have
+Consider the function $`g(x)=x^2.` It is a function: every input $x$ leads to exactly
+one output $g(x)$. However, the reverse is not true: an output of $`y=4` could have
 come from either $`x=-2` or $`x=2.` In such a case we say that the _inverse
 function does not exist_.
 
 ## One-to-one functions
 
 The earlier function $`f` sends each input to a _different_ output while $`g`
-occasionally sends different inputs to the same output. This is what allows $`f`
+will sometimes sends different inputs to the same output. This is what allows $`f`
 to have an inverse while $`g` does not.
 
 We call this behavior of sending each input to a different output a **one-to-one

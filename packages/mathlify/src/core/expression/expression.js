@@ -1500,7 +1500,7 @@ export function quotient(numerator, denominator, options) {
 }
 
 /**
- * Creates an Expression instance representing a quotient
+ * Creates an exponential Expression instance representing e^{f(x)}
  * @param {Shorthand} power
  * @returns {Expression}
  */

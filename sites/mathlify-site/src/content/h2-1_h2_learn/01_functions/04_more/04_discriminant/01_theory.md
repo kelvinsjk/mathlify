@@ -2,7 +2,7 @@
 title: Using the quadratic discriminant
 ---
 
-So far we have mostly found the range of functions by graphical methods. For example, the following is a sketch of the
+We have found the range of functions by graphical methods so far. For example, the following is a sketch of the
 graph of $y=f(x)=\frac{2x}{x^2+1}$.
 
 The curve has a minimum point at $(-1,-1)$ and a maximum point $(1, 1)$. Hence the range of the function is
@@ -10,10 +10,10 @@ $`[-1, 1]`.
 
 ## An algebraic method to find the range
 
-Instead of the graphical method above, the range of some functions can be found using the quadratic discriminant.
+Instead of the graphical method above, we can find the range of some functions using the quadratic discriminant.
 
 The idea behind this method is that the range of a function is the set of values of $y$ for which the equation
-$y=f(x)$ has real roots in $x$. If $y=f(x)$ can be manipulated into a quadratic equation in $x$, then we will
+$y=f(x)$ has real roots in $x$. If we can manipulate $y=f(x)$ into a quadratic equation in $x$, then we will
 be able to use the quadratic discriminant to find the range of the function.
 
 For our earlier example, the range of the function corresponds to the horizontal lines

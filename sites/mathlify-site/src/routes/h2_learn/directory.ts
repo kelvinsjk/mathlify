@@ -73,16 +73,12 @@ export const directory: Record<string, string> = {
     "h2-1_h2_learn/02_graphs-and-transformations/01_standard-graphs/01_asymptotes/02_practice",
   "h2_learn/graphs-and-transformations/standard-graphs/rational-functions/theory":
     "h2-1_h2_learn/02_graphs-and-transformations/01_standard-graphs/02_rational-functions/01_theory",
-  "h2_learn/graphs-and-transformations/standard-graphs/rational-functions/practice-1":
-    "h2-1_h2_learn/02_graphs-and-transformations/01_standard-graphs/02_rational-functions/02_practice-1",
-  "h2_learn/graphs-and-transformations/standard-graphs/rational-functions/practice-2":
-    "h2-1_h2_learn/02_graphs-and-transformations/01_standard-graphs/02_rational-functions/02_practice-2",
+  "h2_learn/graphs-and-transformations/standard-graphs/rational-functions/practice":
+    "h2-1_h2_learn/02_graphs-and-transformations/01_standard-graphs/02_rational-functions/02_practice",
   "h2_learn/graphs-and-transformations/standard-graphs/oblique-asymptotes/theory":
     "h2-1_h2_learn/02_graphs-and-transformations/01_standard-graphs/03_oblique-asymptotes/01_theory",
-  "h2_learn/graphs-and-transformations/standard-graphs/oblique-asymptotes/practice-1":
-    "h2-1_h2_learn/02_graphs-and-transformations/01_standard-graphs/03_oblique-asymptotes/02_practice-1",
-  "h2_learn/graphs-and-transformations/standard-graphs/oblique-asymptotes/practice-2":
-    "h2-1_h2_learn/02_graphs-and-transformations/01_standard-graphs/03_oblique-asymptotes/02_practice-2",
+  "h2_learn/graphs-and-transformations/standard-graphs/oblique-asymptotes/practice":
+    "h2-1_h2_learn/02_graphs-and-transformations/01_standard-graphs/03_oblique-asymptotes/02_practice",
   "h2_learn/graphs-and-transformations/standard-graphs/more/theory":
     "h2-1_h2_learn/02_graphs-and-transformations/01_standard-graphs/04_more/01_theory",
   "h2_learn/graphs-and-transformations/standard-graphs/more/practice-1":

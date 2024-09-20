@@ -38,7 +38,7 @@ $`{g^{-1}(x) = \ln \left( \frac{x+5}{2} \right) - 1.}`
 
 ### Inverse of a quadratic function
 
-There are a couple of tricks to find the inverse of a quadratic function. First,
+Some tricks can help us find the inverse of a quadratic function. First,
 **completing the square** may be useful to help us make $`x` the subject.
 
 We will then have a $`\pm` when taking square roots, and will need to **use the

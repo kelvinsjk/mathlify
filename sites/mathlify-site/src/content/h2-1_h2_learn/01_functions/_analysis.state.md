@@ -1,9 +1,9 @@
-# Exports from Functions that are used in TYS Solutions
+# Exports from Functions used in TYS Solutions
 
 ## Not yet used
 
 - 01/01: Use of interval notation is foundation used throughout the chapter
-- 03/03: 2010p2q4 had a unusual R_fg (with a "punched hole") which is not
+- 03/03: 2010p2q4 had a unusual $R_fg$ (with a "punched hole") which is not
   implemented in the practices
 - 04/01
 - 04/02
@@ -38,7 +38,7 @@
 
 - f^2(x). Compare coefficients (03/04)
 
-### 2016 P1 Q10 (up to 03/04. Unique non-inverse behavior)
+### 2016 P1 Q10 (up to 03/04, Unique non-inverse behavior)
 
 - (ai) f^{-1} (02/03)
 - (aii) ff(x) (03/04)
@@ -76,7 +76,7 @@
 - (b) restriction (02/04)
 - (c) fg(x) (03/02)
 - (d) solving inequalities
-- (e) R_fg (03/03)
+- (e) $R_fg$ (03/03)
 
 ### 2009 P2 Q3 (up to 04/01)
 
@@ -98,18 +98,18 @@
 ## Overview of questions
 
 - 2023: 🎉.
-- 2022: 🎉. Transformations can potentially be abstracted.
-- 2021: 🎉. Can potentially be abstracted.
+- 2022: 🎉. Should abstract further
+- 2021: 🎉. Should abstract further
 - 2019: 🎉.
-- 2018: 🎉. Can potentially be abstracted.
+- 2018: 🎉. Should abstract further
 - 2017: 🎉.
-- 2016: 🎉. Can potentially be abstracted.
+- 2016: 🎉. Should abstract further
 - 2015: 🎉.
 - 2014: 🎉.
 - 2013: 🎉.
 - 2012: 🎉.
 - 2011: 🎉.
-- 2010: 🎉. Can potentially be abstracted. To incorporate inequalities.
+- 2010: 🎉. Should abstract further
 - 2009: 🎉.
 - 2008: 🎉.
 - 2007: 🎉.

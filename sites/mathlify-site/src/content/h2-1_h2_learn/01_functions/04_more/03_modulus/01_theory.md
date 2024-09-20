@@ -4,9 +4,9 @@ title: Modulus functions
 
 ## Understanding the modulus function
 
-Numbers can be positive or negative (or zero). There are many occasions where we will
+Numbers can be positive or negative (or zero). We sometimes will
 like to convert our numbers into positive numbers (non-negative to be exact). The modulus
-function, denoted by $\lvert \cdot \rvert$, can be used to do that.
+function, denoted by $\lvert \cdot \rvert$, does that.
 
 For example $|3|=3$, $|0|=0$ and $|-5|=5$.
 
@@ -26,7 +26,7 @@ If $x < 2$, then $x-2$ is negative so
 the function can be rewritten as $f(x) = -(x-2) = 2-x$.
 
 On the other hand, if $x \geq 2$, then $x-2$ is non-negative so
-the function can be be rewritten as $f(x) = x-2$.
+the function can be rewritten as $f(x) = x-2$.
 
 ## Finding inverses of modulus functions
 

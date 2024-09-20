@@ -14,8 +14,8 @@ Adapted from OpenStax College Algebra 2e[^cite]
 Let us consider the function $ {f(x) = \frac{1}{x-2}} $.
 
 While the function is undefined for
-${x=2,}$ we can use values of $x$ extremely close to $2$ ($2.1$, $2.01$, $2.001$, etc).
-As we do that, the absolute value of $f(x)$ increases without bound (ie to _infinity_).
+${x=2,}$ we can use values of $x$ close to $2$ ($2.1$, $2.01$, $2.001$, etc).
+As we do that, the absolute value of $f(x)$ increases without bound (that is, to _infinity_).
 
 Meanwhile, when $x$ gets larger and larger, ${f(x)=\frac{1}{x-2}}$ gets smaller and smaller and _approaches_ zero (even though it never
 actually achieves that value).
@@ -40,7 +40,7 @@ $$
 
 ### Limit notation
 
-Alternatively, we can also use the **_limit notation_**:
+We can also use the **_limit notation_**:
 
 $$
 \begin{align*}

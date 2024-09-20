@@ -3,8 +3,8 @@ title: Self composition
 ---
 
 Just like we can compose two functions $`f` and $`g` to get $`fg,` we can also
-compose a function with itself. This function is denoted by $`f^2 = ff` and is
-not to be confused with squaring the original function.
+compose a function with itself. We denote this function $`f^2 = ff` and this is
+different from squaring the original function.
 
 ## Example
 
@@ -23,5 +23,5 @@ $`f^2(x)` stands for $`ff(x)` and is different from the
 square of $`f` which we denote $`\big(f(x)\big)^2.` In a similar fashion, we
 note that the previous section on inverse functions use the notation
 $`f^{-1}(x)`
-to denote the "reverse" and is not to be confused with the reciprocal
+to denote the "reverse" and is different from the reciprocal
 $`{\big(f(x)\big)^{-1} = \frac{1}{f(x)}.}`

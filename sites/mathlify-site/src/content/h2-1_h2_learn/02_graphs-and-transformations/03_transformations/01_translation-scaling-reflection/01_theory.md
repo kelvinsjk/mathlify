@@ -13,8 +13,8 @@ $$ \begin{align*} &f: x \mapsto 2x, \quad && x \in \mathbb{R} \\ &g:x\mapsto x+1
 Starting from $`x=2,` we could first apply the function $`f` to get $`{f(2)=4.}`
 We then apply the function $`g` to get $`{g(f(2))=g(4)=5.}`
 
-The overall function that gets us from the starting value of $`x=2` to the final
-value of $`x=5` is called the composite function $`gf.`
+The composite function $gf$ represents the overall function that gets us from the starting value of ${x=2}$ to the final
+value of ${x=5.}$
 
 Note that while we read left to right in English, the composite function $`gf`
 applies $`f` first followed by $`g.`

@@ -4,7 +4,7 @@ title: Describing sets of real numbers
 
 We will often be working with sets of real numbers in this chapter. The
 **set-builder notation** allows us to use inequalities to describe sets. For
-example, $`\{ x \in \mathbb{R}: 0 < x \leq 1 \}` is used to describe the set of
+example, $`\{ x \in \mathbb{R}: 0 < x \leq 1 \}` describes the set of
 real numbers between 0 (exclusive) and 1 (inclusive).
 
 ## The interval notation
@@ -14,10 +14,10 @@ of real number.
 
 ![interval](/images/h2/fns/interval.svg)
 
-The previous example of $`\{ x \in \mathbb{R}: 0 < x \leq 1 \}` can be written
-in interval notation as $`(0,1].` Round parenthesis, ( or ), are used to
-indicate that the end value is not included while square brackets, [ or ], are
-used to indicate that the end value is included.
+We can rewrite the previous example of $`\{ x \in \mathbb{R}: 0 < x \leq 1 \}`
+in interval notation as $`(0,1].` Round parenthesis, ( or ), indicate
+that the end value is not included while square brackets, [ or ],
+indicate that we include the end value.
 
 ## Examples
 
