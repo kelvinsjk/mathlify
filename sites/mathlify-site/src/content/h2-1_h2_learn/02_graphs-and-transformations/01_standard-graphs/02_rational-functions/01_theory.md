@@ -31,11 +31,11 @@ to better understand the shape of the curve.
 
 ![rectangular hyperbola 3+1/(x+2)](/images/h2/graphs/openStax_graphs_rectangular_hyperbola.jpeg)
 
-Curves of this form are called rectangular hyperbolas, and appears frequently in our study.
+Curves of this form are rectangular hyperbolas, and appears frequently in our study.
 
 ## Improper rational functions
 
-A rational function is considered _improper_ if the degree of the numerator is greater or equal to the degree of the denominator.
+A rational function is _improper_ if the degree of the numerator is greater or equal to the degree of the denominator.
 
 For example, ${y=\displaystyle \frac{3x+7}{x+2}}$ is improper because the degree of both the numerator and denominator is $1$.
 

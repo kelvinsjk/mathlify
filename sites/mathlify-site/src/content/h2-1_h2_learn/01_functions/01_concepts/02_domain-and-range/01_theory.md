@@ -30,12 +30,12 @@ The _rule_, or formula for the function $f$ is given by
 $f(x)=x^2+1$, allowing
 us to do computations such as $f(3)=3^2+1=10$.
 
-The _domain_ of $f$ is described by $-1 < x < 3.$ Written in set notation, we
+The _domain_ of $f$ is given by $-1 < x < 3.$ Written in set notation, we
 have ${D_f = (1,3).}$
 
 ## Domain of a function
 
-Domains should be specified when defining a function, as seen in the above
+We should specify the domain when defining a function, as seen in the above
 example. The reason for this could be due to context. For example, if $`x`
 represents the number of hours in a day we study, then an appropriate domain
 would be $`[0, 24].`
@@ -63,7 +63,7 @@ is $`{D_h = (-3, \infty).}`
 ### Using graphs to find the range
 
 We recall that the range of a function refers to the set of all possible output
-values. Finding the range is most easily done graphically where we get all the
+values. A graph helps us find the range as we can visualize all the
 possible values of $`y.`
 
 As the following examples will illustrate, the important features of graphs that
@@ -91,8 +91,8 @@ range of $`[0,\infty).`
 ![range of a function using asymptote](/images/h2/fns/openStax_functions_range2.jpeg)
 
 For this last example above, the range consists of all values **except** $`0`
-which is a result of the horizontal asymptote $`y=0.` Hence the range can be
-written as a union of two exclusive intervals.
+which is a result of the horizontal asymptote $`y=0.` Hence we can write the range
+as a union of two exclusive intervals.
 
 [^cite]:
     Content in this page is adapted from OpenStax College Algebra 2e by Jay

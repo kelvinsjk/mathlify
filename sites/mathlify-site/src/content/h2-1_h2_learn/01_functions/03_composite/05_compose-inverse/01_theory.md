@@ -11,7 +11,7 @@ of this composition.
 
 $`f^{-1}` is the function that reverses $`f,` so $`f^{-1}f`
 will take a number, apply $`f` to it and then try to reverse the process. We
-then end up with the original number. A similar argument can be made for
+then end up with the original number. A similar argument works for
 $`ff^{-1},`
 leading us to the following results.
 
@@ -22,7 +22,7 @@ leading us to the following results.
 
 ## Differences between the two functions
 
-So is $`ff^{-1}(x)` and $`f^{-1}f(x)` the exact same function? Turns out that is
+Is $`ff^{-1}(x)` and $`f^{-1}f(x)` the exact same function? Turns out that is
 not true because of domain considerations. Recall that $`{D_{fg} = D_g}` so we
 have
 

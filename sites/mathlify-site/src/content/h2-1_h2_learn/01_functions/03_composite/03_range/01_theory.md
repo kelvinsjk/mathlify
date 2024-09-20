@@ -49,7 +49,7 @@ From the graph above, the range of $`g` is given by $`{R_g = [-1, 2).}`
 
 We then restrict the domain of $`f` to $`{[-1,3).}`
 \
-In the graph below, this is represented by the solid line, as opposed to the dashed lines representing the rest of $`f` following its original domain.
+In the graph below, we represent this by the solid line, as opposed to the dashed lines representing the rest of $`f` following its original domain.
 
 ![fx-graph](/images/h2/fns/0303-fx.svg)
 
@@ -57,7 +57,7 @@ Considering the range of this restricted function, $`{R_{fg} = [0, 4). \; \black
 
 _Remark 1_: Observe how $`R_{fg}` is different from $`{R_f = [0, \infty).}`
 
-_Remark 2_: Upon finding $`{R_g = (-1,2],}` It is tempting to skip the graph of $`y=g(x)` and immediately sub the end-points into $`f(x)` to get $`{f(-1)=1}` and $`{f(2)=4}.` Observe how this does not get us the final range $`{R_{fg} = [0, 4)}` due to the minimum point on the graph.
+_Remark 2_: Upon finding $`{R_g = (-1,2],}` It is tempting to skip the graph of $`y=g(x)` and only sub the end-points into $`f(x)` to get $`{f(-1)=1}` and $`{f(2)=4}.` Observe how this does not get us the final range $`{R_{fg} = [0, 4)}` due to the minimum point on the graph.
 
 :::
 

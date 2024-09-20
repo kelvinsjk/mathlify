@@ -41,7 +41,7 @@ Hence the curve has vertical asymptotes ${x=-5}$ and ${x=1.}$
 
 $$ \text{Example}: y = \frac{3}{2\mathrm{e}^{-x}+1} $$
 
-There are no vertical asymptotes for this curve as the denominator
+This curve has no vertical asymptotes as the denominator
 ${2\mathrm{e}^{-x}+1}$ is always positive.
 
 ### Horizontal asymptotes

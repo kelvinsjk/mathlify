@@ -12,7 +12,7 @@ Adapted from OpenStax Calculus Volume 1[^cite]
 ## Introduction
 
 Sometimes a function is defined by different formulas on different parts of its
-domain. A function with this property is known as a **piecewise** function.
+domain. A function with this property is a **piecewise** function.
 
 We will use the following example to better understand how to work with
 piecewise functions.

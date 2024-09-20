@@ -18,7 +18,9 @@
 	const next = $derived(sequentialNav[index + 1]);
 
 	// get module
-	const modules = import.meta.glob('/src/content/h2-1_h2_learn/01_functions/**/[^_]*.ts');
+	const modules = import.meta.glob(
+		'/src/content/h2-1_h2_learn/02_graphs-and-transformations/**/[^_]*.ts'
+	);
 	const { data } = $props();
 	const module = $derived(modules[data.filePath]());
 	async function getNewState(): Promise<Record<string, unknown>> {

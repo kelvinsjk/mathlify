@@ -32,7 +32,7 @@ has a vertical asymptote ${x=1}$ and an oblique asymptote ${y=3x+1.}$
 
 ## Long division
 
-Similar to the previous section, long division can be used to find asymptotes (including oblique ones)
+Similar to the previous section, we can use long division to find asymptotes (including oblique ones)
 of improper rational functions.
 
 For example, ${\displaystyle \frac{3x^2-2x+1}{x-2}}$ can be rewritten as ${\displaystyle 3x+1 + \frac{2}{x-1}}$

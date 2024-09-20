@@ -1,166 +1,118 @@
-import type { Interval } from '$lib/components/svg/NumberLine.svelte';
-import { chooseRandom, getRandomInt, coinFlip } from '$lib/utils/random';
-import { mathlifier } from 'mathlifier';
+import { chooseRandom, getRandomInt, coinFlip, getRandomNonZeroInt } from '$lib/utils/random';
+import { mathlifierDj as mathlifier } from 'mathlifier';
+import { Expression, Polynomial, sum, quotient, expTerm } from 'mathlify';
+import { Logarithm } from 'mathlify/fns';
+import { solve } from 'mathlify/working';
 
 // objectives
-// A: interval vs inequality
-// B: left, right, two, neq, union
-// C: inclusive vs exclusive
+// A: fnType: rational vs exp vs log
+// B: integers vs unknown constants
 
-type Type = 'left' | 'right' | 'two' | 'neq' | 'union';
-const types: Type[] = ['left', 'right', 'two', 'neq', 'union'];
-interface StateOne {
-	type: 'left' | 'right';
-	a: number;
-	inclusive: boolean;
-}
-interface StateTwo {
-	type: 'two';
-	a: number;
-	b: number;
-	inclusiveA: boolean;
-	inclusiveB: boolean;
-}
-interface StateNeq {
-	type: 'neq';
-	a: number;
-}
-interface StateUnion {
-	type: 'union';
-	intervals: [StateOne | StateTwo, StateOne | StateTwo];
-}
-type State = (StateOne | StateTwo | StateNeq | StateUnion) & { isInequality: boolean };
+type FnType = 'rational' | 'exp' | 'log';
+type State = {
+	type: FnType;
+	a: number | string | [-1, string];
+	b: number | string | [-1, string];
+	c: number | string | [-1, string];
+	d: number | string | [-1, string];
+};
 
-export function generateState(options: {
-	type: 'left' | 'right';
-	a?: number;
-}): StateOne & { isInequality: boolean };
-export function generateState(options: {
-	type: 'two';
-	a?: number;
-	b?: number;
-}): StateTwo & { isInequality: boolean };
-export function generateState(options: {
-	type: 'left' | 'two' | 'right';
-	a?: number;
-	b?: number;
-}): (StateOne | StateTwo) & { isInequality: boolean };
-export function generateState(): State;
-export function generateState(options?: { type?: Type; a?: number; b?: number }): State {
-	const type = options?.type ?? chooseRandom(types);
-	let a = options?.a ?? getRandomInt(-9, 9);
-	const inclusive = coinFlip();
-	const isInequality = coinFlip();
-	if (type === 'left' || type === 'right') {
-		return { type, a, inclusive, isInequality };
-	} else if (type === 'two') {
-		// leave a gap of at least 2
-		a = options?.a ?? getRandomInt(-9, 7);
-		const b = options?.b ?? getRandomInt(a + 2, 9);
-		return { type, a, b, inclusiveA: inclusive, inclusiveB: coinFlip(), isInequality };
-	} else if (type === 'neq') {
-		return { type, a, isInequality };
+export function generateState(): State {
+	const type = chooseRandom(['rational', 'exp', 'log'] as const);
+	// (1-0.8)^3 = 0.512 chance of no unknowns
+	const abUnknown = coinFlip(0.2);
+	let a: number | string | [-1, string];
+	let b: number | string | [-1, string];
+	if (abUnknown) {
+		b = chooseRandom([0, 'b', [-1, 'b']] as const);
+		if (b === 0) {
+			a = 'a';
+		} else {
+			a =
+				typeof b === 'string'
+					? chooseRandom([1, -1, 2, -2, 'a', [-1, 'a']] as const)
+					: chooseRandom(['a', 1, 2]);
+		}
 	} else {
-		let type: 'left' | 'right' | 'two' = coinFlip() ? 'left' : 'two';
-		let a = getRandomInt(-9, 3);
-		let b = getRandomInt(a + 2, 5);
-		const firstState = generateState({ type, a, b });
-		a = getRandomInt(type === 'left' ? a + 2 : b + 2, 7);
-		type = coinFlip() ? 'right' : 'two';
-		b = getRandomInt(a + 2, 9);
-		const secondState = generateState({ type, a, b });
-		return { type: 'union', intervals: [firstState, secondState], isInequality };
+		a = getRandomNonZeroInt(1, 5);
+		b = getCoprimeB(a);
+		if (a > 0) {
+			b = b * getRandomNonZeroInt(1, 1);
+		}
 	}
+	const c = coinFlip(0.2) ? 'c' : getRandomInt(-4, 4);
+	const d = coinFlip(0.2) ? 'd' : getRandomNonZeroInt(1, 4);
+	return { type, a, b, c, d };
 }
 
-export function generateQn(state: State) {
-	const inequalityText = state.isInequality ? `inequality` : `number line`;
-	const qn = mathlifier`Write down the set described by the following @${inequalityText} in interval notation.`;
-	const ans = mathlifier`$${generateAns(state)}`;
-	const inequalityOrInterval: string | Interval[] = state.isInequality
-		? mathlifier`$${generateInequality(state)}`
-		: generateIntervals(state);
-	return { qn, ans, inequalityOrInterval };
+export function getCoprimeB(a: number): number {
+	if (Math.abs(a) === 1) {
+		return getRandomInt(0, 4);
+	} else if (Math.abs(a) === 2) {
+		return chooseRandom([1, 3, 5, 7]);
+	} else if (Math.abs(a) === 3) {
+		return chooseRandom([1, 2, 4, 5]);
+	} else if (Math.abs(a) === 4) {
+		return chooseRandom([1, 3, 5, 7]);
+	}
+	return chooseRandom([1, 2, 3, 4]);
+}
+
+export function generateExp(state: State): Expression {
+	const { type, a, b, c, d } = state;
+	const poly = generateAxPlusB(a, b);
+	return type === 'rational'
+		? sum(c, quotient(d, poly))
+		: type === 'exp'
+			? sum(c, [d, expTerm(poly)])
+			: sum(c, [d, new Logarithm(poly)]);
+}
+function generateAxPlusB(
+	a: number | string | [-1, string],
+	b: number | string | [-1, string]
+): Polynomial {
+	const aExp = Array.isArray(a) ? new Expression([-1, 'a']) : new Expression(a);
+	const bExp = Array.isArray(b) ? new Expression([-1, 'b']) : new Expression(b);
+	return aExp.is.negative()
+		? new Polynomial([bExp, aExp], { ascending: true })
+		: new Polynomial([aExp, bExp]);
+}
+
+export function generateQn(state: State): {
+	qn: string;
+	ans: string;
+} {
+	const unknowns: string[] = [];
+	const { a, b, c, d } = state;
+	if (typeof a !== 'number') unknowns.push('a');
+	if (typeof b !== 'number') unknowns.push('b');
+	if (typeof c !== 'number') unknowns.push('c');
+	if (typeof d !== 'number') unknowns.push('d');
+	const unknownText = mathlifier`where ${unknowns.join(', ')}
+@${unknowns.length > 1 ? 'are' : 'is a'} positive real number@${unknowns.length > 2 ? 's' : ''}.`;
+	const exp = generateExp(state);
+	const eqn = `y = ${exp}`;
+	const qn =
+		mathlifier`The curve ${'C'}
+has equation
+
+$${eqn}${unknowns.length === 0 ? '.' : ','}` +
+		`\n\n${unknownText}` +
+		'\n\n' +
+		mathlifier`Write down the asymptote(s) of ${'C'}.`;
+	const ans = generateAns(state);
+	return { qn, ans };
 }
 
 function generateAns(state: State): string {
-	switch (state.type) {
-		case 'left': {
-			const delimiter = state.inclusive ? ']' : ')';
-			return `\\left( -\\infty, ${state.a} \\right${delimiter}`;
-		}
-		case 'right': {
-			const delimiter = state.inclusive ? '[' : '(';
-			return `\\left${delimiter} ${state.a}, \\infty \\right)`;
-		}
-		case 'two': {
-			const delimiter1 = state.inclusiveA ? '[' : '(';
-			const delimiter2 = state.inclusiveB ? ']' : ')';
-			return `\\left${delimiter1} ${state.a}, ${state.b} \\right${delimiter2}`;
-		}
-		case 'neq':
-			return `\\left(-\\infty, ${state.a} \\right) \\cup \\left(${state.a}, \\infty \\right)`;
-		case 'union':
-			return (
-				generateAns({ ...state.intervals[0], isInequality: true }) +
-				` \\cup ` +
-				generateAns({ ...state.intervals[1], isInequality: true })
-			);
+	if (state.type === 'exp') {
+		return mathlifier`y = ${state.c}.`;
 	}
-}
-
-function generateInequality(state: State): string {
-	switch (state.type) {
-		case 'left': {
-			const sign = state.inclusive ? '\\leq ' : '<';
-			return `x ${sign} ${state.a}`;
-		}
-		case 'right': {
-			const sign = state.inclusive ? '\\geq ' : '>';
-			return `x ${sign} ${state.a}`;
-		}
-		case 'two': {
-			const sign1 = state.inclusiveA ? '\\leq ' : '<';
-			const sign2 = state.inclusiveB ? '\\leq ' : '<';
-			return `${state.a} ${sign1} x ${sign2} ${state.b}`;
-		}
-		case 'neq':
-			return `x \\in \\mathbb{R}, \\; x \\neq ${state.a}`;
-		case 'union':
-			return (
-				generateInequality({ ...state.intervals[0], isInequality: true }) +
-				`\\; \\text{ or } \\;` +
-				generateInequality({ ...state.intervals[1], isInequality: true })
-			);
-	}
-}
-
-function generateIntervals(state: State): Interval[] {
-	const type = state.type;
-	if (type === 'left' || type === 'right') {
-		return [{ type, x: state.a, inclusive: state.inclusive }];
-	} else if (type === 'two') {
-		return [
-			{
-				type,
-				x1: state.a,
-				x2: state.b,
-				inclusive: [state.inclusiveA, state.inclusiveB]
-			}
-		];
-	} else if (type === 'neq') {
-		const inclusive = false;
-		return [
-			{ type: 'left', x: state.a, inclusive },
-			{ type: 'right', x: state.a, inclusive }
-		];
-	} else if (type === 'union') {
-		const isInequality = true; //dummy
-		return [
-			...generateIntervals({ ...state.intervals[0], isInequality }),
-			...generateIntervals({ ...state.intervals[1], isInequality })
-		];
-	}
-	console.warn(`unexpected interval`, state);
-	throw new Error('unexpected interval');
+	const poly = generateAxPlusB(state.a, state.b);
+	const { root: x1 } = solve.linear(poly);
+	const vertical = `x = ${x1}`;
+	return state.type === 'log'
+		? mathlifier`${vertical}.`
+		: mathlifier`${vertical}
+and ${{}} y = ${state.c}.`;
 }

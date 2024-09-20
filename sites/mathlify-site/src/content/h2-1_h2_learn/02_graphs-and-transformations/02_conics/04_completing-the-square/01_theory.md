@@ -15,7 +15,7 @@ inverse function because it is not one-to-one.
 ![graph of y=x^2](/images/h2/fns/openStax_functions_x2.jpeg)
 
 However, we can choose a subset of the domain of $`f` such that the function is
-one-to-one. This subset is called a **restricted domain**.
+one-to-one. We call this subset a **restricted domain**.
 
 For example, we can define new functions $`g` and $`h` such that they both share
 the same rule as $`f` but have smaller domains. Each of them is one-to-one and
