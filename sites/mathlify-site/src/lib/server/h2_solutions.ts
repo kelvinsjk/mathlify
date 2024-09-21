@@ -1,6 +1,6 @@
 import type { AnswerObject, Answer } from '$lib/classes/answer';
 
-export type Data = {
+type Data = {
 	answer: AnswerObject;
 	solution: AnswerObject;
 };

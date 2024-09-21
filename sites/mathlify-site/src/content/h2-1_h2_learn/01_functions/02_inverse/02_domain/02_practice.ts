@@ -27,7 +27,7 @@ import {
 import { Interval, intervalBuilder } from '../../_intervals';
 import { Expression } from 'mathlify';
 
-export interface State {
+interface State {
 	fnType: Type;
 	a: number;
 	b: number;

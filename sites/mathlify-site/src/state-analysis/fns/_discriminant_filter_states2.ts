@@ -1,10 +1,7 @@
-import { Answer } from '$lib/classes/answer';
 import { Expression, expressionToPolynomial, Polynomial, quotient, sum } from 'mathlify';
 import { gcd } from 'mathlify';
 import { sqrtTerm } from 'mathlify/fns';
 import { EquationWorking } from 'mathlify/working';
-
-export const answer = new Answer();
 
 // ax + b + c / (dx+e)
 // a,d non-zero

@@ -1,10 +1,7 @@
-import { Answer } from '$lib/classes/answer';
 import { Expression, expressionToPolynomial, Polynomial, quotient } from 'mathlify';
 import { gcd } from 'mathlify';
 import { Sqrt } from 'mathlify/fns';
 import { EquationWorking } from 'mathlify/working';
-
-export const answer = new Answer();
 
 // (dx+e) / (c^2-a^2x^2)
 // a,c positive. d non-zero
@@ -13,10 +10,10 @@ export const rationalQns: [number[], Expression][] = [];
 export const surd2Qns: [number[], Expression][] = [];
 export const surd3Qns: [number[], Expression][] = [];
 export const surd5Qns: [number[], Expression][] = [];
-export const surd6Qns: [number[], Expression][] = [];
+//export const surd6Qns: [number[], Expression][] = [];
 export const surd7Qns: [number[], Expression][] = [];
-export const surd10Qns: [number[], Expression][] = [];
-export const surd15Qns: [number[], Expression][] = [];
+//export const surd10Qns: [number[], Expression][] = [];
+//export const surd15Qns: [number[], Expression][] = [];
 
 for (let a = 1; a <= 4; a++) {
 	//if (a === 0) continue;
@@ -98,14 +95,14 @@ for (let a = 1; a <= 4; a++) {
 							surd3Qns.push([variables, exp]);
 						} else if (radicand === 5) {
 							surd5Qns.push([variables, exp]);
-						} else if (radicand === 6) {
-							surd6Qns.push([variables, exp]);
+							//} else if (radicand === 6) {
+							//	surd6Qns.push([variables, exp]);
 						} else if (radicand === 7) {
 							surd7Qns.push([variables, exp]);
-						} else if (radicand === 10) {
-							surd10Qns.push([variables, exp]);
-						} else if (radicand === 15) {
-							surd15Qns.push([variables, exp]);
+							//} else if (radicand === 10) {
+							//	surd10Qns.push([variables, exp]);
+							//} else if (radicand === 15) {
+							//	surd15Qns.push([variables, exp]);
 						}
 					}
 				}
@@ -119,10 +116,10 @@ console.log(
 	surd2Qns.length,
 	surd3Qns.length,
 	surd5Qns.length,
-	surd6Qns.length,
-	surd7Qns.length,
-	surd10Qns.length,
-	surd15Qns.length
+	surd7Qns.length
+	//surd6Qns.length,
+	//surd10Qns.length,
+	//surd15Qns.length
 );
 
 function someNegative(...numbers: number[]): boolean {

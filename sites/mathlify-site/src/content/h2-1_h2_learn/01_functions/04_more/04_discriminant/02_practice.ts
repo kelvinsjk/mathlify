@@ -13,7 +13,7 @@ import { expressionToPolynomial, Polynomial, quotient, Expression } from 'mathli
 import { EquationWorking } from 'mathlify/working';
 import { QED } from '$lib/typesetting/utils';
 
-export interface State {
+interface State {
 	type: 1 | 2 | 3;
 	a: number;
 	b: number;

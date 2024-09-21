@@ -40,11 +40,11 @@ export interface IntervalOneSided {
 	inclusive: boolean;
 	x: number;
 }
-export interface IntervalTwoSided {
-	type: 'two';
-	inclusive: [boolean, boolean];
-	x: [number, number];
-}
+// export interface IntervalTwoSided {
+// 	type: 'two';
+// 	inclusive: [boolean, boolean];
+// 	x: [number, number];
+// }
 
 export interface State {
 	fnType: Type;

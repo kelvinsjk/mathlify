@@ -34,7 +34,7 @@ import { generateState as generateState1 } from '../02_domain/02_practice';
 
 const QED = '\\; \\blacksquare ';
 
-export interface State {
+interface State {
 	fnType: Type;
 	a: number;
 	b: number;

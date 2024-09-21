@@ -1,10 +1,7 @@
-import { Answer } from '$lib/classes/answer';
 import { Expression, expressionToPolynomial, Polynomial, quotient } from 'mathlify';
 import { gcd } from 'mathlify';
 import { Sqrt } from 'mathlify/fns';
 import { EquationWorking } from 'mathlify/working';
-
-export const answer = new Answer();
 
 // dx+e / (ax^2+bx+c)
 // b^2 - 4ax < 0

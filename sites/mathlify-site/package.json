@@ -11,7 +11,8 @@
 		"lint": "prettier --check . && eslint .",
 		"format": "prettier --write .",
 		"test:integration": "playwright test",
-		"test": "vitest"
+		"test": "vitest",
+		"knip": "knip"
 	},
 	"devDependencies": {
 		"@clerk/backend": "^1.11.1",
@@ -22,6 +23,7 @@
 		"@sveltejs/vite-plugin-svelte": "^4.0.0-next.6",
 		"@types/eslint": "^9.6.1",
 		"@types/fs-extra": "^11.0.4",
+		"@types/node": "^22.5.5",
 		"@zerodevx/svelte-toast": "^0.9.5",
 		"drizzle-kit": "^0.24.2",
 		"eslint": "^9.10.0",
@@ -29,6 +31,7 @@
 		"eslint-plugin-svelte": "^2.36.0",
 		"fs-extra": "^11.2.0",
 		"globals": "^15.0.0",
+		"knip": "^5.30.2",
 		"nodejs-polars": "^0.15.0",
 		"prettier": "^3.1.1",
 		"prettier-plugin-svelte": "^3.1.2",
@@ -42,6 +45,7 @@
 	},
 	"dependencies": {
 		"@djot/djot": "^0.3.1",
+		"@eslint/js": "^9.4.0",
 		"@libsql/client": "^0.10.0",
 		"dotenv": "^16.4.5",
 		"drizzle-orm": "^0.33.0",
