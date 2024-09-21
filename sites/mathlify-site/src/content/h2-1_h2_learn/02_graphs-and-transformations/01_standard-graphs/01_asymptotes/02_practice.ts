@@ -1,4 +1,10 @@
-import { chooseRandom, getRandomInt, coinFlip, getRandomNonZeroInt } from '$lib/utils/random';
+import {
+	chooseRandom,
+	getRandomInt,
+	coinFlip,
+	getRandomNonZeroInt,
+	getRandomSign
+} from '$lib/utils/random';
 import { mathlifierDj as mathlifier } from 'mathlifier';
 import { Expression, Polynomial, sum, quotient, expTerm } from 'mathlify';
 import { Logarithm } from 'mathlify/fns';
@@ -37,7 +43,7 @@ export function generateState(): State {
 		a = getRandomNonZeroInt(1, 5);
 		b = getCoprimeB(a);
 		if (a > 0) {
-			b = b * getRandomNonZeroInt(1, 1);
+			b = b * getRandomSign();
 		}
 	}
 	const c = coinFlip(0.2) ? 'c' : getRandomInt(-4, 4);

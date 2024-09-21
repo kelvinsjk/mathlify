@@ -34,7 +34,7 @@ interface FnState {
 	restriction: IntervalOneSided | false;
 }
 
-export interface State {
+interface State {
 	inner: FnState;
 	outer: FnState;
 	definition: boolean;
