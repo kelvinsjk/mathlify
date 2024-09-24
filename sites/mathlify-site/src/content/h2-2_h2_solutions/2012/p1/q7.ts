@@ -1,5 +1,5 @@
 import { Answer } from '$lib/classes/answer';
-import { QED } from '$lib/typesetting/utils';
+import { QED } from '$lib/utils/typesetting/utils';
 import { mathlifierDj as mathlifier } from 'mathlifier';
 import {
 	generateAns,

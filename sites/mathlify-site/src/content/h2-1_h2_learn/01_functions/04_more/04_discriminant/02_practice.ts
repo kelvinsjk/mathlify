@@ -11,7 +11,7 @@ import json from './2024-0911.json';
 import { mathlifierDj as mathlifier } from 'mathlifier';
 import { expressionToPolynomial, Polynomial, quotient, Expression } from 'mathlify';
 import { EquationWorking } from 'mathlify/working';
-import { QED } from '$lib/typesetting/utils';
+import { QED } from '$lib/utils/typesetting/utils';
 
 interface State {
 	type: 1 | 2 | 3;

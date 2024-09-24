@@ -11,7 +11,7 @@ import { mathlifierDj as mathlifier } from 'mathlifier';
 import { Expression, Polynomial, e, sum } from 'mathlify';
 import { bisection, cubicRoot } from 'mathlify/numerical';
 import { generateFn } from '../../01_concepts/02_domain-and-range/02_practice-1';
-import { QED } from '$lib/typesetting/utils';
+import { QED } from '$lib/utils/typesetting/utils';
 import { logTerm } from 'mathlify/fns';
 import { EquationWorking } from 'mathlify/working';
 import { logCoeffs } from './_05-log-coeffs.data';

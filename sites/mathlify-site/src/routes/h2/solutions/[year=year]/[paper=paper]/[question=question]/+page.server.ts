@@ -8,7 +8,7 @@ import { h2_solutionsSequential as sequential } from '$lib/components/nav';
 import { preprocess } from '$lib/server/h2_solutions';
 import { topicalDirectory, questionsToTopic } from '../../../../topical';
 import type { NavNodePlusColor } from '$lib/components/mathlified/Nav.svelte';
-import { capitalizeFirstLetter } from '$lib/typesetting/utils';
+import { capitalizeFirstLetter } from '$lib/utils/typesetting/utils';
 
 export const prerender = true;
 

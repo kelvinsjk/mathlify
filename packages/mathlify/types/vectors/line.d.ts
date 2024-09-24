@@ -20,8 +20,6 @@ export class Line extends Vector {
     direction: Vector;
     /** @typedef {Variable} */
     parameter: string | import("../core/expression/expression.js").Variable;
-    /** @typedef {string} */
-    name: string;
     /**
      * @returns {string}
      */

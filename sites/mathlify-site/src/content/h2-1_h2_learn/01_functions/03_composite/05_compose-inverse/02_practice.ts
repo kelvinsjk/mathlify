@@ -11,7 +11,7 @@ import { expInverse, logInverse } from '../../02_inverse/03_formula/02_practice'
 import { Expression, quotient, sum } from 'mathlify';
 import { EquationWorking } from 'mathlify/working';
 import { logTerm } from 'mathlify/fns';
-import { QED } from '$lib/typesetting/utils';
+import { QED } from '$lib/utils/typesetting/utils';
 
 // ln(x+a) + b (2011). No unknown constants if restricted
 // exp(ax) + b (2019). unknown constants + restriction: x=0

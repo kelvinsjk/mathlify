@@ -11,7 +11,7 @@ for (const [key, value] of Object.entries(directory)) {
 }
 import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
-import { extractFrontmatter, mdToDjotWorkaround } from '$lib/utils/typesetting';
+import { extractFrontmatter, mdToDjotWorkaround } from '$lib/utils/typesetting/md';
 
 export const prerender = true;
 

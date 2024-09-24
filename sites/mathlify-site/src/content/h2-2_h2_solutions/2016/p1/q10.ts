@@ -7,7 +7,7 @@ import { EquationWorking } from 'mathlify/working';
 import { mathlifierDj as mathlifier } from 'mathlifier';
 import { simplifySurd } from 'mathlify/fns';
 import { bisection, cubicRoot } from 'mathlify/numerical';
-import { QED } from '$lib/typesetting/utils';
+import { QED } from '$lib/utils/typesetting/utils';
 
 export const answer = new Answer();
 

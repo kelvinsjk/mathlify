@@ -3,7 +3,7 @@ import { mathlifierDj as mathlifier } from 'mathlifier';
 import { Expression, Polynomial } from 'mathlify';
 import { fractionalInverseWorking } from '$content/h2-1_h2_learn/01_functions/02_inverse/03_formula/02_practice';
 import { compositeFormula } from '$content/h2-1_h2_learn/01_functions/03_composite/02_formula/02_practice';
-import { QED } from '$lib/typesetting/utils';
+import { QED } from '$lib/utils/typesetting/utils';
 
 export const answer = new Answer();
 

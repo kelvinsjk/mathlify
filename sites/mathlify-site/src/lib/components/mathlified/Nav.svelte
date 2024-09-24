@@ -16,6 +16,7 @@
 	let nav = $derived(propNav ?? []);
 
 	import { page } from '$app/stores';
+	import Nav from './Nav.svelte';
 </script>
 
 <ul class="nav-ul">
@@ -58,7 +59,7 @@
 							></path></svg
 						>
 					</summary>
-					<svelte:self nav={node.children} {hasColor} nested={true} />
+					<Nav nav={node.children} {hasColor} nested={true} />
 				</details>
 			{:else}
 				<a

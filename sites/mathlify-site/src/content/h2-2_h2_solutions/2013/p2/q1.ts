@@ -6,7 +6,7 @@ import { compositeFormula } from '$content/h2-1_h2_learn/01_functions/03_composi
 import { EquationWorking } from 'mathlify/working';
 import { mathlifierDj as mathlifier } from 'mathlifier';
 import { Interval } from '$content/h2-1_h2_learn/01_functions/_intervals';
-import { QED } from '$lib/typesetting/utils';
+import { QED } from '$lib/utils/typesetting/utils';
 
 export const answer = new Answer();
 

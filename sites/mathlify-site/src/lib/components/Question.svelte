@@ -24,7 +24,7 @@
 			class: 'member' | 'premium' | 'super';
 		};
 	} = $props();
-	const questionsNav = $derived(yearlyNav[0].children?.at(0)?.children ?? []);
+	const questionsNav = $derived(yearlyNav[0].children?.at(Number(data.paper) - 1)?.children ?? []);
 	const index = $derived(questionsNav.findIndex((x) => x.name === `Q${data.questionNo}`));
 	const sequential = $derived({ prev: questionsNav[index - 1], next: questionsNav[index + 1] });
 	let question = $derived(data.question);
@@ -57,6 +57,13 @@
 			.replace(/ ?(\|) (-+|:-+|-+:|:-+:) (\|) ?/g, '$1$2$3')
 			.replaceAll('&dollar;', '$');
 	}
+	// wrap tables with a container
+	import type { HTMLRenderer, Visitor } from '@djot/djot';
+	const overrides: Visitor<HTMLRenderer, string> = {
+		table: (node, renderer) => {
+			return `<div class='table-container'>${renderer.renderAstNodeDefault(node)}</div>`;
+		}
+	};
 </script>
 
 <div class="main-container">
@@ -134,7 +141,7 @@
 				<div class="question-grid">
 					{#if question.body}
 						<div class="span-three body-content" class:no-marks={question.marks === undefined}>
-							<Djot djot={texToDjot(question.body)} />
+							<Djot djot={texToDjot(question.body)} {overrides} />
 						</div>
 					{/if}
 					{#if question.marks !== undefined}
@@ -178,7 +185,7 @@
 					{/if}
 				</div>
 			</section>
-			<div>
+			<div class="sequential-container">
 				<SequentialNav {sequential} />
 			</div>
 		{/if}
@@ -383,5 +390,23 @@
 		padding: 1rem;
 		display: grid;
 		gap: 1rem;
+	}
+	:global(.body-content table, th, td) {
+		border: 1px solid var(--content, black);
+		border-collapse: collapse;
+	}
+	:global(.body-content table th, .body-content table td) {
+		padding-inline: 0.5rem;
+	}
+	:global(.body-content .table-container) {
+		padding-block-end: 1rem;
+		width: 100%;
+		overflow-x: auto;
+	}
+	:global(.body-content .table-container table) {
+		margin-inline: auto;
+	}
+	.sequential-container {
+		padding-inline: 1rem;
 	}
 </style>

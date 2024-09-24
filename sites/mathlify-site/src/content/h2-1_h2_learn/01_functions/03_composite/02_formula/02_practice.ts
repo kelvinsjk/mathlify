@@ -23,7 +23,7 @@ import {
 	type IntervalOneSided,
 	type Type
 } from '../../01_concepts/02_domain-and-range/02_practice-1';
-import { QED } from '$lib/typesetting/utils';
+import { QED } from '$lib/utils/typesetting/utils';
 import type { Interval } from '../../_intervals';
 
 interface FnState {
