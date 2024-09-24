@@ -104,7 +104,7 @@
 					</span>
 				</h2>
 				<div>
-					<a class="button" href={`/h2/solutions/${data.year}/p${data.paper}/q${data.questionNo}`}
+					<a class="btn" href={`/h2/solutions/${data.year}/p${data.paper}/q${data.questionNo}`}
 						>Solutions</a
 					>
 				</div>
@@ -315,26 +315,6 @@
 		max-width: min(100%, 100vw, 65ch);
 		max-width: min(100%, 100dvw, 65ch);
 		max-height: 40vh;
-	}
-	.button {
-		background-color: var(--secondary);
-		cursor: pointer;
-		transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
-		transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-		transition-duration: 0.15s;
-		font-weight: 500;
-		line-height: 1.5rem;
-		padding: 0.5rem 1rem;
-		border-radius: 0.5rem;
-		height: 2.5rem;
-		border: none;
-		text-decoration: none;
-		color: inherit;
-		display: inline-block;
-
-		&:hover {
-			background-color: hsla(var(--secondary-hsl), 0.9);
-		}
 	}
 	/** make content font size larger for wider viewport.   */
 	@media (min-width: 72rem) {

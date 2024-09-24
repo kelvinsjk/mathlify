@@ -60,8 +60,10 @@ math.tml-display {
 	border-radius: 0.5rem;
 	height: 2.5rem;
 	border: none;
+	text-decoration: none;
+	color: inherit;
 
 	&:hover {
-		background-color: hsla(var(--secondary-hsl), 0.9);
+		border: 1px solid currentColor;
 	}
 }
