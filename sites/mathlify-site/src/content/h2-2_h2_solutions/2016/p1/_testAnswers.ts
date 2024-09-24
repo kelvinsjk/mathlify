@@ -1,9 +1,21 @@
-import { expect, it } from 'vitest';
-import { answer } from './q10';
 import { mathlifierDj as mathlifier } from 'mathlifier';
 
-const ans = answer.answer;
-const actual: typeof ans = {
+// q3
+export const q3 = {
+	parts: [
+		{
+			body: mathlifier`${{}} l = a,
+${{}} m = b,
+${{}} k = \\frac{c-b}{a^4}.`
+		},
+		{
+			body: mathlifier`Sketch`
+		}
+	]
+};
+
+// q10
+export const q10 = {
 	parts: [
 		{
 			parts: [
@@ -34,8 +46,3 @@ is not a one-to-one function.`
 		}
 	]
 };
-
-it('2016p1q10', () => {
-	expect(answer).toMatchSnapshot();
-	expect(ans).toEqual(actual);
-});

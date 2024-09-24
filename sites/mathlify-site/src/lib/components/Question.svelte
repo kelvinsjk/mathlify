@@ -1,12 +1,15 @@
 <script lang="ts">
+	import { page } from '$app/stores';
 	import { Djot } from 'svelte-djot-math';
 	import SequentialNav from './mathlified/SequentialNav.svelte';
 	import type { QuestionObject } from '$lib/classes/question';
 	import type { NavNodePlusColor } from './mathlified/Nav.svelte';
 	import Nav from './mathlified/Nav.svelte';
+	import { SignedOut, SignInButton, SignUpButton } from 'svelte-clerk';
 	let {
 		data,
-		nav: yearlyNav
+		nav: yearlyNav,
+		qnType
 	}: {
 		data: {
 			role?: 'admin' | 'super' | 'member' | 'premium';
@@ -17,6 +20,9 @@
 			topicalNav: NavNodePlusColor[];
 		};
 		nav: NavNodePlusColor[];
+		qnType?: {
+			class: 'member' | 'premium' | 'super';
+		};
 	} = $props();
 	const questionsNav = $derived(yearlyNav[0].children?.at(0)?.children ?? []);
 	const index = $derived(questionsNav.findIndex((x) => x.name === `Q${data.questionNo}`));
@@ -77,7 +83,7 @@
 			<Nav {nav} />
 		</div>
 	</nav>
-	<div class="prose-container">
+	<main class="prose-container">
 		<div class="bleed-left"></div>
 		<div class="paper-and-question">
 			<h1>{data.year} H2 Mathematics</h1>
@@ -98,64 +104,92 @@
 			</div>
 		</div>
 		<div class="bleed-right"></div>
-		<section id="question-section" aria-label="question">
-			<div class="question-grid">
-				{#if question.body}
-					<div class="span-three body-content" class:no-marks={question.marks === undefined}>
-						<Djot djot={texToDjot(question.body)} />
+		{#if qnType?.class === 'member' || qnType?.class === 'premium'}
+			<div class="auth-failed">
+				<div>
+					This question is only available for
+					{#if qnType?.class === 'premium'}
+						premium
+					{/if}
+					members.
+				</div>
+				<div>
+					{#if qnType?.class === 'member'}
+						Please sign in or sign up (it's free!)
+					{:else if qnType?.class === 'premium'}
+						Consider purchasing the premium membership, or use the free resources (the black and
+						blue items in the navigation menu).
+					{/if}
+				</div>
+				<SignedOut>
+					<div>
+						<SignInButton mode="modal" forceRedirectUrl={$page.url.pathname} />
+						<SignUpButton mode="modal" fallbackRedirectUrl={$page.url.pathname} />
 					</div>
-				{/if}
-				{#if question.marks !== undefined}
-					<div class="marks">[{question.marks}]</div>
-				{/if}
-				{#if question.parts}
-					{#each question.parts as part, i}
-						{#if part.uplevel}
-							<div class="part-uplevel">
-								<Djot djot={texToDjot(part.uplevel)} />
-							</div>
-						{/if}
-						<div class="part-label" id={`qn-${i + 1}`}>({String.fromCharCode(i + 97)})</div>
-						{#if part.body}
-							<div class="span-two body-content" class:no-marks={part.marks === undefined}>
-								<Djot djot={texToDjot(part.body)} />
-							</div>
-						{/if}
-						{#if part.marks !== undefined}
-							<div class="marks">[{part.marks}]</div>
-						{/if}
-						{#if part.parts}
-							{#each part.parts as subpart, j}
-								{#if subpart.uplevel}
-									<div class="subpart-uplevel">
-										<Djot djot={texToDjot(subpart.uplevel)} />
-									</div>
-								{/if}
-								<div id={`qn-${i + 1}-${j + 1}`} class="part-label subpart-label">
-									({toRoman(j)})
-								</div>
-								<div class="body-content" class:no-marks={subpart.marks === undefined}>
-									<Djot djot={texToDjot(subpart.body ?? '')} />
-								</div>
-								{#if subpart.marks !== undefined}
-									<div class="marks">[{subpart.marks}]</div>
-								{/if}
-							{/each}
-						{/if}
-					{/each}
-				{/if}
+				</SignedOut>
 			</div>
-		</section>
-		<div>
-			<SequentialNav {sequential} />
-		</div>
-	</div>
+		{/if}
+		{#if qnType === undefined || (qnType?.class === 'super' && (data.role === 'super' || data.role === 'admin')) || (qnType?.class === 'premium' && (data.role === 'super' || data.role === 'admin' || data.role === 'premium')) || (qnType?.class === 'member' && (data.role === 'super' || data.role === 'admin' || data.role === 'premium' || data.role === 'member'))}
+			<section id="question-section" aria-label="question">
+				<div class="question-grid">
+					{#if question.body}
+						<div class="span-three body-content" class:no-marks={question.marks === undefined}>
+							<Djot djot={texToDjot(question.body)} />
+						</div>
+					{/if}
+					{#if question.marks !== undefined}
+						<div class="marks">[{question.marks}]</div>
+					{/if}
+					{#if question.parts}
+						{#each question.parts as part, i}
+							{#if part.uplevel}
+								<div class="part-uplevel">
+									<Djot djot={texToDjot(part.uplevel)} />
+								</div>
+							{/if}
+							<div class="part-label" id={`qn-${i + 1}`}>({String.fromCharCode(i + 97)})</div>
+							{#if part.body}
+								<div class="span-two body-content" class:no-marks={part.marks === undefined}>
+									<Djot djot={texToDjot(part.body)} />
+								</div>
+							{/if}
+							{#if part.marks !== undefined}
+								<div class="marks">[{part.marks}]</div>
+							{/if}
+							{#if part.parts}
+								{#each part.parts as subpart, j}
+									{#if subpart.uplevel}
+										<div class="subpart-uplevel">
+											<Djot djot={texToDjot(subpart.uplevel)} />
+										</div>
+									{/if}
+									<div id={`qn-${i + 1}-${j + 1}`} class="part-label subpart-label">
+										({toRoman(j)})
+									</div>
+									<div class="body-content" class:no-marks={subpart.marks === undefined}>
+										<Djot djot={texToDjot(subpart.body ?? '')} />
+									</div>
+									{#if subpart.marks !== undefined}
+										<div class="marks">[{subpart.marks}]</div>
+									{/if}
+								{/each}
+							{/if}
+						{/each}
+					{/if}
+				</div>
+			</section>
+			<div>
+				<SequentialNav {sequential} />
+			</div>
+		{/if}
+	</main>
 </div>
 
 <style>
 	.main-container {
 		height: 100%;
 		display: grid;
+		grid-template-rows: auto 1fr;
 	}
 	.prose-container {
 		height: 100%;
@@ -163,6 +197,7 @@
 		scroll-behavior: smooth;
 		display: grid;
 		grid-template-columns: 1fr min(65ch, 100%) 1fr;
+		align-content: flex-start;
 	}
 	.toc-container {
 		background-color: var(--surface, hsl(60, 5%, 96%));
@@ -170,7 +205,13 @@
 		height: 100%;
 		overflow-y: auto;
 		scroll-behavior: smooth;
-		border-block: 1px solid rgba(0, 0, 0, 0.25);
+		border-block-start: 1px solid var(--content, black);
+		border-block-end: 1px solid var(--content, black);
+	}
+	@media (min-width: 40rem) {
+		.toc-container {
+			border-block-start: none;
+		}
 	}
 	.desktop-toc {
 		display: none;
@@ -295,11 +336,6 @@
 			font-size: clamp(1rem, 1vw + 0.25rem, 1.5rem);
 		}
 	}
-	@media (min-width: 40rem) {
-		.toc-container {
-			border-block: none;
-		}
-	}
 	@media (min-width: 60rem) {
 		.desktop-toc {
 			display: block;
@@ -309,7 +345,7 @@
 		}
 		.main-container {
 			grid-template-columns: 1fr 15rem;
-			align-content: stretch;
+			grid-template-rows: 1fr;
 		}
 		.toc-container {
 			order: 2;
@@ -342,5 +378,10 @@
 	}
 	details[open] {
 		padding-block-end: 0.5rem;
+	}
+	.auth-failed {
+		padding: 1rem;
+		display: grid;
+		gap: 1rem;
 	}
 </style>

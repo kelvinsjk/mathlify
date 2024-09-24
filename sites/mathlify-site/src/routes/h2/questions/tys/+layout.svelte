@@ -48,8 +48,9 @@
 <style>
 	.main-container {
 		display: grid;
-		height: calc(100vh - 3.5rem);
-		height: calc(100dvh - 3.5rem);
+		height: calc(100vh - var(--header-height, 3.875rem));
+		height: calc(100dvh - var(--header-height, 3.875rem));
+		grid-template-rows: auto 1fr;
 	}
 	.sidebar,
 	main {
@@ -93,6 +94,7 @@
 	@media (min-width: 40rem) {
 		.main-container {
 			grid-template-columns: 18rem 1fr;
+			grid-template-rows: 1fr;
 		}
 		.sidebar {
 			display: block;
