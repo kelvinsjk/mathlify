@@ -12,7 +12,7 @@
 </svelte:head>
 
 {#if role === 'admin' || role === 'super' || role === 'premium'}
-	<Question data={data.data} />
+	<Question data={data.data} nav={data.nav} />
 {:else if role === 'member'}
 	<main>
 		<div>This question is only available for premium members.</div>

@@ -9,16 +9,23 @@ export class Vector {
 	y;
 	/** @type {Expression} */
 	z;
+	/** @type {'column'|'ijk'|'coordinates'} */
+	stringMode;
+	/** @type {string} */
+	name;
 
 	/**
 	 * @param {Shorthand} x
 	 * @param {Shorthand} [y=0]
 	 * @param {Shorthand} [z=0]
+	 * @param {{stringMode?: 'column'|'ijk'|'coordinates', name?: string}} [options]
 	 */
-	constructor(x, y = 0, z = 0) {
+	constructor(x, y = 0, z = 0, options) {
 		this.x = new Expression(x);
 		this.y = new Expression(y);
 		this.z = new Expression(z);
+		this.stringMode = options?.stringMode ?? 'column';
+		this.name = options?.name ?? '';
 	}
 
 	/**
@@ -80,7 +87,9 @@ export class Vector {
 	is = {
 		/** @returns {boolean} */
 		zero: () =>
-			`${this.x}` === '0' && `${this.y}` === '0' && `${this.z}` === '0',
+			this.x.toString() === '0' &&
+			this.y.toString() === '0' &&
+			this.z.toString() === '0',
 		/**
 		 * @param {Vector} v
 		 * @returns {boolean}
@@ -92,7 +101,11 @@ export class Vector {
 	 * @returns {string}
 	 */
 	toString() {
-		return `\\begin{pmatrix}\n\t${this.x}\\\\\n\t${this.y}\\\\\n\t${this.z}\n\\end{pmatrix}`;
+		return this.stringMode === 'column'
+			? `\\begin{pmatrix}\n\t${this.x.toString()}\\\\\n\t${this.y.toString()}\\\\\n\t${this.z.toString()}\n\\end{pmatrix}`
+			: this.stringMode === 'ijk'
+				? this.toIJKString()
+				: this.toCoordinatesString();
 	}
 	/**
 	 * @returns {string}
@@ -107,11 +120,11 @@ export class Vector {
 		return exp.toString();
 	}
 	/**
-	 * @param {string} [name='']
+	 * @param {string} [name]
 	 * @returns {string}
 	 */
-	toCoordinatesString(name = '') {
-		return `${name}\\left( ${this.x}, ${this.y}, ${this.z} \\right)`;
+	toCoordinatesString(name) {
+		return `${name ?? this.name}\\left( ${this.x.toString()}, ${this.y.toString()}, ${this.z.toString()} \\right)`;
 	}
 
 	/**

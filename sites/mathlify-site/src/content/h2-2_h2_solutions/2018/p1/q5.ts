@@ -2,7 +2,7 @@ import { Answer } from '$lib/classes/answer';
 import { mathlifierDj as mathlifier } from 'mathlifier';
 import { Polynomial, quotient } from 'mathlify';
 import { EquationWorking, ExpressionWorking } from 'mathlify/working';
-import { QED } from '$lib/typesetting/utils';
+import { QED } from '$lib/utils/typesetting/utils';
 
 export const answer = new Answer();
 

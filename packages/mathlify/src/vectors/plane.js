@@ -5,15 +5,16 @@ import { vectorShorthandToVector } from './utils.js';
 /** @typedef {import('./vector.js').Vector} Vector */
 
 // given normal and rhs
-/** @typedef {{rhs: Shorthand, name?: string}} PlaneVariant1 */
+/** @typedef {{rhs: Shorthand}} PlaneVariant1 */
 // given normal and point
-/** @typedef {{pt: VectorShorthand, name?: string}} PlaneVariant2 */
+/** @typedef {{pt: VectorShorthand}} PlaneVariant2 */
 // given pt and two directions
-/** @typedef {{d1: VectorShorthand, d2: VectorShorthand, name?: string}} PlaneVariant3 */
+/** @typedef {{d1: VectorShorthand, d2: VectorShorthand}} PlaneVariant3 */
 // given 2 pts and 1 directions
-/** @typedef {{d: VectorShorthand, pt2: VectorShorthand, name?: string}} PlaneVariant4 */
+/** @typedef {{d: VectorShorthand, pt2: VectorShorthand}} PlaneVariant4 */
 // given 3 pts
-/** @typedef {{pt2: VectorShorthand, pt3: VectorShorthand, name?: string}} PlaneVariant5 */
+/** @typedef {{pt2: VectorShorthand, pt3: VectorShorthand}} PlaneVariant5 */
+/** @typedef {PlaneVariant1|PlaneVariant2|PlaneVariant3|PlaneVariant4|PlaneVariant5} PlaneVariant */
 
 export class Plane {
 	/** @typedef {Vector} */
@@ -30,11 +31,12 @@ export class Plane {
 	 * variant 4: given 2 pts and 1 directions
 	 * variant 5: given 3 pts
 	 * @param {VectorShorthand} nOrPoint
-	 * @param {PlaneVariant1|PlaneVariant2|PlaneVariant3|PlaneVariant4|PlaneVariant5} options
+	 * @param {PlaneVariant & {stringMode?: 'scalar'|'cartesian', name?: string}} options
 	 */
 	constructor(nOrPoint, options) {
 		const arg1 = vectorShorthandToVector(nOrPoint);
-		this.name = options?.name || '';
+		this.name = options?.name ?? '';
+		this.stringMode = options?.stringMode ?? 'scalar';
 		if ('rhs' in options) {
 			this.normal = arg1;
 			this.rhs = options.rhs;
@@ -65,7 +67,9 @@ export class Plane {
 	 */
 	toString() {
 		const name = this.name ? `${this.name}: ` : '';
-		return `${name}\\mathbf{r} \\cdot ${this.normal} = ${this.rhs}`;
+		return this.stringMode === 'scalar'
+			? `${name}\\mathbf{r} \\cdot ${this.normal.toString()} = ${this.rhs.toString()}`
+			: this.toCartesianString();
 	}
 	/**
 	 * @returns {string}
@@ -77,6 +81,6 @@ export class Plane {
 			[this.normal.y, 'y'],
 			[this.normal.z, 'z'],
 		]).simplify();
-		return `${lhs} = ${this.rhs}`;
+		return `${lhs.toString()} = ${this.rhs.toString()}`;
 	}
 }

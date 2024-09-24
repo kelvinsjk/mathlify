@@ -7,7 +7,7 @@ import { directory } from '../../../../../../h2_tys_questions/directory';
 import { preprocess } from '$lib/server/h2_tys_questions';
 import { topicalDirectory, questionsToTopic } from '../../../../../topical';
 import type { NavNodePlusColor } from '$lib/components/mathlified/Nav.svelte';
-import { capitalizeFirstLetter } from '$lib/typesetting/utils';
+import { capitalizeFirstLetter } from '$lib/utils/typesetting/utils';
 
 export const prerender = true;
 

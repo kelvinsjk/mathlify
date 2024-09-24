@@ -6,7 +6,7 @@ import { generateRange } from '$content/h2-1_h2_learn/01_functions/01_concepts/0
 import { absoluteRationalInverse } from '$content/h2-1_h2_learn/01_functions/02_inverse/03_formula/02_practice';
 import { domainRestriction } from '$content/h2-1_h2_learn/01_functions/02_inverse/04_restriction/02_practice';
 import { compositeExists } from '$content/h2-1_h2_learn/01_functions/03_composite/01_existence/02_practice';
-import { QED } from '$lib/typesetting/utils';
+import { QED } from '$lib/utils/typesetting/utils';
 import svg from '$static/images/h2/fns/2023p1q7a.svg?raw';
 
 export const answer = new Answer();

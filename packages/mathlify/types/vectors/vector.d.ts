@@ -3,14 +3,22 @@ export class Vector {
      * @param {Shorthand} x
      * @param {Shorthand} [y=0]
      * @param {Shorthand} [z=0]
+     * @param {{stringMode?: 'column'|'ijk'|'coordinates', name?: string}} [options]
      */
-    constructor(x: Shorthand, y?: import("../core/expression/expression.js").Shorthand | undefined, z?: import("../core/expression/expression.js").Shorthand | undefined);
+    constructor(x: Shorthand, y?: import("../core/expression/expression.js").Shorthand | undefined, z?: import("../core/expression/expression.js").Shorthand | undefined, options?: {
+        stringMode?: "column" | "ijk" | "coordinates";
+        name?: string;
+    } | undefined);
     /** @type {Expression} */
     x: Expression;
     /** @type {Expression} */
     y: Expression;
     /** @type {Expression} */
     z: Expression;
+    /** @type {'column'|'ijk'|'coordinates'} */
+    stringMode: "column" | "ijk" | "coordinates";
+    /** @type {string} */
+    name: string;
     /**
      * @param {Vector} v
      * @returns {Expression}
@@ -63,7 +71,7 @@ export class Vector {
      */
     toIJKString(): string;
     /**
-     * @param {string} [name='']
+     * @param {string} [name]
      * @returns {string}
      */
     toCoordinatesString(name?: string | undefined): string;

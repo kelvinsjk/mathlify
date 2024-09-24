@@ -35,7 +35,7 @@
 		"nodejs-polars": "^0.15.0",
 		"prettier": "^3.1.1",
 		"prettier-plugin-svelte": "^3.1.2",
-		"svelte": "^5.0.0-next.253",
+		"svelte": "^5.0.0-next.258",
 		"svelte-check": "^4.0.1",
 		"typescript": "^5.6.2",
 		"typescript-eslint": "^8.5.0",

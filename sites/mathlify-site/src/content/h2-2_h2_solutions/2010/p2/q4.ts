@@ -1,5 +1,5 @@
 import { Answer } from '$lib/classes/answer';
-import { QED } from '$lib/typesetting/utils';
+import { QED } from '$lib/utils/typesetting/utils';
 import { Expression, Polynomial } from 'mathlify';
 import { mathlifierDj as mathlifier } from 'mathlifier';
 

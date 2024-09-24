@@ -7,11 +7,11 @@ export function dydxString(options?: { x?: string; y?: string }): string {
 	return `\\frac{\\mathrm{d}${y}}{\\mathrm{d}${x}}`;
 }
 
-export function definiteIntegralString(
-	fx: unknown,
-	a: unknown,
-	b: unknown,
-	options?: { x?: string }
-): string {
-	return `\\displaystyle \\int_{${a}}^{${b}} ${fx} ${dxString(options?.x ?? 'x')}`;
-}
+// export function definiteIntegralString(
+// 	fx: unknown,
+// 	a: unknown,
+// 	b: unknown,
+// 	options?: { x?: string }
+// ): string {
+// 	return `\\displaystyle \\int_{${a}}^{${b}} ${fx} ${dxString(options?.x ?? 'x')}`;
+// }

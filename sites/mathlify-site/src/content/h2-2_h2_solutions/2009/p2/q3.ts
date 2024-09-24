@@ -6,7 +6,7 @@ import {
 	generateFracFnDefinition
 } from '$content/h2-1_h2_learn/01_functions/04_more/01_self-inverse/02_practice';
 import { EquationWorking, solve } from 'mathlify/working';
-import { QED } from '$lib/typesetting/utils';
+import { QED } from '$lib/utils/typesetting/utils';
 
 export const answer = new Answer();
 

@@ -8,7 +8,7 @@ import { z } from 'zod';
 import { eq } from 'drizzle-orm';
 import { topicalDirectory, questionsToTopic } from '../../../../../topical';
 import type { NavNodePlusColor } from '$lib/components/mathlified/Nav.svelte';
-import { capitalizeFirstLetter } from '$lib/typesetting/utils';
+import { capitalizeFirstLetter } from '$lib/utils/typesetting/utils';
 
 export const load: PageServerLoad = async ({ params, locals }) => {
 	const { year, paper, question } = params;

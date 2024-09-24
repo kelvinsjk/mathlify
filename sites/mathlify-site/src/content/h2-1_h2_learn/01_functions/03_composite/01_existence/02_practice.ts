@@ -16,7 +16,7 @@ import {
 	type IntervalOneSided
 } from '../../01_concepts/02_domain-and-range/02_practice-1';
 import { generateDomain } from '../../02_inverse/02_domain/02_practice';
-import { QED } from '$lib/typesetting/utils';
+import { QED } from '$lib/utils/typesetting/utils';
 
 // ax+b (2013). unknown constants + restriction: x=0
 // (x+a)^2 + b, (2007,2008). unknown constants + restriction: x=-a

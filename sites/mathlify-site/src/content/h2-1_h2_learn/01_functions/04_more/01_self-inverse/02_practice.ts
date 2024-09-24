@@ -15,7 +15,7 @@ import {
 import { e, Expression, expTerm, Polynomial, quotient, sum } from 'mathlify';
 import { EquationWorking } from 'mathlify/working';
 import { Brackets, logTerm, simplifySurd, sqrtTerm } from 'mathlify/fns';
-import { QED } from '$lib/typesetting/utils';
+import { QED } from '$lib/utils/typesetting/utils';
 
 // 2009, 2012: (bx+k)(cx+a). a=-b. k/b \neq a/c. possible unknown constants
 // ax+b. a=-1, b=\pm 1 to 4
@@ -159,7 +159,12 @@ function fnDefinitionWithPotentialUnknowns(
 	options?: { f?: string; for?: boolean }
 ): string {
 	// TODO: investigate this
-	const { a, b, c, k } = state;
+	const {
+		//a,
+		b,
+		c,
+		k
+	} = state;
 	const f = options?.f ?? 'f';
 	const forString = options?.for ? '\\text{for }' : '';
 	const nonZeros: string[] = [];
@@ -175,13 +180,13 @@ function fnDefinitionWithPotentialUnknowns(
 		// c \neq ab/k
 		const cAvoid = aExp.times(b).divide(k);
 		avoid = [c, cAvoid];
-	} else if (typeof a === 'string') {
-		// at this moment, we have a = '-a' and b = 'a'. so we have a^2 \neq -kc
-		if (!(typeof k === 'number' && typeof c === 'number' && k * c > 0)) {
-			const a2Avoid = new Expression([-1, k, c]);
-			const aAvoid = sqrtTerm(a2Avoid);
-			avoid = [a, aAvoid];
-		}
+		//} else if (typeof a === 'string') {
+		//	// at this moment, we have a = '-a' and b = 'a'. so we have a^2 \neq -kc
+		//	if (!(typeof k === 'number' && typeof c === 'number' && k * c > 0)) {
+		//		const a2Avoid = new Expression([-1, k, c]);
+		//		const aAvoid = sqrtTerm(a2Avoid);
+		//		avoid = [a, aAvoid];
+		//	}
 	}
 	const are = nonZeros.length > 1 ? 'are' : 'is a';
 	const constants = nonZeros.length === 1 ? 'constant' : 'constants';

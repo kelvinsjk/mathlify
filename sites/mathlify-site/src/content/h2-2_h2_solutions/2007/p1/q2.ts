@@ -1,5 +1,5 @@
 import { Answer } from '$lib/classes/answer';
-import { QED } from '$lib/typesetting/utils';
+import { QED } from '$lib/utils/typesetting/utils';
 import { Polynomial } from 'mathlify';
 import { generateDomain } from '$content/h2-1_h2_learn/01_functions/02_inverse/02_domain/02_practice';
 import { improperInverse } from '$content/h2-1_h2_learn/01_functions/02_inverse/03_formula/02_practice';

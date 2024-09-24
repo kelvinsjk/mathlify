@@ -1,7 +1,7 @@
 import { Answer } from '$lib/classes/answer';
 import { Expression, fnTerm, Polynomial, quotient, sum } from 'mathlify';
 import { mathlifierDj as mathlifier } from 'mathlifier';
-import { QED } from '$lib/typesetting/utils';
+import { QED } from '$lib/utils/typesetting/utils';
 import { EquationWorking, ExpressionWorking } from 'mathlify/working';
 
 export const answer = new Answer();
