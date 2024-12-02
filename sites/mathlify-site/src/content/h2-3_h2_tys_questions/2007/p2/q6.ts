@@ -13,53 +13,46 @@ For the newer questions, please purchase a copy of the
 */
 
 import { Question } from '$lib/classes/question';
+import { modified } from '$lib/utils/typesetting/utils';
 import { mathlifierDj as mathlifier } from 'mathlifier';
-import { Vector } from 'mathlify/vectors';
 
 export const question = new Question();
-
-// a: i-j+2k
-// b: 2i+4j+k
-// c: -4i+2j+2k
-const a = new Vector(1, -1, 2, { stringMode: 'ijk' });
-const b = new Vector(2, 4, 1, { stringMode: 'ijk' });
-const c = new Vector(-4, 2, 2, { stringMode: 'ijk' });
+const pA = 24;
+const pB = 0.3;
 
 question.addBody(
-	mathlifier`Referred to the origin ${'O'},
-the position vectors of the points ${'A'}
-and ${'B'}
-are
-
-$${{}} ${a} \\quad \\text{and} \\quad ${b}
-
-respectively.`
+	mathlifier`@${modified}
+	
+	In a large population, ${pA}\\%
+have a particular gene ${'A'},
+and ${pB.toFixed(1)}\\%
+have gene ${'B'}`
 );
 // a
-{
-	question.addPart(
-		mathlifier`Show that the ${'OA'}
-is perpendicular to ${'OB'}.`,
-		{ marks: 2 }
-	);
-}
-// b
-{
-	question.addPart(
-		mathlifier`Find the position vector of the
-point ${'M'}
-on the line segment ${'AB'}
-such that ${{}} {AM:MB = 1: 2.}`,
-		{ marks: 3 }
-	);
-}
-// c
-{
-	question.addPart(
-		mathlifier`The position vector ${'C'}
-has position vector ${{}} {${c}.}
-Use a vector product to find the exact
-area of triangle ${'OAC.'}`,
-		{ marks: 4 }
-	);
-}
+question.addPart(
+	mathlifier`Find the probability that, in a random
+sample of ${10}
+people from the population, at most ${4}
+have gene ${'A'}.`,
+	{ marks: 2 }
+);
+// removed approximation from old syllabus
+// b (new : nested binomial)
+question.addPart(
+	mathlifier`\\* ${100}
+samples of ${10}
+people are taken from
+the population. Find the probability that more than ${90}
+of these samples have at most ${4}
+having gene ${'A'}.`,
+	{ marks: 3 }
+);
+// c (adapted from (ii)
+question.addPart(
+	mathlifier`\\* A random sample of ${1000}
+people is taken from the population.
+Find the probability that at least ${2}
+but fewer than ${5}
+have gene ${'B'}.`,
+	{ marks: 2 }
+);

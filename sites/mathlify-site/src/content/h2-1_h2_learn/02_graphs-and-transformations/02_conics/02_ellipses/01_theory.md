@@ -1,57 +1,50 @@
 ---
-title: Domain and range of inverse functions
-copyright: OpenStax Calculus Volume 1
+title: Ellipses
+copyright: College Algebra 2e
 ---
 
 <!-- prettier-ignore-start -->
 ::: citation
-Adapted from OpenStax Calculus Volume 1[^cite]
+Adapted from OpenStax College Algebra 2e[^cite]
 :::
 <!-- prettier-ignore-end -->
 
-## Formula
+## Equation of an ellipse
 
-![domain and range of inverse functions](/images/h2/fns/openStax_functions_inverse_domain_range.jpeg)
+The equation of an ellipse, in standard form, is
 
-Since the inverse function reverses the original function, we have the following
-formulas for its domain and range:
+$$ \frac{(x-h)^2}{a^2} + \frac{(y-k)^2}{b^2} = 1. $$
 
-<!-- prettier-ignore-start -->
-::: formula
+## Drawing an ellipse
 
-- $`D_{f^{-1}} = R_f`
-- $`R_{f^{-1}} = D_f`
+### Center
 
-:::
-<!-- prettier-ignore-end -->
+Just like in drawing a circle, we draw an ellipse by first identifying its **center**.
+For an equation of standard form above, the center has coordinates $(h,k)$.
+
+### Vertices
+
+We then locate the **vertices**, the four points furthest from the center horizontally and vertically.
+The two vertices on the left and right are $a$ units from the center, so their coordinates are $(h-a, k)$
+and $(h+a, k)$.
+
+Meanwhile, the two vertices on the top and bottom are $b$ units from the center, so their coordinates are
+$(h, k-b)$ and $(h, k+b)$.
+
+Marking out these points then allow us to draw the ellipse.
 
 ## Example
 
-<!-- prettier-ignore-start -->
+The following is a sketch of the ellipse with equation
 
-::: example
+$$ \frac{(x+2)^2}{4} + \frac{(y-5)^2}{9} = 1 $$
 
-**Question**:\
-Find the domain and range of the function
-
-$$ f: x \mapsto \sqrt{x+2}, \quad x \in \mathbb{R}, x \geq -2. $$
-
----
-
-**Solution**:
-
-![graph of square root of x+2](/images/h2/fns/openStax_functions_inverse_domain_range_example.jpeg)
-
-$`D_{f^{-1}} = R_f = [0, \infty) \; \QED`\
-$`R_{f^{-1}} = D_f = [-2, \infty) \; \QED`
-
-:::
-<!-- prettier-ignore-end -->
+![ellipses](/images/h2/graphs/openStax_graphs_ellipse.jpeg)
 
 [^cite]:
-    Content in this page is adapted from OpenStax Calculus Volume 1 by Gilbert
-    Strang and Edwin "Jed" Herman under the
-    [Creative Commons Attribution Noncommercial Sharealike 4.0 License](https://creativecommons.org/licenses/by-nc-sa/4.0).\
+    Content in this page is adapted from OpenStax College Algebra 2e by Jay
+    Abramson under the
+    [Creative Commons Attribution License](https://creativecommons.org/licenses/by/4.0/).\
     Access
     for free at
-    <https://openstax.org/books/calculus-volume-1/pages/1-4-inverse-functions>
+    <https://openstax.org/books/college-algebra-2e/pages/5-6-rational-functions>

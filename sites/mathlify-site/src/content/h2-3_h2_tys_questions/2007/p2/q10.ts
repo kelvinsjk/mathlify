@@ -14,38 +14,27 @@ For the newer questions, please purchase a copy of the
 
 import { Question } from '$lib/classes/question';
 import { mathlifierDj as mathlifier } from 'mathlifier';
-import { Polynomial } from 'mathlify';
+import { quotient } from 'mathlify';
 
 export const question = new Question();
 
-const poly = new Polynomial([3, -5, 2], { variable: 'r' });
+const p = quotient(1, 8);
 
-question.addBody(mathlifier`A geometric series has a common ratio ${'r'},
-and an arithmetic series has first term ${'a'}
-and common difference ${'d'},
-where ${'a'}
-and ${'d'}
-are non-zero.
+question.addBody(mathlifier`A player throws three darts at a target.
+The probability that he is successful in hitting the target with
+his first throw is ${p}.
+For each of his second and third throws, the probability of success is
 
-The first three terms of the geometric series are
-equal to the first, fourth and sixth terms respectively of the arithmetic series`);
-
+- twice the probability of success on the preceding throw if that throw was successful,
+- the same as the probability of success on the preceding throw if that throw was unsuccessful.`);
 // a
-question.addPart(mathlifier`Show that ${{}} {${poly}.}`, { marks: 4 });
+question.addPart(mathlifier`Construct a probability tree showing this information.`, { marks: 3 });
 // b
-question.addPart(
-	mathlifier`Deduce that the geometric series is convergent
-and find, in terms of ${'a'},
-the sum to infinity.`,
-	{ marks: 5 }
-);
-// c
-question.addPart(
-	mathlifier`The sum of the first ${'n'}
-terms of the arithmetic series is denoted by ${'S'}.
-Given that ${{}} {a>0,}
-find the set of possible values of ${'n'}
-for which ${'S'}
-exceeds ${'4a'}.`,
-	{ marks: 5 }
+question.addPart(mathlifier`Find`);
+question.addSubPart(`the probability that all three throws are successful,`, { marks: 2 });
+question.addSubPart(`the probability that at least two throws are successful,`, { marks: 2 });
+question.addSubPart(
+	`the probability that the third throw is successful
+given that exactly two of the three throws are successful.`,
+	{ marks: 4 }
 );

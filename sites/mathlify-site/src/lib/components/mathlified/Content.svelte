@@ -103,7 +103,7 @@
 	 * - tables have border-collapse: collapse and border color
 	 */
 	import { afterNavigate, beforeNavigate } from '$app/navigation';
-	import { page } from '$app/stores';
+	import { navigating, page } from '$app/stores';
 	import SequentialNav from './SequentialNav.svelte';
 	import ToC from './ToC.svelte';
 
@@ -199,6 +199,7 @@
 	.toc-container {
 		background-color: var(--surface, hsl(60, 5%, 96%));
 		padding-inline: 1rem;
+		border-block-end: 1px solid var(--content, black);
 	}
 	.desktop-toc {
 		display: none;
@@ -268,6 +269,9 @@
 		max-width: min(100%, 100vw);
 		max-width: min(100%, 100dvw);
 		max-height: 40vh;
+	}
+	:global(.prose :where(img):not(:where([class~='not-prose'] *))) {
+		margin-block: 2em;
 	}
 	:global(.content a) {
 		color: inherit;
@@ -446,9 +450,6 @@
 	}
 	:global(.prose :where(h4 strong):not(:where([class~='not-prose'] *))) {
 		font-weight: 700;
-	}
-	:global(.prose :where(img):not(:where([class~='not-prose'] *))) {
-		margin-block: 2em;
 	}
 	:global(.prose :where(figure > *):not(:where([class~='not-prose'] *))) {
 		margin-block: 0;

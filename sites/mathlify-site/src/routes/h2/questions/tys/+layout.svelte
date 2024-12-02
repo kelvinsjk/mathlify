@@ -2,6 +2,7 @@
 	import type { Snippet } from 'svelte';
 	import Nav from '$lib/components/mathlified/Nav.svelte';
 	import type { NavNode } from '$lib/components/nav';
+	import { navigating } from '$app/stores';
 
 	let {
 		data,
@@ -14,6 +15,12 @@
 		};
 		children: Snippet;
 	} = $props();
+	let mobileToC: HTMLDetailsElement | undefined = $state(undefined);
+	$effect(() => {
+		if ($navigating) {
+			mobileToC?.removeAttribute('open');
+		}
+	});
 </script>
 
 <div class="main-container">
@@ -21,7 +28,7 @@
 		<Nav nav={data.nav?.toReversed() ?? []} />
 	</nav>
 	<nav class="mobile-sidebar">
-		<details class="mobile-toc">
+		<details class="mobile-toc" bind:this={mobileToC}>
 			<summary>
 				<svg
 					aria-hidden="true"

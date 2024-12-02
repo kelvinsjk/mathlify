@@ -60,12 +60,18 @@
 		text-decoration: none;
 		color: var(--content, black);
 		background-color: hsla(var(--secondary-hsl, 50, 100%, 50%), 0.25);
+		transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+		transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+		transition-duration: 0.15s;
 	}
 	a.prev {
 		justify-content: flex-start;
 	}
 	a.next {
 		justify-content: flex-end;
+	}
+	a:hover {
+		background-color: var(--secondary);
 	}
 	svg {
 		height: 2rem;

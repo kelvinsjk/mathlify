@@ -1,6 +1,7 @@
 import { expect, it } from 'vitest';
 import { answer } from './q7';
 import { mathlifierDj as mathlifier } from 'mathlifier';
+import { xAxis, yAxis } from '$lib/utils/typesetting/math';
 
 const ans = answer.answer;
 const actual: typeof ans = {
@@ -12,14 +13,14 @@ const actual: typeof ans = {
 
 Translate the curve ${{}} {y = \\frac{1}{x}}
 by ${1}
-unit in the positive ${{}} x\\text{-axis}
+unit in the positive ${xAxis}
 direction.
 \\
 Scale the resulting curve by a factor of ${'1 + k'}
-parallel to the ${{}} y\\text{-axis}.
+parallel to the ${yAxis}.
 \\
 Translate the resulting curve by ${1}
-unit in the positive ${{}} y\\text{-axis}
+unit in the positive ${yAxis}
 direction.`
 		}
 	]

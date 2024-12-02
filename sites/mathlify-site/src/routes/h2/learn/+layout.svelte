@@ -2,26 +2,59 @@
 	import type { Snippet } from 'svelte';
 	import Nav from '$lib/components/mathlified/Nav.svelte';
 	import type { NavNode } from '$lib/components/nav';
+	import { navigating, page } from '$app/stores';
+
+	const topicsToTopicNo: Record<string, number> = {
+		functions: 0,
+		'graphs-and-transformations': 1
+	};
 
 	let {
 		data,
 		children
 	}: {
 		data: {
-			topicName: string;
-			folder: string;
-			nav: NavNode[] | undefined;
+			topics: NavNode[] | undefined;
 		};
 		children: Snippet;
 	} = $props();
+	// get current topic
+	const nav = $derived.by(() => {
+		const regex = /\/learn\/([^/]+)\//;
+		const match = $page.url.pathname.match(regex);
+		let topic: NavNode | undefined;
+		if (match) {
+			const topicName = match[1];
+			const topicNo = topicsToTopicNo[topicName];
+			if (topicNo !== undefined) {
+				topic = data.topics?.at(topicNo);
+			}
+		}
+		return topic
+			? [
+					topic,
+					{
+						name: '‹‹ Topic selection',
+						slug: '../../..',
+						fileSlug: ''
+					}
+				]
+			: (data.topics ?? []);
+	});
+	let mobileToC: HTMLDetailsElement | undefined = $state(undefined);
+	$effect(() => {
+		if ($navigating) {
+			mobileToC?.removeAttribute('open');
+		}
+	});
 </script>
 
 <div class="main-container">
 	<nav class="sidebar">
-		<Nav nav={data.nav ?? []} />
+		<Nav {nav} />
 	</nav>
 	<nav class="mobile-sidebar">
-		<details class="mobile-toc">
+		<details class="mobile-toc" bind:this={mobileToC}>
 			<summary>
 				<svg
 					aria-hidden="true"
@@ -37,7 +70,7 @@
 				>
 				Functions
 			</summary>
-			<Nav nav={data.nav ? [...(data.nav[0].children ?? []), data.nav[1]] : []} />
+			<Nav {nav} />
 		</details>
 	</nav>
 	<main>

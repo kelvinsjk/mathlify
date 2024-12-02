@@ -54,7 +54,7 @@ $$
 > The limit of $f(x)$ as $x$ approaches $2$ from the right is infinity\
 > The limit of $f(x)$ as $x$ tends to infinity is zero
 
-## Asymptotes
+## Vertical and horizontal asymptotes
 
 The **asymptotes** of a graph capture the infinite behavior of a function discussed above. Hence the graph
 of ${y=\frac{1}{x-2}}$ has a **vertical asymptote** ${x=2,}$ and a **horizontal asymptote** ${y=0.}$
@@ -68,12 +68,16 @@ The figure below shows the graph of ${y=\frac{1}{x}}$ with asymptotes ${x=0}$ an
 As ${x \to -\infty,}$ ${\mathrm{e}^x \to 0.}$ Hence exponential graphs have a **horizontal asymptote**. Our example ${y=\mathrm{e}^x}$
 has a horizontal asymptote ${y=0.}$
 
+The figure below shows the horizontal asymptotes of other exponential graphs.
+
 ![horizontal asymptotes of exponential graphs](/images/h2/graphs/openStax_graphs_exponential_asymptotes.jpeg)
 
 ## Logarithmic graphs
 
 As ${x \to 0^-,}$ ${\ln x \to -\infty.}$ Hence logarithmic graphs have a **vertical asymptote**. Our example ${y=\ln x}$
 has a vertical asymptote ${x=0.}$
+
+The figure below shows the vertical asymptotes of other logarithmic graphs.
 
 ![vertical asymptotes of logarithmic graphs](/images/h2/graphs/openStax_graphs_logarithmic_asymptotes.jpeg)
 
