@@ -97,10 +97,6 @@ export const directory: Record<string, string> = {
     "h2-1_h2_learn/02_graphs-and-transformations/02_conics/03_hyperbola/01_theory",
   "h2_learn/graphs-and-transformations/conics/hyperbola/practice":
     "h2-1_h2_learn/02_graphs-and-transformations/02_conics/03_hyperbola/02_practice",
-  "h2_learn/graphs-and-transformations/conics/completing-the-square/theory":
-    "h2-1_h2_learn/02_graphs-and-transformations/02_conics/04_completing-the-square/01_theory",
-  "h2_learn/graphs-and-transformations/conics/completing-the-square/practice":
-    "h2-1_h2_learn/02_graphs-and-transformations/02_conics/04_completing-the-square/02_practice",
   "h2_learn/graphs-and-transformations/transformations/translation-scaling-reflection/theory":
     "h2-1_h2_learn/02_graphs-and-transformations/03_transformations/01_translation-scaling-reflection/01_theory",
   "h2_learn/graphs-and-transformations/transformations/translation-scaling-reflection/practice":

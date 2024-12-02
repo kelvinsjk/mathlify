@@ -1,84 +1,103 @@
 ---
-title: Formula of inverse functions
-copyright: OpenStax Calculus Volume 1
+title: Hyperbolas
+copyright: College Algebra 2e
 ---
 
 <!-- prettier-ignore-start -->
 ::: citation
-Adapted from OpenStax Calculus Volume 1[^cite]
+Adapted from OpenStax College Algebra 2e[^cite]
 :::
 <!-- prettier-ignore-end -->
 
-After confirming that an inverse function exists, we now attempt to find the
-formula that defines the inverse function.
+## Equations of hyperbolas
 
-<!-- prettier-ignore-start -->
-::: technique
+_Horizontal_ and _vertical_ hyperbolas have
+the following equations in standard form
 
-## Finding a function's inverse
+$$
+\begin{align*}
+&\text{Horizontal hyperbola:} \quad && \frac{(x-h)^2}{a^2} - \frac{(y-k)^2}{b^2} = 1 \\
+&\text{Vertical hyperbola:} \quad && \frac{(y-k)^2}{b^2} - \frac{(x-h)^2}{a^2} = 1
+\end{align*}
+$$
 
-1. Let $`y=f(x)`.
-2. Make $`x` the subject of the equation in terms of $`y`.
-3. Interchange the variables $`x` and $`y` and write $`y=f^{-1}(x)`.
+## Key features of hyperbolas
 
-:::
-<!-- prettier-ignore-end -->
+![features of hyperbolas](/images/h2/graphs/openStax_graphs_hyperbola_features.jpeg)
 
-## Example
+The diagram above shows the key features of hyperbolas. In particular, the following features
+are most useful in drawing hyperbolas:
 
-### Simpler examples
+- center
+- vertices
+- asymptotes
 
-Use the technique above to find the formula for the inverses of
-$`{f(x)=3x-4}` and
-$`{g(x)=2\mathrm{e}^{x+1}-5.}`
+## Drawing a hyperbola
 
-You should get
-$`{f^{-1}(x) = \frac{x+4}{3}}` and
-$`{g^{-1}(x) = \ln \left( \frac{x+5}{2} \right) - 1.}`
+### Center
 
-### Inverse of a quadratic function
+Just like in drawing an ellipse, we draw a hyperbola by first identifying its **center**.
+For an equation of standard form above, the center has coordinates $(h,k)$.
 
-Some tricks can help us find the inverse of a quadratic function. First,
-**completing the square** may be useful to help us make $`x` the subject.
+### Horizontal vs vertical hyperbolas
 
-We will then have a $`\pm` when taking square roots, and will need to **use the
-domain** to determine if we should take the positive or negative version of our
-expression.
+We then deduce whether our hyperbola is **horizontal** or **vertical**, based on its equation (does $x$
+or $y$ appear first in the difference in our equation?).
 
-The following example illustrates both of these concepts:
+### Vertices
 
-<!-- prettier-ignore-start -->
-::: example
+We then locate the **vertices**. For a horizontal hyperbola, the two vertices
+are $a$ units on the left and right of the center, with coordinates $(h-a, k)$ and $(h+a, k)$.
 
-**Question**:\
-The function $`f` is given by
+For a vertical hyperbola, the two vertices are $b$ units above and below the center, with coordinates
+$(h, k-b)$ and $(h, k+b)$.
 
-$$ f: x \mapsto x^2+4x, \quad x \in \mathbb{R}, x \leq -2, $$
+### Asymptotes
 
-Define $`f^{-1}` in similar form.
+For both horizontal and vertical hyperbolas, there are two oblique **asymptotes** that pass through the
+center. They have gradient $\pm \frac{b}{a}$ so their equations are
 
----
+- $y - k = \frac{b}{a}(x + h)$
+- $y - k = - \frac{b}{a}(x + h)$
 
-**Solution**:
+With these features set up on our graph, we can then proceed to draw our hyperbolas. We start off at one corner
+of an asymptote, bend towards and pass through the vertex and then go back towards the other asymptote.
 
-$$ \begin{align*} & y=x^2 + 4x \\ &y=(x+2)^2 - 4 \\ &(x+2)^2 = y+4 \\ &x+2 = \pm \sqrt{y+4} \end{align*} $$
+We draw to the left and right of the center for,horizontal hyperbolas. For
+vertical hyperbolas, we draw
+above and below the center.
 
-Since $`x \leq -2` (the domain of $`f`),
+## Example 1
 
-$$ \begin{align*} x+2 &= - \sqrt{y+4} \\ x &= -2 - \sqrt{y+4} \\ f^{-1}(x) &= -2 - \sqrt{x+4} \end{align*} $$
+The following is a sketch of the vertical hyperbola with equation
 
-Note that $`D_{f^{-1}} = R_f = [-4, \infty).`\
-Hence the definition of $`f^{-1}` is
+$$ \frac{y^2}{64} - \frac{x^2}{36} = 1 $$
 
-$$ f^{-1}: x \mapsto -2 - \sqrt{x+4}, \quad x \in \mathbb{R}, x \geq -4. \; \QED $$
+The origin is the center of the hyperbola, with vertices $(0, 8)$ and $(0, -8)$.
 
-:::
-<!-- prettier-ignore-end -->
+The gradient of the asymptotes are ${\pm\frac{8}{6}=\pm\frac{4}{3}}$
+so the equations of the asymptotes are ${y=\pm\frac{4}{3}x}$.
+
+![vertical hyperbola](/images/h2/graphs/openStax_graphs_hyperbola-1.jpeg)
+
+## Example 2
+
+The following is a sketch of the horizontal hyperbola with equation
+
+$$ \frac{(x-2)^2}{36} + \frac{(y+5)^2}{81} = 1 $$
+
+The center of the hyperbola is $(2,-5)$, and it has vertices $6$ units horizontally from the center
+so their coordinates are $(-4, -5)$ and $(8, 5)$.
+
+The gradient of the asymptotes are ${\pm\frac{9}{6}=\pm\frac{3}{2}}$
+so the equations of the asymptotes are ${y+5=\pm\frac{3}{2}(x-2)}$.
+
+![horizontal hyperbola](/images/h2/graphs/openStax_graphs_hyperbola-2.jpeg)
 
 [^cite]:
-    Content in this page is adapted from OpenStax Calculus Volume 1 by Gilbert
-    Strang and Edwin "Jed" Herman under the
-    [Creative Commons Attribution Noncommercial Sharealike 4.0 License](https://creativecommons.org/licenses/by-nc-sa/4.0).\
+    Content in this page is adapted from OpenStax College Algebra 2e by Jay
+    Abramson under the
+    [Creative Commons Attribution License](https://creativecommons.org/licenses/by/4.0/).\
     Access
     for free at
-    <https://openstax.org/books/calculus-volume-1/pages/1-4-inverse-functions>
+    <https://openstax.org/books/college-algebra-2e/pages/5-6-rational-functions>

@@ -24,7 +24,10 @@
 			class: 'member' | 'premium' | 'super';
 		};
 	} = $props();
-	const questionsNav = $derived(yearlyNav[0].children?.at(Number(data.paper) - 1)?.children ?? []);
+	const yearIndex = $derived(yearlyNav.findIndex((x) => x.name === data.year));
+	const questionsNav = $derived(
+		yearlyNav[yearIndex].children?.at(Number(data.paper) - 1)?.children ?? []
+	);
 	const index = $derived(questionsNav.findIndex((x) => x.name === `Q${data.questionNo}`));
 	const sequential = $derived({ prev: questionsNav[index - 1], next: questionsNav[index + 1] });
 	let question = $derived(data.question);
@@ -270,7 +273,7 @@
 	:global(.body-content > p:first-child) {
 		margin-block-start: 0;
 	}
-	:global(.body-content:not(.no-marks) > p:last-child) {
+	:global(.body-content > p:last-child) {
 		margin-block-end: 0;
 	}
 	.no-break {
@@ -388,5 +391,17 @@
 	}
 	.sequential-container {
 		padding-inline: 1rem;
+	}
+	.part-label,
+	.subpart-label {
+		text-align: end;
+	}
+	/** center images */
+	:global(.body-content img) {
+		margin-inline: auto;
+		display: block;
+		max-width: min(100%, 100vw);
+		max-width: min(100%, 100dvw);
+		max-height: 40vh;
 	}
 </style>

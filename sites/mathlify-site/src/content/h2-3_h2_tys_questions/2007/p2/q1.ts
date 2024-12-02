@@ -23,7 +23,7 @@ const matrix = [
 	[2.15, 0.9, 0.65, 13.05]
 ];
 const leeLian = [1.3, 0.25, 0.5];
-const rows = ['| :-- | :---: | :---: | :---: | :---: |', '| | Suresh | Fandi | Cindy | Lee Lian |'];
+const rows = ['| --- | :---: | :---: | :---: | :---: |', '| | Suresh | Fandi | Cindy | Lee Lian |'];
 const headings = ['Pineapples (kg)', 'Mangoes (kg)', 'Lychees (kg)', 'Total amount paid in \\$'];
 for (let i = 0; i < 4; i++) {
 	rows.push(

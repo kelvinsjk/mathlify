@@ -17,4 +17,44 @@ import { mathlifierDj as mathlifier } from 'mathlifier';
 
 export const question = new Question();
 
-question.addBody(mathlifier`Out of syllabus (recurrence relations).`, { marks: 11 });
+const couples = 6;
+const n = couples * 2;
+
+question.addBody(mathlifier`A group of ${n}
+people consists of ${couples}
+married couples.`);
+
+// a
+question.addPart(mathlifier`The group stands in a line.`);
+// ai, aii
+question.addSubPart(
+	mathlifier`Find the number of
+different possible orders.`,
+	{ marks: 1 }
+);
+question.addSubPart(
+	mathlifier`Find the number of
+different possible orders in which each man
+stands next to his wife.`,
+	{ marks: 3 }
+);
+// b
+question.addPart(mathlifier`The group stands in a circle.`);
+// bi, bii, b iii
+question.addSubPart(
+	mathlifier`Find the number of
+different possible arrangements.`,
+	{ marks: 1 }
+);
+question.addSubPart(
+	mathlifier`Find the number of
+different possible arrangements if men and women alternate.`,
+	{ marks: 2 }
+);
+question.addSubPart(
+	mathlifier`Find the number of
+different possible arrangements if 
+each man stands next to his wife and
+men and women alternate.`,
+	{ marks: 2 }
+);

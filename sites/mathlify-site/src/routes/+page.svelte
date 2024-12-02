@@ -19,6 +19,7 @@
 			text: `<p>Answers and solutions to past examination questions.</p>
 			<p>Navigate either yearly, or topically.</p>`,
 			links: [
+				{ title: '2024', slug: '/h2/solutions/2024/p1/q7' },
 				{ title: '2023', slug: '/h2/solutions/2023/p1/q7' },
 				{ title: '2022', slug: '/h2/solutions/2022/p1/q6' },
 				{ title: '2021', slug: '/h2/solutions/2021/p1/q6' },

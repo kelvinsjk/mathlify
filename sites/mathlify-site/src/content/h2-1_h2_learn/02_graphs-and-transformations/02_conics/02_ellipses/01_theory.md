@@ -17,8 +17,12 @@ $$ \frac{(x-h)^2}{a^2} + \frac{(y-k)^2}{b^2} = 1. $$
 
 ## Drawing an ellipse
 
+### Center
+
 Just like in drawing a circle, we draw an ellipse by first identifying its **center**.
 For an equation of standard form above, the center has coordinates $(h,k)$.
+
+### Vertices
 
 We then locate the **vertices**, the four points furthest from the center horizontally and vertically.
 The two vertices on the left and right are $a$ units from the center, so their coordinates are $(h-a, k)$
@@ -29,7 +33,7 @@ $(h, k-b)$ and $(h, k+b)$.
 
 Marking out these points then allow us to draw the ellipse.
 
-### Example
+## Example
 
 The following is a sketch of the ellipse with equation
 

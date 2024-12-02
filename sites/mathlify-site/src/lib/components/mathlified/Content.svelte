@@ -270,6 +270,9 @@
 		max-width: min(100%, 100dvw);
 		max-height: 40vh;
 	}
+	:global(.prose :where(img):not(:where([class~='not-prose'] *))) {
+		margin-block: 2em;
+	}
 	:global(.content a) {
 		color: inherit;
 	}
@@ -447,9 +450,6 @@
 	}
 	:global(.prose :where(h4 strong):not(:where([class~='not-prose'] *))) {
 		font-weight: 700;
-	}
-	:global(.prose :where(img):not(:where([class~='not-prose'] *))) {
-		margin-block: 2em;
 	}
 	:global(.prose :where(figure > *):not(:where([class~='not-prose'] *))) {
 		margin-block: 0;
