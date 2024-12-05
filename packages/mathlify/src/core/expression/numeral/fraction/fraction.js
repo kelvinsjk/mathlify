@@ -214,6 +214,13 @@ export class Fraction {
 	negative() {
 		return new Fraction(-this.num, this.den);
 	}
+	/**
+	 * subtraction
+	 * @param {Fraction} x - the fraction to subtract
+	 */
+	minus(x) {
+		return this.plus(x.negative());
+	}
 
 	//* Static methods
 

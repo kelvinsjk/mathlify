@@ -3,7 +3,7 @@ export class Vector {
      * @param {Shorthand} x
      * @param {Shorthand} [y=0]
      * @param {Shorthand} [z=0]
-     * @param {{stringMode?: 'column'|'ijk'|'coordinates', name?: string}} [options]
+     * @param {{stringMode?: 'column'|'ijk'|'coordinates', name?: string}} [options] default to stringMode: column
      */
     constructor(x: Shorthand, y?: import("../core/expression/expression.js").Shorthand | undefined, z?: import("../core/expression/expression.js").Shorthand | undefined, options?: {
         stringMode?: "column" | "ijk" | "coordinates";

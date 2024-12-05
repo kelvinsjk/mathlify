@@ -1,4 +1,5 @@
 import { Fraction } from './fraction/fraction.js';
+import { Float } from './float/float.js';
 /** @typedef {import('../expression.js').Variable} Variable */
 
 /**
@@ -7,22 +8,22 @@ import { Fraction } from './fraction/fraction.js';
  * though we may add support for floats in the future
  *
  * @property {'numeral'} type
- * @property {Fraction} number
+ * @property {Fraction|Float} number
  */
 export class Numeral {
 	/** @type {'numeral'} */
 	type = 'numeral';
-	/** @type {Fraction} */
+	/** @type {Fraction|Float} */
 	number;
 	/**
 	 * @constructor
 	 * Creates a `Numeral` instance (supports only fractions at the moment)
-	 * @param {number|Fraction|[number,number]} number
+	 * @param {number|Fraction|Float|[number,number]} number
 	 * @param {{verbatim?: boolean}} [options] - options to override default simplification behavior
 	 */
 	constructor(number, options) {
 		if (typeof number === 'number') {
-			number = new Fraction(number);
+			number = Number.isInteger(number) ? new Fraction(number) : new Float(number);
 		} else if (Array.isArray(number)) {
 			number = new Fraction(number[0], number[1]);
 		} else {
@@ -69,29 +70,44 @@ export class Numeral {
 
 	// * Arithmetic methods
 	/**
-	 * @param {Numeral|number|Fraction} x
+	 * @param {Numeral|number|Fraction|Float} x
 	 * @returns {Numeral}
 	 */
 	plus(x) {
-		return new Numeral(this.number.plus(numberToFraction(x)));
+		if (this.number instanceof Fraction) {
+			if ( (typeof x === 'number' && Number.isInteger(x)) || x instanceof Fraction || (x instanceof Numeral && x.number instanceof Fraction)) {
+				return new Numeral(this.number.plus(numberToFraction(x)));
+			}
+		}
+		return new Numeral(this.valueOf() + x.valueOf());
 	}
 	/** @returns {Numeral} */
 	negative() {
 		return new Numeral(this.number.negative());
 	}
 	/**
-	 * @param {Numeral|number|Fraction} x
+	 * @param {Numeral|number|Fraction|Float} x
 	 * @returns {Numeral}
 	 * */
 	minus(x) {
-		return this.plus(numberToFraction(x).negative());
+		if (this.number instanceof Fraction) {
+			if ( (typeof x === 'number' && Number.isInteger(x)) || x instanceof Fraction || (x instanceof Numeral && x.number instanceof Fraction)) {
+				return new Numeral(this.number.minus(numberToFraction(x)));
+			}
+		}
+		return new Numeral(this.valueOf() - x.valueOf());
 	}
 	/**
-	 * @param {Numeral|number|Fraction} x
+	 * @param {Numeral|number|Fraction|Float} x
 	 * @returns {Numeral}
 	 */
 	times(x) {
-		return new Numeral(this.number.times(numberToFraction(x)));
+		if (this.number instanceof Fraction) {
+			if ( (typeof x === 'number' && Number.isInteger(x)) || x instanceof Fraction || (x instanceof Numeral && x.number instanceof Fraction)) {
+				return new Numeral(this.number.times(numberToFraction(x)));
+			}
+		}
+		return new Numeral(this.valueOf() * x.valueOf());
 	}
 	/**
 	 * @returns {Numeral}
@@ -100,23 +116,35 @@ export class Numeral {
 		return new Numeral(this.number.reciprocal());
 	}
 	/**
-	 * @param {Numeral|number|Fraction} x
+	 * @param {Numeral|number|Fraction|Float} x
 	 * @returns {Numeral}
 	 */
 	divide(x) {
-		return new Numeral(this.number.divide(numberToFraction(x)));
+		if (this.number instanceof Fraction) {
+			if ( (typeof x === 'number' && Number.isInteger(x)) || x instanceof Fraction || (x instanceof Numeral && x.number instanceof Fraction)) {
+				return new Numeral(this.number.divide(numberToFraction(x)));
+			}
+		}
+		if (x.valueOf() === 0) {
+			throw new RangeError('Cannot divide by 0');
+		}
+		return new Numeral(this.valueOf() / x.valueOf());
 	}
 	/** @returns {Numeral} */
 	abs() {
 		return new Numeral(this.number.abs());
 	}
 	/**
-	 * @param {Numeral|number|Fraction} n
+	 * @param {Numeral|number|Fraction|Float} n
 	 * @returns {Numeral}
 	 */
 	pow(n) {
-		n = n instanceof Numeral ? n.number : n;
-		return new Numeral(this.number.pow(n));
+		if (this.number instanceof Fraction) {
+			if ( (typeof n === 'number' && Number.isInteger(n)) || n instanceof Fraction || (n instanceof Numeral && n.number instanceof Fraction)) {
+				return new Numeral(this.number.pow(numberToFraction(n)));
+			}
+		}
+		return new Numeral(this.valueOf() ** n.valueOf());
 	}
 	/**
 	 * @returns {Numeral}
@@ -203,8 +231,8 @@ export class Numeral {
 
 	// * Static methods
 	/**
-	 * @param {Numeral|number|Fraction} x
-	 * @param {Numeral|number|Fraction} y
+	 * @param {Numeral|number|Fraction|Float} x
+	 * @param {Numeral|number|Fraction|Float} y
 	 * @returns {Numeral}
 	 */
 	static min(x, y) {
@@ -215,8 +243,8 @@ export class Numeral {
 	}
 
 	/**
-	 * @param {Numeral|number|Fraction} x
-	 * @param {Numeral|number|Fraction} y
+	 * @param {Numeral|number|Fraction|Float} x
+	 * @param {Numeral|number|Fraction|Float} y
 	 * @returns {Numeral}
 	 */
 	static max(x, y) {
@@ -252,8 +280,9 @@ export class Numeral {
  * @returns {Fraction}
  */
 function numberToFraction(x) {
-	if (typeof x === 'number') {
-		x = new Fraction(x);
-	}
-	return x instanceof Numeral ? x.number : x;
+	if (typeof x === 'number') 
+		return new Fraction(x);
+	if (x instanceof Fraction) return x;
+	if (x.number instanceof Fraction) return x.number;
+	throw new TypeError(`Cannot convert float: ${x.toString()} to Fraction`);
 }

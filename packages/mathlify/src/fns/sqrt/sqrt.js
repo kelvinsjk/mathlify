@@ -71,6 +71,7 @@ export class Sqrt extends Fn {
 		return Math.sqrt(this.argument.valueOf());
 	}
 
+	/** @typedef {import('../../core/expression/numeral/fraction/fraction.js').Fraction} Fraction */
 	/**
 	 * @param {SimplifyOptions} [options]
 	 * @returns {Sqrt|Product|Numeral|Quotient}
@@ -79,13 +80,14 @@ export class Sqrt extends Fn {
 		if (options?.verbatim) return this;
 		const arg = this.argument.simplify(options);
 		// TODO: simplify sqrt(4x) to 2sqrt(x)
-		if (arg.node.type === 'numeral') {
+		if (arg.node.type === 'numeral' && arg.node.number.type === 'fraction') {
 			const n = arg.node.clone().simplify();
 			if (n.is.zero() || n.is.one()) return n;
 			if (n.is.negative())
 				throw new Error('Cannot take the square root of a negative number');
-			const num = n.number.num.valueOf();
-			const den = n.number.den.valueOf();
+			// type cast because of guarding if statement above
+			const num = (/** @type {Fraction} */ (n.number)).num.valueOf();
+			const den = (/** @type {Fraction} */ (n.number)).den.valueOf();
 			const [coeffNum, radicandNum] = makeSquareFree(num);
 			const [coeffDen, radicandDen] = makeSquareFree(den);
 			const radicand = new Numeral([radicandNum, radicandDen]);
@@ -190,6 +192,7 @@ export function simplifySurd(expression) {
 		expression.node.type === 'exponent' &&
 		expression.node.base.node.type === 'numeral' &&
 		expression.node.power.node.type === 'numeral' &&
+		expression.node.power.node.number.type === 'fraction' &&
 		expression.node.power.node.number.den === 2
 	) {
 		const radicand = expression.node.base.node.pow(

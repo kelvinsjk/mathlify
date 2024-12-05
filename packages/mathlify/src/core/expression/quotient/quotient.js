@@ -62,7 +62,7 @@ export class Quotient {
 	 */
 	simplify(options) {
 		if (options?.verbatim === true) return this.clone();
-		if (this.den.node.type === 'numeral' && !this.den.node.is.integer()) {
+		if (this.den.node.type === 'numeral' && this.den.node.number.type === 'fraction' && !this.den.node.is.integer()) {
 			const multiple = this.den.node.number.den;
 			return new Quotient(
 				this.num.times(multiple, { expand: true }).simplify(),
