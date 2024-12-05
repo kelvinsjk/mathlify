@@ -183,7 +183,7 @@ function denominator_lcm(...expressions) {
 		throw new Error('Cannot find denominator lcm of empty array');
 	if (arrayHasLengthEqualTo(expressions, 1)) {
 		const node = expressions[0].node;
-		if (node.type === 'numeral') {
+		if (node.type === 'numeral' && node.number.type === 'fraction') {
 			return new Expression(Math.abs(node.number.den));
 		} else if (node.type === 'quotient') {
 			return node.den.clone();

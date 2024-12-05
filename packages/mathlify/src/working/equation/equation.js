@@ -582,26 +582,26 @@ export class Equation {
 		const leftNum =
 			lhs.node.type === 'quotient'
 				? lhs._getQuotientTerms()[0].clone()
-				: lhs.node.type === 'numeral'
-					? new Expression(lhs._getNumeral().number.num)
+				: lhs.node.type === 'numeral' && lhs.node.number.type === 'fraction'
+					? new Expression(lhs.node.number.num)
 					: lhs;
 		const leftDen =
 			lhs.node.type === 'quotient'
 				? lhs._getQuotientTerms()[1].clone()
-				: lhs.node.type === 'numeral'
-					? lhs._getNumeral().number.den
+				: lhs.node.type === 'numeral' && lhs.node.number.type === 'fraction'
+					? lhs.node.number.den
 					: 1;
 		const rightNum =
 			rhs.node.type === 'quotient'
 				? rhs._getQuotientTerms()[0].clone()
-				: rhs.node.type === 'numeral'
-					? new Expression(rhs._getNumeral().number.num)
+				: rhs.node.type === 'numeral' && rhs.node.number.type === 'fraction'
+					? new Expression(rhs.node.number.num)
 					: rhs;
 		const rightDen =
 			rhs.node.type === 'quotient'
 				? rhs._getQuotientTerms()[1]
-				: rhs.node.type === 'numeral'
-					? rhs._getNumeral().number.den
+				: rhs.node.type === 'numeral' && rhs.node.number.type === 'fraction'
+					? rhs.node.number.den
 					: 1;
 		if (
 			(leftDen === 1 ||

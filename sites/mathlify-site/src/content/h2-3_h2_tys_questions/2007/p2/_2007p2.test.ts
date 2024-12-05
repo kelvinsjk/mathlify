@@ -11,7 +11,7 @@ import { question as q9 } from './q9';
 import { question as q10 } from './q10';
 import { question as q11 } from './q11';
 
-it('2007 p2 qn', () => {
+it('2007 p2 qns', () => {
 	expect(q1).toMatchSnapshot();
 	expect(q2).toMatchSnapshot();
 	expect(q3).toMatchSnapshot();

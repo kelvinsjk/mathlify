@@ -260,6 +260,8 @@ export class Polynomial extends Expression {
 		quadratic: () => {
 			const [root1, root2] = this.solve.quadratic();
 			const [x1, x2] = [root1._getNumeral(), root2._getNumeral()];
+			if (x1.number.type !== 'fraction' || x2.number.type !== 'fraction')
+				throw new Error('non-rational roots not supported at this moment');
 			const x1Num = x1.number.num;
 			const x1Den = x1.number.den;
 			const x2Num = x2.number.num;
@@ -441,6 +443,7 @@ export class Polynomial extends Expression {
 						? new Numeral(root)
 						: root._getNumeral()
 		).simplify();
+		if (rootNumeral.number.type !== 'fraction') throw new Error('Non-rational roots not supported');
 		const num = rootNumeral.number.num;
 		const den = rootNumeral.number.den;
 		return new Polynomial([den, -num], options);

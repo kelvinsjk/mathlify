@@ -43,6 +43,7 @@ export class Sqrt extends Fn {
     }, options: {
         verbatim: boolean;
     }): Sqrt;
+    /** @typedef {import('../../core/expression/numeral/fraction/fraction.js').Fraction} Fraction */
     /**
      * @param {SimplifyOptions} [options]
      * @returns {Sqrt|Product|Numeral|Quotient}

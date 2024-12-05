@@ -128,6 +128,11 @@ export class Fraction {
      * @returns {Fraction}
      */
     negative(): Fraction;
+    /**
+     * subtraction
+     * @param {Fraction} x - the fraction to subtract
+     */
+    minus(x: Fraction): Fraction;
     #private;
 }
 //# sourceMappingURL=fraction.d.ts.map

@@ -35,7 +35,7 @@ export class Sin extends Fn {
 	toString() {
 		const bracketedArg =
 			this.argument.node.type === 'sum'
-				? `(${this.argument.toString()})`
+				? `\\left( ${this.argument.toString()} \\right)`
 				: this.argument.toString();
 		return `\\sin ${bracketedArg}`;
 	}
@@ -157,7 +157,7 @@ export class Cos extends Fn {
 	toString() {
 		const bracketedArg =
 			this.argument.node.type === 'sum'
-				? `(${this.argument.toString()})`
+				? `\\left( ${this.argument.toString()} \\right)`
 				: this.argument.toString();
 		return `\\cos ${bracketedArg}`;
 	}
@@ -279,7 +279,7 @@ export class Tan extends Fn {
 	toString() {
 		const bracketedArg =
 			this.argument.node.type === 'sum'
-				? `(${this.argument.toString()})`
+				? `\\left( ${this.argument.toString()} \\right)`
 				: this.argument.toString();
 		return `\\tan ${bracketedArg}`;
 	}
@@ -476,7 +476,7 @@ function isSpecialAngle(angle) {
 			return isSpecial;
 		}
 		if (factors[0].node.type === 'variable' && factors[0].node.name === 'pi') {
-			const den = coeff.number.den;
+			const den = coeff.number.type === 'fraction' ? coeff.number.den : -1;
 			if (den === 6 || den === 4 || den === 3 || den === 2 || den === 1) {
 				return [true, coeff.clone()];
 			}

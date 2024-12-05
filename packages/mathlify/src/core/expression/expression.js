@@ -686,8 +686,8 @@ function simplify_to_different_node(exp, options) {
 						nums.push(factor);
 					}
 				}
-				const coeffNum = node.coeff.number.num;
-				const coeffDen = node.coeff.number.den;
+				const coeffNum = node.coeff.number.type === 'fraction' ? node.coeff.number.num : node.coeff.valueOf();
+				const coeffDen = node.coeff.number.type === 'fraction' ? node.coeff.number.den : 1;
 				return new Quotient(
 					new Expression(new Product(coeffNum, ...nums)),
 					new Expression(new Product(coeffDen, ...dens)),
@@ -747,7 +747,7 @@ function simplify_to_different_node(exp, options) {
 			exp.power.node.type === 'numeral' &&
 			exp.power.node.number.is.integer()
 		) {
-			return new Numeral(exp.base.node.number.pow(exp.power.node.number));
+			return exp.base.node.pow(exp.power.node.number);
 		} else if (
 			exp.power.node.type === 'numeral' &&
 			exp.power.node.number.is.zero()

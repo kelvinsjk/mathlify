@@ -18,7 +18,7 @@ export class Vector {
 	 * @param {Shorthand} x
 	 * @param {Shorthand} [y=0]
 	 * @param {Shorthand} [z=0]
-	 * @param {{stringMode?: 'column'|'ijk'|'coordinates', name?: string}} [options]
+	 * @param {{stringMode?: 'column'|'ijk'|'coordinates', name?: string}} [options] default to stringMode: column
 	 */
 	constructor(x, y = 0, z = 0, options) {
 		this.x = new Expression(x);

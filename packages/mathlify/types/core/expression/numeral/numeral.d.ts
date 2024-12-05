@@ -5,21 +5,21 @@
  * though we may add support for floats in the future
  *
  * @property {'numeral'} type
- * @property {Fraction} number
+ * @property {Fraction|Float} number
  */
 export class Numeral {
     /**
-     * @param {Numeral|number|Fraction} x
-     * @param {Numeral|number|Fraction} y
+     * @param {Numeral|number|Fraction|Float} x
+     * @param {Numeral|number|Fraction|Float} y
      * @returns {Numeral}
      */
-    static min(x: Numeral | number | Fraction, y: Numeral | number | Fraction): Numeral;
+    static min(x: Numeral | number | Fraction | Float, y: Numeral | number | Fraction | Float): Numeral;
     /**
-     * @param {Numeral|number|Fraction} x
-     * @param {Numeral|number|Fraction} y
+     * @param {Numeral|number|Fraction|Float} x
+     * @param {Numeral|number|Fraction|Float} y
      * @returns {Numeral}
      */
-    static max(x: Numeral | number | Fraction, y: Numeral | number | Fraction): Numeral;
+    static max(x: Numeral | number | Fraction | Float, y: Numeral | number | Fraction | Float): Numeral;
     /**
      * @param {(Numeral|number|Fraction)[]} numerals
      * @returns {Numeral}
@@ -34,16 +34,16 @@ export class Numeral {
     /**
      * @constructor
      * Creates a `Numeral` instance (supports only fractions at the moment)
-     * @param {number|Fraction|[number,number]} number
+     * @param {number|Fraction|Float|[number,number]} number
      * @param {{verbatim?: boolean}} [options] - options to override default simplification behavior
      */
-    constructor(number: number | Fraction | [number, number], options?: {
+    constructor(number: number | Fraction | Float | [number, number], options?: {
         verbatim?: boolean;
     } | undefined);
     /** @type {'numeral'} */
     type: "numeral";
-    /** @type {Fraction} */
-    number: Fraction;
+    /** @type {Fraction|Float} */
+    number: Fraction | Float;
     /**
      * Simplifies this numeral/fraction
      * @param {import('../expression.js').SimplifyOptions} [options]
@@ -66,38 +66,38 @@ export class Numeral {
      */
     clone(): Numeral;
     /**
-     * @param {Numeral|number|Fraction} x
+     * @param {Numeral|number|Fraction|Float} x
      * @returns {Numeral}
      */
-    plus(x: Numeral | number | Fraction): Numeral;
+    plus(x: Numeral | number | Fraction | Float): Numeral;
     /** @returns {Numeral} */
     negative(): Numeral;
     /**
-     * @param {Numeral|number|Fraction} x
+     * @param {Numeral|number|Fraction|Float} x
      * @returns {Numeral}
      * */
-    minus(x: Numeral | number | Fraction): Numeral;
+    minus(x: Numeral | number | Fraction | Float): Numeral;
     /**
-     * @param {Numeral|number|Fraction} x
+     * @param {Numeral|number|Fraction|Float} x
      * @returns {Numeral}
      */
-    times(x: Numeral | number | Fraction): Numeral;
+    times(x: Numeral | number | Fraction | Float): Numeral;
     /**
      * @returns {Numeral}
      */
     reciprocal(): Numeral;
     /**
-     * @param {Numeral|number|Fraction} x
+     * @param {Numeral|number|Fraction|Float} x
      * @returns {Numeral}
      */
-    divide(x: Numeral | number | Fraction): Numeral;
+    divide(x: Numeral | number | Fraction | Float): Numeral;
     /** @returns {Numeral} */
     abs(): Numeral;
     /**
-     * @param {Numeral|number|Fraction} n
+     * @param {Numeral|number|Fraction|Float} n
      * @returns {Numeral}
      */
-    pow(n: Numeral | number | Fraction): Numeral;
+    pow(n: Numeral | number | Fraction | Float): Numeral;
     /**
      * @returns {Numeral}
      */
@@ -166,4 +166,5 @@ export class Numeral {
 }
 export type Variable = import("../expression.js").Variable;
 import { Fraction } from './fraction/fraction.js';
+import { Float } from './float/float.js';
 //# sourceMappingURL=numeral.d.ts.map

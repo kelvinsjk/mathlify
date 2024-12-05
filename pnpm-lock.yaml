@@ -180,8 +180,8 @@ importers:
         specifier: ^0.33.0
         version: 0.33.0(@libsql/client@0.10.0)(postgres@3.4.4)(react@18.3.1)
       mathlifier:
-        specifier: ^2.0.2
-        version: 2.0.2
+        specifier: ^2.0.3
+        version: 2.0.3
       mathlify:
         specifier: workspace:^
         version: link:../../packages/mathlify
@@ -2920,8 +2920,8 @@ packages:
     engines: {node: '>= 18'}
     hasBin: true
 
-  mathlifier@2.0.2:
-    resolution: {integrity: sha512-75VUQqY5bTaqASVhBXws8A1J2BSoyN4XTbRuLfGXVoxtE4oegrKZlGErdXMMeP/leAkkS5epkIS24aNuHb56Gg==}
+  mathlifier@2.0.3:
+    resolution: {integrity: sha512-4LaHXf9r4C8Q/V4XrjYc9JZ6S/aJyW+Vi0anxHigdNMblhp+jRThBvDAlHORX59I9yMXurYvLG4BRREMGNx2BA==}
 
   memorystream@0.3.1:
     resolution: {integrity: sha512-S3UwM3yj5mtUSEfP41UZmt/0SCoVYUcU1rkXv+BQ5Ig8ndL4sPoJNBUJERafdPb5jjHJGuMgytgKvKIf58XNBw==}
@@ -7180,7 +7180,7 @@ snapshots:
 
   marked@11.2.0: {}
 
-  mathlifier@2.0.2:
+  mathlifier@2.0.3:
     dependencies:
       '@djot/djot': 0.3.1
       temml: 0.10.29
