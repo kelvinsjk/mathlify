@@ -16,7 +16,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 	const questionNo = Number(question.slice(1));
 	const topics = questionsToTopic[`${year} P${paper.slice(1)} Q${questionNo}`];
 	const topicalNav: NavNodePlusColor[] = [];
-	for (const topic of topics) {
+	for (const topic of topics ?? []) {
 		topicalNav.push({
 			name: capitalizeFirstLetter(topic),
 			children: topicalDirectory[topic]?.map((x) => ({
